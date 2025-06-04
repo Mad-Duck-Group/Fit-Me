@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Units;
 using MadDuck.Scripts.Utils;
 using PrimeTween;
@@ -36,12 +37,13 @@ public class Block : MonoBehaviour
     [SerializeField] private BlockFaces blockFace;
     [SerializeField] private Atom[] atoms;
     [SerializeField] private SpriteRenderer spriteRenderer;
-    [SerializeField] private bool allowPickUpAfterPlacement = false;
+    [SerializeField] private bool allowPickUpAfterPlacement;
 
-    private List<int[,]> _blockSchemas = new List<int[,]>();
+    private List<int[,]> _blockSchemas = new();
     private Vector3 _originalPosition;
     private Vector3 _originalRotation;
     private Vector3 _originalScale;
+    private Vector3 _originalSpriteScale;
     private bool _isPlaced;
     private int _spawnIndex;
     private Tween _transformTween;
@@ -49,10 +51,6 @@ public class Block : MonoBehaviour
     private bool _isDragging;
 
     public BlockTypes BlockType => blockType;
-    public Vector3 OriginalPosition {get => _originalPosition; set => _originalPosition = value;}
-    public Vector3 OriginalRotation {get => _originalRotation; set => _originalRotation = value;}
-    public Vector3 OriginalScale {get => _originalScale; set => _originalScale = value;}
-
     public List<int[,]> BlockSchemas => _blockSchemas;
     public Atom[] Atoms => atoms;
     public bool AllowPickUpAfterPlacement => allowPickUpAfterPlacement;
@@ -64,6 +62,10 @@ public class Block : MonoBehaviour
         {
             atom.ParentBlock = this;
         }
+        _originalSpriteScale = spriteRenderer.transform.localScale;
+        _originalPosition = transform.position;
+        _originalRotation = transform.eulerAngles;
+        _originalScale = transform.localScale;
     }
 
     
@@ -136,7 +138,7 @@ public class Block : MonoBehaviour
         {
             _transformTween.Stop();
         }
-        _transformTween = Tween.Scale(transform, Vector3.one * 1.2f, 0.2f);
+        _transformTween = Tween.Scale(spriteRenderer.transform, spriteRenderer.transform.localScale * 1.2f, 0.2f);
     }
 
     /// <summary>
@@ -154,6 +156,7 @@ public class Block : MonoBehaviour
         Tween.Rotation(transform, _originalRotation, 0.2f);
         //Tween the block to the original scale
         Tween.Scale(transform, _originalScale, 0.2f);
+        Tween.Scale(spriteRenderer.transform, _originalSpriteScale, 0.2f);
         GridManager.Instance.ResetPreviousValidationCells();
     }
 
@@ -221,7 +224,7 @@ public class Block : MonoBehaviour
         //     blockTransform.localScale = localScale;
         // }
     }
-    
+
     private IEnumerator OnMouseUp()
     {
         if (!GameManager.Instance.GameStarted || GameManager.Instance.IsPaused) yield break;
@@ -236,6 +239,7 @@ public class Block : MonoBehaviour
             RandomBlockManager.Instance.FreeSpawnPoint(_spawnIndex);
             RandomBlockManager.Instance.DestroyBlock();
             RandomBlockManager.Instance.SpawnRandomBlock();
+            Tween.Scale(spriteRenderer.transform, _originalSpriteScale, 0.2f);
             // if (GameManager.Instance.CurrentReRoll <= 0)
             // {
             //     RandomBlockManager.Instance.GameOverCheck();

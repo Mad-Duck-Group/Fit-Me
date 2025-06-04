@@ -7,13 +7,14 @@ using UnityEngine;
 public class Cell : MonoBehaviour
 {
     private SpriteRenderer _spriteRenderer;
-    private Color _originalColor;
-    private int[] _index;
+    public Color OriginalColor { get; set; }
+    public Vector2Int ArrayIndex { get; set; }
+    public Vector2Int GridIndex { get; set; }
     [SerializeField][ReadOnly] private Atom currentAtom;
     
     public SpriteRenderer SpriteRenderer => _spriteRenderer;
-    public Color OriginalColor {get => _originalColor; set => _originalColor = value;}
-    public int[] Index {get => _index; set => _index = value;}
+    
+
     public Atom CurrentAtom => currentAtom;
     // Start is called before the first frame update
     void Awake()

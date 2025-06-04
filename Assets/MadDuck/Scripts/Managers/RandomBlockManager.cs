@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using MadDuck.Scripts.Managers;
 using PrimeTween;
+using Sirenix.OdinInspector;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -17,23 +19,22 @@ public class RandomBlockManager : MonoSingleton<RandomBlockManager>
         public Transform Transform => transform;
         private bool _isFree;
         public bool IsFree { get => _isFree; set => _isFree = value; }
-        [SerializeField] private Block _currentBlock;
+        [SerializeField, ReadOnly] private Block currentBlock;
         public Block CurrentBlock
         {
-            get => _currentBlock;
-            set => _currentBlock = value;
+            get => currentBlock;
+            set => currentBlock = value;
         }
     }
 
     [SerializeField] private float objectScale = 0.5f;
-    [SerializeField] private GameObject[] topten;
-    [SerializeField] private GameObject[] jelly;
-    [SerializeField] private GameObject[] pan;
-    [SerializeField] private GameObject[] sankaya;
-    [FormerlySerializedAs("spawnPositions")] [SerializeField] private SpawnPoint[] spawnPoints;
-    private List<GameObject> _randomObjects;
+    [SerializeField] private Block[] topten;
+    [SerializeField] private Block[] jelly;
+    [SerializeField] private Block[] pan;
+    [SerializeField] private Block[] sankaya;
+    [SerializeField] private SpawnPoint[] spawnPoints;
+    private List<Block> _randomBlocks;
     private Tween _scaleTween;
-    public SpawnPoint[] SpawnPoints => spawnPoints;
 
     // Start is called before the first frame update
     public void SpawnAtStart()
@@ -53,14 +54,12 @@ public class RandomBlockManager : MonoSingleton<RandomBlockManager>
 
     public void RandomType()
     {
-        GameObject toptenObj = topten[Random.Range(0, topten.Length)];
-        GameObject jellyObj = jelly[Random.Range(0, jelly.Length)];
-        GameObject panObj = pan[Random.Range(0, pan.Length)];
-        GameObject sankayaObj = sankaya[Random.Range(0, sankaya.Length)];
+        var toptenObj = topten[Random.Range(0, topten.Length)];
+        var jellyObj = jelly[Random.Range(0, jelly.Length)];
+        var panObj = pan[Random.Range(0, pan.Length)];
+        var sankayaObj = sankaya[Random.Range(0, sankaya.Length)];
         
-        _randomObjects = new List<GameObject>() {toptenObj, jellyObj, panObj, sankayaObj};
-        
-        
+        _randomBlocks = new List<Block> {toptenObj, jellyObj, panObj, sankayaObj};
     }
 
     public void SpawnRandomBlock()
@@ -73,20 +72,17 @@ public class RandomBlockManager : MonoSingleton<RandomBlockManager>
                 continue;
             }
             Transform spawnTransform = spawnPoints[i].Transform;
-            int randomIndex = Random.Range(0, _randomObjects.Count);
-            Block spawn = Instantiate(_randomObjects[randomIndex], spawnTransform.position, Quaternion.identity).GetComponent<Block>();
-            _randomObjects.RemoveAt(randomIndex);
-            spawn.SpawnIndex = i;
-            spawn.transform.localScale = Vector3.zero;
+            int randomIndex = Random.Range(0, _randomBlocks.Count);
+            Block block = Instantiate(_randomBlocks[randomIndex], spawnTransform.position, Quaternion.identity);
+            _randomBlocks.RemoveAt(randomIndex);
+            block.SpawnIndex = i;
+            block.transform.localScale = Vector3.zero;
             Vector3 scale = new Vector3(objectScale, objectScale, 1f);
             //int randomRotation = Random.Range(0, 4) * 90;
             //spawn.transform.eulerAngles = new Vector3(0, 0, randomRotation);
-            _scaleTween = Tween.Scale(spawn.transform, scale, 0.2f);
-            spawn.OriginalPosition = spawn.transform.position;
-            spawn.OriginalRotation = spawn.transform.eulerAngles;
-            spawn.OriginalScale = scale;
+            _scaleTween = Tween.Scale(block.transform, scale, 0.2f);
             spawnPoints[i].IsFree = false;
-            spawnPoints[i].CurrentBlock = spawn;
+            spawnPoints[i].CurrentBlock = block;
         }
     }
     

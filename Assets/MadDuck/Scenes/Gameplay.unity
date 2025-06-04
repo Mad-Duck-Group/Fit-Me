@@ -2108,13 +2108,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectScale: 0.5
   topten:
-  - {fileID: 475134971703401133, guid: 27a121913cbedde4c89b3ad28c476a9d, type: 3}
+  - {fileID: 1274395652884110066, guid: 27a121913cbedde4c89b3ad28c476a9d, type: 3}
   jelly:
-  - {fileID: 475134971703401133, guid: 8a0009a5e7e9935409bb1bdf5957e546, type: 3}
+  - {fileID: 1274395652884110066, guid: 8a0009a5e7e9935409bb1bdf5957e546, type: 3}
   pan:
-  - {fileID: 475134971703401133, guid: a6faec7815126184e8507a9e34609aba, type: 3}
+  - {fileID: 1274395652884110066, guid: a6faec7815126184e8507a9e34609aba, type: 3}
   sankaya:
-  - {fileID: 475134971703401133, guid: 79a2158c73a60574ca9f421ff81f3988, type: 3}
+  - {fileID: 1274395652884110066, guid: 79a2158c73a60574ca9f421ff81f3988, type: 3}
   spawnPoints:
   - transform: {fileID: 1824884509}
     _currentBlock: {fileID: 0}
@@ -3695,6 +3695,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2127847348}
   - component: {fileID: 2127847347}
+  - component: {fileID: 2127847349}
   m_Layer: 0
   m_Name: GridManager
   m_TagString: Untagged
@@ -3714,16 +3715,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae89bdd0e94450546ad3a5e4392c95f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  column: 3
-  row: 7
-  cellSize: 1
-  offset: {x: -1, y: 4}
-  cellPrefab: {fileID: 2357701231013065592, guid: 21b1768fd9501a4489b3bd2959d5def4, type: 3}
-  cellParent: {fileID: 967636987}
+  cellPrefab: {fileID: 5762305844627411133, guid: 21b1768fd9501a4489b3bd2959d5def4, type: 3}
+  cellParent: {fileID: 967636988}
   whiteColor: {r: 1, g: 1, b: 1, a: 1}
   blackColor: {r: 0, g: 0, b: 0, a: 1}
   canBePlacedColor: {r: 0.07678461, g: 1, b: 0, a: 1}
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
+  gridType: 0
+  gridSize: {x: 8, y: 10}
+  offset: {x: -4, y: 8}
   _contacts: []
 --- !u!4 &2127847348
 Transform:
@@ -3734,12 +3734,24 @@ Transform:
   m_GameObject: {fileID: 2127847346}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 103.15542, y: 258.2626, z: -2.5816035}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!156049354 &2127847349
+Grid:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2127847346}
+  m_Enabled: 1
+  m_CellSize: {x: 0.5, y: 0.5, z: 1}
+  m_CellGap: {x: 0, y: 0, z: 0}
+  m_CellLayout: 0
+  m_CellSwizzle: 0
 --- !u!1 &2133116691
 GameObject:
   m_ObjectHideFlags: 8
