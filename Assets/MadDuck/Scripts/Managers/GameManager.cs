@@ -69,8 +69,6 @@ public class GameManager : MonoSingleton<GameManager>
     private bool _gameStarted;
     private int _score;
     private bool _countDownPlayed;
-    private AudioSource _bgmAudioSource;
-    private Coroutine _leaderboardCoroutine;
     public bool IsGameOver => _isGameOver;
     public bool GameStarted => _gameStarted;
     public bool IsPaused => _isPaused;
@@ -270,7 +268,6 @@ public class GameManager : MonoSingleton<GameManager>
     
     public void GameOver(bool fail = false)
     {
-        if (_leaderboardCoroutine != null) return;
         _isGameOver = true;
         _currentGameTimer = 0;
         gameOverText.text = fail ? "Failed!" : "Time's Up!";
@@ -287,16 +284,6 @@ public class GameManager : MonoSingleton<GameManager>
         //yield return new WaitForSeconds(temp.clip.length);
         yield return null;
         //LoadSceneManager.Instance.Score = _score;
-        _leaderboardCoroutine = StartCoroutine(LoadLeaderboard());
-    }
-    private IEnumerator LoadLeaderboard()
-    {
-        // AsyncOperation loadSceneAsync = SceneManager.LoadSceneAsync(SceneNames.Leaderboard.ToString(), LoadSceneMode.Additive);
-        // while (!loadSceneAsync.isDone)
-        // {
-        //     yield return null;
-        // }
-        yield return null;
     }
     public void BackToMenu()
     {

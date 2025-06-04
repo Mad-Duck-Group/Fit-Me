@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MadDuck.Scripts.Units;
 using MadDuck.Scripts.Utils;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
+using Sirenix.Serialization;
+using Sirenix.Utilities;
 using UnityCommunity.UnitySingleton;
 using UnityEditor;
 using UnityEngine;
@@ -12,7 +15,8 @@ using UnityEngine.Serialization;
 namespace MadDuck.Scripts.Managers
 {
     [RequireComponent(typeof(Grid))]
-    public class GridManager : MonoSingleton<GridManager>
+    [ShowOdinSerializedPropertiesInInspector]
+    public class GridManager : MonoSingleton<GridManager>, ISerializationCallbackReceiver, ISupportsPrefabSerialization
     {
         private enum GridType
         {
@@ -23,8 +27,8 @@ namespace MadDuck.Scripts.Managers
         [Serializable]
         public struct Contacts
         {
-            public List<Block> contactedBlocks;
-            public BlockTypes contactType;
+            [SerializeField, ReadOnly] public List<Block> contactedBlocks;
+            [SerializeField, ReadOnly] public BlockTypes contactType;
         }
         
         [Title("Grid References")]
@@ -35,20 +39,77 @@ namespace MadDuck.Scripts.Managers
         [SerializeField] private Color canBePlacedColor;
         [SerializeField] private Color cannotBePlacedColor;
         
-        [Title("Grid Settings")]
-        [SerializeField] private GridType gridType = GridType.Rectangle;
-        [SerializeField] private Vector2Int gridSize = new(10, 10);
-        [SerializeField] private Vector2Int offset = new(0, 0);
-        
+        [TitleGroup("Grid Settings")]
+        [SerializeField] 
+        private GridType gridType = GridType.Rectangle;
+        [TitleGroup("Grid Settings")]
+        [Button("Refresh Custom Grid"), ShowIf(nameof(gridType), GridType.Custom), DisableInPlayMode]
+        private void RefreshCustomGrid()
+        {
+            var newCustomGrid = new bool[gridSize.y, gridSize.x];
+            var oldRow = _customGrid.GetLength(0);
+            var oldColumn = _customGrid.GetLength(1);
+            var newRow = newCustomGrid.GetLength(0);
+            var newColumn = newCustomGrid.GetLength(1);
+            for (int x = 0; x < newRow; x++)
+            {
+                for (int y = 0; y < newColumn; y++)
+                {
+                    if (x >= newRow || y >= newColumn)
+                    {
+                        continue;
+                    }
+                    if (x >= oldRow || y >= oldColumn)
+                    {
+                        newCustomGrid[x, y] = false;
+                        continue;
+                    }
+                    if (x < newRow && y < gridSize.x)
+                    {
+                        newCustomGrid[x, y] = _customGrid[x, y];
+                    }
+                    else
+                    {
+                        newCustomGrid[x, y] = false;
+                    }
+                }
+            }
+            _customGrid = newCustomGrid;
+        }
+        [TitleGroup("Grid Settings")]
+        [Button("Clear Custom Grid"), ShowIf(nameof(gridType), GridType.Custom), DisableInPlayMode]
+        private void ClearCustomGrid()
+        {
+            _customGrid = new bool[gridSize.y, gridSize.x];
+        }
+        [TitleGroup("Grid Settings")]
+        [SerializeField]
+        private Vector2Int gridSize = new(10, 10);
+        [TitleGroup("Grid Settings")]
+        [SerializeField] 
+        private Vector2Int offset = new(0, 0);
+        [TitleGroup("Grid Settings")]
+        [TableMatrix(SquareCells = true, HorizontalTitle = "Custom Grid",
+            DrawElementMethod = nameof(DrawCustomGridMatrix), Transpose = true)]
+        [SerializeField, ShowIf(nameof(gridType), GridType.Custom)]
+        private bool[,] _customGrid = { };
+
         [Title("Grid Debug")]
         [SerializeField, ReadOnly] private List<Contacts> contacts = new();
+        [TableMatrix(SquareCells = true, HorizontalTitle = "Cell Array", IsReadOnly = true,
+            DrawElementMethod = nameof(DrawCellArrayMatrix), Transpose = true)]
+        [SerializeField] private Cell[,] _cellArray = {};
+        [TableMatrix(SquareCells = true, HorizontalTitle = "Vacant Schema", IsReadOnly = true,
+            DrawElementMethod = nameof(DrawVacantSchemaMatrix), Transpose = true)]
+        [SerializeField] private int[,] _vacantSchema;
+        [SerializeField, ReadOnly]  private List<Block> blocksOnGrid = new();
+        [SerializeField, ShowIf(nameof(gridType), GridType.Custom)]
+        private bool drawAllCustomGridCells = true;
 
         private Grid _grid;
-        private Cell[,] _cellArray = {};
         private List<Cell> _previousValidationCells = new();
-        private int[,] _vacantSchema;
-        private List<Block> _blocksOnGrid = new();
 
+        #region Initialization
         protected override void Awake()
         {
             base.Awake();
@@ -63,7 +124,7 @@ namespace MadDuck.Scripts.Managers
         {
             CreateCells();
         }
-
+        
         /// <summary>
         /// Create the cells
         /// </summary>
@@ -77,6 +138,7 @@ namespace MadDuck.Scripts.Managers
             {
                 for (int y = 0; y < column; y++)
                 {
+                    if (gridType is GridType.Custom && !_customGrid[x, y]) continue; 
                     var halfSize = cellSize / 2;
                     Vector3 spawnPosition = new Vector2(halfSize, halfSize) + new Vector2(y + offset.x,  offset.y - x) * (cellSize);
                     _cellArray[x, y] = Instantiate(cellPrefab, spawnPosition, Quaternion.identity, cellParent);
@@ -101,6 +163,7 @@ namespace MadDuck.Scripts.Managers
                 }
             }
         }
+        #endregion
     
         /// <summary>
         /// Validate the placement of the block and change the color of the cells
@@ -165,7 +228,7 @@ namespace MadDuck.Scripts.Managers
             Vector3 atomPositionAfterPlacement = cells[0].transform.position;
             Vector3 blockPositionRelativeToAtom = atomPositionAfterPlacement - atomPositionBeforePlacement;
             block.transform.position += blockPositionRelativeToAtom;
-            _blocksOnGrid.Add(block);
+            blocksOnGrid.Add(block);
             GameManager.Instance.AddScore(ScoreTypes.Placement);
             if (!CreateVacantSchema()) //Fit Me!
             {
@@ -203,7 +266,7 @@ namespace MadDuck.Scripts.Managers
             {
                 contacts.Remove(contact);
             }
-            _blocksOnGrid.Remove(block);
+            blocksOnGrid.Remove(block);
             if (destroy)
             {
                 Destroy(block.gameObject);
@@ -216,7 +279,7 @@ namespace MadDuck.Scripts.Managers
         /// <param name="destroy">Destroy the blocks, false by default</param>
         public void RemoveAllBlocks(bool destroy = false)
         {
-            List<Block> blocksToRemove = new List<Block>(_blocksOnGrid);
+            List<Block> blocksToRemove = new List<Block>(blocksOnGrid);
             foreach (var block in blocksToRemove)
             {
                 RemoveBlock(block, destroy);
@@ -328,7 +391,9 @@ namespace MadDuck.Scripts.Managers
             {
                 for (int y = 0; y < column; y++)
                 {
-                    if (_cellArray[x, y].CurrentAtom) continue;
+                    var cell = _cellArray[x, y];
+                    if (!cell) continue;
+                    if (cell.CurrentAtom) continue;
                     _vacantSchema[x, y] = 1;
                     isVacant = true;
                 }
@@ -429,41 +494,112 @@ namespace MadDuck.Scripts.Managers
         
         public Bounds GetCellBounds(Cell cell)
         {
-            var index = (Vector3Int)cell.GridIndex;
-            var cellBounds = _grid.GetBoundsLocal(index);
-            var centerWorld = _grid.GetCellCenterWorld(index);
+            var index = cell.GridIndex;
+            return GetCellBounds(index);
+        }
+
+        public Bounds GetCellBounds(Vector2Int gridIndex)
+        {
+            var cellBounds = _grid.GetBoundsLocal((Vector3Int)gridIndex);
+            var centerWorld = _grid.GetCellCenterWorld((Vector3Int)gridIndex);
             cellBounds.center = centerWorld;
             return cellBounds;
         }
         #endregion
 
-        #if UNITY_EDITOR
+        
         #region Editor
+        #if UNITY_EDITOR
         public void OnSceneGUI()
         {
             DrawGrid();
         }
-
         private void DrawGrid()
         {
-            Handles.color = Color.green;
-            foreach (var cell in _cellArray)
+            var row = gridSize.y;
+            var column = gridSize.x;
+            if (!_grid)
             {
-                var bounds = GetCellBounds(cell);
-                Handles.DrawWireCube(bounds.center, bounds.size);
-                Handles.Label(bounds.center, cell.ArrayIndex.ToString(), style: new GUIStyle()
+                _grid = GetComponent<Grid>();
+            }
+            for (int x = 0; x < row; x++)
+            {
+                for (int y = 0; y < column; y++)
                 {
-                    fontSize = 10,
-                    normal = new GUIStyleState()
+                    var textColor = Color.green;
+                    var handleColor = Color.green;
+                    if (gridType is GridType.Custom && !_customGrid[x, y])
                     {
-                        textColor = Color.green
-                    },
-                    alignment = TextAnchor.MiddleCenter
-                });
+                        if (!drawAllCustomGridCells) continue;
+                        handleColor = Color.red;
+                        textColor = Color.red;
+                    }
+                    Handles.color = handleColor;
+                    var arrayIndex = new Vector2Int(x, y);
+                    var gridIndex = new Vector2Int(y + offset.x, offset.y - x);
+                    var bounds = GetCellBounds(gridIndex);
+                    Handles.DrawWireCube(bounds.center, bounds.size);
+                    Handles.Label(bounds.center, arrayIndex.ToString(), style: new GUIStyle()
+                    {
+                        fontSize = 10,
+                        normal = new GUIStyleState()
+                        {
+                            textColor = textColor
+                        },
+                        alignment = TextAnchor.MiddleCenter
+                    });
+                }
             }
         }
-        #endregion
         #endif
+        #endregion
+
+        #region Table Matrix
+        private static bool DrawCustomGridMatrix(Rect rect, bool value)
+        {
+            if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
+            {
+                value = !value;
+                GUI.changed = true;
+                Event.current.Use();
+            }
+
+            EditorGUI.DrawRect(rect.Padding(1), value ? Color.green : Color.grey);
+            return value;
+        }
+        private static int DrawVacantSchemaMatrix(Rect rect, int value)
+        {
+            EditorGUI.DrawRect(rect.Padding(1), value == 1 ? Color.green : Color.grey);
+            return value;
+        }
+        
+        private static Cell DrawCellArrayMatrix(Rect rect, Cell cell)
+        {
+            if (!cell) return null;
+            EditorGUI.DrawRect(rect.Padding(1), cell.CurrentAtom ? Color.green : Color.grey);
+            return cell;
+        }
+        #endregion
+        
+        #region Serialization
+        public void OnBeforeSerialize()
+        {
+            UnitySerializationUtility.SerializeUnityObject(this, ref serializationData);
+        }
+
+        public void OnAfterDeserialize()
+        {
+            UnitySerializationUtility.DeserializeUnityObject(this, ref serializationData);
+        }
+
+        [SerializeField, HideInInspector]
+        private SerializationData serializationData;
+        public SerializationData SerializationData 
+        { 
+            get => serializationData;
+            set => serializationData = value;
+        }
+        #endregion
     }
 
     #if UNITY_EDITOR
