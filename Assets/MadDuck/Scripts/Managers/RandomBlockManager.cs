@@ -79,8 +79,8 @@ public class RandomBlockManager : MonoSingleton<RandomBlockManager>
             spawn.SpawnIndex = i;
             spawn.transform.localScale = Vector3.zero;
             Vector3 scale = new Vector3(objectScale, objectScale, 1f);
-            int randomRotation = Random.Range(0, 4) * 90;
-            spawn.transform.eulerAngles = new Vector3(0, 0, randomRotation);
+            //int randomRotation = Random.Range(0, 4) * 90;
+            //spawn.transform.eulerAngles = new Vector3(0, 0, randomRotation);
             _scaleTween = Tween.Scale(spawn.transform, scale, 0.2f);
             spawn.OriginalPosition = spawn.transform.position;
             spawn.OriginalRotation = spawn.transform.eulerAngles;
@@ -109,15 +109,15 @@ public class RandomBlockManager : MonoSingleton<RandomBlockManager>
         }
     }
     
-    public void ReRoll()
-    {
-        DestroyBlock(true);
-        SpawnRandomBlock();
-        if (GameManager.Instance.CurrentReRoll <= 0)
-        {
-            GameOverCheck();
-        }
-    }
+    // public void ReRoll()
+    // {
+    //     DestroyBlock(true);
+    //     SpawnRandomBlock();
+    //     if (GameManager.Instance.CurrentReRoll <= 0)
+    //     {
+    //         GameOverCheck();
+    //     }
+    // }
     
 
     public void GameOverCheck()

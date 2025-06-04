@@ -144,7 +144,6 @@ public class Block : MonoBehaviour
     /// </summary>
     public void ReturnToOriginal()
     {
-        var blockTransform = transform;
         //Tween the block to the original position
         if (_transformTween.isAlive)
         {
@@ -152,9 +151,9 @@ public class Block : MonoBehaviour
         }
         _transformTween = Tween.Position(transform, _originalPosition, 0.2f).OnComplete(() => SetRendererSortingOrder(1));
         //Tween the block to the original rotation
-        Tween.Rotation(blockTransform, _originalRotation, 0.2f);
+        Tween.Rotation(transform, _originalRotation, 0.2f);
         //Tween the block to the original scale
-        Tween.Scale(blockTransform, _originalScale, 0.2f);
+        Tween.Scale(transform, _originalScale, 0.2f);
         GridManager.Instance.ResetPreviousValidationCells();
     }
 
@@ -209,10 +208,10 @@ public class Block : MonoBehaviour
         // {
         //     _parentBlock.transform.Rotate(0, 0, 90);
         // }
-        if (Input.GetMouseButtonDown(1))
-        {
-            RotateBlock(-90);
-        }
+        // if (Input.GetMouseButtonDown(1))
+        // {
+        //     RotateBlock(-90);
+        // }
         // if (Input.GetKeyDown(KeyCode.F))
         // {
         //     var blockTransform = _parentBlock.transform;
@@ -237,10 +236,10 @@ public class Block : MonoBehaviour
             RandomBlockManager.Instance.FreeSpawnPoint(_spawnIndex);
             RandomBlockManager.Instance.DestroyBlock();
             RandomBlockManager.Instance.SpawnRandomBlock();
-            if (GameManager.Instance.CurrentReRoll <= 0)
-            {
-                RandomBlockManager.Instance.GameOverCheck();
-            }
+            // if (GameManager.Instance.CurrentReRoll <= 0)
+            // {
+            //     RandomBlockManager.Instance.GameOverCheck();
+            // }
         }
         else
         {

@@ -140,6 +140,7 @@ public class GridManager : MonoSingleton<GridManager>
     /// <returns>true if the placement is valid, false otherwise</returns>
     public bool PlaceBlock(Block block)
     {
+        block.transform.localScale = Vector3.one * cellSize;
         Vector3 atomPositionBeforePlacement = block.Atoms[0].transform.position;
         List<Cell> cells = new List<Cell>();
         foreach (var atom in block.Atoms)
@@ -147,7 +148,7 @@ public class GridManager : MonoSingleton<GridManager>
             Vector3 atomPosition = atom.transform.position;
             Vector3 cellPosition = new Vector3(atomPosition.x, atomPosition.y, 0);
             Cell cell = GetCellByPosition(cellPosition);
-            if (cell == null || cell.CurrentAtom != null)
+            if (!cell || cell.CurrentAtom)
             {
                 return false;
             }

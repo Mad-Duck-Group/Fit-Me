@@ -38,11 +38,11 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField] private GameObject countOffPanel;
     [SerializeField] private TMP_Text countOffText;
 
-    [Header("Reroll Settings")] 
-    [SerializeField] private Button reRollButton;
-    [SerializeField] private TMP_Text reRollText;
-    [SerializeField] private int maxReRoll = 2;
-    [SerializeField] private int reRollScoreThreshold = 5000;
+    // [Header("Reroll Settings")] 
+    // [SerializeField] private Button reRollButton;
+    // [SerializeField] private TMP_Text reRollText;
+    // [SerializeField] private int maxReRoll = 2;
+    // [SerializeField] private int reRollScoreThreshold = 5000;
 
     [Header("Pause Settings")]
     [SerializeField] private GameObject pausePanel;
@@ -60,7 +60,7 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField] private int scorePerFitMe = 10000;
 
     private bool _sceneActivated;
-    private int _currentReRoll;
+    //private int _currentReRoll;
     private int _previousReRollScore;
     private float _currentGameTimer;
     private float _countOffTimer;
@@ -74,7 +74,7 @@ public class GameManager : MonoSingleton<GameManager>
     public bool IsGameOver => _isGameOver;
     public bool GameStarted => _gameStarted;
     public bool IsPaused => _isPaused;
-    public int CurrentReRoll => _currentReRoll;
+    //public int CurrentReRoll => _currentReRoll;
     void Start()
     {
         _currentGameTimer = gameTimer;
@@ -83,8 +83,8 @@ public class GameManager : MonoSingleton<GameManager>
         pausePanel.SetActive(false);
         countOffPanel.SetActive(true);
         UpdateScoreText(false);
-        UpdateReRollText(false);
-        reRollButton.interactable = false;
+        //UpdateReRollText(false);
+        //reRollButton.interactable = false;
         // volumeSlider.value = SoundManager.Instance.MasterVolume;
         // volumeSlider.onValueChanged.AddListener((_) =>
         // {
@@ -96,6 +96,7 @@ public class GameManager : MonoSingleton<GameManager>
         //     ActivateScene();
         //     LoadSceneManager.Instance.Retry = false;
         // }
+        ActivateScene();
     }
     
     public void ActivateScene()
@@ -148,10 +149,10 @@ public class GameManager : MonoSingleton<GameManager>
                 ChangeGameTimer(gameTimer);
                 break;
         }
-        if (_score - _previousReRollScore < reRollScoreThreshold) return;
-        int reRoll = Mathf.FloorToInt((_score - _previousReRollScore) / (float)reRollScoreThreshold);
+        //if (_score - _previousReRollScore < reRollScoreThreshold) return;
+        //int reRoll = Mathf.FloorToInt((_score - _previousReRollScore) / (float)reRollScoreThreshold);
         //if (ChangeReRoll(reRoll)) SoundManager.Instance.PlaySoundFX(SoundFXTypes.ReRollGain, out _);
-        _previousReRollScore += reRollScoreThreshold;
+        //_previousReRollScore += reRollScoreThreshold;
     }
 
     /// <summary>
@@ -226,32 +227,32 @@ public class GameManager : MonoSingleton<GameManager>
         }
     }
     
-    public bool ChangeReRoll(int value)
-    {
-        int before = _currentReRoll;
-        _currentReRoll += value;
-        _currentReRoll = Mathf.Clamp(_currentReRoll, 0, maxReRoll);
-        reRollButton.interactable = _currentReRoll > 0;
-        if (_currentReRoll == before) return false;
-        UpdateReRollText();
-        return true;
-    }
-    
-    private void UpdateReRollText(bool bump = true)
-    {
-        reRollText.text = $"{_currentReRoll}/{maxReRoll}";
-        if (bump)
-        {
-            Tween.Scale(reRollText.transform, 1.2f, 0.1f, cycleMode: CycleMode.Yoyo, cycles: 2);
-        }
-    }
-
-    public void ReRoll()
-    {
-        if (_currentReRoll <= 0) return;
-        //if (ChangeReRoll(-1)) SoundManager.Instance.PlaySoundFX(SoundFXTypes.ReRollLose, out _);
-        RandomBlockManager.Instance.ReRoll();
-    }
+    // public bool ChangeReRoll(int value)
+    // {
+    //     int before = _currentReRoll;
+    //     _currentReRoll += value;
+    //     _currentReRoll = Mathf.Clamp(_currentReRoll, 0, maxReRoll);
+    //     reRollButton.interactable = _currentReRoll > 0;
+    //     if (_currentReRoll == before) return false;
+    //     UpdateReRollText();
+    //     return true;
+    // }
+    //
+    // private void UpdateReRollText(bool bump = true)
+    // {
+    //     reRollText.text = $"{_currentReRoll}/{maxReRoll}";
+    //     if (bump)
+    //     {
+    //         Tween.Scale(reRollText.transform, 1.2f, 0.1f, cycleMode: CycleMode.Yoyo, cycles: 2);
+    //     }
+    // }
+    //
+    // public void ReRoll()
+    // {
+    //     if (_currentReRoll <= 0) return;
+    //     //if (ChangeReRoll(-1)) SoundManager.Instance.PlaySoundFX(SoundFXTypes.ReRollLose, out _);
+    //     RandomBlockManager.Instance.ReRoll();
+    // }
     
     public void PauseGame()
     {
