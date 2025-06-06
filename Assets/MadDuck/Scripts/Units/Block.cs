@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Utils;
 using PrimeTween;
@@ -243,10 +244,7 @@ namespace MadDuck.Scripts.Units
                 RandomBlockManager.Instance.DestroyBlock();
                 RandomBlockManager.Instance.SpawnRandomBlock();
                 Tween.Scale(spriteRenderer.transform, _originalSpriteScale, 0.2f);
-                // if (GameManager.Instance.CurrentReRoll <= 0)
-                // {
-                //     RandomBlockManager.Instance.GameOverCheck();
-                // }
+                RandomBlockManager.Instance.GameOverCheck().Forget();
             }
             else
             {

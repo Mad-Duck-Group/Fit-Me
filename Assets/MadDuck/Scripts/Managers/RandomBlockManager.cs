@@ -43,7 +43,6 @@ namespace MadDuck.Scripts.Managers
         private Tween _scaleTween;
         #endregion
         
-        
         public void SpawnAtStart()
         {
             spawnPoints.ForEach(FreeSpawnPoint);

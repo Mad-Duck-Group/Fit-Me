@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Logo_madduck_icon_0: 1449935615467928074
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

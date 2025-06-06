@@ -77,7 +77,7 @@ public class GameManager : MonoSingleton<GameManager>
     {
         _currentGameTimer = gameTimer;
         gameOverPanel.SetActive(false);
-        gameOverPanel.transform.localScale = Vector3.zero;
+        gameOverText.transform.localScale = Vector3.zero;
         pausePanel.SetActive(false);
         countOffPanel.SetActive(true);
         UpdateScoreText(false);
@@ -270,21 +270,12 @@ public class GameManager : MonoSingleton<GameManager>
     {
         _isGameOver = true;
         _currentGameTimer = 0;
+        Debug.Log("Game Over!");
         gameOverText.text = fail ? "Failed!" : "Time's Up!";
         gameOverPanel.SetActive(true);
         Tween.Scale(gameOverText.transform, 1, 0.5f, ease: Ease.OutBounce);
-        StartCoroutine(GameOverCoroutine(fail));
     }
-
-    private IEnumerator GameOverCoroutine(bool fail = false)
-    {
-        //AudioSource temp;
-        //if (fail) SoundManager.Instance.PlaySoundFX(SoundFXTypes.Fail, out temp);
-        //else SoundManager.Instance.PlaySoundFX(SoundFXTypes.TimeOut, out temp);
-        //yield return new WaitForSeconds(temp.clip.length);
-        yield return null;
-        //LoadSceneManager.Instance.Score = _score;
-    }
+    
     public void BackToMenu()
     {
         if (SceneManager.sceneCount > 1) return;
