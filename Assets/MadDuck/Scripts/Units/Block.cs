@@ -12,24 +12,24 @@ namespace MadDuck.Scripts.Units
 {
     public enum BlockTypes
     {
-        Topten,
-        Jelly,
-        Pan,
-        Sankaya
+        Red,
+        Yellow,
+        Green,
+        Purple
     }
 
     public enum BlockFaces
     {
-        Tricky,
-        Anxious,
-        Trio,
-        Aweary,
-        Handsome,
-        Pretty,
-        Silly,
-        Overflow,
-        Madness,
-        Mike
+        I1,
+        I2,
+        I3,
+        I4,
+        S,
+        SMirror,
+        L,
+        LMirror,
+        T,
+        TwoByTwo
     }
     public class Block : MonoBehaviour
     {
