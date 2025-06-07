@@ -191,7 +191,7 @@ namespace MadDuck.Scripts.Units
         private void OnMouseDrag()
         {
             if (!GameManager.Instance.GameStarted || GameManager.Instance.IsPaused) return;
-            if (GameManager.Instance.IsGameOver)
+            if (GameManager.Instance.IsGameOver || GameManager.Instance.IsGameClear)
             {
                 StartCoroutine(OnMouseUp());
                 return;
