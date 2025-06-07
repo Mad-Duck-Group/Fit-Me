@@ -9,6 +9,7 @@ using Redcode.Extensions;
 using Sirenix.OdinInspector;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace MadDuck.Scripts.Managers
@@ -27,11 +28,12 @@ namespace MadDuck.Scripts.Managers
         #endregion
 
         #region Inspectors
+        
         [Title("Random References")]
-        [SerializeField] private Block[] topten;
-        [SerializeField] private Block[] jelly;
-        [SerializeField] private Block[] pan;
-        [SerializeField] private Block[] sankaya;
+        [SerializeField] private Block[] purple;
+        [SerializeField] private Block[] red;
+        [SerializeField] private Block[] yellow;
+        [SerializeField] private Block[] green;
         [SerializeField] private SpawnPoint[] spawnPoints;
         
         [Title("Random Settings")]
@@ -63,12 +65,12 @@ namespace MadDuck.Scripts.Managers
 
         public void RandomType()
         {
-            var toptenObj = topten.GetRandomElement();
-            var jellyObj = jelly.GetRandomElement();
-            var panObj = pan.GetRandomElement();
-            var sankayaObj = sankaya.GetRandomElement();
+            var purpleObj = purple.GetRandomElement();
+            var redObj = red.GetRandomElement();
+            var yellowObj = yellow.GetRandomElement();
+            var greenObj = green.GetRandomElement();
             
-            _randomBlocks = new List<Block> {toptenObj, jellyObj, panObj, sankayaObj};
+            _randomBlocks = new List<Block> {purpleObj, redObj, yellowObj, greenObj};
         }
 
         public void SpawnRandomBlock()
