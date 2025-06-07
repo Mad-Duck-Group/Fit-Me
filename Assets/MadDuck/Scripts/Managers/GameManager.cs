@@ -75,6 +75,7 @@ public class GameManager : MonoSingleton<GameManager>
     private int _score;
     private bool _countDownPlayed;
     public bool IsGameOver => _isGameOver;
+    public bool IsGameClear => _isGameClear;
     public bool GameStarted => _gameStarted;
     public bool IsPaused => _isPaused;
     //public int CurrentReRoll => _currentReRoll;
@@ -259,14 +260,14 @@ public class GameManager : MonoSingleton<GameManager>
     
     public void PauseGame()
     {
-        if (IsGameOver || !GameStarted) return;
+        if (IsGameOver || IsGameClear || !GameStarted) return;
         _isPaused = true;
         pausePanel.SetActive(true);
     }
     
     public void ResumeGame()
     {
-        if (IsGameOver || !GameStarted) return;
+        if (IsGameOver || IsGameClear || !GameStarted) return;
         _isPaused = false;
         pausePanel.SetActive(false);
     }
