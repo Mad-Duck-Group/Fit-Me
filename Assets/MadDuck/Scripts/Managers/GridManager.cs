@@ -44,6 +44,11 @@ namespace MadDuck.Scripts.Managers
         private GridType gridType = GridType.Rectangle;
         [TitleGroup("Grid Settings")]
         [Button("Refresh Custom Grid"), ShowIf(nameof(gridType), GridType.Custom), DisableInPlayMode]
+        
+        [Title("Grid State")]
+        [SerializeField, ReadOnly] private bool isFitMe = false;
+        public bool IsFitMe => isFitMe;
+        
         private void RefreshCustomGrid()
         {
             var newCustomGrid = new bool[gridSize.y, gridSize.x];
@@ -232,8 +237,9 @@ namespace MadDuck.Scripts.Managers
             GameManager.Instance.AddScore(ScoreTypes.Placement);
             if (!CreateVacantSchema()) //Fit Me!
             {
+                isFitMe = true;
                 GameManager.Instance.AddScore(ScoreTypes.FitMe);
-                RemoveAllBlocks(true);
+                //RemoveAllBlocks(true);
                 ResetPreviousValidationCells();
                 return true;
             }

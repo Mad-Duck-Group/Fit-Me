@@ -52,6 +52,10 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private TMP_Text gameOverText;
     
+    [Header("Game Clear Settings")]
+    [SerializeField] private GameObject gameClearPanel;
+    [SerializeField] private TMP_Text gameClearText;
+    
     [Header("Score Settings")]
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private int scorePerPlacement = 100;
@@ -65,6 +69,7 @@ public class GameManager : MonoSingleton<GameManager>
     private float _currentGameTimer;
     private float _countOffTimer;
     private bool _isGameOver;
+    private bool _isGameClear;
     private bool _isPaused;
     private bool _gameStarted;
     private int _score;
@@ -209,7 +214,7 @@ public class GameManager : MonoSingleton<GameManager>
                 _countDownPlayed = true;
                 break;
         }
-        if (_currentGameTimer <= 0)
+        if (_currentGameTimer <= 0 && !_isGameClear)
         {
             GameOver();
         }
@@ -274,6 +279,16 @@ public class GameManager : MonoSingleton<GameManager>
         gameOverText.text = fail ? "Failed!" : "Time's Up!";
         gameOverPanel.SetActive(true);
         Tween.Scale(gameOverText.transform, 1, 0.5f, ease: Ease.OutBounce);
+    }
+    
+    public void GameClear()
+    {
+        _isGameClear = true;
+        _currentGameTimer = 0;
+        Debug.Log("Game Clear!");
+        gameClearText.text = "Game Clear!";
+        gameClearPanel.SetActive(true);
+        Tween.Scale(gameClearText.transform, 1, 0.5f, ease: Ease.OutBounce);
     }
     
     public void BackToMenu()
