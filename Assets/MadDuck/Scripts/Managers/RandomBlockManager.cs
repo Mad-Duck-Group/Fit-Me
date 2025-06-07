@@ -133,7 +133,14 @@ namespace MadDuck.Scripts.Managers
             List<Block> blockToCheck = spawnPoints.Select(spawnPoint => spawnPoint.CurrentBlock).ToList();
             if (!GridManager.Instance.CheckAvailableBlock(blockToCheck, out _))
             {
-                GameManager.Instance.GameOver(true);
+                if (GridManager.Instance.IsFitMe)
+                {
+                    GameManager.Instance.GameClear();
+                }
+                else
+                {
+                    GameManager.Instance.GameOver(true);   
+                }
             }
         }
     }
