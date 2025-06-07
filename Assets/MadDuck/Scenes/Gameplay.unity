@@ -3975,7 +3975,8 @@ MonoBehaviour:
   blackColor: {r: 0, g: 0, b: 0, a: 1}
   canBePlacedColor: {r: 0.07678461, g: 1, b: 0, a: 1}
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
-  gridType: 0
+  gridType: 1
+  isFitMe: 0
   gridSize: {x: 8, y: 10}
   offset: {x: -4, y: 8}
   contacts: []
@@ -4061,31 +4062,7 @@ MonoBehaviour:
       Data: true
     - Name: 
       Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
       Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: true
     - Name: 
       Entry: 5
       Data: false
@@ -4109,6 +4086,27 @@ MonoBehaviour:
       Data: true
     - Name: 
       Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
       Data: true
     - Name: 
       Entry: 5
@@ -4130,10 +4128,13 @@ MonoBehaviour:
       Data: false
     - Name: 
       Entry: 5
-      Data: true
+      Data: false
     - Name: 
       Entry: 5
-      Data: true
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
     - Name: 
       Entry: 5
       Data: false
