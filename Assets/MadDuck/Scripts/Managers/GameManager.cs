@@ -9,10 +9,12 @@ using MessagePipe;
 using PrimeTween;
 using R3;
 using Redcode.Extensions;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public enum ScoreTypes
@@ -62,6 +64,17 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField] private int scorePerCombo = 100;
     [SerializeField] private int scorePerBomb = 200;
     [SerializeField] private int scorePerFitMe = 10000;
+    
+    [Header("Infected Settings")] 
+    [SerializeField] private float startInfectTime = 10f;
+    [SerializeField] private float infectedTime = 5f;
+    [SerializeField] private int maxInfectionCount = 1;
+    [SerializeField, ShowIf("@maxInfectionCount >= 2")] private float infectCooldown = 5f;
+    private float infectTimeCount;
+    private float infectCooldownCount = 0;
+    private int _maxInfectionCount;
+    
+
 
     private bool _sceneActivated;
     //private int _currentReRoll;
@@ -82,6 +95,7 @@ public class GameManager : MonoSingleton<GameManager>
     void Start()
     {
         _currentGameTimer = gameTimer;
+        _maxInfectionCount = maxInfectionCount;
         gameOverPanel.SetActive(false);
         gameOverText.transform.localScale = Vector3.zero;
         pausePanel.SetActive(false);
@@ -115,6 +129,7 @@ public class GameManager : MonoSingleton<GameManager>
         if (!_sceneActivated) return;
         UpdateCountOff();
         UpdateGameTimer();
+        UpdateSafeInfectedTimer();
     }
     
     /// <summary>
@@ -201,7 +216,7 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     private void UpdateGameTimer()
     {
-        if (!GameStarted || IsGameOver || IsPaused) return;
+        if (!GameStarted || IsGameOver || IsPaused || IsGameClear) return;
         _currentGameTimer -= Time.deltaTime;
         timerSlider.value = _currentGameTimer / gameTimer;
         Color color = Color.Lerp(endColor, startColor, _currentGameTimer / gameTimer);
@@ -218,6 +233,34 @@ public class GameManager : MonoSingleton<GameManager>
         if (_currentGameTimer <= 0 && !_isGameClear)
         {
             GameOver();
+        }
+    }
+    
+    private void UpdateSafeInfectedTimer()
+    {
+        if (!GameStarted || IsGameOver || IsPaused || IsGameClear) return;
+        if (!(_currentGameTimer <= startInfectTime) || _maxInfectionCount <= 0) return;
+        
+        infectTimeCount -= Time.deltaTime;
+        if (infectTimeCount > 0) return;
+        
+        if (maxInfectionCount >= 2)
+        {
+            if (infectCooldownCount > 0)
+            {
+                infectCooldownCount = Mathf.Max(0f, infectCooldownCount - Time.deltaTime);;
+            }
+            else
+            {
+                GridManager.Instance.RandomInfected();
+                _maxInfectionCount--;
+                infectCooldownCount = infectCooldown;
+            }
+        }
+        else
+        {
+            GridManager.Instance.RandomInfected();
+            _maxInfectionCount--;
         }
     }
 

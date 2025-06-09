@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MadDuck.Scripts.Units;
 using MadDuck.Scripts.Utils;
+using Microsoft.Unity.VisualStudio.Editor;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using Sirenix.Serialization;
@@ -11,6 +12,7 @@ using UnityCommunity.UnitySingleton;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace MadDuck.Scripts.Managers
 {
@@ -513,6 +515,14 @@ namespace MadDuck.Scripts.Managers
         }
         #endregion
 
+        public void RandomInfected()
+        {
+            if (blocksOnGrid == null) return;
+            
+            Debug.Log("Infecting a random block");
+            var block = blocksOnGrid[Random.Range(0, blocksOnGrid.Count)];
+            block.BlockState = BlockState.Infected;
+        }
         
         #region Editor
         #if UNITY_EDITOR

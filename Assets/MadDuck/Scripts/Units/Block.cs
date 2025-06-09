@@ -10,6 +10,12 @@ using UnityEngine;
 
 namespace MadDuck.Scripts.Units
 {
+    public enum BlockState
+    {
+        Normal,
+        Infected
+    }
+    
     public enum BlockTypes
     {
         Red,
@@ -38,6 +44,7 @@ namespace MadDuck.Scripts.Units
         [SerializeField] private Atom[] atoms;
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private bool allowPickUpAfterPlacement;
+        [SerializeField] private BlockState blockState = BlockState.Normal;
 
         private List<int[,]> _blockSchemas = new();
         private Vector3 _originalPosition;
@@ -51,6 +58,7 @@ namespace MadDuck.Scripts.Units
         private bool _isDragging;
 
         public BlockTypes BlockType => blockType;
+        public BlockState BlockState { get => blockState; set => blockState = value; }
         public List<int[,]> BlockSchemas => _blockSchemas;
         public Atom[] Atoms => atoms;
         public bool AllowPickUpAfterPlacement => allowPickUpAfterPlacement;
