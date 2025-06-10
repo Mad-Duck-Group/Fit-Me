@@ -2048,7 +2048,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f77e2926b91087945b118ceb457851c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameTimer: 10
+  gameTimer: 50
   timerSlider: {fileID: 1775298398}
   timerFill: {fileID: 21702743}
   startColor: {r: 0, g: 1, b: 0, a: 1}
@@ -2068,6 +2068,10 @@ MonoBehaviour:
   scorePerCombo: 100
   scorePerBomb: 200
   scorePerFitMe: 10000
+  startInfectTime: 45
+  infectedTime: {x: 0, y: 5}
+  maxInfectionCount: 1
+  infectCooldown: {x: 0, y: 5}
 --- !u!4 &1077234520
 Transform:
   m_ObjectHideFlags: 0
@@ -3975,8 +3979,10 @@ MonoBehaviour:
   blackColor: {r: 0, g: 0, b: 0, a: 1}
   canBePlacedColor: {r: 0.07678461, g: 1, b: 0, a: 1}
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
-  gridType: 1
+  gridType: 0
   isFitMe: 0
+  infectedTimeRange: {x: 0, y: 5}
+  infectedBlocks: []
   gridSize: {x: 8, y: 10}
   offset: {x: -4, y: 8}
   contacts: []
@@ -4059,7 +4065,25 @@ MonoBehaviour:
       Data: false
     - Name: 
       Entry: 5
-      Data: true
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
     - Name: 
       Entry: 5
       Data: false
@@ -4083,9 +4107,6 @@ MonoBehaviour:
       Data: false
     - Name: 
       Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
       Data: false
     - Name: 
       Entry: 5
@@ -4093,21 +4114,6 @@ MonoBehaviour:
     - Name: 
       Entry: 5
       Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: true
     - Name: 
       Entry: 5
       Data: false

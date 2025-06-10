@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using MadDuck.Scripts.Utils;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace MadDuck.Scripts.Units
 {
@@ -21,7 +23,8 @@ namespace MadDuck.Scripts.Units
         Red,
         Yellow,
         Green,
-        Purple
+        Purple,
+        Infected
     }
 
     public enum BlockFaces
@@ -59,6 +62,8 @@ namespace MadDuck.Scripts.Units
 
         public BlockTypes BlockType => blockType;
         public BlockState BlockState { get => blockState; set => blockState = value; }
+        public BlockFaces BlockFace => blockFace;
+        public SpriteRenderer SpriteRenderer {get => spriteRenderer; set => spriteRenderer = value; }
         public List<int[,]> BlockSchemas => _blockSchemas;
         public Atom[] Atoms => atoms;
         public bool AllowPickUpAfterPlacement => allowPickUpAfterPlacement;
@@ -260,6 +265,22 @@ namespace MadDuck.Scripts.Units
                 _isPlaced = false;
             }
             _isDragging = false;
+        }
+
+        public async UniTask StartInfectionAsync(Vector2 infectedTimeRange, bool continueInfecting)
+        {
+            if (blockState == BlockState.Normal) return;
+            
+            float delay = Random.Range(infectedTimeRange.x, infectedTimeRange.y);
+            await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: this.GetCancellationTokenOnDestroy());
+            GridManager.Instance.InfectAdjacentBlocks(this);
+            
+            /*while (continueInfecting)
+            {
+                float delay = Random.Range(infectedTimeRange.x, infectedTimeRange.y);
+                await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: this.GetCancellationTokenOnDestroy());
+                GridManager.Instance.InfectAdjacentBlocks(this);
+            }*/
         }
     }
 }

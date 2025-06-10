@@ -16,6 +16,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public enum ScoreTypes
 {
@@ -67,9 +68,9 @@ public class GameManager : MonoSingleton<GameManager>
     
     [Header("Infected Settings")] 
     [SerializeField] private float startInfectTime = 10f;
-    [SerializeField] private float infectedTime = 5f;
+    [SerializeField] private Vector2 infectedTime = new Vector2(0f, 5f);
     [SerializeField] private int maxInfectionCount = 1;
-    [SerializeField, ShowIf("@maxInfectionCount >= 2")] private float infectCooldown = 5f;
+    [SerializeField, ShowIf("@maxInfectionCount >= 2")] private Vector2 infectCooldown = new Vector2(0f, 5f);
     private float infectTimeCount;
     private float infectCooldownCount = 0;
     private int _maxInfectionCount;
@@ -100,6 +101,7 @@ public class GameManager : MonoSingleton<GameManager>
         gameOverText.transform.localScale = Vector3.zero;
         pausePanel.SetActive(false);
         countOffPanel.SetActive(true);
+        infectTimeCount = Random.Range(infectedTime.x, infectedTime.y);
         UpdateScoreText(false);
         //UpdateReRollText(false);
         //reRollButton.interactable = false;
@@ -254,7 +256,7 @@ public class GameManager : MonoSingleton<GameManager>
             {
                 GridManager.Instance.RandomInfected();
                 _maxInfectionCount--;
-                infectCooldownCount = infectCooldown;
+                infectCooldownCount = Random.Range(infectCooldown.x, infectCooldown.y);
             }
         }
         else

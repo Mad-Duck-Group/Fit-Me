@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Units;
 using MadDuck.Scripts.Utils;
 using Microsoft.Unity.VisualStudio.Editor;
@@ -50,6 +51,13 @@ namespace MadDuck.Scripts.Managers
         [Title("Grid State")]
         [SerializeField, ReadOnly] private bool isFitMe = false;
         public bool IsFitMe => isFitMe;
+        
+        [Title("Infected Setting")]
+        [SerializeField] private Vector2 infectedTimeRange = new Vector2(0, 10);
+        [SerializeField] private List<Block> infectedBlocks = new();
+        public List<Block> InfectedBlocks => infectedBlocks;
+        
+        
         
         private void RefreshCustomGrid()
         {
@@ -329,7 +337,8 @@ namespace MadDuck.Scripts.Managers
                     Block adjacentBlock = adjacentCell.CurrentAtom.ParentBlock;
                     if (adjacentBlock != block && adjacentBlock.BlockType == currentType && !contactedBlocks.Contains(adjacentBlock))
                     {
-                        contactedBlocks.Add(adjacentBlock);
+                        if(adjacentBlock.BlockState == BlockState.Normal)
+                            contactedBlocks.Add(adjacentBlock);
                     }
                 }
             }
@@ -515,13 +524,72 @@ namespace MadDuck.Scripts.Managers
         }
         #endregion
 
+        private void IsInfect(Block block)
+        {
+            block.SpriteRenderer.color = Color.gray;
+            block.BlockState = BlockState.Infected;
+            Debug.Log("Block " + block.name + " is infected!");
+        }
+        
+        private void CheckInfectedBlocks()
+        {
+            if (blocksOnGrid.Count == 0) return;
+            foreach (var block in blocksOnGrid.Where(block => block.BlockState == BlockState.Infected && !infectedBlocks.Contains(block)))
+            {
+                infectedBlocks.Add(block);
+            }
+        }
+        
         public void RandomInfected()
         {
             if (blocksOnGrid == null) return;
+
+            Block block = blocksOnGrid[Random.Range(0, blocksOnGrid.Count)];
+            IsInfect(block);
+            block.StartInfectionAsync(infectedTimeRange, true);
             
-            Debug.Log("Infecting a random block");
-            var block = blocksOnGrid[Random.Range(0, blocksOnGrid.Count)];
-            block.BlockState = BlockState.Infected;
+            CheckInfectedBlocks();
+        }
+
+        public void InfectAdjacentBlocks(Block sourceBlock)
+        {
+            if (!sourceBlock || sourceBlock.BlockState != BlockState.Infected) return;
+
+            var candidatesForInfection = new List<Block>();
+
+            foreach (var atom in sourceBlock.Atoms)
+            {
+                Cell cell = GetCellByPosition(atom.transform.position);
+                if (!cell) continue;
+
+                int x = cell.ArrayIndex[0];
+                int y = cell.ArrayIndex[1];
+                
+                Cell[] adjacentCells = new Cell[]
+                {
+                    GetCellByArrayIndex(x - 1, y),
+                    GetCellByArrayIndex(x + 1, y),
+                    GetCellByArrayIndex(x, y - 1),
+                    GetCellByArrayIndex(x, y + 1)
+                };
+
+                foreach (var adjacentCell in adjacentCells)
+                {
+                    if (!adjacentCell || !adjacentCell.CurrentAtom) continue;
+                    Block adjacentBlock = adjacentCell.CurrentAtom.ParentBlock;
+            
+                    if (adjacentBlock && adjacentBlock.BlockState == BlockState.Normal)
+                    {
+                        candidatesForInfection.Add(adjacentBlock);
+                    }
+                }
+            }
+
+            if (candidatesForInfection.Count > 0)
+            {
+                var blockToInfect = candidatesForInfection[Random.Range(0, candidatesForInfection.Count)];
+                IsInfect(blockToInfect);
+            }
         }
         
         #region Editor
