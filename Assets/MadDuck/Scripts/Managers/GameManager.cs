@@ -9,6 +9,7 @@ using MessagePipe;
 using PrimeTween;
 using R3;
 using Redcode.Extensions;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
@@ -21,6 +22,16 @@ public enum ScoreTypes
     Combo,
     Bomb,
     FitMe,
+}
+
+public enum GameState
+{
+    CountOff,
+    Pause,
+    PlaceBlock,
+    UseItem,
+    GameOver,
+    GameClear
 }
 
 public class GameManager : MonoSingleton<GameManager>
@@ -63,24 +74,21 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField] private int scorePerBomb = 200;
     [SerializeField] private int scorePerFitMe = 10000;
 
+    [Title("Game Manager Debug")]
+    [field: SerializeField, Sirenix.OdinInspector.ReadOnly]
+    public SerializableReactiveProperty<GameState> CurrentGameState { get; private set; } = new(GameState.CountOff);
+
+    private GameState _beforePauseState;
     private bool _sceneActivated;
     //private int _currentReRoll;
     private int _previousReRollScore;
     private float _currentGameTimer;
-    private float _countOffTimer;
-    private bool _isGameOver;
-    private bool _isGameClear;
-    private bool _isPaused;
-    private bool _gameStarted;
     private int _score;
     private bool _countDownPlayed;
-    public bool IsGameOver => _isGameOver;
-    public bool IsGameClear => _isGameClear;
-    public bool GameStarted => _gameStarted;
-    public bool IsPaused => _isPaused;
     //public int CurrentReRoll => _currentReRoll;
     void Start()
     {
+        CurrentGameState.Value = GameState.CountOff;
         _currentGameTimer = gameTimer;
         gameOverPanel.SetActive(false);
         gameOverText.transform.localScale = Vector3.zero;
@@ -107,13 +115,13 @@ public class GameManager : MonoSingleton<GameManager>
     {
         if (_sceneActivated) return;
         _sceneActivated = true;
+        StartCountOff();
     }
 
     // Update is called once per frame
     void Update()
     {
         if (!_sceneActivated) return;
-        UpdateCountOff();
         UpdateGameTimer();
     }
     
@@ -176,24 +184,26 @@ public class GameManager : MonoSingleton<GameManager>
     /// <summary>
     /// Update the count off timer
     /// </summary>
-    private void UpdateCountOff()
+    private void StartCountOff()
     {
-        if (GameStarted || IsPaused) return;
-        _countOffTimer += Time.deltaTime;
-        int countOff = Mathf.CeilToInt(countOffTime - _countOffTimer) - 1;
-        if (countOff == 0)
-        {
-            countOffText.text = "GO!";
-        }
-        else
-        {
-            countOffText.text = countOff.ToString();
-        }
-        if (_countOffTimer < countOffTime) return;
-        _gameStarted = true;
-        _countOffTimer = 0;
-        countOffPanel.SetActive(false);
-        RandomBlockManager.Instance.SpawnAtStart();
+        Observable.Interval(TimeSpan.FromSeconds(1))
+            .Take(Mathf.CeilToInt(countOffTime) + 1) // Take 4 values (3, 2, 1, 0)
+            .Select((_, i) => Mathf.CeilToInt(countOffTime) - i) // Convert to countdown values
+            .Do(current =>  countOffText.text = current.ToString())
+            .Subscribe(
+                current => 
+                {
+                    // Update text based on current countdown value
+                    countOffText.text = current > 0 ? current.ToString() : "GO!";
+                },
+                _ =>
+                {
+                    // On completed (after countdown finishes)
+                    CurrentGameState.Value = GameState.PlaceBlock;
+                    countOffPanel.SetActive(false);
+                    RandomBlockManager.Instance.SpawnAtStart();
+                })
+            .AddTo(this);
     }
 
     /// <summary>
@@ -201,7 +211,7 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     private void UpdateGameTimer()
     {
-        if (!GameStarted || IsGameOver || IsPaused) return;
+        if (CurrentGameState.Value is GameState.CountOff or GameState.Pause) return;
         _currentGameTimer -= Time.deltaTime;
         timerSlider.value = _currentGameTimer / gameTimer;
         Color color = Color.Lerp(endColor, startColor, _currentGameTimer / gameTimer);
@@ -215,7 +225,7 @@ public class GameManager : MonoSingleton<GameManager>
                 _countDownPlayed = true;
                 break;
         }
-        if (_currentGameTimer <= 0 && !_isGameClear)
+        if (_currentGameTimer <= 0 && CurrentGameState.Value is not GameState.GameClear)
         {
             GameOver();
         }
@@ -260,21 +270,22 @@ public class GameManager : MonoSingleton<GameManager>
     
     public void PauseGame()
     {
-        if (IsGameOver || IsGameClear || !GameStarted) return;
-        _isPaused = true;
+        if (CurrentGameState.Value is GameState.CountOff or GameState.GameOver or GameState.GameClear) return;
+        _beforePauseState = CurrentGameState.Value;
+        CurrentGameState.Value = GameState.Pause;
         pausePanel.SetActive(true);
     }
     
     public void ResumeGame()
     {
-        if (IsGameOver || IsGameClear || !GameStarted) return;
-        _isPaused = false;
+        if (CurrentGameState.Value is GameState.CountOff or GameState.GameOver or GameState.GameClear) return;
+        CurrentGameState.Value = _beforePauseState;
         pausePanel.SetActive(false);
     }
     
     public void GameOver(bool fail = false)
     {
-        _isGameOver = true;
+        CurrentGameState.Value = GameState.GameOver;
         _currentGameTimer = 0;
         Debug.Log("Game Over!");
         gameOverText.text = fail ? "Failed!" : "Time's Up!";
@@ -284,7 +295,7 @@ public class GameManager : MonoSingleton<GameManager>
     
     public void GameClear()
     {
-        _isGameClear = true;
+        CurrentGameState.Value = GameState.GameClear;
         _currentGameTimer = 0;
         Debug.Log("Game Clear!");
         gameClearText.text = "Game Clear!";

@@ -18,6 +18,7 @@ namespace MadDuck.Scripts.Managers
     [ShowOdinSerializedPropertiesInInspector]
     public class GridManager : MonoSingleton<GridManager>, ISerializationCallbackReceiver, ISupportsPrefabSerialization
     {
+        #region Inspectors
         private enum GridType
         {
             Rectangle,
@@ -44,11 +45,6 @@ namespace MadDuck.Scripts.Managers
         private GridType gridType = GridType.Rectangle;
         [TitleGroup("Grid Settings")]
         [Button("Refresh Custom Grid"), ShowIf(nameof(gridType), GridType.Custom), DisableInPlayMode]
-        
-        [Title("Grid State")]
-        [SerializeField, ReadOnly] private bool isFitMe = false;
-        public bool IsFitMe => isFitMe;
-        
         private void RefreshCustomGrid()
         {
             var newCustomGrid = new bool[gridSize.y, gridSize.x];
@@ -100,6 +96,7 @@ namespace MadDuck.Scripts.Managers
         private bool[,] _customGrid = { };
 
         [Title("Grid Debug")]
+        [field: SerializeField, ReadOnly] public bool IsFitMe { get; private set; }
         [SerializeField, ReadOnly] private List<Contacts> contacts = new();
         [TableMatrix(SquareCells = true, HorizontalTitle = "Cell Array", IsReadOnly = true,
             DrawElementMethod = nameof(DrawCellArrayMatrix), Transpose = true)]
@@ -107,13 +104,17 @@ namespace MadDuck.Scripts.Managers
         [TableMatrix(SquareCells = true, HorizontalTitle = "Vacant Schema", IsReadOnly = true,
             DrawElementMethod = nameof(DrawVacantSchemaMatrix), Transpose = true)]
         [SerializeField] private int[,] _vacantSchema;
-        [SerializeField, ReadOnly]  private List<Block> blocksOnGrid = new();
+        [SerializeField, ReadOnly] private List<Block> blocksOnGrid = new();
+        public List<Block> BlocksOnGrid => blocksOnGrid;
         [SerializeField, ShowIf(nameof(gridType), GridType.Custom)]
         private bool drawAllCustomGridCells = true;
+        #endregion
 
+        #region Fields
         private Grid _grid;
         private List<Cell> _previousValidationCells = new();
-
+        #endregion
+        
         #region Initialization
         protected override void Awake()
         {
@@ -203,6 +204,7 @@ namespace MadDuck.Scripts.Managers
             return true;
         }
     
+        #region Blocks
         /// <summary>
         /// Place the block in the grid
         /// </summary>
@@ -237,7 +239,7 @@ namespace MadDuck.Scripts.Managers
             GameManager.Instance.AddScore(ScoreTypes.Placement);
             if (!CreateVacantSchema()) //Fit Me!
             {
-                isFitMe = true;
+                IsFitMe = true;
                 GameManager.Instance.AddScore(ScoreTypes.FitMe);
                 //RemoveAllBlocks(true);
                 ResetPreviousValidationCells();
@@ -291,6 +293,7 @@ namespace MadDuck.Scripts.Managers
                 RemoveBlock(block, destroy);
             }
         }
+        #endregion
     
         /// <summary>
         /// Reset the color of the previous validation cells
