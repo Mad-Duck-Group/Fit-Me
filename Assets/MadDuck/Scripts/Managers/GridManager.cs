@@ -52,6 +52,7 @@ namespace MadDuck.Scripts.Managers
         [SerializeField, ReadOnly] private bool isFitMe = false;
         public bool IsFitMe => isFitMe;
         
+        //Consider moving these settings to GameManager, so we can set it in one place.
         [Title("Infected Setting")]
         [SerializeField] private Vector2 infectedTimeRange = new Vector2(0, 10);
         [SerializeField] private List<Block> infectedBlocks = new();
@@ -537,6 +538,7 @@ namespace MadDuck.Scripts.Managers
         private void UpdateInfectedBlocks()
         {
             if (blocksOnGrid.Count == 0) return;
+            //You already know the infected block before this, just pass it in and add it to the list, no need to search for it again
             foreach (var block in blocksOnGrid.Where(block => block.BlockState == BlockState.Infected && !infectedBlocks.Contains(block)))
             {
                 infectedBlocks.Add(block);
@@ -547,7 +549,7 @@ namespace MadDuck.Scripts.Managers
         {
             if (blocksOnGrid == null) return;
 
-            Block block = blocksOnGrid[Random.Range(0, blocksOnGrid.Count)];
+            Block block = blocksOnGrid[Random.Range(0, blocksOnGrid.Count)]; //You can use extension method blocksOnGrid.RandomElement() here
             InfectBlock(block);
             //lock.StartInfectionAsync(infectedTimeRange, true);
             
@@ -590,7 +592,7 @@ namespace MadDuck.Scripts.Managers
 
             if (candidatesForInfection.Count > 0)
             {
-                var blockToInfect = candidatesForInfection[Random.Range(0, candidatesForInfection.Count)];
+                var blockToInfect = candidatesForInfection[Random.Range(0, candidatesForInfection.Count)]; //You can use extension method candidatesForInfection.RandomElement() here
                 InfectBlock(blockToInfect);
             }
         }

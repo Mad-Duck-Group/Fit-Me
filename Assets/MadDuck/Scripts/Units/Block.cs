@@ -70,7 +70,7 @@ namespace MadDuck.Scripts.Units
         public bool AllowPickUpAfterPlacement => allowPickUpAfterPlacement;
         public int SpawnIndex {get => _spawnIndex; set => _spawnIndex = value;}
         
-        private IDisposable _subscription;
+        private IDisposable _subscription; //Rename to for more clarity
 
         private void Start()
         {
@@ -88,7 +88,7 @@ namespace MadDuck.Scripts.Units
             _originalScale = transform.localScale;
         }
         
-        private void OnEnable()
+        private void OnEnable() //You can move this to Initialize()
         {
             _subscription = Observable
                 .Interval(TimeSpan.FromSeconds(GridManager.Instance.RandomInfectedTime))
@@ -282,7 +282,7 @@ namespace MadDuck.Scripts.Units
             _isDragging = false;
         }
 
-        public async UniTask StartInfectionAsync(Vector2 infectedTimeRange, bool continueInfecting)
+        public async UniTask StartInfectionAsync(Vector2 infectedTimeRange, bool continueInfecting) //Delete if there is no usage for this method
         {
             if (blockState == BlockState.Normal) return;
             
