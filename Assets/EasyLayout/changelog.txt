@@ -1,0 +1,71 @@
+v1.9.0
+- EasyLayout: added warning when one of the objects in the same row has relative width (or one of the objects in the same column has relative height)
+- EasyLayout: added IgnoreLayoutElementSizes option: if enabled ILayoutElement options will be ignored, increases performance without side effects if ChildrenWidth and ChildrenHeight are not controlled
+- EasyLayout: added Hex layout
+
+v1.8.3
+- added MovementAnimateAll and ResizeAnimateAll options - animate movement/resize for all elements if enabled; otherwise, new elements will not be animated
+
+v1.8.2
+- EasyLayout: fixed movement and resize animations
+
+v1.8.1
+- EasyLayout: small improvements
+
+v1.8.0
+- EasyLayout: small improvements and bugfixes
+
+v1.7.0
+- EasyLayout: added optional movement and resize animation support; warning: can decrease performance
+
+v1.6.0
+- EasyLayout: small improvements and bugfixes
+- EasyLayout: Filter property is obsolete and replaced with ShouldIgnore
+
+v1.5.0
+- EasyLayout: reduced memory allocation
+- EasyLayout: minor bug fixes
+
+v1.4.0
+- EasyLayout extensions methods moved to EasyLayoutNS.Extensions namespace
+- EasyLayout: added SetPreferredAndFitContainer option for the Children Size
+- EasyLayout: added GetElementPosition to get position in group
+
+v1.3.1
+- EasyLayout: added ElementsRotate and ElementsRotationStart for Ellipse layout
+
+v1.3.0
+- added EasyLayoutEllipseScroll
+- EasyLayout: added new layout type Ellipse
+- EasyLayout: added new option ResetRotation
+
+v1.2.1
+- fixed FitContainer option
+
+v1.2.0
+- added Flex layout type
+- added Staggered layout type
+- renamed Stacking to MainAxis
+- reduced memory allocations
+- EasyLayout namespace renamed to EasyLayoutNS to avoid problems with Unity 2018.2 and later
+- fixed "dirty" scene bug when using FitContainer or ShrinkOnOverflow
+- added Shrink on Overflow option
+- added CompactConstraint and CompactConstraintCount options
+- added row/column constraint for Grid layout
+
+v1.1.1
+- improved compatibility with Unity 2017.x
+
+v1.1.0
+- bug fixes
+- performance improvements
+
+v1.0.5
+- bug fixes.
+
+v1.0.4
+- improved performance
+- bug fixes.
+
+v1.0.3
+- renamed to EasyLayout

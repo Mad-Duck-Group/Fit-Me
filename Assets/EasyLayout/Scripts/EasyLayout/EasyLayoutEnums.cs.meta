@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a2eb8842fbaaeed49a419b0855802000
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 26567
+  packageName: EasyLayout
+  packageVersion: 1.9.1
+  assetPath: Assets/EasyLayout/Scripts/EasyLayout/EasyLayoutEnums.cs
+  uploadId: 738329

@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: f9391351e7d92034898c94cf83b126b6
+timeCreated: 1517415861
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 26567
+  packageName: EasyLayout
+  packageVersion: 1.9.1
+  assetPath: Assets/EasyLayout/Scripts/EasyLayout/SizesInfo.cs
+  uploadId: 738329

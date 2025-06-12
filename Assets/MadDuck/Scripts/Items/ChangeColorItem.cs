@@ -75,11 +75,13 @@ namespace MadDuck.Scripts.Items
             }
 
             var popUpChoices = new List<PopUpChoiceData>();
-            var blockTypeNames = Enum.GetNames(typeof(BlockTypes));
-            for (int i = 0; i < blockTypeNames.Length; i++)
+            var hoveredBlockType = _blockHovered.BlockType;
+            var blockTypes = Enum.GetValues(typeof(BlockTypes)).Cast<BlockTypes>().ToArray();
+            for (var i = 0; i < blockTypes.Length; i++)
             {
+                if (blockTypes[i] == hoveredBlockType) continue;
                 var choice = new PopUpChoiceData(
-                    blockTypeNames[i],
+                    blockTypes[i].ToString(),
                     i
                 );
                 popUpChoices.Add(choice);

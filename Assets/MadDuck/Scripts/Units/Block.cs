@@ -9,6 +9,7 @@ using PrimeTween;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.U2D.Animation;
 
 namespace MadDuck.Scripts.Units
 {
@@ -40,10 +41,12 @@ namespace MadDuck.Scripts.Units
         [SerializeField] private BlockFaces blockFace;
         [SerializeField] private Atom[] atoms;
         [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] private SpriteResolver spriteResolver;
         [SerializeField] private bool allowPickUpAfterPlacement;
         
         [Title("Block Debug")]
         [field: SerializeField, DisplayAsString] public bool IsPlaced { get; private set; }
+        [field: SerializeField] public List<Cell> BlockCells { get; set; }
 
         public List<int[,]> BlockSchemas { get; private set; } = new();
         public int SpawnIndex { get; set; }
@@ -179,9 +182,19 @@ namespace MadDuck.Scripts.Units
             spriteRenderer.color = _originalColor;
         }
 
-        public void ChangeColor(BlockTypes type)
+        public void ChangeColor(BlockTypes type, bool updateGrid = true)
         {
             blockType = type;
+            if (!RandomBlockManager.Instance.SpriteLibraryAssets.TryGetValue(type, out var spriteAsset))
+            {
+                Debug.LogError($"Sprite asset for block type {type} not found.");
+                return;
+            }
+            spriteResolver.spriteLibrary.spriteLibraryAsset = spriteAsset;
+            spriteResolver.SetCategoryAndLabel("Face", blockFace.ToString());
+            spriteResolver.ResolveSpriteToSpriteRenderer();
+            if (!updateGrid) return;
+            GridManager.Instance.UpdateBlockOnGrid(this);
         }
 
         public void OnBeginDrag(PointerEventData eventData)

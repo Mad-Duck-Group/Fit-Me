@@ -235,22 +235,31 @@ namespace MadDuck.Scripts.Managers
             Vector3 atomPositionAfterPlacement = cells[0].transform.position;
             Vector3 blockPositionRelativeToAtom = atomPositionAfterPlacement - atomPositionBeforePlacement;
             block.transform.position += blockPositionRelativeToAtom;
+            block.transform.SetParent(transform);
+            block.BlockCells = cells;
             blocksOnGrid.Add(block);
             GameManager.Instance.AddScore(ScoreTypes.Placement);
+            ResetPreviousValidationCells();
+            UpdateBlockOnGrid(block);
+            return true;
+        }
+
+        /// <summary>
+        /// Update the block on the grid, check for contacts and validate placement
+        /// </summary>
+        /// <param name="block"></param>
+        public void UpdateBlockOnGrid(Block block)
+        {
             if (!CreateVacantSchema()) //Fit Me!
             {
                 IsFitMe = true;
                 GameManager.Instance.AddScore(ScoreTypes.FitMe);
-                //RemoveAllBlocks(true);
-                ResetPreviousValidationCells();
-                return true;
+                return;
             }
-            if (CheckForContact(block, cells, out Contacts contacts))
+            if (CheckForContact(block, out var contacts))
             {
                 ContactValidation(contacts);
             }
-            ResetPreviousValidationCells();
-            return true;
         }
 
         /// <summary>
@@ -312,12 +321,12 @@ namespace MadDuck.Scripts.Managers
         /// <param name="cells">Cells that contain the current block</param>
         /// <param name="contacts">Contacts, if there are any</param>
         /// <returns>true if the block is in contact, false otherwise</returns>
-        private bool CheckForContact(Block block, List<Cell> cells, out Contacts contacts)
+        private bool CheckForContact(Block block, out Contacts contacts)
         {
             BlockTypes currentType = block.BlockType;
             List<Block> contactedBlocks = new List<Block> { block };
             contacts = new Contacts();
-            foreach (var cell in cells)
+            foreach (var cell in block.BlockCells)
             {
                 Cell upCell = GetCellByArrayIndex(cell.ArrayIndex[0] - 1, cell.ArrayIndex[1]);
                 Cell downCell = GetCellByArrayIndex(cell.ArrayIndex[0] + 1, cell.ArrayIndex[1]);

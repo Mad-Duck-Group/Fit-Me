@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 220e06417efac0942878f572f68d1acc
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 26567
+  packageName: EasyLayout
+  packageVersion: 1.9.1
+  assetPath: Assets/EasyLayout/Scripts/EasyLayout/Hex/HexCoordinatesDebug.cs
+  uploadId: 738329
