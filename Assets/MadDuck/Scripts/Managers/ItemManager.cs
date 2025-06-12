@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using MadDuck.Scripts.Items;
 using Sherbert.Framework.Generic;
@@ -10,29 +11,15 @@ using UnityEngine.Serialization;
 
 namespace MadDuck.Scripts.Managers
 {
-    [Serializable]
-    public record ItemRecord
-    {
-        public ItemType itemType;
-        public int count;
-        
-        public ItemRecord(ItemType itemType, int count)
-        {
-            this.itemType = itemType;
-            this.count = count;
-        }
-    }
-
     public class ItemManager : MonoSingleton<ItemManager>
     {
-        [Title("Item References")] 
-        [TableList] 
+        [Title("Item References")]
         [SerializeField]
-        private List<ItemRecord> itemRecords = new()
+        private SerializableDictionary<ItemType, int> itemRecords = new()
         {
-            new ItemRecord(ItemType.DestroyColor, 0),
-            new ItemRecord(ItemType.ChangeColor, 0),
-            new ItemRecord(ItemType.Disinfectant, 0)
+            { ItemType.DestroyColor, 0 },
+            { ItemType.ChangeColor, 0 },
+            { ItemType.Disinfectant, 0 }
         };
         [SerializeField]
         private SerializableDictionary<ItemType, ItemData> itemDataDictionary = new()
@@ -47,29 +34,36 @@ namespace MadDuck.Scripts.Managers
         [Title("Item Debug")]
         [SerializeReference, ReadOnly] private List<Item> items = new();
         [SerializeField, ReadOnly] private List<ItemView> itemViews = new();
+        [Button("Save All Items")]
+        private void DebugSaveAllItems() => SaveAllItems();
 
         public static event Action<ItemType, int> OnItemCountChanged;
         
         
         private void OnEnable()
         {
-            SaveManager.OnLoadCompleted += LoadItems;
+            SaveManager.OnLoadCompleted += LoadAllItems;
         }
         
         private void OnDisable()
         {
-            SaveManager.OnLoadCompleted -= LoadItems;
+            SaveManager.OnLoadCompleted -= LoadAllItems;
         }
         
-        private void LoadItems()
+        private void Start()
+        {
+            InitializeItems();
+        }
+
+        private void InitializeItems()
         {
             foreach (var records in itemRecords)
             {
-                var itemType = records.itemType;
+                var itemType = records.Key;
                 var itemData = itemDataDictionary[itemType];
                 if (!itemData)
                 {
-                    Debug.LogWarning($"Item data for {records.itemType} is not set.");
+                    Debug.LogWarning($"Item data for {itemType} is not set.");
                     continue;
                 }
                 var item = ItemFactory.CreateItem(itemType, itemData);
@@ -79,29 +73,92 @@ namespace MadDuck.Scripts.Managers
                 itemViews.Add(itemView);
             }
         }
+
+        #region Save/Load
+        private void LoadItem(ItemType type)
+        {
+            var itemCount = SaveManager.Instance.CurrentSaveFile.GetData(type.ToString(), -1);
+            if (itemCount > -1)
+            {
+                SetItemCount(type, itemCount);
+            }
+            else
+            {
+                Debug.LogWarning($"No saved data found for item type {type}. Defaulting to 0.");
+                SetItemCount(type, 0);
+            }
+        }
         
+        private void LoadAllItems()
+        {
+            foreach (var itemType in itemRecords.Keys.ToList())
+            {
+                LoadItem(itemType);
+            }
+        }
+
+        private void SaveItem(ItemType type, bool saveImmediately = true)
+        {
+            if (!itemRecords.ContainsKey(type))
+            {
+                Debug.LogWarning($"Item of type {type} not found in records.");
+                return;
+            }
+            int itemCount = itemRecords[type];
+            SaveManager.Instance.CurrentSaveFile.AddOrUpdateData(type.ToString(), itemCount);
+            Debug.Log($"Saved {itemCount} of item type {type}.");
+            if (saveImmediately)
+            {
+                SaveManager.Instance.Save();
+            }
+        }
+
+        private void SaveAllItems()
+        {
+            foreach (var itemType in itemRecords.Keys.ToList())
+            {
+                SaveItem(itemType, false);
+            }
+            SaveManager.Instance.Save();
+        }
+        #endregion
+
+        #region Utils
         public bool CheckItemCount(ItemType itemType, int requiredCount)
         {
-            var item = itemRecords.Find(i => i.itemType == itemType);
-            if (item == null)
+            if (!itemRecords.ContainsKey(itemType))
             {
-                Debug.LogWarning($"Item of type {itemType} not found.");
+                Debug.LogWarning($"Item of type {itemType} not found in records.");
                 return false;
             }
-            return item.count >= requiredCount;
+            var itemCount = itemRecords[itemType];
+            return itemCount >= requiredCount;
         }
         
         public void ChangeItemCount(ItemType itemType, int changeAmount)
         {
-            var item = itemRecords.Find(i => i.itemType == itemType);
-            if (item == null)
+            if (!itemRecords.ContainsKey(itemType))
             {
-                Debug.LogWarning($"Item of type {itemType} not found.");
+                Debug.LogWarning($"Item of type {itemType} not found in records.");
                 return;
             }
-            item.count += changeAmount;
-            if (item.count < 0) item.count = 0; // Ensure count doesn't go negative
-            OnItemCountChanged?.Invoke(itemType, item.count);
+            itemRecords[itemType] += changeAmount;
+            if (itemRecords[itemType] < 0) itemRecords[itemType] = 0; // Ensure count doesn't go negative
+            SaveItem(itemType);
+            OnItemCountChanged?.Invoke(itemType, itemRecords[itemType]);
         }
+        
+        public void SetItemCount(ItemType itemType, int count)
+        {
+            if (!itemRecords.ContainsKey(itemType))
+            {
+                Debug.LogWarning($"Item of type {itemType} not found in records.");
+                return;
+            }
+            itemRecords[itemType] = count;
+            SaveItem(itemType);
+            OnItemCountChanged?.Invoke(itemType, itemRecords[itemType]);
+        }
+        #endregion
     }
 }

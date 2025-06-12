@@ -36,6 +36,7 @@ namespace MadDuck.Scripts.Items
         private int _parentSiblingIndex;
         private Vector3 _mousePositionDifference;
         private Canvas _canvas;
+        private bool _isDragging;
 
         private void Awake()
         {
@@ -113,6 +114,7 @@ namespace MadDuck.Scripts.Items
             _initialPosition = canvasGroup.transform.position;
             canvasGroup.transform.SetParent(_canvas.transform);
             canvasGroup.blocksRaycasts = false;
+            _isDragging = true;
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -121,6 +123,7 @@ namespace MadDuck.Scripts.Items
                 return;
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
+            if (!_isDragging) return;
             if (!item.Selectable()) return;
             var mousePosition = PointerManager.Instance.MouseCanvasPosition;
             canvasGroup.transform.position = mousePosition - _mousePositionDifference;
@@ -135,8 +138,10 @@ namespace MadDuck.Scripts.Items
         {
             if (item.ItemData.UsageMode != UsageMode.DragAndDrop)
                 return;
+            if (!_isDragging) return;
             if (!item.Selectable()) return;
             item.Use();
+            _isDragging = false;
         }
     }
 }

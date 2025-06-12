@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Esper.ESave;
 using Esper.ESave.Threading;
 using UnityCommunity.UnitySingleton;
@@ -13,6 +14,9 @@ namespace MadDuck.Scripts.Managers
         public SaveFile CurrentSaveFile => SaveFileSetup.GetSaveFile();
         public static event Action OnSaveCompleted;
         public static event Action OnLoadCompleted;
+
+        private bool _saveReady = true;
+        private bool _saveInQueue;
 
         protected override void Awake()
         {
@@ -43,12 +47,23 @@ namespace MadDuck.Scripts.Managers
         
         public void Save()
         {
+            if (!_saveReady)
+            {
+                Debug.LogWarning("Save operation is already in progress.");
+                _saveInQueue = true;
+                return;
+            }
             var operation = CurrentSaveFile.Save();
+            _saveReady = false;
             operation.onOperationEnded.AddListener(() =>
             {
                 if (operation.state == SaveFileOperation.OperationState.Completed)
                 {
                     OnSaveCompleted?.Invoke();
+                    _saveReady = true;
+                    if (!_saveInQueue) return;
+                    _saveInQueue = false;
+                    Save(); // Retry saving if there was a save in queue
                 }
                 else
                 {

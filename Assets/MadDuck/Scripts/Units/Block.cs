@@ -179,6 +179,11 @@ namespace MadDuck.Scripts.Units
             spriteRenderer.color = _originalColor;
         }
 
+        public void ChangeColor(BlockTypes type)
+        {
+            blockType = type;
+        }
+
         public void OnBeginDrag(PointerEventData eventData)
         {
             if (eventData.button is not PointerEventData.InputButton.Left) return;

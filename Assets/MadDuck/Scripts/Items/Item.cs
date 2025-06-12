@@ -43,20 +43,15 @@ namespace MadDuck.Scripts.Items
     
     public static class ItemFactory
     {
-        private static readonly Dictionary<ItemType, Item> ItemCache = new()
-        {
-            { ItemType.Disinfectant, new DisinfectantItem() },
-            { ItemType.DestroyColor, new DestroyColorItem() },
-            { ItemType.ChangeColor, new ChangeColorItem() }
-        };
-        
         public static Item CreateItem(ItemType itemType, ItemData itemData)
         {
-            if (!ItemCache.TryGetValue(itemType, out var item))
+            Item item = itemType switch
             {
-                Debug.LogError($"Item type {itemType} not found in cache.");
-                return null;
-            }
+                ItemType.Disinfectant => new DisinfectantItem(),
+                ItemType.DestroyColor => new DestroyColorItem(),
+                ItemType.ChangeColor => new ChangeColorItem(),
+                _ => throw new ArgumentOutOfRangeException(nameof(itemType), itemType, null)
+            };
             item.Initialize(itemData);
             return item;
         }
