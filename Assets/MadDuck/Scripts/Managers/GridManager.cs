@@ -55,6 +55,8 @@ namespace MadDuck.Scripts.Managers
         [Title("Infected Setting")]
         [SerializeField] private Vector2 infectedTimeRange = new Vector2(0, 10);
         [SerializeField] private List<Block> infectedBlocks = new();
+        [SerializeField, ReadOnly] private float randomInfectedTime;
+        public float RandomInfectedTime => randomInfectedTime;
         public List<Block> InfectedBlocks => infectedBlocks;
         
         
@@ -524,14 +526,15 @@ namespace MadDuck.Scripts.Managers
         }
         #endregion
 
-        private void IsInfect(Block block)
+        private void InfectBlock(Block block)
         {
             block.SpriteRenderer.color = Color.gray;
             block.BlockState = BlockState.Infected;
+            randomInfectedTime = Random.Range(infectedTimeRange.x, infectedTimeRange.y);
             Debug.Log("Block " + block.name + " is infected!");
         }
         
-        private void CheckInfectedBlocks()
+        private void UpdateInfectedBlocks()
         {
             if (blocksOnGrid.Count == 0) return;
             foreach (var block in blocksOnGrid.Where(block => block.BlockState == BlockState.Infected && !infectedBlocks.Contains(block)))
@@ -545,10 +548,10 @@ namespace MadDuck.Scripts.Managers
             if (blocksOnGrid == null) return;
 
             Block block = blocksOnGrid[Random.Range(0, blocksOnGrid.Count)];
-            IsInfect(block);
-            block.StartInfectionAsync(infectedTimeRange, true);
+            InfectBlock(block);
+            //lock.StartInfectionAsync(infectedTimeRange, true);
             
-            CheckInfectedBlocks();
+            UpdateInfectedBlocks();
         }
 
         public void InfectAdjacentBlocks(Block sourceBlock)
@@ -588,7 +591,7 @@ namespace MadDuck.Scripts.Managers
             if (candidatesForInfection.Count > 0)
             {
                 var blockToInfect = candidatesForInfection[Random.Range(0, candidatesForInfection.Count)];
-                IsInfect(blockToInfect);
+                InfectBlock(blockToInfect);
             }
         }
         

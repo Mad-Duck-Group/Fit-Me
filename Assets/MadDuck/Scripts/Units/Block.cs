@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Utils;
 using PrimeTween;
+using R3;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -68,6 +69,8 @@ namespace MadDuck.Scripts.Units
         public Atom[] Atoms => atoms;
         public bool AllowPickUpAfterPlacement => allowPickUpAfterPlacement;
         public int SpawnIndex {get => _spawnIndex; set => _spawnIndex = value;}
+        
+        private IDisposable _subscription;
 
         private void Start()
         {
@@ -84,8 +87,20 @@ namespace MadDuck.Scripts.Units
             _originalRotation = transform.eulerAngles;
             _originalScale = transform.localScale;
         }
-
-    
+        
+        private void OnEnable()
+        {
+            _subscription = Observable
+                .Interval(TimeSpan.FromSeconds(GridManager.Instance.RandomInfectedTime))
+                .Where(_ => BlockState == BlockState.Infected)
+                .Subscribe(_ => GridManager.Instance.InfectAdjacentBlocks(this));
+        }
+        
+        void OnDestroy()
+        {
+            _subscription?.Dispose();
+        }
+        
         /// <summary>
         /// Generate the schema of the block, 1 is an atom, 0 is empty
         /// </summary>
