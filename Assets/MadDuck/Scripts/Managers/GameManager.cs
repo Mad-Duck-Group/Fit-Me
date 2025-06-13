@@ -259,7 +259,7 @@ public class GameManager : MonoSingleton<GameManager>
         switch (usePercentage)
         {
             case false:
-                if (!(_currentGameTimer <= startInfectTimeRange) || _maxInfectionCount <= 0) return;
+                if (!(elapsedTime >= startInfectTimeRange) || _maxInfectionCount <= 0) return;
                 break;
             case true:
                 if (_listInfectIndex < 0 || _listInfectIndex >= listInfectTimePercent.Count) return;
