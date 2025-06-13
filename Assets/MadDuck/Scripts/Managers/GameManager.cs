@@ -258,7 +258,7 @@ public class GameManager : MonoSingleton<GameManager>
         switch (usePercentage)
         {
             case false:
-                if (!(elapsedTime >= startInfectTimeRange) || _currentInfectionCount >= 0) return;
+                if (!(elapsedTime >= startInfectTimeRange) || _currentInfectionCount >= maxInfectionCount) return;
                 break;
             case true:
                 if (_listInfectIndex < 0 || _listInfectIndex >= listInfectTimePercent.Count) return;
@@ -268,7 +268,7 @@ public class GameManager : MonoSingleton<GameManager>
 
         if (maxInfectionCount >= 2)
         {
-            if (!usePercentage || _listInfectIndex == listInfectTimePercent.Count || _currentInfectionCount >= 0) return; 
+            if (!usePercentage || _listInfectIndex == listInfectTimePercent.Count || _currentInfectionCount >= maxInfectionCount) return; 
             GridManager.Instance.InfectRandomBlock();
             _currentInfectionCount++;
             _listInfectIndex++;
