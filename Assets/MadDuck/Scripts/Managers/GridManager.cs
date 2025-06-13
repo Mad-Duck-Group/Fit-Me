@@ -177,6 +177,8 @@ namespace MadDuck.Scripts.Managers
         #region Fields
         private Grid _grid;
         private List<Cell> _previousValidationCells = new();
+        public static event Action<Block> OnBlockInfected;
+        public static event Action<Block> OnBlockDisinfected;
         #endregion
         
         #region Initialization
@@ -375,6 +377,7 @@ namespace MadDuck.Scripts.Managers
             {
                 contacts.Remove(contact);
             }
+            DisinfectBlock(block);
             blocksOnGrid.Remove(block);
             if (destroy)
             {
@@ -630,9 +633,16 @@ namespace MadDuck.Scripts.Managers
         private void InfectBlock(Block block)
         {
             if (GameManager.Instance.CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
-            block.Infect();
             infectedBlocks.Add(block);
+            OnBlockInfected?.Invoke(block);
             RandomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
+        }
+
+        public void DisinfectBlock(Block block)
+        {
+            if (GameManager.Instance.CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
+            OnBlockDisinfected?.Invoke(block);
+            infectedBlocks.Remove(block);
         }
         
         public void InfectRandomBlock()

@@ -19,6 +19,7 @@ namespace MadDuck.Scripts.Items
             base.Initialize(itemData);
             _blockHoveredSubscriber = GlobalMessagePipe.GetSubscriber<ItemBlockHoveredEvent>()
                 .Subscribe(OnBlockHovered);
+            GridManager.OnBlockInfected += OnBlockInfected;
         }
         
         private void OnBlockHovered(ItemBlockHoveredEvent itemBlockHoveredEvent)
@@ -44,17 +45,29 @@ namespace MadDuck.Scripts.Items
             sameColorBlocks.ForEach(b => b.StartFlashing());
             _blocksToDestroy = sameColorBlocks.ToList();
         }
+        
+        private void OnBlockInfected(Block block)
+        {
+            if (block != _blockHovered) return;
+            _blocksToDestroy.ForEach(b =>
+            {
+                b.StopFlashing();
+            });
+            _blockHovered = null;
+        }
 
         public override void Shutdown()
         {
             _blockHoveredSubscriber?.Dispose();
+            GridManager.OnBlockInfected -= OnBlockInfected;
         }
 
         public override bool Selectable()
         {
-            //TODO: change to check for infected block later.
             if (!ItemManager.Instance.CheckItemCount(ItemData.ItemType, 1)) return false;
-            return GridManager.Instance.BlocksOnGrid.Count != 0;
+            if (GridManager.Instance.BlocksOnGrid.Count == 0) return false;
+            if (GridManager.Instance.BlocksOnGrid.All(x => x.BlockState == BlockState.Infected)) return false;
+            return true;
         }
 
         public override void Select()

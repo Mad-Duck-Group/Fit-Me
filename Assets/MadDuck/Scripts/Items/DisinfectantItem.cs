@@ -1,36 +1,79 @@
 ﻿using System;
+using System.Linq;
 using MadDuck.Scripts.Managers;
+using MadDuck.Scripts.Units;
+using MessagePipe;
 
 namespace MadDuck.Scripts.Items
 {
     [Serializable]
     public class DisinfectantItem : Item
     {
+        private IDisposable _blockHoveredSubscriber;
+        private Block _blockHovered;
+        
+        public override void Initialize(ItemData itemData)
+        {
+            base.Initialize(itemData);
+            _blockHoveredSubscriber = GlobalMessagePipe.GetSubscriber<ItemBlockHoveredEvent>()
+                .Subscribe(OnBlockHovered);
+        }
+        
+        private void OnBlockHovered(ItemBlockHoveredEvent itemBlockHoveredEvent)
+        {
+            if (itemBlockHoveredEvent.item != this) return;
+            if (!itemBlockHoveredEvent.block || 
+                !itemBlockHoveredEvent.block.IsPlaced || 
+                itemBlockHoveredEvent.block.BlockState is BlockState.Normal)
+            {
+                if (_blockHovered) _blockHovered.StopFlashing();
+                _blockHovered = null;
+                return;
+            }
+            if (_blockHovered && _blockHovered == itemBlockHoveredEvent.block) return;
+            if (_blockHovered) _blockHovered.StopFlashing();
+            _blockHovered = itemBlockHoveredEvent.block;
+            _blockHovered.StartFlashing();
+        }
+        
         public override void Shutdown()
         {
-            throw new NotImplementedException();
+            _blockHoveredSubscriber?.Dispose();
         }
 
         public override bool Selectable()
         {
-            // Implement logic to determine if the disinfectant can be used
-            return true; // Placeholder, replace with actual logic
+            if (!ItemManager.Instance.CheckItemCount(ItemData.ItemType, 1)) return false;
+            if (GridManager.Instance.BlocksOnGrid.Count == 0) return false;
+            if (GridManager.Instance.BlocksOnGrid.All(x => x.BlockState == BlockState.Normal)) return false;
+            return true;
         }
 
         public override void Select()
         {
-            if (!Selectable()) return;
-            ItemManager.Instance.ChangeItemCount(ItemData.ItemType, -1);
+            GameManager.Instance.CurrentGameState.Value = GameState.UseItem;
         }
 
         public override void Cancel()
         {
-            throw new NotImplementedException();
+            if (_blockHovered) _blockHovered.StopFlashing();
+            NotifyCancelled();
+            GameManager.Instance.CurrentGameState.Value = GameState.PlaceBlock;
         }
 
         public override void Use()
         {
-            throw new NotImplementedException();
+            if (!Selectable() || !_blockHovered)
+            {
+                Cancel();
+                return;
+            }
+            
+            _blockHovered.StopFlashing();
+            GridManager.Instance.DisinfectBlock(_blockHovered);
+            _blockHovered = null;
+            NotifyUsed();
+            GameManager.Instance.CurrentGameState.Value = GameState.PlaceBlock;
         }
     } 
 }
