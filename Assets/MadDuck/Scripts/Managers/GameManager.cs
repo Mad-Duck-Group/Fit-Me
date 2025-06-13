@@ -225,7 +225,7 @@ public class GameManager : MonoSingleton<GameManager>
                 _countDownPlayed = true;
                 break;
         }
-        if (_currentGameTimer <= 0 && CurrentGameState.Value is not GameState.GameClear)
+        if (_currentGameTimer <= 0 && CurrentGameState.Value is not (GameState.GameClear or GameState.GameOver))
         {
             GameOver();
         }
@@ -240,7 +240,7 @@ public class GameManager : MonoSingleton<GameManager>
             Tween.Scale(timerSlider.transform, 1.2f, 0.1f, cycleMode: CycleMode.Yoyo, cycles: 2);
         }
     }
-    
+
     // public bool ChangeReRoll(int value)
     // {
     //     int before = _currentReRoll;
@@ -296,11 +296,13 @@ public class GameManager : MonoSingleton<GameManager>
     public void GameClear()
     {
         CurrentGameState.Value = GameState.GameClear;
-        _currentGameTimer = 0;
-        Debug.Log("Game Clear!");
-        gameClearText.text = "Game Clear!";
-        gameClearPanel.SetActive(true);
-        Tween.Scale(gameClearText.transform, 1, 0.5f, ease: Ease.OutBounce);
+        _currentGameTimer = gameTimer;
+        GridManager.Instance.RegenerateGrid();
+        CurrentGameState.Value = GameState.PlaceBlock;
+        // Debug.Log("Game Clear!");
+        // gameClearText.text = "Game Clear!";
+        // gameClearPanel.SetActive(true);
+        // Tween.Scale(gameClearText.transform, 1, 0.5f, ease: Ease.OutBounce);
     }
     
     public void BackToMenu()

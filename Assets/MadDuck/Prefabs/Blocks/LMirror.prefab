@@ -388,6 +388,28 @@ MonoBehaviour:
   spriteResolver: {fileID: 5328043338117506320}
   allowPickUpAfterPlacement: 0
   <IsPlaced>k__BackingField: 0
+  <BlockCells>k__BackingField: []
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: <BlockSchemas>k__BackingField
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[System.Int32[,], mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
 --- !u!50 &-1085006330966050082
 Rigidbody2D:
   serializedVersion: 5

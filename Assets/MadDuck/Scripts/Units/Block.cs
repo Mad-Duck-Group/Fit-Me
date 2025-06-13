@@ -7,6 +7,9 @@ using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Utils;
 using PrimeTween;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
+using Sirenix.Utilities;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.U2D.Animation;
@@ -34,7 +37,30 @@ namespace MadDuck.Scripts.Units
         T,
         TwoByTwo
     }
-    public class Block : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+
+    [Serializable]
+    [ShowOdinSerializedPropertiesInInspector]
+    public record BlockSchema
+    {
+        [TableMatrix(SquareCells = true, Transpose = true, DrawElementMethod = nameof(DrawSchemaMatrix),
+            IsReadOnly = true)]
+        [ShowInInspector]
+        public int[,] schema = { };
+        
+        public BlockSchema(int[,] schema)
+        {
+            this.schema = schema;
+        }
+        
+        private static int DrawSchemaMatrix(Rect rect, int value)
+        {
+            EditorGUI.DrawRect(rect.Padding(1), value == 1 ? Color.green : Color.grey);
+            return value;
+        }
+    }
+    
+    [ShowOdinSerializedPropertiesInInspector]
+    public class Block : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, ISerializationCallbackReceiver, ISupportsPrefabSerialization
     {
         [Title("Block References")]
         [SerializeField] private BlockTypes blockType;
@@ -47,8 +73,8 @@ namespace MadDuck.Scripts.Units
         [Title("Block Debug")]
         [field: SerializeField, DisplayAsString] public bool IsPlaced { get; private set; }
         [field: SerializeField] public List<Cell> BlockCells { get; set; }
-
-        public List<int[,]> BlockSchemas { get; private set; } = new();
+        [TableList(AlwaysExpanded = true)]
+        [field: SerializeField] public List<BlockSchema> BlockSchemas { get; private set; } = new();
         public int SpawnIndex { get; set; }
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
@@ -106,11 +132,12 @@ namespace MadDuck.Scripts.Units
                 int y = Mathf.RoundToInt(atom.transform.position.y - mostDown.transform.position.y);
                 originalSchema[y, x] = 1;
             }
-            BlockSchemas.Add(ArrayHelper.Rotate180(originalSchema));
-            BlockSchemas.Add(ArrayHelper.Rotate90(BlockSchemas[0]));
-            BlockSchemas.Add(originalSchema);
-            BlockSchemas.Add(ArrayHelper.Rotate270(BlockSchemas[0]));
-            BlockSchemas = BlockSchemas.Distinct().ToList(); //Remove duplicates
+            BlockSchemas.Clear();
+            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate180(originalSchema)));
+            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate270(BlockSchemas[0].schema)));
+            BlockSchemas.Add(new BlockSchema(originalSchema));
+            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate90(BlockSchemas[0].schema)));
+            //BlockSchemas = BlockSchemas.Distinct().ToList(); //Remove duplicates
             transform.localScale = currentScale;
         }
 
@@ -257,5 +284,25 @@ namespace MadDuck.Scripts.Units
             }
             _isDragging = false;
         }
+        
+        #region Serialization
+        public void OnBeforeSerialize()
+        {
+            UnitySerializationUtility.SerializeUnityObject(this, ref serializationData);
+        }
+
+        public void OnAfterDeserialize()
+        {
+            UnitySerializationUtility.DeserializeUnityObject(this, ref serializationData);
+        }
+
+        [SerializeField, HideInInspector]
+        private SerializationData serializationData;
+        public SerializationData SerializationData 
+        { 
+            get => serializationData;
+            set => serializationData = value;
+        }
+        #endregion
     }
 }

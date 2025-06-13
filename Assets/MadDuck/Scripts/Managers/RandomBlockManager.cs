@@ -89,6 +89,7 @@ namespace MadDuck.Scripts.Managers
                 block.SpawnIndex = i;
                 block.transform.localScale = Vector3.zero;
                 Vector3 scale = new Vector3(objectScale, objectScale, 1f);
+                block.GenerateSchema();
                 int randomRotation = Random.Range(0, 4) * 90;
                 block.transform.eulerAngles = new Vector3(0, 0, randomRotation);
                 _scaleTween = Tween.Scale(block.transform, scale, 0.2f).OnComplete(() => block.Initialize());
@@ -133,14 +134,7 @@ namespace MadDuck.Scripts.Managers
             List<Block> blockToCheck = spawnPoints.Select(spawnPoint => spawnPoint.CurrentBlock).ToList();
             if (!GridManager.Instance.CheckAvailableBlock(blockToCheck, out _))
             {
-                if (GridManager.Instance.IsFitMe)
-                {
-                    GameManager.Instance.GameClear();
-                }
-                else
-                {
-                    GameManager.Instance.GameOver(true);   
-                }
+                GameManager.Instance.GameOver(true);  
             }
         }
     }
