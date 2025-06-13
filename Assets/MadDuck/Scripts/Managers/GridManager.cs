@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Units;
 using MadDuck.Scripts.Utils;
 using Microsoft.Unity.VisualStudio.Editor;
+using Redcode.Extensions;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using Sirenix.Serialization;
@@ -30,8 +31,8 @@ namespace MadDuck.Scripts.Managers
         [Serializable]
         public struct Contacts
         {
-            [SerializeField, ReadOnly] public List<Block> contactedBlocks;
-            [SerializeField, ReadOnly] public BlockTypes contactType;
+            [SerializeField, Sirenix.OdinInspector.ReadOnly] public List<Block> contactedBlocks;
+            [SerializeField, Sirenix.OdinInspector.ReadOnly] public BlockTypes contactType;
         }
         
         [Title("Grid References")]
@@ -49,18 +50,14 @@ namespace MadDuck.Scripts.Managers
         [Button("Refresh Custom Grid"), ShowIf(nameof(gridType), GridType.Custom), DisableInPlayMode]
         
         [Title("Grid State")]
-        [SerializeField, ReadOnly] private bool isFitMe = false;
+        [SerializeField, Sirenix.OdinInspector.ReadOnly] private bool isFitMe = false;
         public bool IsFitMe => isFitMe;
         
         //Consider moving these settings to GameManager, so we can set it in one place.
-        [Title("Infected Setting")]
-        [SerializeField] private Vector2 infectedTimeRange = new Vector2(0, 10);
-        [SerializeField] private List<Block> infectedBlocks = new();
-        [SerializeField, ReadOnly] private float randomInfectedTime;
+        [Title("Infected Debug")]
+        [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> infectedBlocks = new();
+        [SerializeField, Sirenix.OdinInspector.ReadOnly] private float randomInfectedTime;
         public float RandomInfectedTime => randomInfectedTime;
-        public List<Block> InfectedBlocks => infectedBlocks;
-        
-        
         
         private void RefreshCustomGrid()
         {
@@ -113,14 +110,14 @@ namespace MadDuck.Scripts.Managers
         private bool[,] _customGrid = { };
 
         [Title("Grid Debug")]
-        [SerializeField, ReadOnly] private List<Contacts> contacts = new();
+        [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Contacts> contacts = new();
         [TableMatrix(SquareCells = true, HorizontalTitle = "Cell Array", IsReadOnly = true,
             DrawElementMethod = nameof(DrawCellArrayMatrix), Transpose = true)]
         [SerializeField] private Cell[,] _cellArray = {};
         [TableMatrix(SquareCells = true, HorizontalTitle = "Vacant Schema", IsReadOnly = true,
             DrawElementMethod = nameof(DrawVacantSchemaMatrix), Transpose = true)]
         [SerializeField] private int[,] _vacantSchema;
-        [SerializeField, ReadOnly]  private List<Block> blocksOnGrid = new();
+        [SerializeField, Sirenix.OdinInspector.ReadOnly]  private List<Block> blocksOnGrid = new();
         [SerializeField, ShowIf(nameof(gridType), GridType.Custom)]
         private bool drawAllCustomGridCells = true;
 
@@ -136,6 +133,7 @@ namespace MadDuck.Scripts.Managers
             {
                 Debug.LogError("Grid cell size must be the same in both axes!");
             }
+            randomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
         }
 
         void Start()
@@ -531,29 +529,20 @@ namespace MadDuck.Scripts.Managers
         {
             block.SpriteRenderer.color = Color.gray;
             block.BlockState = BlockState.Infected;
-            randomInfectedTime = Random.Range(infectedTimeRange.x, infectedTimeRange.y);
+            infectedBlocks.Add(block);
+            randomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
             Debug.Log("Block " + block.name + " is infected!");
-        }
-        
-        private void UpdateInfectedBlocks()
-        {
-            if (blocksOnGrid.Count == 0) return;
-            //You already know the infected block before this, just pass it in and add it to the list, no need to search for it again
-            foreach (var block in blocksOnGrid.Where(block => block.BlockState == BlockState.Infected && !infectedBlocks.Contains(block)))
-            {
-                infectedBlocks.Add(block);
-            }
         }
         
         public void RandomInfected()
         {
             if (blocksOnGrid == null) return;
 
-            Block block = blocksOnGrid[Random.Range(0, blocksOnGrid.Count)]; //You can use extension method blocksOnGrid.RandomElement() here
+            //Block block = blocksOnGrid[Random.Range(0, blocksOnGrid.Count)];
+            ////You can use extension method blocksOnGrid.RandomElement() here
+            Block block = blocksOnGrid.GetRandomElement();
             InfectBlock(block);
             //lock.StartInfectionAsync(infectedTimeRange, true);
-            
-            UpdateInfectedBlocks();
         }
 
         public void InfectAdjacentBlocks(Block sourceBlock)
@@ -592,7 +581,9 @@ namespace MadDuck.Scripts.Managers
 
             if (candidatesForInfection.Count > 0)
             {
-                var blockToInfect = candidatesForInfection[Random.Range(0, candidatesForInfection.Count)]; //You can use extension method candidatesForInfection.RandomElement() here
+                //var blockToInfect = candidatesForInfection[Random.Range(0, candidatesForInfection.Count)]; 
+                //You can use extension method candidatesForInfection.RandomElement() here
+                var blockToInfect = candidatesForInfection.GetRandomElement();
                 InfectBlock(blockToInfect);
             }
         }

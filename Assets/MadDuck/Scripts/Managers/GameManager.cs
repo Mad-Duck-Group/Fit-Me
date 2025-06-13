@@ -67,16 +67,17 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField] private int scorePerFitMe = 10000;
     
     [Header("Infected Settings")] 
-    [SerializeField] private float startInfectTime = 10f;
-    [SerializeField] private Vector2 infectedTime = new Vector2(0f, 5f);
+    [SerializeField] private bool usePercentage;
+    [SerializeField, HideIf(nameof(usePercentage))] private float startInfectTimeRange = 10f;
+    [SerializeField, ShowIf(nameof(usePercentage))] private Vector2 firstInfectTimePercentRange = new(0.1f, 0.5f);
+    [SerializeField] private Vector2 infectionTimeRange = new Vector2(0, 10);
     [SerializeField] private int maxInfectionCount = 1;
-    [SerializeField, ShowIf("@maxInfectionCount >= 2")] private Vector2 infectCooldown = new Vector2(0f, 5f);
-    private float infectTimeCount;
-    private float infectCooldownCount = 0;
     private int _maxInfectionCount;
+    private List<float> listInfectTimePercent = new List<float>();
+    private int _listInfectIndex = 0;
+    public Vector2 InfectionTimeRange => infectionTimeRange;
     
-
-
+    
     private bool _sceneActivated;
     //private int _currentReRoll;
     private int _previousReRollScore;
@@ -101,7 +102,8 @@ public class GameManager : MonoSingleton<GameManager>
         gameOverText.transform.localScale = Vector3.zero;
         pausePanel.SetActive(false);
         countOffPanel.SetActive(true);
-        infectTimeCount = Random.Range(infectedTime.x, infectedTime.y);
+        if (!usePercentage) { maxInfectionCount = 1; }
+        CalculatePercentageInfectTime();
         UpdateScoreText(false);
         //UpdateReRollText(false);
         //reRollButton.interactable = false;
@@ -237,27 +239,40 @@ public class GameManager : MonoSingleton<GameManager>
             GameOver();
         }
     }
+
+    private void CalculatePercentageInfectTime()
+    {
+        listInfectTimePercent.Clear();
+        for (int i = 0; i < _maxInfectionCount; i++)
+        {
+            listInfectTimePercent.Add(Random.Range(firstInfectTimePercentRange.x, firstInfectTimePercentRange.y) * gameTimer);
+        }
+        //listInfectTimePercent.Sort((a, b) => b.CompareTo(a));
+        listInfectTimePercent.Sort();
+        Debug.Log(listInfectTimePercent.Count + "\n" + "1." +  listInfectTimePercent[0] + "\n" + "2." +  listInfectTimePercent[1] + "\n");
+    }
     
     private void UpdateSafeInfectedTimer()
     {
         if (!GameStarted || IsGameOver || IsPaused || IsGameClear) return;
-        if (!(_currentGameTimer <= startInfectTime) || _maxInfectionCount <= 0) return;
-        
-        infectTimeCount -= Time.deltaTime;
-        if (infectTimeCount > 0) return;
-        
+        var elapsedTime = gameTimer - _currentGameTimer;
+        switch (usePercentage)
+        {
+            case false:
+                if (!(_currentGameTimer <= startInfectTimeRange) || _maxInfectionCount <= 0) return;
+                break;
+            case true:
+                if (_listInfectIndex < 0 || _listInfectIndex >= listInfectTimePercent.Count) return;
+                if (!(elapsedTime >= listInfectTimePercent[_listInfectIndex])) return;
+                break;
+        }
+
         if (maxInfectionCount >= 2)
         {
-            if (infectCooldownCount > 0)
-            {
-                infectCooldownCount = Mathf.Max(0f, infectCooldownCount - Time.deltaTime);;
-            }
-            else
-            {
-                GridManager.Instance.RandomInfected();
-                _maxInfectionCount--;
-                infectCooldownCount = Random.Range(infectCooldown.x, infectCooldown.y);
-            }
+            if (!usePercentage || _listInfectIndex == listInfectTimePercent.Count || _maxInfectionCount <= 0) return; 
+            GridManager.Instance.RandomInfected();
+            _maxInfectionCount--;
+            _listInfectIndex++;
         }
         else
         {

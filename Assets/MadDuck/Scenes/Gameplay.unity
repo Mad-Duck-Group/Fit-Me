@@ -2068,10 +2068,11 @@ MonoBehaviour:
   scorePerCombo: 100
   scorePerBomb: 200
   scorePerFitMe: 10000
-  startInfectTime: 45
-  infectedTime: {x: 0, y: 5}
-  maxInfectionCount: 1
-  infectCooldown: {x: 0, y: 5}
+  usePercentage: 1
+  startInfectTimeRange: 10
+  firstInfectTimePercentRange: {x: 0.1, y: 0.6}
+  infectionTimeRange: {x: 3, y: 10}
+  maxInfectionCount: 2
 --- !u!4 &1077234520
 Transform:
   m_ObjectHideFlags: 0
@@ -3981,8 +3982,8 @@ MonoBehaviour:
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
   gridType: 0
   isFitMe: 0
-  infectedTimeRange: {x: 0, y: 5}
   infectedBlocks: []
+  randomInfectedTime: 0
   gridSize: {x: 8, y: 10}
   offset: {x: -4, y: 8}
   contacts: []

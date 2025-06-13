@@ -86,10 +86,7 @@ namespace MadDuck.Scripts.Units
             _originalPosition = transform.position;
             _originalRotation = transform.eulerAngles;
             _originalScale = transform.localScale;
-        }
-        
-        private void OnEnable() //You can move this to Initialize()
-        {
+            
             _subscription = Observable
                 .Interval(TimeSpan.FromSeconds(GridManager.Instance.RandomInfectedTime))
                 .Where(_ => BlockState == BlockState.Infected)
