@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Utils;
 using PrimeTween;
+using R3;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using Sirenix.Utilities;
@@ -13,15 +14,23 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.U2D.Animation;
+using Random = UnityEngine.Random;
 
 namespace MadDuck.Scripts.Units
 {
+    public enum BlockState
+    {
+        Normal,
+        Infected
+    }
+    
     public enum BlockTypes
     {
         Red,
         Yellow,
         Green,
-        Purple
+        Purple,
+        Infected
     }
 
     public enum BlockFaces
@@ -76,6 +85,8 @@ namespace MadDuck.Scripts.Units
         [TableList(AlwaysExpanded = true)]
         [field: SerializeField] public List<BlockSchema> BlockSchemas { get; private set; } = new();
         public int SpawnIndex { get; set; }
+        [SerializeField] private BlockState blockState = BlockState.Normal;
+
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
         private Vector3 _originalScale;
@@ -87,8 +98,11 @@ namespace MadDuck.Scripts.Units
         private bool _isDragging;
 
         public BlockTypes BlockType => blockType;
+        public BlockState BlockState { get => blockState; set => blockState = value; }
+        public BlockFaces BlockFace => blockFace;
         public Atom[] Atoms => atoms;
         public bool AllowPickUpAfterPlacement => allowPickUpAfterPlacement;
+        private IDisposable _subscription; //Rename to for more clarity
 
         private void Start()
         {
@@ -105,9 +119,18 @@ namespace MadDuck.Scripts.Units
             _originalRotation = transform.eulerAngles;
             _originalScale = transform.localScale;
             _originalColor = spriteRenderer.color;
+            
+            _subscription = Observable
+                .Interval(TimeSpan.FromSeconds(GridManager.Instance.RandomInfectedTime))
+                .Where(_ => BlockState == BlockState.Infected)
+                .Subscribe(_ => GridManager.Instance.InfectAdjacentBlocks(this));
         }
-
-    
+        
+        void OnDestroy()
+        {
+            _subscription?.Dispose();
+        }
+        
         /// <summary>
         /// Generate the schema of the block, 1 is an atom, 0 is empty
         /// </summary>
@@ -283,6 +306,22 @@ namespace MadDuck.Scripts.Units
                 IsPlaced = false;
             }
             _isDragging = false;
+        }
+
+        public async UniTask StartInfectionAsync(Vector2 infectedTimeRange, bool continueInfecting) //Delete if there is no usage for this method
+        {
+            if (blockState == BlockState.Normal) return;
+            
+            float delay = Random.Range(infectedTimeRange.x, infectedTimeRange.y);
+            await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: this.GetCancellationTokenOnDestroy());
+            GridManager.Instance.InfectAdjacentBlocks(this);
+            
+            /*while (continueInfecting)
+            {
+                float delay = Random.Range(infectedTimeRange.x, infectedTimeRange.y);
+                await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: this.GetCancellationTokenOnDestroy());
+                GridManager.Instance.InfectAdjacentBlocks(this);
+            }*/
         }
         
         #region Serialization

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Units;
 using MadDuck.Scripts.Utils;
+using Microsoft.Unity.VisualStudio.Editor;
 using Redcode.Extensions;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
@@ -12,6 +14,7 @@ using UnityCommunity.UnitySingleton;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace MadDuck.Scripts.Managers
 {
@@ -52,6 +55,12 @@ namespace MadDuck.Scripts.Managers
         private GridType gridType = GridType.Rectangle;
         [TitleGroup("Grid Settings")]
         [Button("Refresh Custom Grid"), ShowIf(nameof(gridType), GridType.Custom), DisableInPlayMode]
+        //Consider moving these settings to GameManager, so we can set it in one place.
+        [Title("Infected Debug")]
+        [SerializeField, Sirenix.OdinInspector.ReadOnly] private float randomInfectedTime;
+        [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> infectedBlocks = new();
+        public float RandomInfectedTime => randomInfectedTime;
+        
         private void RefreshCustomGrid()
         {
             var newCustomGrid = new bool[gridSize.y, gridSize.x];
@@ -181,6 +190,7 @@ namespace MadDuck.Scripts.Managers
             {
                 Debug.LogError("Grid cell size must be the same in both axes!");
             }
+            randomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
         }
 
         void Start()
@@ -423,7 +433,8 @@ namespace MadDuck.Scripts.Managers
                     Block adjacentBlock = adjacentCell.CurrentAtom.ParentBlock;
                     if (adjacentBlock != block && adjacentBlock.BlockType == currentType && !contactedBlocks.Contains(adjacentBlock))
                     {
-                        contactedBlocks.Add(adjacentBlock);
+                        if(adjacentBlock.BlockState == BlockState.Normal)
+                            contactedBlocks.Add(adjacentBlock);
                     }
                 }
             }
@@ -617,6 +628,66 @@ namespace MadDuck.Scripts.Managers
         }
         #endregion
 
+        private void InfectBlock(Block block)
+        {
+            if (!GameManager.Instance.GameStarted || GameManager.Instance.IsGameOver || 
+                GameManager.Instance.IsPaused || GameManager.Instance.IsGameClear) return;
+            
+            block.SpriteRenderer.color = Color.gray;
+            block.BlockState = BlockState.Infected;
+            infectedBlocks.Add(block);
+            randomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
+            Debug.Log("Block " + block.name + " is infected!");
+        }
+        
+        public void InfectRandomBlock()
+        {
+            if (blocksOnGrid == null) return;
+
+            Block block = blocksOnGrid.GetRandomElement();
+            InfectBlock(block);
+        }
+
+        public void InfectAdjacentBlocks(Block sourceBlock)
+        {
+            if (!sourceBlock || sourceBlock.BlockState != BlockState.Infected) return;
+
+            var candidatesForInfection = new List<Block>();
+
+            foreach (var atom in sourceBlock.Atoms)
+            {
+                Cell cell = GetCellByPosition(atom.transform.position);
+                if (!cell) continue;
+
+                int x = cell.ArrayIndex[0];
+                int y = cell.ArrayIndex[1];
+                
+                Cell[] adjacentCells = new Cell[]
+                {
+                    GetCellByArrayIndex(x - 1, y),
+                    GetCellByArrayIndex(x + 1, y),
+                    GetCellByArrayIndex(x, y - 1),
+                    GetCellByArrayIndex(x, y + 1)
+                };
+
+                foreach (var adjacentCell in adjacentCells)
+                {
+                    if (!adjacentCell || !adjacentCell.CurrentAtom) continue;
+                    Block adjacentBlock = adjacentCell.CurrentAtom.ParentBlock;
+            
+                    if (adjacentBlock && adjacentBlock.BlockState == BlockState.Normal)
+                    {
+                        candidatesForInfection.Add(adjacentBlock);
+                    }
+                }
+            }
+
+            if (candidatesForInfection.Count > 0)
+            {
+                var blockToInfect = candidatesForInfection.GetRandomElement();
+                InfectBlock(blockToInfect);
+            }
+        }
         
         #region Editor
         #if UNITY_EDITOR
