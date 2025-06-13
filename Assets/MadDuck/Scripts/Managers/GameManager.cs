@@ -79,8 +79,6 @@ public class GameManager : MonoSingleton<GameManager>
     [Title("Game Manager Debug")]
     [field: SerializeField, Sirenix.OdinInspector.ReadOnly]
     public SerializableReactiveProperty<GameState> CurrentGameState { get; private set; } = new(GameState.CountOff);
-
-    private GameState _beforePauseState;
     
     [Header("Infected Settings")] 
     [SerializeField] private bool usePercentage;
@@ -93,7 +91,7 @@ public class GameManager : MonoSingleton<GameManager>
     private int _listInfectIndex = 0;
     public Vector2 InfectionTimeRange => infectionTimeRange;
     
-    
+    private GameState _beforePauseState;
     private bool _sceneActivated;
     //private int _currentReRoll;
     private int _previousReRollScore;
@@ -263,7 +261,7 @@ public class GameManager : MonoSingleton<GameManager>
     
     private void UpdateSafeInfectedTimer()
     {
-        if (!GameStarted || IsGameOver || IsPaused || IsGameClear) return;
+        if (CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
         var elapsedTime = gameTimer - _currentGameTimer;
         switch (usePercentage)
         {

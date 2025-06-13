@@ -55,12 +55,6 @@ namespace MadDuck.Scripts.Managers
         private GridType gridType = GridType.Rectangle;
         [TitleGroup("Grid Settings")]
         [Button("Refresh Custom Grid"), ShowIf(nameof(gridType), GridType.Custom), DisableInPlayMode]
-        //Consider moving these settings to GameManager, so we can set it in one place.
-        [Title("Infected Debug")]
-        [SerializeField, Sirenix.OdinInspector.ReadOnly] private float randomInfectedTime;
-        [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> infectedBlocks = new();
-        public float RandomInfectedTime => randomInfectedTime;
-        
         private void RefreshCustomGrid()
         {
             var newCustomGrid = new bool[gridSize.y, gridSize.x];
@@ -142,6 +136,11 @@ namespace MadDuck.Scripts.Managers
         public List<Block> BlocksOnGrid => blocksOnGrid;
         [SerializeField, ShowIf(nameof(gridType), GridType.Custom)]
         private bool drawAllCustomGridCells = true;
+        
+        [Title("Infected Debug")]
+        [SerializeField, Sirenix.OdinInspector.ReadOnly] private float randomInfectedTime;
+        [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> infectedBlocks = new();
+        public float RandomInfectedTime => randomInfectedTime;
 
         private void UpdateGridOffset()
         {
@@ -630,8 +629,7 @@ namespace MadDuck.Scripts.Managers
 
         private void InfectBlock(Block block)
         {
-            if (!GameManager.Instance.GameStarted || GameManager.Instance.IsGameOver || 
-                GameManager.Instance.IsPaused || GameManager.Instance.IsGameClear) return;
+            if (GameManager.Instance.CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
             
             block.SpriteRenderer.color = Color.gray;
             block.BlockState = BlockState.Infected;

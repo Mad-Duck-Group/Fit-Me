@@ -80,13 +80,13 @@ namespace MadDuck.Scripts.Units
         [SerializeField] private bool allowPickUpAfterPlacement;
         
         [Title("Block Debug")]
+        [SerializeField, DisplayAsString] private BlockState blockState = BlockState.Normal;
         [field: SerializeField, DisplayAsString] public bool IsPlaced { get; private set; }
         [field: SerializeField] public List<Cell> BlockCells { get; set; }
         [TableList(AlwaysExpanded = true)]
         [field: SerializeField] public List<BlockSchema> BlockSchemas { get; private set; } = new();
         public int SpawnIndex { get; set; }
-        [SerializeField] private BlockState blockState = BlockState.Normal;
-
+        public SpriteRenderer SpriteRenderer => spriteRenderer;
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
         private Vector3 _originalScale;
