@@ -80,13 +80,13 @@ namespace MadDuck.Scripts.Units
         [SerializeField] private bool allowPickUpAfterPlacement;
         
         [Title("Block Debug")]
-        [SerializeField, DisplayAsString] private BlockState blockState = BlockState.Normal;
+        [field: SerializeField, DisplayAsString] public BlockState BlockState { get; private set; } = BlockState.Normal;
         [field: SerializeField, DisplayAsString] public bool IsPlaced { get; private set; }
         [field: SerializeField] public List<Cell> BlockCells { get; set; }
         [TableList(AlwaysExpanded = true)]
         [field: SerializeField] public List<BlockSchema> BlockSchemas { get; private set; } = new();
         public int SpawnIndex { get; set; }
-        public SpriteRenderer SpriteRenderer => spriteRenderer;
+        
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
         private Vector3 _originalScale;
@@ -98,11 +98,10 @@ namespace MadDuck.Scripts.Units
         private bool _isDragging;
 
         public BlockTypes BlockType => blockType;
-        public BlockState BlockState { get => blockState; set => blockState = value; }
         public BlockFaces BlockFace => blockFace;
         public Atom[] Atoms => atoms;
         public bool AllowPickUpAfterPlacement => allowPickUpAfterPlacement;
-        private IDisposable _subscription; //Rename to for more clarity
+        private IDisposable _infectionSubscription; //Rename to for more clarity
 
         private void Start()
         {
@@ -119,8 +118,7 @@ namespace MadDuck.Scripts.Units
             _originalRotation = transform.eulerAngles;
             _originalScale = transform.localScale;
             _originalColor = spriteRenderer.color;
-            
-            _subscription = Observable
+            _infectionSubscription = Observable
                 .Interval(TimeSpan.FromSeconds(GridManager.Instance.RandomInfectedTime))
                 .Where(_ => BlockState == BlockState.Infected)
                 .Subscribe(_ => GridManager.Instance.InfectAdjacentBlocks(this));
@@ -128,7 +126,7 @@ namespace MadDuck.Scripts.Units
         
         void OnDestroy()
         {
-            _subscription?.Dispose();
+            _infectionSubscription?.Dispose();
         }
         
         /// <summary>
@@ -232,6 +230,12 @@ namespace MadDuck.Scripts.Units
             spriteRenderer.color = _originalColor;
         }
 
+        public void Infect()
+        {
+            spriteRenderer.color = Color.gray;
+            BlockState = BlockState.Infected;
+        }
+
         public void ChangeColor(BlockTypes type, bool updateGrid = true)
         {
             blockType = type;
@@ -306,22 +310,6 @@ namespace MadDuck.Scripts.Units
                 IsPlaced = false;
             }
             _isDragging = false;
-        }
-
-        public async UniTask StartInfectionAsync(Vector2 infectedTimeRange, bool continueInfecting) //Delete if there is no usage for this method
-        {
-            if (blockState == BlockState.Normal) return;
-            
-            float delay = Random.Range(infectedTimeRange.x, infectedTimeRange.y);
-            await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: this.GetCancellationTokenOnDestroy());
-            GridManager.Instance.InfectAdjacentBlocks(this);
-            
-            /*while (continueInfecting)
-            {
-                float delay = Random.Range(infectedTimeRange.x, infectedTimeRange.y);
-                await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: this.GetCancellationTokenOnDestroy());
-                GridManager.Instance.InfectAdjacentBlocks(this);
-            }*/
         }
         
         #region Serialization

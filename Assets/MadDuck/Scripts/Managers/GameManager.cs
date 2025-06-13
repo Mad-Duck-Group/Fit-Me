@@ -82,15 +82,17 @@ public class GameManager : MonoSingleton<GameManager>
     
     [Header("Infected Settings")] 
     [SerializeField] private bool usePercentage;
-    [SerializeField, HideIf(nameof(usePercentage))] private float startInfectTimeRange = 10f;
-    [SerializeField, ShowIf(nameof(usePercentage))] private Vector2 firstInfectTimePercentRange = new(0.1f, 0.5f);
-    [SerializeField] private Vector2 infectionTimeRange = new Vector2(0, 10);
+    [SerializeField, HideIf(nameof(usePercentage))] 
+    private float startInfectTimeRange = 10f;
+    [SerializeField, ShowIf(nameof(usePercentage)), MinValue(0.1f)] 
+    private Vector2 firstInfectTimePercentRange = new(0.1f, 0.5f);
+    [field: SerializeField, MinValue(0.1f)] 
+    public Vector2 InfectionTimeRange { get; private set; } = new(0, 10);
     [SerializeField] private int maxInfectionCount = 1;
-    private int _currentInfectionCount = 0;
-    private List<float> listInfectTimePercent = new List<float>();
-    private int _listInfectIndex = 0;
-    public Vector2 InfectionTimeRange => infectionTimeRange;
-    
+    private int _currentInfectionCount;
+    private readonly List<float> _listInfectTimePercent = new();
+    private int _listInfectIndex;
+
     private GameState _beforePauseState;
     private bool _sceneActivated;
     //private int _currentReRoll;
@@ -249,14 +251,12 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void CalculatePercentageInfectTime()
     {
-        listInfectTimePercent.Clear();
+        _listInfectTimePercent.Clear();
         for (int i = 0; i < maxInfectionCount; i++)
         {
-            listInfectTimePercent.Add(Random.Range(firstInfectTimePercentRange.x, firstInfectTimePercentRange.y) * gameTimer);
+            _listInfectTimePercent.Add(Random.Range(firstInfectTimePercentRange.x, firstInfectTimePercentRange.y) * gameTimer);
         }
-        //listInfectTimePercent.Sort((a, b) => b.CompareTo(a));
-        listInfectTimePercent.Sort();
-        Debug.Log(listInfectTimePercent.Count + "\n" + "1." +  listInfectTimePercent[0] + "\n" + "2." +  listInfectTimePercent[1] + "\n");
+        _listInfectTimePercent.Sort();
     }
     
     private void UpdateSafeInfectedTimer()
@@ -266,17 +266,17 @@ public class GameManager : MonoSingleton<GameManager>
         switch (usePercentage)
         {
             case false:
-                if (!(elapsedTime >= startInfectTimeRange) || _currentInfectionCount >= maxInfectionCount) return;
+                if (elapsedTime < startInfectTimeRange || _currentInfectionCount >= maxInfectionCount) return;
                 break;
             case true:
-                if (_listInfectIndex < 0 || _listInfectIndex >= listInfectTimePercent.Count) return;
-                if (!(elapsedTime >= listInfectTimePercent[_listInfectIndex])) return;
+                if (_listInfectIndex < 0 || _listInfectIndex >= _listInfectTimePercent.Count) return;
+                if (elapsedTime < _listInfectTimePercent[_listInfectIndex]) return;
                 break;
         }
 
         if (maxInfectionCount >= 2)
         {
-            if (!usePercentage || _listInfectIndex == listInfectTimePercent.Count || _currentInfectionCount >= maxInfectionCount) return; 
+            if (!usePercentage || _currentInfectionCount >= maxInfectionCount) return; 
             GridManager.Instance.InfectRandomBlock();
             _currentInfectionCount++;
             _listInfectIndex++;
@@ -349,19 +349,7 @@ public class GameManager : MonoSingleton<GameManager>
         gameOverPanel.SetActive(true);
         Tween.Scale(gameOverText.transform, 1, 0.5f, ease: Ease.OutBounce);
     }
-    
-    public void GameClear()
-    {
-        CurrentGameState.Value = GameState.GameClear;
-        _currentGameTimer = gameTimer;
-        GridManager.Instance.RegenerateGrid();
-        CurrentGameState.Value = GameState.PlaceBlock;
-        // Debug.Log("Game Clear!");
-        // gameClearText.text = "Game Clear!";
-        // gameClearPanel.SetActive(true);
-        // Tween.Scale(gameClearText.transform, 1, 0.5f, ease: Ease.OutBounce);
-    }
-    
+
     public void BackToMenu()
     {
         if (SceneManager.sceneCount > 1) return;

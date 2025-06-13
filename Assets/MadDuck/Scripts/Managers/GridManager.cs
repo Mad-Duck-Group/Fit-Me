@@ -138,9 +138,8 @@ namespace MadDuck.Scripts.Managers
         private bool drawAllCustomGridCells = true;
         
         [Title("Infected Debug")]
-        [SerializeField, Sirenix.OdinInspector.ReadOnly] private float randomInfectedTime;
+        [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public float RandomInfectedTime { get; private set; }
         [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> infectedBlocks = new();
-        public float RandomInfectedTime => randomInfectedTime;
 
         private void UpdateGridOffset()
         {
@@ -189,7 +188,7 @@ namespace MadDuck.Scripts.Managers
             {
                 Debug.LogError("Grid cell size must be the same in both axes!");
             }
-            randomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
+            RandomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
         }
 
         void Start()
@@ -199,8 +198,8 @@ namespace MadDuck.Scripts.Managers
 
         private void RandomGridSize()
         {
-            int randomX = UnityEngine.Random.Range(randomGridXRange.x, randomGridXRange.y + 1);
-            int randomY = UnityEngine.Random.Range(randomGridYRange.x, randomGridYRange.y + 1);
+            int randomX = Random.Range(randomGridXRange.x, randomGridXRange.y + 1);
+            int randomY = Random.Range(randomGridYRange.x, randomGridYRange.y + 1);
             gridSize = new Vector2Int(randomX, randomY);
             UpdateGridOffset();
         }
@@ -627,21 +626,18 @@ namespace MadDuck.Scripts.Managers
         }
         #endregion
 
+        #region Infection
         private void InfectBlock(Block block)
         {
             if (GameManager.Instance.CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
-            
-            block.SpriteRenderer.color = Color.gray;
-            block.BlockState = BlockState.Infected;
+            block.Infect();
             infectedBlocks.Add(block);
-            randomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
-            Debug.Log("Block " + block.name + " is infected!");
+            RandomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
         }
         
         public void InfectRandomBlock()
         {
-            if (blocksOnGrid == null) return;
-
+            if (blocksOnGrid.Count == 0) return;
             Block block = blocksOnGrid.GetRandomElement();
             InfectBlock(block);
         }
@@ -660,7 +656,7 @@ namespace MadDuck.Scripts.Managers
                 int x = cell.ArrayIndex[0];
                 int y = cell.ArrayIndex[1];
                 
-                Cell[] adjacentCells = new Cell[]
+                Cell[] adjacentCells =
                 {
                     GetCellByArrayIndex(x - 1, y),
                     GetCellByArrayIndex(x + 1, y),
@@ -686,6 +682,7 @@ namespace MadDuck.Scripts.Managers
                 InfectBlock(blockToInfect);
             }
         }
+        #endregion
         
         #region Editor
         #if UNITY_EDITOR

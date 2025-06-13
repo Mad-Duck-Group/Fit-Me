@@ -2455,7 +2455,7 @@ MonoBehaviour:
   usePercentage: 1
   startInfectTimeRange: 10
   firstInfectTimePercentRange: {x: 0.1, y: 0.6}
-  infectionTimeRange: {x: 3, y: 10}
+  <InfectionTimeRange>k__BackingField: {x: 3, y: 10}
   maxInfectionCount: 2
 --- !u!4 &1077234520
 Transform:
@@ -4354,7 +4354,7 @@ MonoBehaviour:
   contacts: []
   blocksOnGrid: []
   drawAllCustomGridCells: 0
-  randomInfectedTime: 0
+  <RandomInfectedTime>k__BackingField: 0
   infectedBlocks: []
   serializationData:
     SerializedFormat: 2
