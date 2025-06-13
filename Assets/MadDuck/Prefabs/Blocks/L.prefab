@@ -116,7 +116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_CategoryHash: 1.4470151e-16
-  m_labelHash: 0.00000003317807
+  m_labelHash: 1.3237902e-11
   m_SpriteKey: 0
   m_SpriteHash: 693570345
 --- !u!1 &2629848367174469675
@@ -472,6 +472,17 @@ MonoBehaviour:
   spriteResolver: {fileID: 2577550706603429820}
   allowPickUpAfterPlacement: 0
   <IsPlaced>k__BackingField: 0
+  <BlockCells>k__BackingField: []
+  <BlockSchemas>k__BackingField: []
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
 --- !u!50 &3347050702638275437
 Rigidbody2D:
   serializedVersion: 5

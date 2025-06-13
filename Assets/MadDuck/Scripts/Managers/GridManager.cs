@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MadDuck.Scripts.Units;
 using MadDuck.Scripts.Utils;
+using Redcode.Extensions;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using Sirenix.Serialization;
@@ -24,12 +25,18 @@ namespace MadDuck.Scripts.Managers
             Rectangle,
             Custom
         }
+
+        private enum GridOffsetType
+        {
+            Automatic,
+            Custom
+        }
     
         [Serializable]
         public struct Contacts
         {
-            [SerializeField, ReadOnly] public List<Block> contactedBlocks;
-            [SerializeField, ReadOnly] public BlockTypes contactType;
+            [SerializeField, Sirenix.OdinInspector.ReadOnly] public List<Block> contactedBlocks;
+            [SerializeField, Sirenix.OdinInspector.ReadOnly] public BlockTypes contactType;
         }
         
         [Title("Grid References")]
@@ -84,11 +91,28 @@ namespace MadDuck.Scripts.Managers
             _customGrid = new bool[gridSize.y, gridSize.x];
         }
         [TitleGroup("Grid Settings")]
-        [SerializeField]
+        [SerializeField] [OnValueChanged(nameof(UpdateGridOffset))]
+        [MinValue(1)]
         private Vector2Int gridSize = new(10, 10);
         [TitleGroup("Grid Settings")]
-        [SerializeField] 
-        private Vector2Int offset = new(0, 0);
+        [SerializeField] [MinMaxSlider(1, 20, ShowFields = true)]
+        private Vector2Int randomGridXRange = new(1, 10);
+        [TitleGroup("Grid Settings")]
+        [SerializeField] [MinMaxSlider(1, 20, ShowFields = true)]
+        private Vector2Int randomGridYRange = new(1, 10);
+        [TitleGroup("Grid Settings")]
+        [SerializeField] [OnValueChanged(nameof(UpdateGridOffset))]
+        private GridOffsetType gridHorizontalOffsetType = GridOffsetType.Automatic;
+        [TitleGroup("Grid Settings")]
+        [SerializeField, ShowIf(nameof(gridHorizontalOffsetType), GridOffsetType.Custom)]
+        [OnValueChanged(nameof(UpdateGridOffset))]
+        private int customOffsetX = 0;
+        [TitleGroup("Grid Settings")]
+        [SerializeField] [OnValueChanged(nameof(UpdateGridOffset))]
+        private GridOffsetType gridVerticalOffsetType = GridOffsetType.Custom;
+        [SerializeField, ShowIf(nameof(gridVerticalOffsetType), GridOffsetType.Custom)]
+        [OnValueChanged(nameof(UpdateGridOffset))]
+        private int customOffsetY = 0;
         [TitleGroup("Grid Settings")]
         [TableMatrix(SquareCells = true, HorizontalTitle = "Custom Grid",
             DrawElementMethod = nameof(DrawCustomGridMatrix), Transpose = true)]
@@ -96,18 +120,51 @@ namespace MadDuck.Scripts.Managers
         private bool[,] _customGrid = { };
 
         [Title("Grid Debug")]
-        [field: SerializeField, ReadOnly] public bool IsFitMe { get; private set; }
-        [SerializeField, ReadOnly] private List<Contacts> contacts = new();
+        [SerializeField, Sirenix.OdinInspector.ReadOnly] 
+        private Vector2Int currentOffset = new(0, 0);
+        [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Contacts> contacts = new();
         [TableMatrix(SquareCells = true, HorizontalTitle = "Cell Array", IsReadOnly = true,
             DrawElementMethod = nameof(DrawCellArrayMatrix), Transpose = true)]
         [SerializeField] private Cell[,] _cellArray = {};
         [TableMatrix(SquareCells = true, HorizontalTitle = "Vacant Schema", IsReadOnly = true,
             DrawElementMethod = nameof(DrawVacantSchemaMatrix), Transpose = true)]
-        [SerializeField] private int[,] _vacantSchema;
-        [SerializeField, ReadOnly] private List<Block> blocksOnGrid = new();
+        [SerializeField] private int[,] _vacantSchema = {};
+        [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> blocksOnGrid = new();
         public List<Block> BlocksOnGrid => blocksOnGrid;
         [SerializeField, ShowIf(nameof(gridType), GridType.Custom)]
         private bool drawAllCustomGridCells = true;
+
+        private void UpdateGridOffset()
+        {
+            switch (gridHorizontalOffsetType)
+            {
+                case GridOffsetType.Automatic:
+                    currentOffset.x = -Mathf.FloorToInt(gridSize.x / 2f);
+                    if (gridSize.x % 2 != 0)
+                    {
+                        if (!_grid) _grid = GetComponent<Grid>();
+                        transform.SetPositionX(-_grid.cellSize.x / 2f);
+                    }
+                    else
+                    {
+                        transform.SetPositionX(0f);
+                    }
+                    break;
+                case GridOffsetType.Custom:
+                    currentOffset.x = customOffsetX;
+                    break;
+            }
+            
+            switch (gridVerticalOffsetType)
+            {
+                case GridOffsetType.Automatic:
+                    currentOffset.y = Mathf.FloorToInt(gridSize.y / 2f);
+                    break;
+                case GridOffsetType.Custom:
+                    currentOffset.y = customOffsetY;
+                    break;
+            }
+        }
         #endregion
 
         #region Fields
@@ -130,12 +187,35 @@ namespace MadDuck.Scripts.Managers
         {
             CreateCells();
         }
+
+        private void RandomGridSize()
+        {
+            int randomX = UnityEngine.Random.Range(randomGridXRange.x, randomGridXRange.y + 1);
+            int randomY = UnityEngine.Random.Range(randomGridYRange.x, randomGridYRange.y + 1);
+            gridSize = new Vector2Int(randomX, randomY);
+            UpdateGridOffset();
+        }
+
+        public void RegenerateGrid()
+        {
+            Debug.Log("Regenerating grid...");
+            contacts.Clear();
+            ResetPreviousValidationCells();
+            foreach (var cell in _cellArray)
+            {
+                if (cell) Destroy(cell.gameObject);
+            }
+            _cellArray = new Cell[0, 0];
+            _vacantSchema = new int[0, 0];
+            CreateCells();
+        }
         
         /// <summary>
         /// Create the cells
         /// </summary>
         private void CreateCells()
         {
+            RandomGridSize();
             var row = gridSize.y;
             var column = gridSize.x;
             var cellSize = _grid.cellSize.x;
@@ -146,12 +226,15 @@ namespace MadDuck.Scripts.Managers
                 {
                     if (gridType is GridType.Custom && !_customGrid[x, y]) continue; 
                     var halfSize = cellSize / 2;
-                    Vector3 spawnPosition = new Vector2(halfSize, halfSize) + new Vector2(y + offset.x,  offset.y - x) * (cellSize);
+                    Vector3 spawnPosition =
+                        (Vector3)(new Vector2(halfSize, halfSize) +
+                                  new Vector2(y + currentOffset.x, currentOffset.y - x) * cellSize) +
+                        transform.position;
                     _cellArray[x, y] = Instantiate(cellPrefab, spawnPosition, Quaternion.identity, cellParent);
                     _cellArray[x, y].transform.localScale = Vector3.one * cellSize;
                     _cellArray[x, y].name = $"Cell {x}_{y}";
                     _cellArray[x, y].ArrayIndex = new Vector2Int(x, y);
-                    _cellArray[x, y].GridIndex = new Vector2Int(y + offset.x, offset.y - x);
+                    _cellArray[x, y].GridIndex = new Vector2Int(y + currentOffset.x, currentOffset.y - x);
                 
                     //Chessboard Pattern
                     if (x % 2 == 0)
@@ -252,8 +335,9 @@ namespace MadDuck.Scripts.Managers
         {
             if (!CreateVacantSchema()) //Fit Me!
             {
-                IsFitMe = true;
                 GameManager.Instance.AddScore(ScoreTypes.FitMe);
+                RemoveAllBlocks(true);
+                RegenerateGrid();
                 return;
             }
             if (CheckForContact(block, out var contacts))
@@ -432,10 +516,10 @@ namespace MadDuck.Scripts.Managers
             availableBlocks = new List<Block>();
             foreach (var block in blockToCheck)
             {
-                if (block.BlockSchemas.Count == 0)
-                {
-                    block.GenerateSchema();
-                }
+                // if (block.BlockSchemas.Count == 0)
+                // {
+                //     block.GenerateSchema();
+                // }
                 if (CompareSchema(block))
                 {
                     availableBlocks.Add(block);
@@ -455,13 +539,21 @@ namespace MadDuck.Scripts.Managers
         /// <returns>true if the block can be placed, false otherwise</returns>
         private bool CompareSchema(Block block)
         {
-            foreach (var schema in block.BlockSchemas)
+            // foreach (var schema in block.BlockSchemas)
+            // {
+            //     if (ArrayHelper.CanBlockFitInVacant(_vacantSchema, schema.schema))
+            //     {
+            //         Debug.Log("Block " + block.name + " can be placed");
+            //         return true;
+            //     }
+            // }
+            var blockAngle = block.transform.eulerAngles.z;
+            var index = (int)blockAngle / 90;
+            Debug.Log("Block " + block.name + " angle: " + blockAngle + ", index: " + index);
+            if (ArrayHelper.CanBlockFitInVacant(_vacantSchema, block.BlockSchemas[index].schema))
             {
-                if (ArrayHelper.CanBlockFitInVacant(_vacantSchema, schema))
-                {
-                    Debug.Log("Block " + block.name + " can be placed");
-                    return true;
-                }
+                Debug.Log("Block " + block.name + " can be placed");
+                return true;
             }
             return false;
         }
@@ -489,7 +581,7 @@ namespace MadDuck.Scripts.Managers
         
         public Cell GetCellByGridIndex(int x, int y)
         {
-            return GetCellByArrayIndex(offset.y - y, x - offset.x);
+            return GetCellByArrayIndex(currentOffset.y - y, x - currentOffset.x);
         }
         
         public Cell GetCellByGridIndex(Vector2Int gridIndex)
@@ -554,7 +646,7 @@ namespace MadDuck.Scripts.Managers
                     }
                     Handles.color = handleColor;
                     var arrayIndex = new Vector2Int(x, y);
-                    var gridIndex = new Vector2Int(y + offset.x, offset.y - x);
+                    var gridIndex = new Vector2Int(y + currentOffset.x, currentOffset.y - x);
                     var bounds = GetCellBounds(gridIndex);
                     Handles.DrawWireCube(bounds.center, bounds.size);
                     Handles.Label(bounds.center, arrayIndex.ToString(), style: new GUIStyle()

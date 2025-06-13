@@ -801,6 +801,17 @@ MonoBehaviour:
   spriteResolver: {fileID: 130501509669973062}
   allowPickUpAfterPlacement: 0
   <IsPlaced>k__BackingField: 0
+  <BlockCells>k__BackingField: []
+  <BlockSchemas>k__BackingField: []
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
 --- !u!50 &-336029871580744006
 Rigidbody2D:
   serializedVersion: 5
