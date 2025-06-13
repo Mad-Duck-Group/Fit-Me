@@ -72,7 +72,7 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField, ShowIf(nameof(usePercentage))] private Vector2 firstInfectTimePercentRange = new(0.1f, 0.5f);
     [SerializeField] private Vector2 infectionTimeRange = new Vector2(0, 10);
     [SerializeField] private int maxInfectionCount = 1;
-    private int _maxInfectionCount;
+    private int _currentInfectionCount = 0;
     private List<float> listInfectTimePercent = new List<float>();
     private int _listInfectIndex = 0;
     public Vector2 InfectionTimeRange => infectionTimeRange;
@@ -97,7 +97,6 @@ public class GameManager : MonoSingleton<GameManager>
     void Start()
     {
         _currentGameTimer = gameTimer;
-        _maxInfectionCount = maxInfectionCount;
         gameOverPanel.SetActive(false);
         gameOverText.transform.localScale = Vector3.zero;
         pausePanel.SetActive(false);
@@ -243,7 +242,7 @@ public class GameManager : MonoSingleton<GameManager>
     private void CalculatePercentageInfectTime()
     {
         listInfectTimePercent.Clear();
-        for (int i = 0; i < _maxInfectionCount; i++)
+        for (int i = 0; i < maxInfectionCount; i++)
         {
             listInfectTimePercent.Add(Random.Range(firstInfectTimePercentRange.x, firstInfectTimePercentRange.y) * gameTimer);
         }
@@ -259,7 +258,7 @@ public class GameManager : MonoSingleton<GameManager>
         switch (usePercentage)
         {
             case false:
-                if (!(elapsedTime >= startInfectTimeRange) || _maxInfectionCount <= 0) return;
+                if (!(elapsedTime >= startInfectTimeRange) || _currentInfectionCount >= 0) return;
                 break;
             case true:
                 if (_listInfectIndex < 0 || _listInfectIndex >= listInfectTimePercent.Count) return;
@@ -269,15 +268,15 @@ public class GameManager : MonoSingleton<GameManager>
 
         if (maxInfectionCount >= 2)
         {
-            if (!usePercentage || _listInfectIndex == listInfectTimePercent.Count || _maxInfectionCount <= 0) return; 
-            GridManager.Instance.RandomInfected();
-            _maxInfectionCount--;
+            if (!usePercentage || _listInfectIndex == listInfectTimePercent.Count || _currentInfectionCount >= 0) return; 
+            GridManager.Instance.InfectRandomBlock();
+            _currentInfectionCount++;
             _listInfectIndex++;
         }
         else
         {
-            GridManager.Instance.RandomInfected();
-            _maxInfectionCount--;
+            GridManager.Instance.InfectRandomBlock();
+            _currentInfectionCount++;
         }
     }
 

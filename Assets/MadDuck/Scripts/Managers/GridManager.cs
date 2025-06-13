@@ -527,6 +527,9 @@ namespace MadDuck.Scripts.Managers
 
         private void InfectBlock(Block block)
         {
+            if (!GameManager.Instance.GameStarted || GameManager.Instance.IsGameOver || 
+                GameManager.Instance.IsPaused || GameManager.Instance.IsGameClear) return;
+            
             block.SpriteRenderer.color = Color.gray;
             block.BlockState = BlockState.Infected;
             infectedBlocks.Add(block);
@@ -534,7 +537,7 @@ namespace MadDuck.Scripts.Managers
             Debug.Log("Block " + block.name + " is infected!");
         }
         
-        public void RandomInfected()
+        public void InfectRandomBlock()
         {
             if (blocksOnGrid == null) return;
 
