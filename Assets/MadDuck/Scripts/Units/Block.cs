@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,8 @@ using MadDuck.Scripts.Utils;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.U2D.Animation;
 
 namespace MadDuck.Scripts.Units
 {
@@ -31,30 +34,35 @@ namespace MadDuck.Scripts.Units
         T,
         TwoByTwo
     }
-    public class Block : MonoBehaviour
+    public class Block : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
+        [Title("Block References")]
         [SerializeField] private BlockTypes blockType;
         [SerializeField] private BlockFaces blockFace;
         [SerializeField] private Atom[] atoms;
         [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] private SpriteResolver spriteResolver;
         [SerializeField] private bool allowPickUpAfterPlacement;
+        
+        [Title("Block Debug")]
+        [field: SerializeField, DisplayAsString] public bool IsPlaced { get; private set; }
+        [field: SerializeField] public List<Cell> BlockCells { get; set; }
 
-        private List<int[,]> _blockSchemas = new();
+        public List<int[,]> BlockSchemas { get; private set; } = new();
+        public int SpawnIndex { get; set; }
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
         private Vector3 _originalScale;
         private Vector3 _originalSpriteScale;
-        private bool _isPlaced;
-        private int _spawnIndex;
+        private Color _originalColor;
+        private Vector3 _mousePositionDifference;
         private Tween _transformTween;
-        private Coroutine _rotateCoroutine;
+        private Tween _flashTween;
         private bool _isDragging;
 
         public BlockTypes BlockType => blockType;
-        public List<int[,]> BlockSchemas => _blockSchemas;
         public Atom[] Atoms => atoms;
         public bool AllowPickUpAfterPlacement => allowPickUpAfterPlacement;
-        public int SpawnIndex {get => _spawnIndex; set => _spawnIndex = value;}
 
         private void Start()
         {
@@ -70,6 +78,7 @@ namespace MadDuck.Scripts.Units
             _originalPosition = transform.position;
             _originalRotation = transform.eulerAngles;
             _originalScale = transform.localScale;
+            _originalColor = spriteRenderer.color;
         }
 
     
@@ -97,42 +106,12 @@ namespace MadDuck.Scripts.Units
                 int y = Mathf.RoundToInt(atom.transform.position.y - mostDown.transform.position.y);
                 originalSchema[y, x] = 1;
             }
-            _blockSchemas.Add(ArrayHelper.Rotate180(originalSchema));
-            _blockSchemas.Add(ArrayHelper.Rotate90(_blockSchemas[0]));
-            _blockSchemas.Add(originalSchema);
-            _blockSchemas.Add(ArrayHelper.Rotate270(_blockSchemas[0]));
-            _blockSchemas = _blockSchemas.Distinct().ToList(); //Remove duplicates
+            BlockSchemas.Add(ArrayHelper.Rotate180(originalSchema));
+            BlockSchemas.Add(ArrayHelper.Rotate90(BlockSchemas[0]));
+            BlockSchemas.Add(originalSchema);
+            BlockSchemas.Add(ArrayHelper.Rotate270(BlockSchemas[0]));
+            BlockSchemas = BlockSchemas.Distinct().ToList(); //Remove duplicates
             transform.localScale = currentScale;
-        }
-    
-        public void RotateBlock(float angle)
-        {
-            if (_rotateCoroutine != null)
-            {
-                return;
-            }
-            _rotateCoroutine = StartCoroutine(Rotate(angle));
-        }
-
-        private IEnumerator Rotate(float angle)
-        {
-            if (_isPlaced) yield break;
-            Vector3 currentRotation = transform.eulerAngles;
-            float newAngle = currentRotation.z + angle;
-            // if (_rotationTween.IsActive())
-            // {
-            //     _rotationTween.Kill();
-            //     transform.eulerAngles = new Vector3(0, 0, _previousRotation);
-            // }
-            // _rotationTween = transform.DORotate(new Vector3(0, 0, newAngle), 0.2f);
-            float timer = 0;
-            while (timer < 0.1f)
-            {
-                timer += Time.deltaTime;
-                transform.eulerAngles = Vector3.Lerp(currentRotation, new Vector3(0, 0, newAngle), timer / 0.1f);
-                yield return null;
-            }
-            _rotateCoroutine = null;
         }
 
         public void PickUpBlock()
@@ -180,67 +159,92 @@ namespace MadDuck.Scripts.Units
             }
             spriteRenderer.sortingOrder = order;
         }
-    
-        private void OnMouseEnter()
-        {
-            if (_isPlaced && !AllowPickUpAfterPlacement) return;
-            if (!GameManager.Instance.GameStarted || GameManager.Instance.IsPaused) return;
-            if (_isDragging) return;
-        }
-
-        private void OnMouseDrag()
-        {
-            if (!GameManager.Instance.GameStarted || GameManager.Instance.IsPaused) return;
-            if (GameManager.Instance.IsGameOver || GameManager.Instance.IsGameClear)
-            {
-                StartCoroutine(OnMouseUp());
-                return;
-            }
-            if (_isPlaced && !AllowPickUpAfterPlacement) return;
-            HandleBlockManipulation();
-            GridManager.Instance.ValidatePlacement(this);
-            if (_isDragging) return; //Prevent unnecessary calculations
-            PointerManager.Instance.SelectBlock(this);
-            PickUpBlock();
-            GridManager.Instance.RemoveBlock(this);
-            _isDragging = true;
-        }
 
         /// <summary>
         /// Handle rotation of the block
         /// </summary>
         private void HandleBlockManipulation()
         {
-            // if (Input.GetKeyDown(KeyCode.Q))
-            // {
-            //     _parentBlock.transform.Rotate(0, 0, 90);
-            // }
-            // if (Input.GetMouseButtonDown(1))
-            // {
-            //     RotateBlock(-90);
-            // }
-            // if (Input.GetKeyDown(KeyCode.F))
-            // {
-            //     var blockTransform = _parentBlock.transform;
-            //     var localScale = blockTransform.localScale;
-            //     localScale = new Vector3(localScale.x * -1,
-            //         localScale.y, localScale.z);
-            //     blockTransform.localScale = localScale;
-            // }
+            
         }
 
-        private IEnumerator OnMouseUp()
+        public void StartFlashing()
         {
-            if (!GameManager.Instance.GameStarted || GameManager.Instance.IsPaused) yield break;
-            if (!_isDragging) yield break;
-            PointerManager.Instance.DeselectBlock();
-            if (_rotateCoroutine != null)
-                yield return new WaitUntil(() => _rotateCoroutine == null);
+            _flashTween = Tween.Color(spriteRenderer, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
+        }
+        
+        public void StopFlashing()
+        {
+            if (_flashTween.isAlive)
+            {
+                _flashTween.Complete();
+            }
+            spriteRenderer.color = _originalColor;
+        }
+
+        public void ChangeColor(BlockTypes type, bool updateGrid = true)
+        {
+            blockType = type;
+            if (!RandomBlockManager.Instance.SpriteLibraryAssets.TryGetValue(type, out var spriteAsset))
+            {
+                Debug.LogError($"Sprite asset for block type {type} not found.");
+                return;
+            }
+            spriteResolver.spriteLibrary.spriteLibraryAsset = spriteAsset;
+            spriteResolver.SetCategoryAndLabel("Face", blockFace.ToString());
+            spriteResolver.ResolveSpriteToSpriteRenderer();
+            if (!updateGrid) return;
+            GridManager.Instance.UpdateBlockOnGrid(this);
+        }
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            if (eventData.button is not PointerEventData.InputButton.Left) return;
+            if (GameManager.Instance.CurrentGameState.Value is GameState.GameOver or GameState.GameClear)
+            {
+                OnEndDrag(eventData);
+                return;
+            }
+            if (GameManager.Instance.CurrentGameState.Value is not GameState.PlaceBlock) return;
+            if (IsPlaced && !AllowPickUpAfterPlacement) return;
+            var position = transform.position;
+            var mousePosition = PointerManager.Instance.MouseWorldPosition;
+            _mousePositionDifference = new Vector3(mousePosition.x - position.x,
+                mousePosition.y - position.y, 0);
+            SetRendererSortingOrder(2);
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            if (eventData.button is not PointerEventData.InputButton.Left) return;
+            if (GameManager.Instance.CurrentGameState.Value is GameState.GameOver or GameState.GameClear)
+            {
+                OnEndDrag(eventData);
+                return;
+            }
+            if (GameManager.Instance.CurrentGameState.Value is not GameState.PlaceBlock) return;
+            if (IsPlaced && !AllowPickUpAfterPlacement) return;
+            HandleBlockManipulation();
+            GridManager.Instance.ValidatePlacement(this);
+            var mousePosition = PointerManager.Instance.MouseWorldPosition;
+            transform.position = mousePosition - _mousePositionDifference;
+            if (_isDragging) return; //Prevent unnecessary calculations
+            PickUpBlock();
+            GridManager.Instance.RemoveBlock(this);
+            _isDragging = true;
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            if (eventData.button is not PointerEventData.InputButton.Left) return;
+            if (GameManager.Instance.CurrentGameState.Value is GameState.CountOff or GameState.Pause) return;
+            if (!_isDragging) return;
             if (GridManager.Instance.PlaceBlock(this))
             {
-                _isPlaced = true;
+                IsPlaced = true;
+                _mousePositionDifference = Vector3.zero;
                 SetRendererSortingOrder(1);
-                RandomBlockManager.Instance.FreeSpawnPoint(_spawnIndex);
+                RandomBlockManager.Instance.FreeSpawnPoint(SpawnIndex);
                 RandomBlockManager.Instance.DestroyBlock();
                 RandomBlockManager.Instance.SpawnRandomBlock();
                 Tween.Scale(spriteRenderer.transform, _originalSpriteScale, 0.2f);
@@ -249,7 +253,7 @@ namespace MadDuck.Scripts.Units
             else
             {
                 ReturnToOriginal();
-                _isPlaced = false;
+                IsPlaced = false;
             }
             _isDragging = false;
         }

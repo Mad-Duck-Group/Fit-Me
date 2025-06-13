@@ -1,5 +1,7 @@
+using System;
 using MadDuck.Scripts.Units;
 using Redcode.Extensions;
+using Sirenix.OdinInspector;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
 
@@ -7,10 +9,11 @@ namespace MadDuck.Scripts.Managers
 {
     public class PointerManager : MonoSingleton<PointerManager>
     {
+        [Title("Pointer Manager References")]
         [SerializeField] private Camera gameCamera;
-        private Block _selectedBlock;
-        private Vector3 _mousePositionDifference;
-        public Vector3 MousePosition
+        [SerializeField] private Canvas gameCanvas;
+
+        public Vector3 MouseWorldPosition
         {
             get
             {
@@ -18,49 +21,24 @@ namespace MadDuck.Scripts.Managers
                 return mousePosition;
             }
         }
+        
+        public Vector3 MouseCanvasPosition
+        {
+            get
+            {
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    gameCanvas.transform as RectTransform, 
+                    Input.mousePosition, 
+                    gameCanvas.worldCamera, 
+                    out Vector2 localPoint);
+                return gameCanvas.transform.TransformPoint(localPoint);
+            }
+        }
     
         protected override void Awake()
         {
             base.Awake();
             gameCamera = Camera.main;
-        }
-    
-        void Update()
-        {
-            HandleMovement();
-        }
-    
-        /// <summary>
-        /// Select a block
-        /// </summary>
-        /// <param name="block">Block to select</param>
-        public void SelectBlock(Block block)
-        {
-            if (_selectedBlock && _selectedBlock == block) return;
-            _selectedBlock = block;
-            var position = _selectedBlock.transform.position;
-            _mousePositionDifference = new Vector3(MousePosition.x - position.x,
-                MousePosition.y - position.y, 0);
-            _selectedBlock.SetRendererSortingOrder(2);
-        }
-    
-        /// <summary>
-        /// Deselect current block
-        /// </summary>
-        public void DeselectBlock()
-        {
-            if (!_selectedBlock) return;
-            _mousePositionDifference = Vector3.zero;
-            _selectedBlock = null;
-        }
-    
-        /// <summary>
-        /// Handle the movement of the selected block
-        /// </summary>
-        private void HandleMovement()
-        {
-            if (!_selectedBlock) return;
-            _selectedBlock.transform.position = MousePosition - _mousePositionDifference;
         }
     }
 }

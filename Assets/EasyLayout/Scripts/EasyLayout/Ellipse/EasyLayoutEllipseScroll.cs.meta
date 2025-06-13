@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 404e6c03afdbb924ea3f3fb4e85c793c
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 26567
+  packageName: EasyLayout
+  packageVersion: 1.9.1
+  assetPath: Assets/EasyLayout/Scripts/EasyLayout/Ellipse/EasyLayoutEllipseScroll.cs
+  uploadId: 738329

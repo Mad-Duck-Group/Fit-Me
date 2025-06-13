@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0570a8dc83c2a2c49a92d414075faa5f
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 26567
+  packageName: EasyLayout
+  packageVersion: 1.9.1
+  assetPath: Assets/EasyLayout/Scripts/EasyLayout/Flex/EasyLayoutFlex.cs
+  uploadId: 738329

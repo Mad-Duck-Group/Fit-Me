@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ffcaa5ea86c1b2d4faa7de4bd22c0e22
+timeCreated: 1557576950
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 26567
+  packageName: EasyLayout
+  packageVersion: 1.9.1
+  assetPath: Assets/EasyLayout/changelog.txt
+  uploadId: 738329

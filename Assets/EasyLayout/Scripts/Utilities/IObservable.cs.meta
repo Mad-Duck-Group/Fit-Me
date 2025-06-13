@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2eb0300f7d4fad84994bfda39a4b0fef
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 26567
+  packageName: EasyLayout
+  packageVersion: 1.9.1
+  assetPath: Assets/EasyLayout/Scripts/Utilities/IObservable.cs
+  uploadId: 738329

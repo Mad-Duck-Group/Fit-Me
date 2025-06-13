@@ -6,10 +6,12 @@ using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Units;
 using PrimeTween;
 using Redcode.Extensions;
+using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.U2D.Animation;
 using Random = UnityEngine.Random;
 
 namespace MadDuck.Scripts.Managers
@@ -28,20 +30,17 @@ namespace MadDuck.Scripts.Managers
         #endregion
 
         #region Inspectors
-        
-        [Title("Random References")]
-        [SerializeField] private Block[] purple;
-        [SerializeField] private Block[] red;
-        [SerializeField] private Block[] yellow;
-        [SerializeField] private Block[] green;
+
+        [Title("Random References")] 
+        [field: SerializeField] public SerializableDictionary<BlockTypes, SpriteLibraryAsset> SpriteLibraryAssets { get; private set; } = new();
+        [SerializeField] private SerializableDictionary<BlockFaces, Block> blockPrefabDictionary = new();
         [SerializeField] private SpawnPoint[] spawnPoints;
-        
+
         [Title("Random Settings")]
         [SerializeField] private float objectScale = 0.5f;
         #endregion
         
         #region Fields
-        private List<Block> _randomBlocks;
         private Tween _scaleTween;
         #endregion
         
@@ -63,19 +62,16 @@ namespace MadDuck.Scripts.Managers
             spawnPoint.CurrentBlock = null;
         }
 
-        public void RandomType()
-        {
-            var purpleObj = purple.GetRandomElement();
-            var redObj = red.GetRandomElement();
-            var yellowObj = yellow.GetRandomElement();
-            var greenObj = green.GetRandomElement();
-            
-            _randomBlocks = new List<Block> {purpleObj, redObj, yellowObj, greenObj};
-        }
-
         public void SpawnRandomBlock()
         {
-            RandomType();
+            var blockTypes = Enum.GetValues(typeof(BlockTypes)).Cast<BlockTypes>().ToList();
+            var blockFaces = Enum.GetValues(typeof(BlockFaces)).Cast<BlockFaces>().ToList();
+            var randomBlocks = new List<KeyValuePair<BlockTypes, BlockFaces>>();
+            foreach (var type in blockTypes)
+            {
+                var randomFace = blockFaces.GetRandomElement();
+                randomBlocks.Add(new KeyValuePair<BlockTypes, BlockFaces>(type, randomFace));
+            }
             for (int i = 0; i < spawnPoints.Length; i++)
             {
                 if (!spawnPoints[i].IsFree)
@@ -83,14 +79,18 @@ namespace MadDuck.Scripts.Managers
                     continue;
                 }
                 Transform spawnTransform = spawnPoints[i].Transform;
-                int randomIndex = Random.Range(0, _randomBlocks.Count);
-                Block block = Instantiate(_randomBlocks[randomIndex], spawnTransform.position, Quaternion.identity);
-                _randomBlocks.RemoveAt(randomIndex);
+                var randomBlock = randomBlocks.GetRandomElement();
+                var blockType = randomBlock.Key;
+                var blockFace = randomBlock.Value;
+                var blockPrefab = blockPrefabDictionary[blockFace];
+                Block block = Instantiate(blockPrefab, spawnTransform.position, Quaternion.identity, transform);
+                block.ChangeColor(blockType, false);
+                randomBlocks.Remove(randomBlock);
                 block.SpawnIndex = i;
                 block.transform.localScale = Vector3.zero;
                 Vector3 scale = new Vector3(objectScale, objectScale, 1f);
-                //int randomRotation = Random.Range(0, 4) * 90;
-                //spawn.transform.eulerAngles = new Vector3(0, 0, randomRotation);
+                int randomRotation = Random.Range(0, 4) * 90;
+                block.transform.eulerAngles = new Vector3(0, 0, randomRotation);
                 _scaleTween = Tween.Scale(block.transform, scale, 0.2f).OnComplete(() => block.Initialize());
                 spawnPoints[i].IsFree = false;
                 spawnPoints[i].CurrentBlock = block;

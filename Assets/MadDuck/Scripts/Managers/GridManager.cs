@@ -18,6 +18,7 @@ namespace MadDuck.Scripts.Managers
     [ShowOdinSerializedPropertiesInInspector]
     public class GridManager : MonoSingleton<GridManager>, ISerializationCallbackReceiver, ISupportsPrefabSerialization
     {
+        #region Inspectors
         private enum GridType
         {
             Rectangle,
@@ -44,11 +45,6 @@ namespace MadDuck.Scripts.Managers
         private GridType gridType = GridType.Rectangle;
         [TitleGroup("Grid Settings")]
         [Button("Refresh Custom Grid"), ShowIf(nameof(gridType), GridType.Custom), DisableInPlayMode]
-        
-        [Title("Grid State")]
-        [SerializeField, ReadOnly] private bool isFitMe = false;
-        public bool IsFitMe => isFitMe;
-        
         private void RefreshCustomGrid()
         {
             var newCustomGrid = new bool[gridSize.y, gridSize.x];
@@ -100,6 +96,7 @@ namespace MadDuck.Scripts.Managers
         private bool[,] _customGrid = { };
 
         [Title("Grid Debug")]
+        [field: SerializeField, ReadOnly] public bool IsFitMe { get; private set; }
         [SerializeField, ReadOnly] private List<Contacts> contacts = new();
         [TableMatrix(SquareCells = true, HorizontalTitle = "Cell Array", IsReadOnly = true,
             DrawElementMethod = nameof(DrawCellArrayMatrix), Transpose = true)]
@@ -107,13 +104,17 @@ namespace MadDuck.Scripts.Managers
         [TableMatrix(SquareCells = true, HorizontalTitle = "Vacant Schema", IsReadOnly = true,
             DrawElementMethod = nameof(DrawVacantSchemaMatrix), Transpose = true)]
         [SerializeField] private int[,] _vacantSchema;
-        [SerializeField, ReadOnly]  private List<Block> blocksOnGrid = new();
+        [SerializeField, ReadOnly] private List<Block> blocksOnGrid = new();
+        public List<Block> BlocksOnGrid => blocksOnGrid;
         [SerializeField, ShowIf(nameof(gridType), GridType.Custom)]
         private bool drawAllCustomGridCells = true;
+        #endregion
 
+        #region Fields
         private Grid _grid;
         private List<Cell> _previousValidationCells = new();
-
+        #endregion
+        
         #region Initialization
         protected override void Awake()
         {
@@ -203,6 +204,7 @@ namespace MadDuck.Scripts.Managers
             return true;
         }
     
+        #region Blocks
         /// <summary>
         /// Place the block in the grid
         /// </summary>
@@ -233,22 +235,31 @@ namespace MadDuck.Scripts.Managers
             Vector3 atomPositionAfterPlacement = cells[0].transform.position;
             Vector3 blockPositionRelativeToAtom = atomPositionAfterPlacement - atomPositionBeforePlacement;
             block.transform.position += blockPositionRelativeToAtom;
+            block.transform.SetParent(transform);
+            block.BlockCells = cells;
             blocksOnGrid.Add(block);
             GameManager.Instance.AddScore(ScoreTypes.Placement);
+            ResetPreviousValidationCells();
+            UpdateBlockOnGrid(block);
+            return true;
+        }
+
+        /// <summary>
+        /// Update the block on the grid, check for contacts and validate placement
+        /// </summary>
+        /// <param name="block"></param>
+        public void UpdateBlockOnGrid(Block block)
+        {
             if (!CreateVacantSchema()) //Fit Me!
             {
-                isFitMe = true;
+                IsFitMe = true;
                 GameManager.Instance.AddScore(ScoreTypes.FitMe);
-                //RemoveAllBlocks(true);
-                ResetPreviousValidationCells();
-                return true;
+                return;
             }
-            if (CheckForContact(block, cells, out Contacts contacts))
+            if (CheckForContact(block, out var contacts))
             {
                 ContactValidation(contacts);
             }
-            ResetPreviousValidationCells();
-            return true;
         }
 
         /// <summary>
@@ -291,6 +302,7 @@ namespace MadDuck.Scripts.Managers
                 RemoveBlock(block, destroy);
             }
         }
+        #endregion
     
         /// <summary>
         /// Reset the color of the previous validation cells
@@ -309,12 +321,12 @@ namespace MadDuck.Scripts.Managers
         /// <param name="cells">Cells that contain the current block</param>
         /// <param name="contacts">Contacts, if there are any</param>
         /// <returns>true if the block is in contact, false otherwise</returns>
-        private bool CheckForContact(Block block, List<Cell> cells, out Contacts contacts)
+        private bool CheckForContact(Block block, out Contacts contacts)
         {
             BlockTypes currentType = block.BlockType;
             List<Block> contactedBlocks = new List<Block> { block };
             contacts = new Contacts();
-            foreach (var cell in cells)
+            foreach (var cell in block.BlockCells)
             {
                 Cell upCell = GetCellByArrayIndex(cell.ArrayIndex[0] - 1, cell.ArrayIndex[1]);
                 Cell downCell = GetCellByArrayIndex(cell.ArrayIndex[0] + 1, cell.ArrayIndex[1]);

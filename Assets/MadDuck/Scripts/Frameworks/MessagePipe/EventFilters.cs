@@ -11,18 +11,21 @@ namespace MadDuck.Scripts.Frameworks.MessagePipe
     {
         public T IdentifierObject { get; }
     }
-    
-    // /// <summary>
-    // /// Publisher and Subscriber has to have the same CharacterHub identifier.
-    // /// </summary>
-    // public interface ICharacterHubIdentifier : IObjectIdentifier<CharacterHub> { }
-    
+
     /// <summary>
     /// Publisher and Subscriber has to have the same Id identifier.
     /// </summary>
     public interface IIdIdentifier
     {
         public int Id { get; }
+    }
+    
+    /// <summary>
+    /// Publisher and Subscriber has to have the same Guid identifier.
+    /// </summary>
+    public interface IGuidIdentifier
+    {
+        public Guid Id { get; }
     }
     #endregion
 
@@ -65,6 +68,26 @@ namespace MadDuck.Scripts.Frameworks.MessagePipe
         public int Id { get; }
         
         public IdIdentifierFilter(int id)
+        {
+            Id = id;
+        }
+        
+        public override void Handle(T message, Action<T> next)
+        {
+            if (!message.Id.Equals(Id)) return;
+            next(message);
+        }
+    }
+    
+    /// <summary>
+    /// Filter that checks if the message has the same Guid identifier.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class GuidIdentifierFilter<T> : MessageHandlerFilter<T>, IGuidIdentifier where T : IGuidIdentifier
+    {
+        public Guid Id { get; }
+        
+        public GuidIdentifierFilter(Guid id)
         {
             Id = id;
         }
