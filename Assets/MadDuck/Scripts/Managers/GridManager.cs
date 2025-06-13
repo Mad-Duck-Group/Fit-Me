@@ -541,11 +541,8 @@ namespace MadDuck.Scripts.Managers
         {
             if (blocksOnGrid == null) return;
 
-            //Block block = blocksOnGrid[Random.Range(0, blocksOnGrid.Count)];
-            ////You can use extension method blocksOnGrid.RandomElement() here
             Block block = blocksOnGrid.GetRandomElement();
             InfectBlock(block);
-            //lock.StartInfectionAsync(infectedTimeRange, true);
         }
 
         public void InfectAdjacentBlocks(Block sourceBlock)
@@ -584,8 +581,6 @@ namespace MadDuck.Scripts.Managers
 
             if (candidatesForInfection.Count > 0)
             {
-                //var blockToInfect = candidatesForInfection[Random.Range(0, candidatesForInfection.Count)]; 
-                //You can use extension method candidatesForInfection.RandomElement() here
                 var blockToInfect = candidatesForInfection.GetRandomElement();
                 InfectBlock(blockToInfect);
             }
