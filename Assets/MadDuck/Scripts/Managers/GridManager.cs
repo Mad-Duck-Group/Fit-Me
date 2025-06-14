@@ -182,6 +182,17 @@ namespace MadDuck.Scripts.Managers
         #endregion
         
         #region Initialization
+
+        private void OnEnable()
+        {
+            GameManager.OnSceneActivated += OnSceneActivated;
+        }
+
+        private void OnDisable()
+        {
+            GameManager.OnSceneActivated -= OnSceneActivated;
+        }
+
         protected override void Awake()
         {
             base.Awake();
@@ -193,7 +204,7 @@ namespace MadDuck.Scripts.Managers
             RandomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
         }
 
-        void Start()
+        void OnSceneActivated()
         {
             CreateCells();
         }
@@ -348,6 +359,8 @@ namespace MadDuck.Scripts.Managers
                 GameManager.Instance.AddScore(ScoreTypes.FitMe);
                 RemoveAllBlocks(true);
                 RegenerateGrid();
+                RandomBlockManager.Instance.ResetSpawnPoint();
+                RandomBlockManager.Instance.SpawnRandomBlock();
                 return;
             }
             if (CheckForContact(block, out var contacts))
@@ -413,7 +426,6 @@ namespace MadDuck.Scripts.Managers
         /// Check if the block is in contact with other blocks with the same type
         /// </summary>
         /// <param name="block">Current block</param>
-        /// <param name="cells">Cells that contain the current block</param>
         /// <param name="contacts">Contacts, if there are any</param>
         /// <returns>true if the block is in contact, false otherwise</returns>
         private bool CheckForContact(Block block, out Contacts contacts)
@@ -432,10 +444,12 @@ namespace MadDuck.Scripts.Managers
                 {
                     if (!adjacentCell || !adjacentCell.CurrentAtom) continue;
                     Block adjacentBlock = adjacentCell.CurrentAtom.ParentBlock;
-                    if (adjacentBlock != block && adjacentBlock.BlockType == currentType && !contactedBlocks.Contains(adjacentBlock))
+                    if (adjacentBlock != block 
+                        && adjacentBlock.BlockType == currentType 
+                        && !contactedBlocks.Contains(adjacentBlock) 
+                        && adjacentBlock.BlockState != BlockState.Infected)
                     {
-                        if(adjacentBlock.BlockState == BlockState.Normal)
-                            contactedBlocks.Add(adjacentBlock);
+                        contactedBlocks.Add(adjacentBlock);
                     }
                 }
             }
@@ -457,12 +471,15 @@ namespace MadDuck.Scripts.Managers
             sameTypeContacts.Remove(contacts);
             List<Contacts> matchedContacts = new List<Contacts>();
             List<Block> contactedBlocks = new List<Block>();
-            contactedBlocks.AddRange(contacts.contactedBlocks);
-            foreach (Block block in contacts.contactedBlocks)
+            var nonInfectedBlocks = contacts.contactedBlocks
+                .Where(block => block.BlockState != BlockState.Infected)
+                .ToList();
+            contactedBlocks.AddRange(nonInfectedBlocks);
+            foreach (Block block in nonInfectedBlocks)
             {
                 foreach (var contact in sameTypeContacts)
                 {
-                    if (contact.contactedBlocks.Contains(block))
+                    if (nonInfectedBlocks.Contains(block))
                     {
                         matchedContacts.Add(contact);
                     }
@@ -470,7 +487,7 @@ namespace MadDuck.Scripts.Managers
             }
             foreach (var contact in matchedContacts)
             {
-                contactedBlocks.AddRange(contact.contactedBlocks);
+                contactedBlocks.AddRange(nonInfectedBlocks);
             }
             contactedBlocks = contactedBlocks.Distinct().ToList();
             if (contactedBlocks.Count < 3) //DO NOT CHANGE THIS NUMBER NO MATTER THE CIRCUMSTANCE, THIS IS CURSED!!!!!
@@ -495,7 +512,7 @@ namespace MadDuck.Scripts.Managers
         /// Create a schema of the vacant cells, 1 is vacant, 0 is occupied
         /// </summary>
         /// <returns>true if there are vacant cells, false otherwise</returns>
-        private bool CreateVacantSchema()
+        public bool CreateVacantSchema()
         {
             var row = gridSize.y;
             var column = gridSize.x;
@@ -532,7 +549,7 @@ namespace MadDuck.Scripts.Managers
                 // {
                 //     block.GenerateSchema();
                 // }
-                if (CompareSchema(block))
+                if (CompareSchema(block, block.transform.eulerAngles.z))
                 {
                     availableBlocks.Add(block);
                     continue;
@@ -548,20 +565,12 @@ namespace MadDuck.Scripts.Managers
         /// Compare the schema of the block with the vacant schema
         /// </summary>
         /// <param name="block">Block to compare</param>
+        /// <param name="currentZEulerAngle">current Z euler angle of the block</param>
         /// <returns>true if the block can be placed, false otherwise</returns>
-        private bool CompareSchema(Block block)
+        private bool CompareSchema(Block block, float currentZEulerAngle)
         {
-            // foreach (var schema in block.BlockSchemas)
-            // {
-            //     if (ArrayHelper.CanBlockFitInVacant(_vacantSchema, schema.schema))
-            //     {
-            //         Debug.Log("Block " + block.name + " can be placed");
-            //         return true;
-            //     }
-            // }
-            var blockAngle = block.transform.eulerAngles.z;
-            var index = (int)blockAngle / 90;
-            Debug.Log("Block " + block.name + " angle: " + blockAngle + ", index: " + index);
+            var index = (int)currentZEulerAngle / 90;
+            Debug.Log("Block " + block.name + " angle: " + currentZEulerAngle + ", index: " + index);
             if (ArrayHelper.CanBlockFitInVacant(_vacantSchema, block.BlockSchemas[index].schema))
             {
                 Debug.Log("Block " + block.name + " can be placed");
@@ -570,6 +579,21 @@ namespace MadDuck.Scripts.Managers
             return false;
         }
         
+        public bool CompareSchema(Block block, int schemaIndex)
+        {
+            if (schemaIndex < 0 || schemaIndex >= block.BlockSchemas.Count)
+            {
+                Debug.LogError("Invalid schema index: " + schemaIndex);
+                return false;
+            }
+            return CompareSchema(block, schemaIndex * 90f);
+        }
+        
+        public bool CanSchemaFitInVacant(int[,] blockSchema)
+        {
+            return ArrayHelper.CanBlockFitInVacant(_vacantSchema, blockSchema);
+        }
+
         #region Utils
         /// <summary>
         /// Get the cell by array index
@@ -634,6 +658,7 @@ namespace MadDuck.Scripts.Managers
         {
             if (GameManager.Instance.CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
             infectedBlocks.Add(block);
+            block.Infect();
             OnBlockInfected?.Invoke(block);
             RandomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
         }
@@ -641,6 +666,7 @@ namespace MadDuck.Scripts.Managers
         public void DisinfectBlock(Block block)
         {
             if (GameManager.Instance.CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
+            block.Disinfect();
             OnBlockDisinfected?.Invoke(block);
             infectedBlocks.Remove(block);
         }

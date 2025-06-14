@@ -25,7 +25,9 @@ namespace MadDuck.Scripts.Items
         private void OnBlockHovered(ItemBlockHoveredEvent itemBlockHoveredEvent)
         {
             if (itemBlockHoveredEvent.item != this) return;
-            if (!itemBlockHoveredEvent.block || !itemBlockHoveredEvent.block.IsPlaced)
+            if (!itemBlockHoveredEvent.block || 
+                !itemBlockHoveredEvent.block.IsPlaced || 
+                itemBlockHoveredEvent.block.BlockState is BlockState.Infected)
             {
                 _blocksToDestroy.ForEach(b =>
                 {
@@ -41,19 +43,31 @@ namespace MadDuck.Scripts.Items
             });
             _blockHovered = itemBlockHoveredEvent.block;
             var sameColorBlocks = GridManager.Instance.BlocksOnGrid
-                .Where(b => b.BlockType == _blockHovered.BlockType).ToList();
+                .Where(b => b.BlockType == _blockHovered.BlockType && b.BlockState is BlockState.Normal).ToList();
             sameColorBlocks.ForEach(b => b.StartFlashing());
             _blocksToDestroy = sameColorBlocks.ToList();
         }
         
         private void OnBlockInfected(Block block)
         {
-            if (block != _blockHovered) return;
-            _blocksToDestroy.ForEach(b =>
+            if (!Selectable())
             {
-                b.StopFlashing();
-            });
-            _blockHovered = null;
+                Cancel();
+                return;
+            }
+            if (_blocksToDestroy.Contains(block))
+            {
+                _blocksToDestroy.Remove(block);
+                block.StopFlashing();
+            }
+            if (block == _blockHovered)
+            {
+                _blockHovered = null;
+                _blocksToDestroy.ForEach(b =>
+                {
+                    b.StopFlashing();
+                });
+            }
         }
 
         public override void Shutdown()

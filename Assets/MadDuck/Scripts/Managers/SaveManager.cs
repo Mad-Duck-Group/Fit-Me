@@ -31,6 +31,7 @@ namespace MadDuck.Scripts.Managers
 
         public void Load()
         {
+            if (!SaveFileSetup) SaveFileSetup = GetComponent<SaveFileSetup>();
             var operation = CurrentSaveFile.Load();
             operation.onOperationEnded.AddListener(() =>
             {
@@ -47,6 +48,7 @@ namespace MadDuck.Scripts.Managers
         
         public void Save()
         {
+            if (!SaveFileSetup) SaveFileSetup = GetComponent<SaveFileSetup>();
             if (!_saveReady)
             {
                 Debug.LogWarning("Save operation is already in progress.");

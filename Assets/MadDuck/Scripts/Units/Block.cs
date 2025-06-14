@@ -54,10 +54,12 @@ namespace MadDuck.Scripts.Units
             IsReadOnly = true)]
         [ShowInInspector]
         public int[,] schema = { };
+        public int index;
         
-        public BlockSchema(int[,] schema)
+        public BlockSchema(int[,] schema, int index)
         {
             this.schema = schema;
+            this.index = index;
         }
         
         private static int DrawSchemaMatrix(Rect rect, int value)
@@ -118,8 +120,8 @@ namespace MadDuck.Scripts.Units
             _originalRotation = transform.eulerAngles;
             _originalScale = transform.localScale;
             _originalColor = spriteRenderer.color;
-            GridManager.OnBlockInfected += OnBlockInfected;
-            GridManager.OnBlockDisinfected += OnBlockDisinfected;
+            //GridManager.OnBlockInfected += OnBlockInfected;
+            //GridManager.OnBlockDisinfected += OnBlockDisinfected;
         }
 
         private void StartInfectTimer()
@@ -134,8 +136,8 @@ namespace MadDuck.Scripts.Units
         void OnDestroy()
         {
             _infectionSubscription?.Dispose();
-            GridManager.OnBlockInfected -= OnBlockInfected;
-            GridManager.OnBlockDisinfected -= OnBlockDisinfected;
+            //GridManager.OnBlockInfected -= OnBlockInfected;
+            //GridManager.OnBlockDisinfected -= OnBlockDisinfected;
         }
         
         /// <summary>
@@ -163,10 +165,10 @@ namespace MadDuck.Scripts.Units
                 originalSchema[y, x] = 1;
             }
             BlockSchemas.Clear();
-            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate180(originalSchema)));
-            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate270(BlockSchemas[0].schema)));
-            BlockSchemas.Add(new BlockSchema(originalSchema));
-            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate90(BlockSchemas[0].schema)));
+            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate180(originalSchema), 0));
+            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate270(BlockSchemas[0].schema), 1));
+            BlockSchemas.Add(new BlockSchema(originalSchema, 2));
+            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate90(BlockSchemas[0].schema), 3));
             //BlockSchemas = BlockSchemas.Distinct().ToList(); //Remove duplicates
             transform.localScale = currentScale;
         }
@@ -240,17 +242,16 @@ namespace MadDuck.Scripts.Units
             spriteRenderer.color = _beforeFlashColor;
         }
         
-        private void OnBlockInfected(Block block)
+        public void Infect()
         {
-            if (block != this) return;
             spriteRenderer.color = Color.gray;
+            _beforeFlashColor = spriteRenderer.color;
             BlockState = BlockState.Infected;
             StartInfectTimer();
         }
         
-        private void OnBlockDisinfected(Block block)
+        public void Disinfect()
         {
-            if (block != this) return;
             spriteRenderer.color = _originalColor;
             BlockState = BlockState.Normal;
             _infectionSubscription?.Dispose();
@@ -319,7 +320,7 @@ namespace MadDuck.Scripts.Units
                 _mousePositionDifference = Vector3.zero;
                 SetRendererSortingOrder(1);
                 RandomBlockManager.Instance.FreeSpawnPoint(SpawnIndex);
-                RandomBlockManager.Instance.DestroyBlock();
+                //RandomBlockManager.Instance.DestroyBlock();
                 RandomBlockManager.Instance.SpawnRandomBlock();
                 Tween.Scale(spriteRenderer.transform, _originalSpriteScale, 0.2f);
                 RandomBlockManager.Instance.GameOverCheck().Forget();

@@ -2430,13 +2430,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f77e2926b91087945b118ceb457851c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameTimer: 30
+  gameTimer: 60
   timerSlider: {fileID: 1775298398}
   timerFill: {fileID: 21702743}
   startColor: {r: 0, g: 1, b: 0, a: 1}
   endColor: {r: 1, g: 0, b: 0, a: 1}
   bombTimeBonus: 10
-  countOffTime: 3
+  countOffTime: 0
   countOffPanel: {fileID: 1094725370}
   countOffText: {fileID: 454863654}
   pausePanel: {fileID: 1548690409}
@@ -4344,8 +4344,8 @@ MonoBehaviour:
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
   gridType: 0
   gridSize: {x: 3, y: 6}
-  randomGridXRange: {x: 3, y: 6}
-  randomGridYRange: {x: 3, y: 6}
+  randomGridXRange: {x: 5, y: 6}
+  randomGridYRange: {x: 4, y: 6}
   gridHorizontalOffsetType: 0
   customOffsetX: 0
   gridVerticalOffsetType: 1
