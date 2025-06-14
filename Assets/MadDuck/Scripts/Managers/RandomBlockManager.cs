@@ -43,6 +43,23 @@ namespace MadDuck.Scripts.Managers
         #region Fields
         private Tween _scaleTween;
         #endregion
+        private void OnEnable()
+        {
+            GameManager.OnSceneActivated += OnSceneActivated;
+        }
+
+        private void OnDisable()
+        {
+            GameManager.OnSceneActivated -= OnSceneActivated;
+        }
+        
+        private void OnSceneActivated()
+        {
+            foreach (var block in blockPrefabDictionary.Values.ToList())
+            {
+                block.GenerateSchema();
+            }
+        }
         
         public void SpawnAtStart()
         {
@@ -64,14 +81,22 @@ namespace MadDuck.Scripts.Managers
 
         public void SpawnRandomBlock()
         {
+           
+            // var randomBlocks = new List<KeyValuePair<BlockTypes, BlockFaces>>();
+            // foreach (var type in blockTypes)
+            // {
+            //     var randomFace = blockFaces.GetRandomElement();
+            //     randomBlocks.Add(new KeyValuePair<BlockTypes, BlockFaces>(type, randomFace));
+            // }
+            if (spawnPoints.Any(x => !x.IsFree)) return;
             var blockTypes = Enum.GetValues(typeof(BlockTypes)).Cast<BlockTypes>().ToList();
-            var blockFaces = Enum.GetValues(typeof(BlockFaces)).Cast<BlockFaces>().ToList();
-            var randomBlocks = new List<KeyValuePair<BlockTypes, BlockFaces>>();
-            foreach (var type in blockTypes)
-            {
-                var randomFace = blockFaces.GetRandomElement();
-                randomBlocks.Add(new KeyValuePair<BlockTypes, BlockFaces>(type, randomFace));
-            }
+            //var blockFaces = Enum.GetValues(typeof(BlockFaces)).Cast<BlockFaces>().ToList();
+            var allSchemas = blockPrefabDictionary.Values
+                .SelectMany(x => x.BlockSchemas.Select(schema => (x.BlockFace, Schema: schema)));
+            var shuffledSchemas = allSchemas.Shuffled();
+            GridManager.Instance.CreateVacantSchema();
+            var firstThreeSchemas =
+                shuffledSchemas.Where(x => GridManager.Instance.CanSchemaFitInVacant(x.Schema.schema)).Take(3).ToList();
             for (int i = 0; i < spawnPoints.Length; i++)
             {
                 if (!spawnPoints[i].IsFree)
@@ -79,42 +104,37 @@ namespace MadDuck.Scripts.Managers
                     continue;
                 }
                 Transform spawnTransform = spawnPoints[i].Transform;
-                var randomBlock = randomBlocks.GetRandomElement();
-                var blockType = randomBlock.Key;
-                var blockFace = randomBlock.Value;
+                var randomBlock = firstThreeSchemas.GetRandomElement();
+                var blockType = blockTypes.GetRandomElement();
+                var blockFace = randomBlock.BlockFace;
+                var index = randomBlock.Schema.index;
                 var blockPrefab = blockPrefabDictionary[blockFace];
                 Block block = Instantiate(blockPrefab, spawnTransform.position, Quaternion.identity, transform);
                 block.ChangeColor(blockType, false);
-                randomBlocks.Remove(randomBlock);
+                firstThreeSchemas.Remove(randomBlock);
                 block.SpawnIndex = i;
                 block.transform.localScale = Vector3.zero;
                 Vector3 scale = new Vector3(objectScale, objectScale, 1f);
                 block.GenerateSchema();
-                int randomRotation = Random.Range(0, 4) * 90;
+                int randomRotation = index * 90;
                 block.transform.eulerAngles = new Vector3(0, 0, randomRotation);
                 _scaleTween = Tween.Scale(block.transform, scale, 0.2f).OnComplete(() => block.Initialize());
                 spawnPoints[i].IsFree = false;
                 spawnPoints[i].CurrentBlock = block;
             }
         }
-    
-        public void DestroyBlock(bool destroyAll = false)
+
+        public void ResetSpawnPoint()
         {
-            for (int i = 0; i < spawnPoints.Length; i++)
+            foreach (var spawnPoint in spawnPoints)
             {
-                if (destroyAll)
-                {
-                    Destroy(spawnPoints[i].CurrentBlock.gameObject);
-                    FreeSpawnPoint(i);
-                }
-                else if (!spawnPoints[i].IsFree)
-                {
-                    Destroy(spawnPoints[i].CurrentBlock.gameObject);
-                    FreeSpawnPoint(i);
-                }
+                spawnPoint.IsFree = true;
+                if (spawnPoint.CurrentBlock)
+                    Destroy(spawnPoint.CurrentBlock.gameObject);
+                spawnPoint.CurrentBlock = null;
             }
         }
-    
+
         // public void ReRoll()
         // {
         //     DestroyBlock(true);
@@ -131,7 +151,7 @@ namespace MadDuck.Scripts.Managers
             {
                 await UniTask.WaitUntil(() => _scaleTween.GetAwaiter().IsCompleted);
             }
-            List<Block> blockToCheck = spawnPoints.Select(spawnPoint => spawnPoint.CurrentBlock).ToList();
+            List<Block> blockToCheck = spawnPoints.Where(x => !x.IsFree).Select(spawnPoint => spawnPoint.CurrentBlock).ToList();
             if (!GridManager.Instance.CheckAvailableBlock(blockToCheck, out _))
             {
                 GameManager.Instance.GameOver(true);  

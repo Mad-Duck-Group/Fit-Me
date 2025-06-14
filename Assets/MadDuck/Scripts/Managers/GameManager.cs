@@ -95,12 +95,11 @@ public class GameManager : MonoSingleton<GameManager>
 
     private GameState _beforePauseState;
     private bool _sceneActivated;
-    //private int _currentReRoll;
     private int _previousReRollScore;
     private float _currentGameTimer;
     private int _score;
     private bool _countDownPlayed;
-    //public int CurrentReRoll => _currentReRoll;
+    public static event Action OnSceneActivated;
     void Start()
     {
         CurrentGameState.Value = GameState.CountOff;
@@ -108,23 +107,10 @@ public class GameManager : MonoSingleton<GameManager>
         gameOverPanel.SetActive(false);
         gameOverText.transform.localScale = Vector3.zero;
         pausePanel.SetActive(false);
-        countOffPanel.SetActive(true);
         if (!usePercentage) { maxInfectionCount = 1; }
         CalculatePercentageInfectTime();
         UpdateScoreText(false);
-        //UpdateReRollText(false);
-        //reRollButton.interactable = false;
-        // volumeSlider.value = SoundManager.Instance.MasterVolume;
-        // volumeSlider.onValueChanged.AddListener((_) =>
-        // {
-        //     SoundManager.Instance.ChangeMixerVolume(volumeSlider.value);
-        // });
         volumeSlider.gameObject.SetActive(false);
-        // if (LoadSceneManager.Instance.FirstSceneLoaded == SceneManager.GetActiveScene() || LoadSceneManager.Instance.Retry)
-        // {
-        //     ActivateScene();
-        //     LoadSceneManager.Instance.Retry = false;
-        // }
         ActivateScene();
     }
     
@@ -132,6 +118,7 @@ public class GameManager : MonoSingleton<GameManager>
     {
         if (_sceneActivated) return;
         _sceneActivated = true;
+        OnSceneActivated?.Invoke();
         StartCountOff();
     }
 
@@ -204,6 +191,15 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     private void StartCountOff()
     {
+        if (countOffTime <= 0)
+        {
+            CurrentGameState.Value = GameState.PlaceBlock;
+            countOffPanel.SetActive(false);
+            RandomBlockManager.Instance.SpawnAtStart();
+            Debug.Log("Count off time is 0 or less, starting game immediately.");
+            return;
+        }
+        countOffPanel.SetActive(true);
         Observable.Interval(TimeSpan.FromSeconds(1))
             .Take(Mathf.CeilToInt(countOffTime) + 1) // Take 4 values (3, 2, 1, 0)
             .Select((_, i) => Mathf.CeilToInt(countOffTime) - i) // Convert to countdown values

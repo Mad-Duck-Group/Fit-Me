@@ -29,8 +29,7 @@ namespace MadDuck.Scripts.Units
         Red,
         Yellow,
         Green,
-        Purple,
-        Infected
+        Purple
     }
 
     public enum BlockFaces
@@ -55,10 +54,12 @@ namespace MadDuck.Scripts.Units
             IsReadOnly = true)]
         [ShowInInspector]
         public int[,] schema = { };
+        public int index;
         
-        public BlockSchema(int[,] schema)
+        public BlockSchema(int[,] schema, int index)
         {
             this.schema = schema;
+            this.index = index;
         }
         
         private static int DrawSchemaMatrix(Rect rect, int value)
@@ -92,6 +93,7 @@ namespace MadDuck.Scripts.Units
         private Vector3 _originalScale;
         private Vector3 _originalSpriteScale;
         private Color _originalColor;
+        private Color _beforeFlashColor;
         private Vector3 _mousePositionDifference;
         private Tween _transformTween;
         private Tween _flashTween;
@@ -118,15 +120,24 @@ namespace MadDuck.Scripts.Units
             _originalRotation = transform.eulerAngles;
             _originalScale = transform.localScale;
             _originalColor = spriteRenderer.color;
+            //GridManager.OnBlockInfected += OnBlockInfected;
+            //GridManager.OnBlockDisinfected += OnBlockDisinfected;
+        }
+
+        private void StartInfectTimer()
+        {
+            _infectionSubscription?.Dispose(); // Dispose previous subscription if exists
+            if (BlockState is not BlockState.Infected) return;
             _infectionSubscription = Observable
                 .Interval(TimeSpan.FromSeconds(GridManager.Instance.RandomInfectedTime))
-                .Where(_ => BlockState == BlockState.Infected)
                 .Subscribe(_ => GridManager.Instance.InfectAdjacentBlocks(this));
         }
         
         void OnDestroy()
         {
             _infectionSubscription?.Dispose();
+            //GridManager.OnBlockInfected -= OnBlockInfected;
+            //GridManager.OnBlockDisinfected -= OnBlockDisinfected;
         }
         
         /// <summary>
@@ -154,10 +165,10 @@ namespace MadDuck.Scripts.Units
                 originalSchema[y, x] = 1;
             }
             BlockSchemas.Clear();
-            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate180(originalSchema)));
-            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate270(BlockSchemas[0].schema)));
-            BlockSchemas.Add(new BlockSchema(originalSchema));
-            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate90(BlockSchemas[0].schema)));
+            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate180(originalSchema), 0));
+            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate270(BlockSchemas[0].schema), 1));
+            BlockSchemas.Add(new BlockSchema(originalSchema, 2));
+            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate90(BlockSchemas[0].schema), 3));
             //BlockSchemas = BlockSchemas.Distinct().ToList(); //Remove duplicates
             transform.localScale = currentScale;
         }
@@ -218,6 +229,7 @@ namespace MadDuck.Scripts.Units
 
         public void StartFlashing()
         {
+            _beforeFlashColor = spriteRenderer.color;
             _flashTween = Tween.Color(spriteRenderer, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
         }
         
@@ -227,13 +239,22 @@ namespace MadDuck.Scripts.Units
             {
                 _flashTween.Complete();
             }
-            spriteRenderer.color = _originalColor;
+            spriteRenderer.color = _beforeFlashColor;
         }
-
+        
         public void Infect()
         {
             spriteRenderer.color = Color.gray;
+            _beforeFlashColor = spriteRenderer.color;
             BlockState = BlockState.Infected;
+            StartInfectTimer();
+        }
+        
+        public void Disinfect()
+        {
+            spriteRenderer.color = _originalColor;
+            BlockState = BlockState.Normal;
+            _infectionSubscription?.Dispose();
         }
 
         public void ChangeColor(BlockTypes type, bool updateGrid = true)
@@ -299,7 +320,7 @@ namespace MadDuck.Scripts.Units
                 _mousePositionDifference = Vector3.zero;
                 SetRendererSortingOrder(1);
                 RandomBlockManager.Instance.FreeSpawnPoint(SpawnIndex);
-                RandomBlockManager.Instance.DestroyBlock();
+                //RandomBlockManager.Instance.DestroyBlock();
                 RandomBlockManager.Instance.SpawnRandomBlock();
                 Tween.Scale(spriteRenderer.transform, _originalSpriteScale, 0.2f);
                 RandomBlockManager.Instance.GameOverCheck().Forget();

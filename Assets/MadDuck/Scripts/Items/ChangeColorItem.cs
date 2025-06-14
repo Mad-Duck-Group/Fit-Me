@@ -16,6 +16,7 @@ namespace MadDuck.Scripts.Items
         private ISubscriber<PopUpResultEvent> _popUpSubscriber;
         private IDisposable _popUpDisposable;
         private Block _blockHovered;
+        private bool _popUpActive;
 
         public override void Initialize(ItemData itemData)
         {
@@ -23,6 +24,7 @@ namespace MadDuck.Scripts.Items
             _blockHoveredSubscriber = GlobalMessagePipe.GetSubscriber<ItemBlockHoveredEvent>()
                 .Subscribe(OnBlockHovered);
             _popUpSubscriber = GlobalMessagePipe.GetSubscriber<PopUpResultEvent>();
+            GridManager.OnBlockInfected += OnBlockInfected;
         }
 
         private void OnBlockHovered(ItemBlockHoveredEvent itemBlockHoveredEvent)
@@ -40,17 +42,32 @@ namespace MadDuck.Scripts.Items
             _blockHovered.StartFlashing();
         }
 
+        private void OnBlockInfected(Block block)
+        {
+            if (block != _blockHovered) return;
+            if (!_popUpActive)
+            {
+                if (_blockHovered) _blockHovered.StopFlashing();
+                _blockHovered = null;
+                return;
+            }
+            Cancel();
+            _blockHovered = null;
+        }
+
         public override void Shutdown()
         {
             _blockHoveredSubscriber?.Dispose();
             _popUpDisposable?.Dispose();
+            GridManager.OnBlockInfected -= OnBlockInfected;
         }
 
         public override bool Selectable()
         {
-            //TODO: change to check for infected block later.
             if (!ItemManager.Instance.CheckItemCount(ItemData.ItemType, 1)) return false;
-            return GridManager.Instance.BlocksOnGrid.Count != 0;
+            if (GridManager.Instance.BlocksOnGrid.Count == 0) return false;
+            if (GridManager.Instance.BlocksOnGrid.All(x => x.BlockState == BlockState.Infected)) return false;
+            return true;
         }
 
         public override void Select()
@@ -61,6 +78,7 @@ namespace MadDuck.Scripts.Items
         public override void Cancel()
         {
             if (_blockHovered) _blockHovered.StopFlashing();
+            _popUpActive = false;
             _popUpDisposable?.Dispose();
             NotifyCancelled();
             GameManager.Instance.CurrentGameState.Value = GameState.PlaceBlock;
@@ -97,6 +115,7 @@ namespace MadDuck.Scripts.Items
                 Cancel();
                 return;
             }
+            _popUpActive = true;
             var guidFilter = new GuidIdentifierFilter<PopUpResultEvent>(guid);
             _popUpDisposable = _popUpSubscriber.Subscribe(OnPopUpResult, guidFilter);
             if (_blockHovered) _blockHovered.StopFlashing();

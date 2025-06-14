@@ -19,12 +19,15 @@ namespace MadDuck.Scripts.Items
             base.Initialize(itemData);
             _blockHoveredSubscriber = GlobalMessagePipe.GetSubscriber<ItemBlockHoveredEvent>()
                 .Subscribe(OnBlockHovered);
+            GridManager.OnBlockInfected += OnBlockInfected;
         }
         
         private void OnBlockHovered(ItemBlockHoveredEvent itemBlockHoveredEvent)
         {
             if (itemBlockHoveredEvent.item != this) return;
-            if (!itemBlockHoveredEvent.block || !itemBlockHoveredEvent.block.IsPlaced)
+            if (!itemBlockHoveredEvent.block || 
+                !itemBlockHoveredEvent.block.IsPlaced || 
+                itemBlockHoveredEvent.block.BlockState is BlockState.Infected)
             {
                 _blocksToDestroy.ForEach(b =>
                 {
@@ -40,21 +43,45 @@ namespace MadDuck.Scripts.Items
             });
             _blockHovered = itemBlockHoveredEvent.block;
             var sameColorBlocks = GridManager.Instance.BlocksOnGrid
-                .Where(b => b.BlockType == _blockHovered.BlockType).ToList();
+                .Where(b => b.BlockType == _blockHovered.BlockType && b.BlockState is BlockState.Normal).ToList();
             sameColorBlocks.ForEach(b => b.StartFlashing());
             _blocksToDestroy = sameColorBlocks.ToList();
+        }
+        
+        private void OnBlockInfected(Block block)
+        {
+            if (!Selectable())
+            {
+                Cancel();
+                return;
+            }
+            if (_blocksToDestroy.Contains(block))
+            {
+                _blocksToDestroy.Remove(block);
+                block.StopFlashing();
+            }
+            if (block == _blockHovered)
+            {
+                _blockHovered = null;
+                _blocksToDestroy.ForEach(b =>
+                {
+                    b.StopFlashing();
+                });
+            }
         }
 
         public override void Shutdown()
         {
             _blockHoveredSubscriber?.Dispose();
+            GridManager.OnBlockInfected -= OnBlockInfected;
         }
 
         public override bool Selectable()
         {
-            //TODO: change to check for infected block later.
             if (!ItemManager.Instance.CheckItemCount(ItemData.ItemType, 1)) return false;
-            return GridManager.Instance.BlocksOnGrid.Count != 0;
+            if (GridManager.Instance.BlocksOnGrid.Count == 0) return false;
+            if (GridManager.Instance.BlocksOnGrid.All(x => x.BlockState == BlockState.Infected)) return false;
+            return true;
         }
 
         public override void Select()
