@@ -30,7 +30,9 @@ namespace MadDuck.Scripts.Items
         private void OnBlockHovered(ItemBlockHoveredEvent itemBlockHoveredEvent)
         {
             if (itemBlockHoveredEvent.item != this) return;
-            if (!itemBlockHoveredEvent.block || !itemBlockHoveredEvent.block.IsPlaced)
+            if (!itemBlockHoveredEvent.block || 
+                !itemBlockHoveredEvent.block.IsPlaced || 
+                itemBlockHoveredEvent.block.BlockState is BlockState.Infected)
             {
                 if (_blockHovered) _blockHovered.StopFlashing();
                 _blockHovered = null;
@@ -44,6 +46,11 @@ namespace MadDuck.Scripts.Items
 
         private void OnBlockInfected(Block block)
         {
+            if (!Selectable())
+            {
+                Cancel();
+                return;
+            }
             if (block != _blockHovered) return;
             if (!_popUpActive)
             {
@@ -73,6 +80,7 @@ namespace MadDuck.Scripts.Items
         public override void Select()
         {
             GameManager.Instance.CurrentGameState.Value = GameState.UseItem;
+            GridManager.OnBlockInfected += OnBlockInfected;
         }
 
         public override void Cancel()
@@ -82,6 +90,7 @@ namespace MadDuck.Scripts.Items
             _popUpDisposable?.Dispose();
             NotifyCancelled();
             GameManager.Instance.CurrentGameState.Value = GameState.PlaceBlock;
+            GridManager.OnBlockInfected -= OnBlockInfected;
         }
 
         public override void Use()

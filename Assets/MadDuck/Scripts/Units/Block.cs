@@ -253,6 +253,7 @@ namespace MadDuck.Scripts.Units
         public void Disinfect()
         {
             spriteRenderer.color = _originalColor;
+            _beforeFlashColor = spriteRenderer.color;
             BlockState = BlockState.Normal;
             _infectionSubscription?.Dispose();
         }
@@ -319,9 +320,6 @@ namespace MadDuck.Scripts.Units
                 IsPlaced = true;
                 _mousePositionDifference = Vector3.zero;
                 SetRendererSortingOrder(1);
-                RandomBlockManager.Instance.FreeSpawnPoint(SpawnIndex);
-                //RandomBlockManager.Instance.DestroyBlock();
-                RandomBlockManager.Instance.SpawnRandomBlock();
                 Tween.Scale(spriteRenderer.transform, _originalSpriteScale, 0.2f);
                 RandomBlockManager.Instance.GameOverCheck().Forget();
             }
