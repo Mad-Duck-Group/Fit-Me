@@ -367,8 +367,9 @@ namespace MadDuck.Scripts.Managers
         /// <returns>true if Fit Me, false otherwise</returns>
         public bool UpdateBlockOnGrid(Block block)
         {
-            if (!CreateVacantSchema()) //Fit Me!
+            if (!CreateVacantSchema(out var vacantSchema)) //Fit Me!
             {
+                _vacantSchema = vacantSchema;
                 GameManager.Instance.AddScore(ScoreTypes.FitMe);
                 RemoveAllBlocks(true);
                 RegenerateGrid();
@@ -464,11 +465,11 @@ namespace MadDuck.Scripts.Managers
         /// Create a schema of the vacant cells, 1 is vacant, 0 is occupied
         /// </summary>
         /// <returns>true if there are vacant cells, false otherwise</returns>
-        public bool CreateVacantSchema()
+        public bool CreateVacantSchema(out int[,] vacantSchema)
         {
             var row = gridSize.y;
             var column = gridSize.x;
-            _vacantSchema = new int[row, column];
+            vacantSchema = new int[row, column];
             bool isVacant = false;
             for (int x = 0; x < row; x++)
             {
@@ -477,7 +478,7 @@ namespace MadDuck.Scripts.Managers
                     var cell = _cellArray[x, y];
                     if (!cell) continue;
                     if (cell.CurrentAtom) continue;
-                    _vacantSchema[x, y] = 1;
+                    vacantSchema[x, y] = 1;
                     isVacant = true;
                 }
             }
@@ -493,14 +494,11 @@ namespace MadDuck.Scripts.Managers
         /// <returns>true if the block can be placed, false otherwise</returns>
         public bool CheckAvailableBlock(List<Block> blockToCheck, out List<Block> availableBlocks)
         {
-            CreateVacantSchema();
+            CreateVacantSchema(out var vacantSchema);
+            _vacantSchema = vacantSchema;
             availableBlocks = new List<Block>();
             foreach (var block in blockToCheck)
             {
-                // if (block.BlockSchemas.Count == 0)
-                // {
-                //     block.GenerateSchema();
-                // }
                 if (CompareSchema(block, block.transform.eulerAngles.z))
                 {
                     availableBlocks.Add(block);
@@ -523,7 +521,7 @@ namespace MadDuck.Scripts.Managers
         {
             var index = (int)currentZEulerAngle / 90;
             Debug.Log("Block " + block.name + " angle: " + currentZEulerAngle + ", index: " + index);
-            if (ArrayHelper.CanBlockFitInVacant(_vacantSchema, block.BlockSchemas[index].schema))
+            if (ArrayHelper.CanBFitInA(_vacantSchema, block.BlockSchemas[index].schema, out _))
             {
                 Debug.Log("Block " + block.name + " can be placed");
                 return true;
@@ -539,11 +537,6 @@ namespace MadDuck.Scripts.Managers
                 return false;
             }
             return CompareSchema(block, schemaIndex * 90f);
-        }
-        
-        public bool CanSchemaFitInVacant(int[,] blockSchema)
-        {
-            return ArrayHelper.CanBlockFitInVacant(_vacantSchema, blockSchema);
         }
 
         #region Utils

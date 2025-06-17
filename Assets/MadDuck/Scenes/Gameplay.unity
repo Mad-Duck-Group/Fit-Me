@@ -2506,9 +2506,8 @@ MonoBehaviour:
     - {fileID: 7108339969198208228, guid: 1ec90d31a2f16d94d8f47e6e94019df6, type: 3}
     - {fileID: 7108339969198208228, guid: 77f23642d724cd841ae0bf68fbf4a5f1, type: 3}
   blockPrefabDictionary:
-    keys: 00000000010000000200000003000000040000000500000006000000070000000800000009000000
+    keys: 010000000200000003000000040000000500000006000000070000000800000009000000
     values:
-    - {fileID: 595384841925304144, guid: 2d37578e89800d44c8762f2cac9ce405, type: 3}
     - {fileID: 5260637757451686444, guid: d45ab7ae7168b0442a3d23b3d58213d0, type: 3}
     - {fileID: 7556221709410000165, guid: 79f1fec33fc5b6e45814a69f7727cbc9, type: 3}
     - {fileID: 1469584244278912653, guid: d05e1eee2fcac634ca52d9786072f3eb, type: 3}
@@ -4350,8 +4349,8 @@ MonoBehaviour:
   customOffsetX: 0
   gridVerticalOffsetType: 1
   customOffsetY: 8
+  destroyThreshold: 3
   currentOffset: {x: -1, y: 8}
-  contacts: []
   blocksOnGrid: []
   drawAllCustomGridCells: 0
   <RandomInfectedTime>k__BackingField: 0

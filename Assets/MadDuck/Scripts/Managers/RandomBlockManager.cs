@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Units;
+using MadDuck.Scripts.Utils;
 using PrimeTween;
 using Redcode.Extensions;
 using Sherbert.Framework.Generic;
@@ -92,26 +93,29 @@ namespace MadDuck.Scripts.Managers
             var blockTypes = Enum.GetValues(typeof(BlockTypes)).Cast<BlockTypes>().ToList();
             //var blockFaces = Enum.GetValues(typeof(BlockFaces)).Cast<BlockFaces>().ToList();
             var allSchemas = blockPrefabDictionary.Values
-                .SelectMany(x => x.BlockSchemas.Select(schema => (x.BlockFace, Schema: schema)));
+                .SelectMany(x => x.BlockSchemas.Select(schema => (x.BlockFace, BlockSchema: schema)));
             var shuffledSchemas = allSchemas.Shuffled();
-            GridManager.Instance.CreateVacantSchema();
-            var firstThreeSchemas =
-                shuffledSchemas.Where(x => GridManager.Instance.CanSchemaFitInVacant(x.Schema.schema)).Take(3).ToList();
-            for (int i = 0; i < spawnPoints.Length; i++)
+            GridManager.Instance.CreateVacantSchema(out var vacantSchema);
+            var firstThreeSchemas = shuffledSchemas
+                .Where(s => ArrayHelper.CanBFitInA(vacantSchema, s.BlockSchema.schema, 
+                    out vacantSchema, true))
+                .Take(3)
+                .Shuffled()
+                .ToList();
+            for (int i = 0; i < firstThreeSchemas.Count; i++)
             {
                 if (!spawnPoints[i].IsFree)
                 {
                     continue;
                 }
                 Transform spawnTransform = spawnPoints[i].Transform;
-                var randomBlock = firstThreeSchemas.GetRandomElement();
+                var randomBlock = firstThreeSchemas[i];
                 var blockType = blockTypes.GetRandomElement();
                 var blockFace = randomBlock.BlockFace;
-                var index = randomBlock.Schema.index;
+                var index = randomBlock.BlockSchema.index;
                 var blockPrefab = blockPrefabDictionary[blockFace];
                 Block block = Instantiate(blockPrefab, spawnTransform.position, Quaternion.identity, transform);
                 block.ChangeColor(blockType, false);
-                firstThreeSchemas.Remove(randomBlock);
                 block.SpawnIndex = i;
                 block.transform.localScale = Vector3.zero;
                 Vector3 scale = new Vector3(objectScale, objectScale, 1f);

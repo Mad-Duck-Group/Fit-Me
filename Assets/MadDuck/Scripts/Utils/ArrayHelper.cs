@@ -73,82 +73,71 @@ namespace MadDuck.Scripts.Utils
             return rotatedArray;
         }
     
-        public static bool CanBlockFitInVacant(int[,] vacant, int[,] block)
+        public static bool CanBFitInA(int[,] a, int[,] b, out int[,] placedArray, bool simulatePlacement = false)
         {
-            int rowsA = vacant.GetLength(0);
-            int colsA = vacant.GetLength(1);
-            int rowsB = block.GetLength(0);
-            int colsB = block.GetLength(1);
-    
+            int rowsA = a.GetLength(0);
+            int colsA = a.GetLength(1);
+            int rowsB = b.GetLength(0);
+            int colsB = b.GetLength(1);
+            placedArray = a;
+
             // Check if B can even fit into A
-            if (rowsB > rowsA || colsB > colsA)
+            if (rowsB > rowsA || colsB > colsA) 
                 return false;
-    
-            var sumB = SumB(block, rowsB, colsB);
-    
+
             // Slide a window over A and compare
             for (int i = 0; i <= rowsA - rowsB; i++)
             {
                 for (int j = 0; j <= colsA - colsB; j++)
                 {
-                    var sumSubA = SumSubA(vacant, rowsB, colsB, i, j);
-                    // If the sums match, do a detailed element-by-element check
-                    if (sumSubA < sumB) continue;
-                    if (CompareMembers(vacant, block, rowsB, colsB, i, j)) return true;
+                    if (!CompareMemberBToA(a, b, i, j, out var tempPlacedArray, simulatePlacement)) continue;
+                    placedArray = simulatePlacement ? tempPlacedArray : a; // If not simulating, return original array
+                    return true;
                 }
             }
-    
             return false;
         }
-    
-        private static int SumB(int[,] b, int rowsB, int colsB)
+
+        /// <summary>
+        /// Perform element-by-element comparison of member B to member A at position (ax, ay).
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="ax"></param>
+        /// <param name="ay"></param>
+        /// <param name="placedArray"></param>
+        /// <param name="simulatePlacement"></param>
+        /// <returns></returns>
+        private static bool CompareMemberBToA(int[,] a, int[,] b, int ax, int ay, out int[,] placedArray, bool simulatePlacement = false)
         {
-            // Precompute the sum of all elements in B for quick comparison
-            int sumB = 0;
+            int rowsA = a.GetLength(0);
+            int colsA = a.GetLength(1);
+            int rowsB = b.GetLength(0);
+            int colsB = b.GetLength(1);
+            placedArray = a;
+            var tempPlacedArray = a.Clone() as int[,];
+
+            if (rowsB > rowsA || colsB > colsA)
+            {
+                return false; // B cannot fit in A
+            }
+            
+            // Compare each element
             for (int i = 0; i < rowsB; i++)
             {
                 for (int j = 0; j < colsB; j++)
                 {
-                    sumB += b[i, j];
+                    if (a[i + ax, j + ay] != b[i, j])
+                    {
+                        return false;
+                    }
+                    if (!simulatePlacement) continue;
+                    // If simulating placement, mark the position in placedArray
+                    if (tempPlacedArray != null) tempPlacedArray[i + ax, j + ay] = 0;
                 }
             }
-    
-            return sumB;
-        }
-    
-        private static int SumSubA(int[,] a, int rowsB, int colsB, int i, int j)
-        {
-            // Compute the sum of the subarray in A
-            int sumSubA = 0;
-            for (int m = 0; m < rowsB; m++)
-            {
-                for (int n = 0; n < colsB; n++)
-                {
-                    sumSubA += a[i + m, j + n];
-                }
-            }
-    
-            return sumSubA;
-        }
-    
-        private static bool CompareMembers(int[,] a, int[,] b, int rowsB, int colsB, int i, int j)
-        {
-            bool match = true;
-            for (int m = 0; m < rowsB; m++)
-            {
-                for (int n = 0; n < colsB; n++)
-                {
-                    if (a[i + m, j + n] == 1 && b[m, n] == 0) continue;
-                    if (a[i + m, j + n] == b[m, n]) continue;
-                    match = false;
-                    break;
-                }
-    
-                if (!match) break;
-            }
-    
-            if (match) return true;
-            return false;
+            placedArray = simulatePlacement ? tempPlacedArray : a; // If not simulating, return original array
+            return true;
         }
     }
 }

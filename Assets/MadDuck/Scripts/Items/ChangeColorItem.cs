@@ -24,7 +24,6 @@ namespace MadDuck.Scripts.Items
             _blockHoveredSubscriber = GlobalMessagePipe.GetSubscriber<ItemBlockHoveredEvent>()
                 .Subscribe(OnBlockHovered);
             _popUpSubscriber = GlobalMessagePipe.GetSubscriber<PopUpResultEvent>();
-            GridManager.OnBlockInfected += OnBlockInfected;
         }
 
         private void OnBlockHovered(ItemBlockHoveredEvent itemBlockHoveredEvent)
