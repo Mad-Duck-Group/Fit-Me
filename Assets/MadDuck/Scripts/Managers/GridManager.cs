@@ -35,12 +35,12 @@ namespace MadDuck.Scripts.Managers
             Custom
         }
     
-        [Serializable]
-        public struct Contacts
-        {
-            [SerializeField, Sirenix.OdinInspector.ReadOnly] public List<Block> contactedBlocks;
-            [SerializeField, Sirenix.OdinInspector.ReadOnly] public BlockTypes contactType;
-        }
+        // [Serializable]
+        // public struct Contacts
+        // {
+        //     [SerializeField, Sirenix.OdinInspector.ReadOnly] public List<Block> contactedBlocks;
+        //     [SerializeField, Sirenix.OdinInspector.ReadOnly] public BlockTypes contactType;
+        // }
         
         [Title("Grid References")]
         [SerializeField] private Cell cellPrefab;
@@ -121,11 +121,14 @@ namespace MadDuck.Scripts.Managers
             DrawElementMethod = nameof(DrawCustomGridMatrix), Transpose = true)]
         [SerializeField, ShowIf(nameof(gridType), GridType.Custom)]
         private bool[,] _customGrid = { };
+        [TitleGroup("Grid Settings")]
+        [SerializeField]
+        private int destroyThreshold = 3;
 
         [Title("Grid Debug")]
         [SerializeField, Sirenix.OdinInspector.ReadOnly] 
         private Vector2Int currentOffset = new(0, 0);
-        [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Contacts> contacts = new();
+        //[SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Contacts> contacts = new();
         [TableMatrix(SquareCells = true, HorizontalTitle = "Cell Array", IsReadOnly = true,
             DrawElementMethod = nameof(DrawCellArrayMatrix), Transpose = true)]
         [SerializeField] private Cell[,] _cellArray = {};
@@ -220,7 +223,7 @@ namespace MadDuck.Scripts.Managers
         public void RegenerateGrid()
         {
             Debug.Log("Regenerating grid...");
-            contacts.Clear();
+            //contacts.Clear();
             ResetPreviousValidationCells();
             foreach (var cell in _cellArray)
             {
@@ -344,7 +347,16 @@ namespace MadDuck.Scripts.Managers
             blocksOnGrid.Add(block);
             GameManager.Instance.AddScore(ScoreTypes.Placement);
             ResetPreviousValidationCells();
-            UpdateBlockOnGrid(block);
+            if (!UpdateBlockOnGrid(block))
+            {
+                RandomBlockManager.Instance.FreeSpawnPoint(block.SpawnIndex);
+                RandomBlockManager.Instance.SpawnRandomBlock();
+            }
+            else
+            {
+                RandomBlockManager.Instance.ResetSpawnPoint();
+                RandomBlockManager.Instance.SpawnRandomBlock();
+            }
             return true;
         }
 
@@ -352,21 +364,22 @@ namespace MadDuck.Scripts.Managers
         /// Update the block on the grid, check for contacts and validate placement
         /// </summary>
         /// <param name="block"></param>
-        public void UpdateBlockOnGrid(Block block)
+        /// <returns>true if Fit Me, false otherwise</returns>
+        public bool UpdateBlockOnGrid(Block block)
         {
             if (!CreateVacantSchema()) //Fit Me!
             {
                 GameManager.Instance.AddScore(ScoreTypes.FitMe);
                 RemoveAllBlocks(true);
                 RegenerateGrid();
-                RandomBlockManager.Instance.ResetSpawnPoint();
-                RandomBlockManager.Instance.SpawnRandomBlock();
-                return;
+                return true;
             }
-            if (CheckForContact(block, out var contacts))
-            {
-                ContactValidation(contacts);
-            }
+            var contacts = new List<Block>();
+            if (!CheckForContact(block, contacts)) return false;
+            GameManager.Instance.AddScore(ScoreTypes.Combo, contacts.Count);
+            GameManager.Instance.AddScore(ScoreTypes.Bomb, contacts.Count);
+            contacts.ForEach(b => RemoveBlock(b, true));
+            return false;
         }
 
         /// <summary>
@@ -384,11 +397,6 @@ namespace MadDuck.Scripts.Managers
                     continue;
                 }
                 cell.SetAtom(null);
-            }
-            List<Contacts> contactsToRemove = contacts.FindAll(contact => contact.contactedBlocks.Contains(block));
-            foreach (var contact in contactsToRemove)
-            {
-                contacts.Remove(contact);
             }
             DisinfectBlock(block);
             blocksOnGrid.Remove(block);
@@ -423,89 +431,33 @@ namespace MadDuck.Scripts.Managers
         }
 
         /// <summary>
-        /// Check if the block is in contact with other blocks with the same type
+        /// Check for contact with other blocks
         /// </summary>
         /// <param name="block">Current block</param>
-        /// <param name="contacts">Contacts, if there are any</param>
-        /// <returns>true if the block is in contact, false otherwise</returns>
-        private bool CheckForContact(Block block, out Contacts contacts)
+        /// <param name="contactedBlocks">List of contacted blocks</param>
+        /// <returns>true if the contacted blocks count is greater than or equal to the destroy threshold, false otherwise</returns>
+        private bool CheckForContact(Block block, List<Block> contactedBlocks)
         {
             BlockTypes currentType = block.BlockType;
-            List<Block> contactedBlocks = new List<Block> { block };
-            contacts = new Contacts();
+            contactedBlocks.Add(block);
             foreach (var cell in block.BlockCells)
             {
-                Cell upCell = GetCellByArrayIndex(cell.ArrayIndex[0] - 1, cell.ArrayIndex[1]);
-                Cell downCell = GetCellByArrayIndex(cell.ArrayIndex[0] + 1, cell.ArrayIndex[1]);
-                Cell leftCell = GetCellByArrayIndex(cell.ArrayIndex[0], cell.ArrayIndex[1] - 1);
-                Cell rightCell = GetCellByArrayIndex(cell.ArrayIndex[0], cell.ArrayIndex[1] + 1);
-                List<Cell> adjacentCells = new List<Cell> {upCell, downCell, leftCell, rightCell};
+                var upCell = GetCellByArrayIndex(cell.ArrayIndex[0] - 1, cell.ArrayIndex[1]);
+                var downCell = GetCellByArrayIndex(cell.ArrayIndex[0] + 1, cell.ArrayIndex[1]);
+                var leftCell = GetCellByArrayIndex(cell.ArrayIndex[0], cell.ArrayIndex[1] - 1);
+                var rightCell = GetCellByArrayIndex(cell.ArrayIndex[0], cell.ArrayIndex[1] + 1);
+                var adjacentCells = new List<Cell> {upCell, downCell, leftCell, rightCell};
                 foreach (var adjacentCell in adjacentCells)
                 {
                     if (!adjacentCell || !adjacentCell.CurrentAtom) continue;
-                    Block adjacentBlock = adjacentCell.CurrentAtom.ParentBlock;
-                    if (adjacentBlock != block 
-                        && adjacentBlock.BlockType == currentType 
-                        && !contactedBlocks.Contains(adjacentBlock) 
-                        && adjacentBlock.BlockState != BlockState.Infected)
-                    {
-                        contactedBlocks.Add(adjacentBlock);
-                    }
+                    var adjacentBlock = adjacentCell.CurrentAtom.ParentBlock;
+                    if (adjacentBlock.BlockState == BlockState.Infected) continue;
+                    if (adjacentBlock.BlockType != currentType) continue;
+                    if (contactedBlocks.Contains(adjacentBlock)) continue;
+                    CheckForContact(adjacentBlock, contactedBlocks);
                 }
             }
-            if (contactedBlocks.Count <= 1) return false;
-            contacts.contactedBlocks = contactedBlocks;
-            contacts.contactType = currentType;
-            this.contacts.Add(contacts);
-            return true;
-        }
-
-        /// <summary>
-        /// Check if there are more than 3 blocks in contact
-        /// </summary>
-        /// <param name="contacts">Current contacts</param>
-        private void ContactValidation(Contacts contacts)
-        {
-            BlockTypes currentType = contacts.contactType;
-            List<Contacts> sameTypeContacts = this.contacts.FindAll(contact => contact.contactType == currentType);
-            sameTypeContacts.Remove(contacts);
-            List<Contacts> matchedContacts = new List<Contacts>();
-            List<Block> contactedBlocks = new List<Block>();
-            var nonInfectedBlocks = contacts.contactedBlocks
-                .Where(block => block.BlockState != BlockState.Infected)
-                .ToList();
-            contactedBlocks.AddRange(nonInfectedBlocks);
-            foreach (Block block in nonInfectedBlocks)
-            {
-                foreach (var contact in sameTypeContacts)
-                {
-                    if (nonInfectedBlocks.Contains(block))
-                    {
-                        matchedContacts.Add(contact);
-                    }
-                }
-            }
-            foreach (var contact in matchedContacts)
-            {
-                contactedBlocks.AddRange(nonInfectedBlocks);
-            }
-            contactedBlocks = contactedBlocks.Distinct().ToList();
-            if (contactedBlocks.Count < 3) //DO NOT CHANGE THIS NUMBER NO MATTER THE CIRCUMSTANCE, THIS IS CURSED!!!!!
-            {
-                if (contactedBlocks.Count > 1) GameManager.Instance.AddScore(ScoreTypes.Combo, contactedBlocks.Count);
-                return;
-            }
-            GameManager.Instance.AddScore(ScoreTypes.Combo, contactedBlocks.Count);
-            GameManager.Instance.AddScore(ScoreTypes.Bomb, contactedBlocks.Count);
-            this.contacts.Remove(contacts);
-            foreach (var contact in matchedContacts)
-            {
-                this.contacts.Remove(contact);
-            }
-            foreach (var block in contactedBlocks)
-            {
-                RemoveBlock(block, true);
-            }
+            return contactedBlocks.Count >= destroyThreshold;
         }
 
         /// <summary>

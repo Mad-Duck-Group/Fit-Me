@@ -19,7 +19,6 @@ namespace MadDuck.Scripts.Items
             base.Initialize(itemData);
             _blockHoveredSubscriber = GlobalMessagePipe.GetSubscriber<ItemBlockHoveredEvent>()
                 .Subscribe(OnBlockHovered);
-            GridManager.OnBlockInfected += OnBlockInfected;
         }
         
         private void OnBlockHovered(ItemBlockHoveredEvent itemBlockHoveredEvent)
@@ -87,6 +86,7 @@ namespace MadDuck.Scripts.Items
         public override void Select()
         {
             GameManager.Instance.CurrentGameState.Value = GameState.UseItem;
+            GridManager.OnBlockInfected += OnBlockInfected;
         }
 
         public override void Cancel()
@@ -97,6 +97,7 @@ namespace MadDuck.Scripts.Items
                 b.StopFlashing();
             });
             GameManager.Instance.CurrentGameState.Value = GameState.PlaceBlock;
+            GridManager.OnBlockInfected -= OnBlockInfected;
         }
 
         public override void Use()
