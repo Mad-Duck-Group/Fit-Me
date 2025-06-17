@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Utils;
@@ -21,6 +22,7 @@ namespace MadDuck.Scripts.Units
     public enum BlockState
     {
         Normal,
+        PreInfected,
         Infected
     }
     
@@ -240,6 +242,18 @@ namespace MadDuck.Scripts.Units
                 _flashTween.Complete();
             }
             spriteRenderer.color = _beforeFlashColor;
+        }
+        
+        public async Task PreInfect()
+        {
+            _beforeFlashColor = spriteRenderer.color;
+            _flashTween = Tween.Color(spriteRenderer, Color.magenta, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
+            BlockState = BlockState.PreInfected;
+            
+            if (BlockState != BlockState.PreInfected) return;
+            await UniTask.Delay(TimeSpan.FromSeconds(GameManager.Instance.PreInfectTime));
+            StopFlashing();
+            Infect();
         }
         
         public void Infect()

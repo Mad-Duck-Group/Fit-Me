@@ -2455,6 +2455,7 @@ MonoBehaviour:
   usePercentage: 1
   startInfectTimeRange: 10
   firstInfectTimePercentRange: {x: 0.1, y: 0.6}
+  <PreInfectTime>k__BackingField: 4
   <InfectionTimeRange>k__BackingField: {x: 3, y: 10}
   maxInfectionCount: 2
 --- !u!4 &1077234520
@@ -4350,8 +4351,8 @@ MonoBehaviour:
   customOffsetX: 0
   gridVerticalOffsetType: 1
   customOffsetY: 8
+  destroyThreshold: 3
   currentOffset: {x: -1, y: 8}
-  contacts: []
   blocksOnGrid: []
   drawAllCustomGridCells: 0
   <RandomInfectedTime>k__BackingField: 0

@@ -82,12 +82,10 @@ public class GameManager : MonoSingleton<GameManager>
     
     [Header("Infected Settings")] 
     [SerializeField] private bool usePercentage;
-    [SerializeField, HideIf(nameof(usePercentage))] 
-    private float startInfectTimeRange = 10f;
-    [SerializeField, ShowIf(nameof(usePercentage)), MinValue(0.1f)] 
-    private Vector2 firstInfectTimePercentRange = new(0.1f, 0.5f);
-    [field: SerializeField, MinValue(0.1f)] 
-    public Vector2 InfectionTimeRange { get; private set; } = new(0, 10);
+    [SerializeField, HideIf(nameof(usePercentage))] private float startInfectTimeRange = 10f;
+    [SerializeField, ShowIf(nameof(usePercentage)), MinValue(0.1f)] private Vector2 firstInfectTimePercentRange = new(0.1f, 0.5f);
+    [field: SerializeField] public float PreInfectTime { get; private set; } = 1f;
+    [field: SerializeField, MinValue(0.1f)] public Vector2 InfectionTimeRange { get; private set; } = new(0, 10);
     [SerializeField] private int maxInfectionCount = 1;
     private int _currentInfectionCount;
     private readonly List<float> _listInfectTimePercent = new();

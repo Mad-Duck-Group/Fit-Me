@@ -610,7 +610,7 @@ namespace MadDuck.Scripts.Managers
         {
             if (GameManager.Instance.CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
             infectedBlocks.Add(block);
-            block.Infect();
+            block.PreInfect();
             OnBlockInfected?.Invoke(block);
             RandomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
         }
@@ -627,6 +627,7 @@ namespace MadDuck.Scripts.Managers
         {
             if (blocksOnGrid.Count == 0) return;
             Block block = blocksOnGrid.GetRandomElement();
+            if (block.BlockState != BlockState.Normal) return;
             InfectBlock(block);
         }
 
