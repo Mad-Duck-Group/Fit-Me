@@ -127,7 +127,7 @@ namespace MadDuck.Scripts.Utils
             {
                 for (int j = 0; j < colsB; j++)
                 {
-                    if (a[i + ax, j + ay] != b[i, j])
+                    if (b[i, j] != 0 && a[i + ax, j + ay] != b[i, j])
                     {
                         return false;
                     }

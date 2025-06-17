@@ -4342,15 +4342,15 @@ MonoBehaviour:
   canBePlacedColor: {r: 0.07678461, g: 1, b: 0, a: 1}
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
   gridType: 0
-  gridSize: {x: 3, y: 6}
-  randomGridXRange: {x: 5, y: 6}
-  randomGridYRange: {x: 4, y: 6}
+  gridSize: {x: 6, y: 8}
+  randomGridXRange: {x: 6, y: 6}
+  randomGridYRange: {x: 8, y: 8}
   gridHorizontalOffsetType: 0
   customOffsetX: 0
   gridVerticalOffsetType: 1
   customOffsetY: 8
   destroyThreshold: 3
-  currentOffset: {x: -1, y: 8}
+  currentOffset: {x: -3, y: 8}
   blocksOnGrid: []
   drawAllCustomGridCells: 0
   <RandomInfectedTime>k__BackingField: 0
@@ -4472,7 +4472,7 @@ Transform:
   m_GameObject: {fileID: 2127847346}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.25, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
