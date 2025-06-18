@@ -244,14 +244,14 @@ namespace MadDuck.Scripts.Units
             spriteRenderer.color = _beforeFlashColor;
         }
         
-        public async Task PreInfect()
+        public async Task PreInfect() //Use UniTask
         {
             _beforeFlashColor = spriteRenderer.color;
             _flashTween = Tween.Color(spriteRenderer, Color.magenta, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
             BlockState = BlockState.PreInfected;
             
             if (BlockState != BlockState.PreInfected) return;
-            await UniTask.Delay(TimeSpan.FromSeconds(GameManager.Instance.PreInfectTime));
+            await UniTask.Delay(TimeSpan.FromSeconds(GameManager.Instance.PreInfectTime)); //Use UniTask.WaitForSeconds instead
             StopFlashing();
             Infect();
         }
