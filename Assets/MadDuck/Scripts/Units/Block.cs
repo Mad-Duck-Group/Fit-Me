@@ -90,15 +90,18 @@ namespace MadDuck.Scripts.Units
         [field: SerializeField] public List<BlockSchema> BlockSchemas { get; private set; } = new();
         public int SpawnIndex { get; set; }
         
+        [SerializeField] private Color _originalColor = Color.white;
+        public Color InfectColor = Color.black;
+        
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
         private Vector3 _originalScale;
         private Vector3 _originalSpriteScale;
-        private Color _originalColor;
         private Color _beforeFlashColor;
         private Vector3 _mousePositionDifference;
         private Tween _transformTween;
         private Tween _flashTween;
+        private Tween _preInfectTween;
         private bool _isDragging;
 
         public BlockTypes BlockType => blockType;
@@ -231,6 +234,8 @@ namespace MadDuck.Scripts.Units
 
         public void StartFlashing()
         {
+            StopPreInfectFlash();
+            
             _beforeFlashColor = spriteRenderer.color;
             _flashTween = Tween.Color(spriteRenderer, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
         }
@@ -240,26 +245,52 @@ namespace MadDuck.Scripts.Units
             if (_flashTween.isAlive)
             {
                 _flashTween.Complete();
+                switch (BlockState)
+                {
+                    case BlockState.PreInfected:
+                        PreInfectFlash();
+                        break;
+                    case BlockState.Infected:
+                        StopPreInfectFlash();
+                        break;
+                    case BlockState.Normal:
+                        spriteRenderer.color = _beforeFlashColor;
+                        break;
+                }
             }
-            spriteRenderer.color = _beforeFlashColor;
+        }
+
+        
+        public void PreInfectFlash()
+        {
+            spriteRenderer.color = _originalColor;
+            _preInfectTween = Tween.Color(spriteRenderer, InfectColor, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
         }
         
-        public async Task PreInfect() //Use UniTask
+        public void StopPreInfectFlash()
         {
-            _beforeFlashColor = spriteRenderer.color;
-            _flashTween = Tween.Color(spriteRenderer, Color.magenta, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
+            if (_preInfectTween.isAlive)
+            {
+                _preInfectTween.Complete();
+            }
+            spriteRenderer.color = InfectColor;
+        }
+        
+        public async UniTask PreInfect()
+        {
             BlockState = BlockState.PreInfected;
+            if (BlockState == BlockState.PreInfected)
+                PreInfectFlash();
             
             if (BlockState != BlockState.PreInfected) return;
-            await UniTask.Delay(TimeSpan.FromSeconds(GameManager.Instance.PreInfectTime)); //Use UniTask.WaitForSeconds instead
-            StopFlashing();
+            await UniTask.WaitForSeconds(GameManager.Instance.PreInfectTime);
             Infect();
         }
         
         public void Infect()
         {
-            spriteRenderer.color = Color.gray;
-            _beforeFlashColor = spriteRenderer.color;
+            StopPreInfectFlash();
+            _beforeFlashColor = _originalColor;
             BlockState = BlockState.Infected;
             StartInfectTimer();
         }
@@ -267,7 +298,7 @@ namespace MadDuck.Scripts.Units
         public void Disinfect()
         {
             spriteRenderer.color = _originalColor;
-            _beforeFlashColor = spriteRenderer.color;
+            //_beforeFlashColor = spriteRenderer.color;
             BlockState = BlockState.Normal;
             _infectionSubscription?.Dispose();
         }

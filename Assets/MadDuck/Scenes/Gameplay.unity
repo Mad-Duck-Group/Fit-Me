@@ -2452,6 +2452,7 @@ MonoBehaviour:
   scorePerFitMe: 10000
   <CurrentGameState>k__BackingField:
     value: 0
+  gameDifficultySettings: []
   usePercentage: 1
   startInfectTimeRange: 10
   firstInfectTimePercentRange: {x: 0.1, y: 0.6}
