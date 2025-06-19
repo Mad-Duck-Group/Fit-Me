@@ -99,6 +99,7 @@ public class GameManager : MonoSingleton<GameManager>
     public SerializableReactiveProperty<GameState> CurrentGameState { get; private set; } = new(GameState.CountOff);
     
     [Header("Infected Settings")] 
+    [SerializeField, Redcode.Extensions.ReadOnly] private GameDifficulty difficulty;
     [SerializeField] private List<GameDifficultySettings> gameDifficultySettings;
     [SerializeField] private bool checkGameDifficulty;
     [SerializeField] private bool usePercentage;
@@ -286,6 +287,7 @@ public class GameManager : MonoSingleton<GameManager>
         {
             case true:
                 if (_score < gameDifficultySettings[_currentGameDifficultyIndex].maxScorePerDifficulty) return;
+                if (_listInfectIndex < 0 || _listInfectIndex >= _listInfectTimePercent.Count) return;
                 if (_runningTime < _listInfectTimePercent[_listInfectIndex]) return;
                 break;
             
@@ -323,8 +325,10 @@ public class GameManager : MonoSingleton<GameManager>
     public void GameDifficulty()
     {
         if (gameDifficultySettings.Count == 0) return;
+        if (_currentGameDifficultyIndex >= gameDifficultySettings.Count) return;
         if (_score >= gameDifficultySettings[_currentGameDifficultyIndex].maxScorePerDifficulty)
         {
+            difficulty = gameDifficultySettings[_currentGameDifficultyIndex].difficulty;
             _currentGameDifficultyIndex++;
         }
         
