@@ -19,6 +19,7 @@ using Random = UnityEngine.Random;
 
 namespace MadDuck.Scripts.Units
 {
+    #region Enums
     public enum BlockState
     {
         Normal,
@@ -46,6 +47,7 @@ namespace MadDuck.Scripts.Units
         T,
         TwoByTwo
     }
+    #endregion
 
     [Serializable]
     [ShowOdinSerializedPropertiesInInspector]
@@ -73,6 +75,7 @@ namespace MadDuck.Scripts.Units
     [ShowOdinSerializedPropertiesInInspector]
     public class Block : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, ISerializationCallbackReceiver, ISupportsPrefabSerialization
     {
+        #region Inspectors
         [Title("Block References")]
         [SerializeField] private BlockTypes blockType;
         [SerializeField] private BlockFaces blockFace;
@@ -91,7 +94,9 @@ namespace MadDuck.Scripts.Units
         [TableList(AlwaysExpanded = true)]
         [field: SerializeField] public List<BlockSchema> BlockSchemas { get; private set; } = new();
         public int SpawnIndex { get; set; }
+        #endregion
         
+        #region Fields and Properties
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
         private Vector3 _originalScale;
@@ -102,13 +107,14 @@ namespace MadDuck.Scripts.Units
         private Tween _transformTween;
         private Tween _flashTween;
         private bool _isDragging;
-
         public BlockTypes BlockType => blockType;
         public BlockFaces BlockFace => blockFace;
         public Atom[] Atoms => atoms;
         public bool AllowPickUpAfterPlacement => allowPickUpAfterPlacement;
-        private IDisposable _infectionSubscription; //Rename to for more clarity
+        private IDisposable _infectionSubscription;
+        #endregion
 
+        #region Initialization
         private void Start()
         {
             foreach (var atom in atoms)
@@ -124,26 +130,26 @@ namespace MadDuck.Scripts.Units
             _originalRotation = transform.eulerAngles;
             _originalScale = transform.localScale;
             _originalColor = spriteRenderer.color;
-            //GridManager.OnBlockInfected += OnBlockInfected;
-            //GridManager.OnBlockDisinfected += OnBlockDisinfected;
         }
 
         private void StartInfectTimer()
         {
-            _infectionSubscription?.Dispose(); // Dispose previous subscription if exists
+            _infectionSubscription?.Dispose();
             if (BlockState is not BlockState.Infected) return;
             _infectionSubscription = Observable
                 .Interval(TimeSpan.FromSeconds(GridManager.Instance.RandomInfectedTime))
                 .Subscribe(_ => GridManager.Instance.InfectAdjacentBlocks(this));
         }
-        
+        #endregion
+
+        #region Events
         void OnDestroy()
         {
             _infectionSubscription?.Dispose();
-            //GridManager.OnBlockInfected -= OnBlockInfected;
-            //GridManager.OnBlockDisinfected -= OnBlockDisinfected;
         }
-        
+        #endregion
+
+        #region Schema
         /// <summary>
         /// Generate the schema of the block, 1 is an atom, 0 is empty
         /// </summary>
@@ -176,78 +182,9 @@ namespace MadDuck.Scripts.Units
             //BlockSchemas = BlockSchemas.Distinct().ToList(); //Remove duplicates
             transform.localScale = currentScale;
         }
+        #endregion
 
-        public void PickUpBlock()
-        {
-            //Tween the block to (1, 1, 1) scale
-            if (_transformTween.isAlive)
-            {
-                _transformTween.Stop();
-            }
-            var gridSize = GridManager.Instance.Grid.cellSize;
-            Tween.Scale(transform, gridSize, 0.2f);
-            _transformTween = Tween.Scale(spriteRenderer.transform, spriteRenderer.transform.localScale * pickUpScaleMultiplier, 0.2f);
-        }
-
-        /// <summary>
-        /// Return the block to its original position, rotation and scale
-        /// </summary>
-        public void ReturnToOriginal()
-        {
-            //Tween the block to the original position
-            if (_transformTween.isAlive)
-            {
-                _transformTween.Stop();
-            }
-            _transformTween = Tween.Position(transform, _originalPosition, 0.2f).OnComplete(() => SetRendererSortingOrder(1));
-            //Tween the block to the original rotation
-            Tween.Rotation(transform, _originalRotation, 0.2f);
-            //Tween the block to the original scale
-            Tween.Scale(transform, _originalScale, 0.2f);
-            Tween.Scale(spriteRenderer.transform, _originalSpriteScale, 0.2f);
-            GridManager.Instance.ResetPreviousValidationCells();
-        }
-
-        /// <summary>
-        /// Set the sorting order of atoms
-        /// </summary>
-        /// <param name="order">Order to render</param>
-        public void SetRendererSortingOrder(int order)
-        {
-            if (!spriteRenderer)
-            {
-                foreach (var atom in atoms)
-                {
-                    atom.SpriteRenderer.sortingOrder = order;
-                }
-                return;
-            }
-            spriteRenderer.sortingOrder = order;
-        }
-
-        /// <summary>
-        /// Handle rotation of the block
-        /// </summary>
-        private void HandleBlockManipulation()
-        {
-            
-        }
-
-        public void StartFlashing()
-        {
-            _beforeFlashColor = spriteRenderer.color;
-            _flashTween = Tween.Color(spriteRenderer, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
-        }
-        
-        public void StopFlashing()
-        {
-            if (_flashTween.isAlive)
-            {
-                _flashTween.Complete();
-            }
-            spriteRenderer.color = _beforeFlashColor;
-        }
-        
+        #region Infection
         public void Infect()
         {
             spriteRenderer.color = Color.gray;
@@ -263,22 +200,16 @@ namespace MadDuck.Scripts.Units
             BlockState = BlockState.Normal;
             _infectionSubscription?.Dispose();
         }
-
-        public void ChangeColor(BlockTypes type, bool updateGrid = true)
+        #endregion
+        
+        #region Interactions
+        /// <summary>
+        /// Handle rotation of the block
+        /// </summary>
+        private void HandleBlockManipulation()
         {
-            blockType = type;
-            if (!RandomBlockManager.Instance.SpriteLibraryAssets.TryGetValue(type, out var spriteAsset))
-            {
-                Debug.LogError($"Sprite asset for block type {type} not found.");
-                return;
-            }
-            spriteResolver.spriteLibrary.spriteLibraryAsset = spriteAsset;
-            spriteResolver.SetCategoryAndLabel("Face", blockFace.ToString());
-            spriteResolver.ResolveSpriteToSpriteRenderer();
-            if (!updateGrid) return;
-            GridManager.Instance.UpdateBlockOnGrid(this);
+            
         }
-
         public void OnBeginDrag(PointerEventData eventData)
         {
             if (eventData.button is not PointerEventData.InputButton.Left) return;
@@ -336,6 +267,87 @@ namespace MadDuck.Scripts.Units
             }
             _isDragging = false;
         }
+        #endregion
+        
+        #region Utils
+        public void ChangeColor(BlockTypes type, bool updateGrid = true)
+        {
+            blockType = type;
+            if (!RandomBlockManager.Instance.SpriteLibraryAssets.TryGetValue(type, out var spriteAsset))
+            {
+                Debug.LogError($"Sprite asset for block type {type} not found.");
+                return;
+            }
+            spriteResolver.spriteLibrary.spriteLibraryAsset = spriteAsset;
+            spriteResolver.SetCategoryAndLabel("Face", blockFace.ToString());
+            spriteResolver.ResolveSpriteToSpriteRenderer();
+            if (!updateGrid) return;
+            GridManager.Instance.UpdateBlockOnGrid(this);
+        }
+        
+        public void StartFlashing()
+        {
+            _beforeFlashColor = spriteRenderer.color;
+            _flashTween = Tween.Color(spriteRenderer, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
+        }
+        
+        public void StopFlashing()
+        {
+            if (_flashTween.isAlive)
+            {
+                _flashTween.Complete();
+            }
+            spriteRenderer.color = _beforeFlashColor;
+        }
+        
+        public void PickUpBlock()
+        {
+            //Tween the block to (1, 1, 1) scale
+            if (_transformTween.isAlive)
+            {
+                _transformTween.Stop();
+            }
+            var gridSize = GridManager.Instance.Grid.cellSize;
+            Tween.Scale(transform, gridSize, 0.2f);
+            _transformTween = Tween.Scale(spriteRenderer.transform, spriteRenderer.transform.localScale * pickUpScaleMultiplier, 0.2f);
+        }
+
+        /// <summary>
+        /// Return the block to its original position, rotation and scale
+        /// </summary>
+        public void ReturnToOriginal()
+        {
+            //Tween the block to the original position
+            if (_transformTween.isAlive)
+            {
+                _transformTween.Stop();
+            }
+            _transformTween = Tween.Position(transform, _originalPosition, 0.2f).OnComplete(() => SetRendererSortingOrder(1));
+            //Tween the block to the original rotation
+            Tween.Rotation(transform, _originalRotation, 0.2f);
+            //Tween the block to the original scale
+            Tween.Scale(transform, _originalScale, 0.2f);
+            Tween.Scale(spriteRenderer.transform, _originalSpriteScale, 0.2f);
+            GridManager.Instance.ResetPreviousValidationCells();
+        }
+
+        /// <summary>
+        /// Set the sorting order of atoms
+        /// </summary>
+        /// <param name="order">Order to render</param>
+        public void SetRendererSortingOrder(int order)
+        {
+            if (!spriteRenderer)
+            {
+                foreach (var atom in atoms)
+                {
+                    atom.SpriteRenderer.sortingOrder = order;
+                }
+                return;
+            }
+            spriteRenderer.sortingOrder = order;
+        }
+        #endregion
         
         #region Serialization
         public void OnBeforeSerialize()

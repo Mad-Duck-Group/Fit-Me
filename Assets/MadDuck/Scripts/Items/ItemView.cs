@@ -26,15 +26,18 @@ namespace MadDuck.Scripts.Items
     }
     public class ItemView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        [field: SerializeField] private CanvasGroup canvasGroup;
+        #region Inspectors
+        [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private Canvas itemCanvas;
         [SerializeField] private Canvas itemCountCanvas;
-        [field: SerializeField] private Image icon;
-        [field: SerializeField] private TMP_Text countText;
-        [field: SerializeReference, Sirenix.OdinInspector.ReadOnly] private Item item;
+        [SerializeField] private Image icon;
+        [SerializeField] private TMP_Text countText;
+        [SerializeReference, Sirenix.OdinInspector.ReadOnly] private Item item;
         [SerializeField, SortingLayer] private int originalSortingLayer;
         [SerializeField, SortingLayer] private int targetSortingLayer;
+        #endregion
 
+        #region Fields and Properties
         private Vector3 _initialPosition;
         private IPublisher<ItemBlockHoveredEvent> _itemBlockHoveredPublisher;
         private Transform _parentTransform;
@@ -42,7 +45,9 @@ namespace MadDuck.Scripts.Items
         private Vector3 _mousePositionDifference;
         private Canvas _canvas;
         private bool _isDragging;
+        #endregion
 
+        #region Initialization
         private void Awake()
         {
             _itemBlockHoveredPublisher = GlobalMessagePipe.GetPublisher<ItemBlockHoveredEvent>();
@@ -60,7 +65,9 @@ namespace MadDuck.Scripts.Items
             item.OnUsed += OnItemUsed;
             item.OnCancelled += OnItemCancelled;
         }
-
+        #endregion
+        
+        #region Events
         public void OnEnable()
         {
             ItemManager.OnItemCountChanged += UpdateCount;
@@ -80,25 +87,9 @@ namespace MadDuck.Scripts.Items
         {
             ReturnToInitialPosition();
         }
+        #endregion
         
-        private void ReturnToInitialPosition()
-        {
-            Tween.Position(canvasGroup.transform, _initialPosition, 0.2f).OnComplete(() =>
-            {
-                canvasGroup.transform.SetParent(_parentTransform);
-                canvasGroup.transform.SetSiblingIndex(_parentSiblingIndex);
-                itemCanvas.sortingLayerID = originalSortingLayer;
-                //LayoutRebuilder.ForceRebuildLayoutImmediate(_parentTransform as RectTransform);
-                canvasGroup.blocksRaycasts = true;
-            });
-        }
-        
-        private void UpdateCount(ItemType itemType, int count)
-        {
-            if (item.ItemData.ItemType != itemType) return;
-            countText.text = count.ToString();
-        }
-
+        #region UI Interactions
         public void OnPointerClick(PointerEventData eventData)
         {
             if (item.ItemData.UsageMode != UsageMode.Click)
@@ -152,5 +143,26 @@ namespace MadDuck.Scripts.Items
             item.Use();
             _isDragging = false;
         }
+        #endregion
+        
+        #region Utils
+        private void ReturnToInitialPosition()
+        {
+            Tween.Position(canvasGroup.transform, _initialPosition, 0.2f).OnComplete(() =>
+            {
+                canvasGroup.transform.SetParent(_parentTransform);
+                canvasGroup.transform.SetSiblingIndex(_parentSiblingIndex);
+                itemCanvas.sortingLayerID = originalSortingLayer;
+                //LayoutRebuilder.ForceRebuildLayoutImmediate(_parentTransform as RectTransform);
+                canvasGroup.blocksRaycasts = true;
+            });
+        }
+        
+        private void UpdateCount(ItemType itemType, int count)
+        {
+            if (item.ItemData.ItemType != itemType) return;
+            countText.text = count.ToString();
+        }
+        #endregion
     }
 }

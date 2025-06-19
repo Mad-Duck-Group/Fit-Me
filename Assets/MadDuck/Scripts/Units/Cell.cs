@@ -5,20 +5,20 @@ namespace MadDuck.Scripts.Units
 {
     public class Cell : MonoBehaviour
     {
-        private SpriteRenderer _spriteRenderer;
+        #region Inspectors
+        [field: SerializeField, ReadOnly] public Atom CurrentAtom { get; private set; }
+        #endregion
+        
+        #region Fields and Properties
+        public SpriteRenderer SpriteRenderer { get; private set; }
         public Color OriginalColor { get; set; }
         public Vector2Int ArrayIndex { get; set; }
         public Vector2Int GridIndex { get; set; }
-        [SerializeField][ReadOnly] private Atom currentAtom;
-    
-        public SpriteRenderer SpriteRenderer => _spriteRenderer;
-    
-
-        public Atom CurrentAtom => currentAtom;
-        // Start is called before the first frame update
+        #endregion
+        
         void Awake()
         {
-            _spriteRenderer = GetComponent<SpriteRenderer>();
+            SpriteRenderer = GetComponent<SpriteRenderer>();
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace MadDuck.Scripts.Units
         /// <param name="atom">Atom to set</param>
         public void SetAtom(Atom atom)
         {
-            currentAtom = atom;
+            CurrentAtom = atom;
         }
     }
 }

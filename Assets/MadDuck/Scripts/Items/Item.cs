@@ -20,14 +20,34 @@ namespace MadDuck.Scripts.Items
         public event Action OnCancelled;
         public event Action OnUsed;
 
+        /// <summary>
+        /// Initialize the item the first time it is created.
+        /// </summary>
+        /// <param name="itemData"></param>
         public virtual void Initialize(ItemData itemData)
         {
             ItemData = itemData;
         }
+        /// <summary>
+        /// Shutdown the item and clean up any resources or subscriptions.
+        /// </summary>
         public abstract void Shutdown();
+        /// <summary>
+        /// Check if the item is selectable.
+        /// </summary>
+        /// <returns>true if selectable, false otherwise</returns>
         public abstract bool Selectable();
+        /// <summary>
+        /// Select the item and prepare it for use.
+        /// </summary>
         public abstract void Select();
+        /// <summary>
+        /// Cancel the item usage.
+        /// </summary>
         public abstract void Cancel();
+        /// <summary>
+        /// Use the item.
+        /// </summary>
         public abstract void Use();
         
         protected void NotifyCancelled()

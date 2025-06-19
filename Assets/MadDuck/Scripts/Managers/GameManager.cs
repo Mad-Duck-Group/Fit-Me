@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Managers;
+using MadDuck.Scripts.Utils.Inspectors;
 using MessagePipe;
 using PrimeTween;
 using R3;
@@ -18,6 +19,7 @@ using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
+#region Enums
 public enum ScoreTypes
 {
     Placement,
@@ -35,64 +37,94 @@ public enum GameState
     GameOver,
     GameClear
 }
+#endregion
 
 public class GameManager : MonoSingleton<GameManager>
 {
-    [Header("Time Settings")]
+    #region Inspectors
+
+    #region References
+    [Title("References")]
+    [SerializeField, HideLabel] private InspectorVoid referencesTitle;
+    [TabGroup("References", "Count Off")]
+    [SerializeField] private GameObject countOffPanel;
+    [TabGroup("References", "Count Off")]
+    [SerializeField] private TMP_Text countOffText;
+    
+    [TabGroup("References", "Pause")]
+    [SerializeField] private GameObject pausePanel;
+    [TabGroup("References", "Pause")]
+    [SerializeField] private Slider volumeSlider;
+    
+    [TabGroup("References", "Game Over")]
+    [SerializeField] private GameObject gameOverPanel;
+    [TabGroup("References", "Game Over")]
+    [SerializeField] private TMP_Text gameOverText;
+    
+    [TabGroup("References", "Score")]
+    [SerializeField] private TMP_Text scoreText;
+    #endregion
+
+    #region Settings
+    [Title("Settings")]
+    [SerializeField, HideLabel] private InspectorVoid settingsTitle;
+    [TabGroup("Settings", "Timer")]
     [SerializeField] private float gameTimer = 60f;
+    [TabGroup("Settings", "Timer")]
     [SerializeField] private Slider timerSlider;
+    [TabGroup("Settings", "Timer")]
     [SerializeField] private Image timerFill;
+    [TabGroup("Settings", "Timer")]
     [SerializeField] private Color startColor = Color.green;
+    [TabGroup("Settings", "Timer")]
     [SerializeField] private Color endColor = Color.red;
+    [TabGroup("Settings", "Timer")]
     [SerializeField] private float bombTimeBonus = 10f;
     
-    [Header("Count Off Settings")]
+    [TabGroup("Settings", "Count Off")]
     [SerializeField] private float countOffTime = 3f;
-    [SerializeField] private GameObject countOffPanel;
-    [SerializeField] private TMP_Text countOffText;
-
+    
+    [TabGroup("Settings", "Score")]
+    [SerializeField] private int scorePerPlacement = 100;
+    [TabGroup("Settings", "Score")]
+    [SerializeField] private int scorePerCombo = 100;
+    [TabGroup("Settings", "Score")]
+    [SerializeField] private int scorePerBomb = 200;
+    [TabGroup("Settings", "Score")]
+    [SerializeField] private int scorePerFitMe = 10000;
+    
+    [TabGroup("Settings", "Infection")]
+    [SerializeField] private bool usePercentage;
+    [TabGroup("Settings", "Infection")]
+    [SerializeField, HideIf(nameof(usePercentage))] 
+    private float startInfectTimeRange = 10f;
+    [TabGroup("Settings", "Infection")]
+    [SerializeField, ShowIf(nameof(usePercentage)), MinValue(0.1f)] 
+    private Vector2 firstInfectTimePercentRange = new(0.1f, 0.5f);
+    [field: TabGroup("Settings", "Infection")]
+    [field: SerializeField, MinValue(0.1f)] 
+    public Vector2 InfectionTimeRange { get; private set; } = new(0, 10);
+    [TabGroup("Settings", "Infection")]
+    [SerializeField] private int maxInfectionCount = 1;
+    #endregion
+    
     // [Header("Reroll Settings")] 
     // [SerializeField] private Button reRollButton;
     // [SerializeField] private TMP_Text reRollText;
     // [SerializeField] private int maxReRoll = 2;
     // [SerializeField] private int reRollScoreThreshold = 5000;
 
-    [Header("Pause Settings")]
-    [SerializeField] private GameObject pausePanel;
-    [SerializeField] private Slider volumeSlider;
-    
-    [Header("Game Over Settings")]
-    [SerializeField] private GameObject gameOverPanel;
-    [SerializeField] private TMP_Text gameOverText;
-    
-    [Header("Game Clear Settings")]
-    [SerializeField] private GameObject gameClearPanel;
-    [SerializeField] private TMP_Text gameClearText;
-    
-    [Header("Score Settings")]
-    [SerializeField] private TMP_Text scoreText;
-    [SerializeField] private int scorePerPlacement = 100;
-    [SerializeField] private int scorePerCombo = 100;
-    [SerializeField] private int scorePerBomb = 200;
-    [SerializeField] private int scorePerFitMe = 10000;
-
-    [Title("Game Manager Debug")]
-    [field: SerializeField, Sirenix.OdinInspector.ReadOnly]
+    #region Debug
+    [field: Title("Game Manager Debug")]
+    [field: SerializeField, DisplayAsString]
     public SerializableReactiveProperty<GameState> CurrentGameState { get; private set; } = new(GameState.CountOff);
-    
-    [Header("Infected Settings")] 
-    [SerializeField] private bool usePercentage;
-    [SerializeField, HideIf(nameof(usePercentage))] 
-    private float startInfectTimeRange = 10f;
-    [SerializeField, ShowIf(nameof(usePercentage)), MinValue(0.1f)] 
-    private Vector2 firstInfectTimePercentRange = new(0.1f, 0.5f);
-    [field: SerializeField, MinValue(0.1f)] 
-    public Vector2 InfectionTimeRange { get; private set; } = new(0, 10);
-    [SerializeField] private int maxInfectionCount = 1;
+    #endregion
+    #endregion
+
+    #region Fields and Properties
     private int _currentInfectionCount;
     private readonly List<float> _listInfectTimePercent = new();
     private int _listInfectIndex;
-
     private GameState _beforePauseState;
     private bool _sceneActivated;
     private int _previousReRollScore;
@@ -100,6 +132,9 @@ public class GameManager : MonoSingleton<GameManager>
     private int _score;
     private bool _countDownPlayed;
     public static event Action OnSceneActivated;
+    #endregion
+    
+    #region Initialization
     void Start()
     {
         CurrentGameState.Value = GameState.CountOff;
@@ -121,8 +156,43 @@ public class GameManager : MonoSingleton<GameManager>
         OnSceneActivated?.Invoke();
         StartCountOff();
     }
-
-    // Update is called once per frame
+    
+    /// <summary>
+    /// Update the count off timer
+    /// </summary>
+    private void StartCountOff()
+    {
+        if (countOffTime <= 0)
+        {
+            CurrentGameState.Value = GameState.PlaceBlock;
+            countOffPanel.SetActive(false);
+            RandomBlockManager.Instance.SpawnAtStart();
+            Debug.Log("Count off time is 0 or less, starting game immediately.");
+            return;
+        }
+        countOffPanel.SetActive(true);
+        Observable.Interval(TimeSpan.FromSeconds(1))
+            .Take(Mathf.CeilToInt(countOffTime) + 1) // Take 4 values (3, 2, 1, 0)
+            .Select((_, i) => Mathf.CeilToInt(countOffTime) - i) // Convert to countdown values
+            .Do(current =>  countOffText.text = current.ToString())
+            .Subscribe(
+                current => 
+                {
+                    // Update text based on current countdown value
+                    countOffText.text = current > 0 ? current.ToString() : "GO!";
+                },
+                _ =>
+                {
+                    // On completed (after countdown finishes)
+                    CurrentGameState.Value = GameState.PlaceBlock;
+                    countOffPanel.SetActive(false);
+                    RandomBlockManager.Instance.SpawnAtStart();
+                })
+            .AddTo(this);
+    }
+    #endregion
+    
+    #region Updates
     void Update()
     {
         if (!_sceneActivated) return;
@@ -130,6 +200,92 @@ public class GameManager : MonoSingleton<GameManager>
         UpdateSafeInfectedTimer();
     }
     
+    /// <summary>
+    /// Update the game timer
+    /// </summary>
+    private void UpdateGameTimer()
+    {
+        if (CurrentGameState.Value is GameState.CountOff or GameState.Pause) return;
+        _currentGameTimer -= Time.deltaTime;
+        timerSlider.value = _currentGameTimer / gameTimer;
+        Color color = Color.Lerp(endColor, startColor, _currentGameTimer / gameTimer);
+        timerFill.color = color;
+        switch (_currentGameTimer)
+        {
+            case > 10 when _countDownPlayed:
+                _countDownPlayed = false;
+                break;
+            case <= 10 when !_countDownPlayed:
+                _countDownPlayed = true;
+                break;
+        }
+        if (_currentGameTimer <= 0 && CurrentGameState.Value is not (GameState.GameClear or GameState.GameOver))
+        {
+            GameOver();
+        }
+    }
+    
+    /// <summary>
+    /// Update the infected timer
+    /// </summary>
+    private void UpdateSafeInfectedTimer()
+    {
+        if (CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
+        var elapsedTime = gameTimer - _currentGameTimer;
+        switch (usePercentage)
+        {
+            case false:
+                if (elapsedTime < startInfectTimeRange || _currentInfectionCount >= maxInfectionCount) return;
+                break;
+            case true:
+                if (_listInfectIndex < 0 || _listInfectIndex >= _listInfectTimePercent.Count) return;
+                if (elapsedTime < _listInfectTimePercent[_listInfectIndex]) return;
+                break;
+        }
+
+        if (maxInfectionCount >= 2)
+        {
+            if (!usePercentage || _currentInfectionCount >= maxInfectionCount) return; 
+            GridManager.Instance.InfectRandomBlock();
+            _currentInfectionCount++;
+            _listInfectIndex++;
+        }
+        else
+        {
+            GridManager.Instance.InfectRandomBlock();
+            _currentInfectionCount++;
+        }
+    }
+    #endregion
+    
+    // public bool ChangeReRoll(int value)
+    // {
+    //     int before = _currentReRoll;
+    //     _currentReRoll += value;
+    //     _currentReRoll = Mathf.Clamp(_currentReRoll, 0, maxReRoll);
+    //     reRollButton.interactable = _currentReRoll > 0;
+    //     if (_currentReRoll == before) return false;
+    //     UpdateReRollText();
+    //     return true;
+    // }
+    //
+    // private void UpdateReRollText(bool bump = true)
+    // {
+    //     reRollText.text = $"{_currentReRoll}/{maxReRoll}";
+    //     if (bump)
+    //     {
+    //         Tween.Scale(reRollText.transform, 1.2f, 0.1f, cycleMode: CycleMode.Yoyo, cycles: 2);
+    //     }
+    // }
+    //
+    // public void ReRoll()
+    // {
+    //     if (_currentReRoll <= 0) return;
+    //     //if (ChangeReRoll(-1)) SoundManager.Instance.PlaySoundFX(SoundFXTypes.ReRollLose, out _);
+    //     RandomBlockManager.Instance.ReRoll();
+    // }
+
+    #region Utils
     /// <summary>
     /// Change the score by the given value
     /// </summary>
@@ -185,65 +341,6 @@ public class GameManager : MonoSingleton<GameManager>
 
         scoreText.text = _score.ToString("N0");
     }
-    
-    /// <summary>
-    /// Update the count off timer
-    /// </summary>
-    private void StartCountOff()
-    {
-        if (countOffTime <= 0)
-        {
-            CurrentGameState.Value = GameState.PlaceBlock;
-            countOffPanel.SetActive(false);
-            RandomBlockManager.Instance.SpawnAtStart();
-            Debug.Log("Count off time is 0 or less, starting game immediately.");
-            return;
-        }
-        countOffPanel.SetActive(true);
-        Observable.Interval(TimeSpan.FromSeconds(1))
-            .Take(Mathf.CeilToInt(countOffTime) + 1) // Take 4 values (3, 2, 1, 0)
-            .Select((_, i) => Mathf.CeilToInt(countOffTime) - i) // Convert to countdown values
-            .Do(current =>  countOffText.text = current.ToString())
-            .Subscribe(
-                current => 
-                {
-                    // Update text based on current countdown value
-                    countOffText.text = current > 0 ? current.ToString() : "GO!";
-                },
-                _ =>
-                {
-                    // On completed (after countdown finishes)
-                    CurrentGameState.Value = GameState.PlaceBlock;
-                    countOffPanel.SetActive(false);
-                    RandomBlockManager.Instance.SpawnAtStart();
-                })
-            .AddTo(this);
-    }
-
-    /// <summary>
-    /// Update the game timer
-    /// </summary>
-    private void UpdateGameTimer()
-    {
-        if (CurrentGameState.Value is GameState.CountOff or GameState.Pause) return;
-        _currentGameTimer -= Time.deltaTime;
-        timerSlider.value = _currentGameTimer / gameTimer;
-        Color color = Color.Lerp(endColor, startColor, _currentGameTimer / gameTimer);
-        timerFill.color = color;
-        switch (_currentGameTimer)
-        {
-            case > 10 when _countDownPlayed:
-                _countDownPlayed = false;
-                break;
-            case <= 10 when !_countDownPlayed:
-                _countDownPlayed = true;
-                break;
-        }
-        if (_currentGameTimer <= 0 && CurrentGameState.Value is not (GameState.GameClear or GameState.GameOver))
-        {
-            GameOver();
-        }
-    }
 
     private void CalculatePercentageInfectTime()
     {
@@ -255,35 +352,6 @@ public class GameManager : MonoSingleton<GameManager>
         _listInfectTimePercent.Sort();
     }
     
-    private void UpdateSafeInfectedTimer()
-    {
-        if (CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
-        var elapsedTime = gameTimer - _currentGameTimer;
-        switch (usePercentage)
-        {
-            case false:
-                if (elapsedTime < startInfectTimeRange || _currentInfectionCount >= maxInfectionCount) return;
-                break;
-            case true:
-                if (_listInfectIndex < 0 || _listInfectIndex >= _listInfectTimePercent.Count) return;
-                if (elapsedTime < _listInfectTimePercent[_listInfectIndex]) return;
-                break;
-        }
-
-        if (maxInfectionCount >= 2)
-        {
-            if (!usePercentage || _currentInfectionCount >= maxInfectionCount) return; 
-            GridManager.Instance.InfectRandomBlock();
-            _currentInfectionCount++;
-            _listInfectIndex++;
-        }
-        else
-        {
-            GridManager.Instance.InfectRandomBlock();
-            _currentInfectionCount++;
-        }
-    }
-
     public void ChangeGameTimer(float value, bool bump = true)
     {
         float newTimer = _currentGameTimer + value;
@@ -293,34 +361,9 @@ public class GameManager : MonoSingleton<GameManager>
             Tween.Scale(timerSlider.transform, 1.2f, 0.1f, cycleMode: CycleMode.Yoyo, cycles: 2);
         }
     }
-
-    // public bool ChangeReRoll(int value)
-    // {
-    //     int before = _currentReRoll;
-    //     _currentReRoll += value;
-    //     _currentReRoll = Mathf.Clamp(_currentReRoll, 0, maxReRoll);
-    //     reRollButton.interactable = _currentReRoll > 0;
-    //     if (_currentReRoll == before) return false;
-    //     UpdateReRollText();
-    //     return true;
-    // }
-    //
-    // private void UpdateReRollText(bool bump = true)
-    // {
-    //     reRollText.text = $"{_currentReRoll}/{maxReRoll}";
-    //     if (bump)
-    //     {
-    //         Tween.Scale(reRollText.transform, 1.2f, 0.1f, cycleMode: CycleMode.Yoyo, cycles: 2);
-    //     }
-    // }
-    //
-    // public void ReRoll()
-    // {
-    //     if (_currentReRoll <= 0) return;
-    //     //if (ChangeReRoll(-1)) SoundManager.Instance.PlaySoundFX(SoundFXTypes.ReRollLose, out _);
-    //     RandomBlockManager.Instance.ReRoll();
-    // }
+    #endregion
     
+    #region Pause
     public void PauseGame()
     {
         if (CurrentGameState.Value is GameState.CountOff or GameState.GameOver or GameState.GameClear) return;
@@ -336,6 +379,13 @@ public class GameManager : MonoSingleton<GameManager>
         pausePanel.SetActive(false);
     }
     
+    public void ToggleVolumeSlider()
+    {
+        volumeSlider.gameObject.SetActive(!volumeSlider.gameObject.activeSelf);
+    }
+    #endregion
+    
+    #region Game Over
     public void GameOver(bool fail = false)
     {
         CurrentGameState.Value = GameState.GameOver;
@@ -345,7 +395,9 @@ public class GameManager : MonoSingleton<GameManager>
         gameOverPanel.SetActive(true);
         Tween.Scale(gameOverText.transform, 1, 0.5f, ease: Ease.OutBounce);
     }
+    #endregion
 
+    #region Scene Change
     public void BackToMenu()
     {
         if (SceneManager.sceneCount > 1) return;
@@ -358,9 +410,5 @@ public class GameManager : MonoSingleton<GameManager>
         //LoadSceneManager.Instance.Retry = true;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-    
-    public void ToggleVolumeSlider()
-    {
-        volumeSlider.gameObject.SetActive(!volumeSlider.gameObject.activeSelf);
-    }
+    #endregion
 }

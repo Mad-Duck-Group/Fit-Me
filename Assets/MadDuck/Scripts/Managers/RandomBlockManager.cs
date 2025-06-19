@@ -45,6 +45,16 @@ namespace MadDuck.Scripts.Managers
         #region Fields
         private Tween _scaleTween;
         #endregion
+        
+        #region Initialization
+        public void SpawnAtStart()
+        {
+            spawnPoints.ForEach(FreeSpawnPoint);
+            SpawnRandomBlock();
+        }
+        #endregion
+        
+        #region Events
         private void OnEnable()
         {
             GameManager.OnSceneActivated += OnSceneActivated;
@@ -62,25 +72,12 @@ namespace MadDuck.Scripts.Managers
                 block.GenerateSchema();
             }
         }
+        #endregion
         
-        public void SpawnAtStart()
-        {
-            spawnPoints.ForEach(FreeSpawnPoint);
-            SpawnRandomBlock();
-        }
-    
-        public void FreeSpawnPoint(int index)
-        {
-            spawnPoints[index].IsFree = true;
-            spawnPoints[index].CurrentBlock = null;
-        }
-
-        public void FreeSpawnPoint(SpawnPoint spawnPoint)
-        {
-            spawnPoint.IsFree = true;
-            spawnPoint.CurrentBlock = null;
-        }
-
+        #region Spawning
+        /// <summary>
+        /// Spawns random blocks at spawn points.
+        /// </summary>
         public void SpawnRandomBlock()
         {
            
@@ -131,7 +128,21 @@ namespace MadDuck.Scripts.Managers
                 spawnPoints[i].CurrentBlock = block;
             }
         }
+        #endregion
+        
+        #region Utils
+        public void FreeSpawnPoint(int index)
+        {
+            spawnPoints[index].IsFree = true;
+            spawnPoints[index].CurrentBlock = null;
+        }
 
+        public void FreeSpawnPoint(SpawnPoint spawnPoint)
+        {
+            spawnPoint.IsFree = true;
+            spawnPoint.CurrentBlock = null;
+        }
+        
         public void ResetSpawnPoint()
         {
             foreach (var spawnPoint in spawnPoints)
@@ -165,5 +176,7 @@ namespace MadDuck.Scripts.Managers
                 GameManager.Instance.GameOver(true);  
             }
         }
+        #endregion
+
     }
 }

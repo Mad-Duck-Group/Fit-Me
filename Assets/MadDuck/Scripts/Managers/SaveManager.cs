@@ -10,6 +10,7 @@ namespace MadDuck.Scripts.Managers
     [RequireComponent(typeof(SaveFileSetup))]
     public class SaveManager : PersistentMonoSingleton<SaveManager>
     {
+        #region Fields and Properties
         public SaveFileSetup SaveFileSetup { get; private set; }
         public SaveFile CurrentSaveFile => SaveFileSetup.GetSaveFile();
         public static event Action OnSaveCompleted;
@@ -17,7 +18,9 @@ namespace MadDuck.Scripts.Managers
 
         private bool _saveReady = true;
         private bool _saveInQueue;
+        #endregion
 
+        #region Initialization
         protected override void Awake()
         {
             base.Awake();
@@ -28,7 +31,9 @@ namespace MadDuck.Scripts.Managers
         {
             Load();
         }
+        #endregion
 
+        #region Save/Load
         public void Load()
         {
             if (!SaveFileSetup) SaveFileSetup = GetComponent<SaveFileSetup>();
@@ -73,5 +78,6 @@ namespace MadDuck.Scripts.Managers
                 }
             });
         }
+        #endregion
     }
 }

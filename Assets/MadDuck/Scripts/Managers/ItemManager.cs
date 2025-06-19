@@ -13,6 +13,7 @@ namespace MadDuck.Scripts.Managers
 {
     public class ItemManager : MonoSingleton<ItemManager>
     {
+        #region Inspectors
         [Title("Item References")]
         [SerializeField]
         private SerializableDictionary<ItemType, int> itemRecords = new()
@@ -36,20 +37,13 @@ namespace MadDuck.Scripts.Managers
         [SerializeField, ReadOnly] private List<ItemView> itemViews = new();
         [Button("Save All Items")]
         private void DebugSaveAllItems() => SaveAllItems();
+        #endregion
 
+        #region Fields and Properties
         public static event Action<ItemType, int> OnItemCountChanged;
-        
-        
-        private void OnEnable()
-        {
-            SaveManager.OnLoadCompleted += LoadAllItems;
-        }
-        
-        private void OnDisable()
-        {
-            SaveManager.OnLoadCompleted -= LoadAllItems;
-        }
-        
+        #endregion
+
+        #region Initialization
         private void Start()
         {
             InitializeItems();
@@ -73,8 +67,25 @@ namespace MadDuck.Scripts.Managers
                 itemViews.Add(itemView);
             }
         }
+        #endregion
+        
+        #region Events
+        private void OnEnable()
+        {
+            SaveManager.OnLoadCompleted += LoadAllItems;
+        }
+        
+        private void OnDisable()
+        {
+            SaveManager.OnLoadCompleted -= LoadAllItems;
+        }
+        #endregion
 
         #region Save/Load
+        /// <summary>
+        /// Load the item count for a specific item type from the save file.
+        /// </summary>
+        /// <param name="type"></param>
         private void LoadItem(ItemType type)
         {
             var itemCount = SaveManager.Instance.CurrentSaveFile.GetData(type.ToString(), -1);
@@ -89,6 +100,9 @@ namespace MadDuck.Scripts.Managers
             }
         }
         
+        /// <summary>
+        /// Load all items from the save file.
+        /// </summary>
         private void LoadAllItems()
         {
             foreach (var itemType in itemRecords.Keys.ToList())
@@ -96,7 +110,12 @@ namespace MadDuck.Scripts.Managers
                 LoadItem(itemType);
             }
         }
-
+        
+        /// <summary>
+        /// Save the item count for a specific item type to the save file.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="saveImmediately">Save immediately after saving this item count.</param>
         private void SaveItem(ItemType type, bool saveImmediately = true)
         {
             if (!itemRecords.ContainsKey(type))
@@ -113,6 +132,9 @@ namespace MadDuck.Scripts.Managers
             }
         }
 
+        /// <summary>
+        /// Save all item counts to the save file.
+        /// </summary>
         private void SaveAllItems()
         {
             foreach (var itemType in itemRecords.Keys.ToList())
@@ -124,6 +146,12 @@ namespace MadDuck.Scripts.Managers
         #endregion
 
         #region Utils
+        /// <summary>
+        /// Check if the item count for a specific item type meets or exceeds the required count.
+        /// </summary>
+        /// <param name="itemType"></param>
+        /// <param name="requiredCount"></param>
+        /// <returns></returns>
         public bool CheckItemCount(ItemType itemType, int requiredCount)
         {
             if (!itemRecords.ContainsKey(itemType))
@@ -135,6 +163,11 @@ namespace MadDuck.Scripts.Managers
             return itemCount >= requiredCount;
         }
         
+        /// <summary>
+        /// Change the item count for a specific item type by a specified amount.
+        /// </summary>
+        /// <param name="itemType"></param>
+        /// <param name="changeAmount"></param>
         public void ChangeItemCount(ItemType itemType, int changeAmount)
         {
             if (!itemRecords.ContainsKey(itemType))
@@ -148,6 +181,11 @@ namespace MadDuck.Scripts.Managers
             OnItemCountChanged?.Invoke(itemType, itemRecords[itemType]);
         }
         
+        /// <summary>
+        /// Set the item count for a specific item type to a specific value.
+        /// </summary>
+        /// <param name="itemType"></param>
+        /// <param name="count"></param>
         public void SetItemCount(ItemType itemType, int count)
         {
             if (!itemRecords.ContainsKey(itemType))

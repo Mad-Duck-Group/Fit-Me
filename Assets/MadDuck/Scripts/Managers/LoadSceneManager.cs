@@ -41,6 +41,7 @@ namespace MadDuck.Scripts.Managers
 
     public class LoadSceneManager : PersistentMonoSingleton<LoadSceneManager>
     {
+        #region Inspectors
         [Title("Scenes")]
         [SerializeField] private SerializableDictionary<SceneType, SceneReference> scenes;
 
@@ -57,15 +58,13 @@ namespace MadDuck.Scripts.Managers
         {
             LoadScene(debugSceneType, LoadSceneMode.Single, false);
         }
-    
-        public delegate void StartFadeOut();
-        public static event StartFadeOut OnStartFadeOut;
-        public delegate void FinishFadeOut();
-        public static event FinishFadeOut OnFinishFadeOut;
-        public delegate void StartFadeIn();
-        public static event StartFadeIn OnStartFadeIn;
-        public delegate void FinishFadeIn();
-        public static event FinishFadeIn OnFinishFadeIn;
+        #endregion
+        
+        #region Fields and Properties
+        public static event Action OnStartFadeOut;
+        public static event Action OnFinishFadeOut;
+        public static event Action OnStartFadeIn;
+        public static event Action OnFinishFadeIn;
     
         private IDisposable _loadSceneEventListener;
         private Tween _fadeTween;
@@ -74,7 +73,16 @@ namespace MadDuck.Scripts.Managers
         public string NextScene { get; private set; }
         public LoadSceneMode LoadSceneMode { get; private set; }
         public static bool FirstSceneLoaded { get; private set; }
+        #endregion
         
+        #region Initialization
+        private void Start()
+        {
+            if (!FirstSceneLoaded) OnFinishFadeIn?.Invoke();
+        }
+        #endregion
+        
+        #region Events
         private void OnEnable()
         {
             _loadSceneEventListener = GlobalMessagePipe.GetSubscriber<LoadSceneEvent>()
@@ -87,17 +95,14 @@ namespace MadDuck.Scripts.Managers
         {
             _loadSceneEventListener?.Dispose();
         }
-
-        private void Start()
-        {
-            if (!FirstSceneLoaded) OnFinishFadeIn?.Invoke();
-        }
-
+        
         private void OnLoadSceneEvent(LoadSceneEvent loadSceneEvent)
         {
             LoadScene(loadSceneEvent.sceneType, loadSceneEvent.loadSceneMode, loadSceneEvent.useLoadingScene);
         }
-
+        #endregion
+        
+        #region Scene Loading
         public void LoadScene(SceneType sceneType, LoadSceneMode loadSceneMode, bool useLoadingScene)
         {
             if (_asyncOperation is { isDone: false } || _fadeTween.isAlive) return;
@@ -186,6 +191,6 @@ namespace MadDuck.Scripts.Managers
                 });
             SceneManager.activeSceneChanged -= UnloadScene;
         }
-    
+        #endregion
     }
 }

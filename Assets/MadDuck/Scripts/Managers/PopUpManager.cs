@@ -32,6 +32,7 @@ namespace MadDuck.Scripts.Managers
     }
     public class PopUpManager : PersistentMonoSingleton<PopUpManager>
     {
+        #region Inspectors
         [Title("Pop Up References")]
         [SerializeField] private PopUp popUpPrefab;
 
@@ -41,15 +42,21 @@ namespace MadDuck.Scripts.Managers
         
         [Title("Pop Up Debug")]
         [SerializeField, ReadOnly] private SerializableDictionary<Guid, PopUp> activePopUps = new();
-        
+        #endregion
+
+        #region Fields and Properties
         private IPublisher<PopUpResultEvent> _popUpResultPublisher;
-        
+        #endregion
+
+        #region Initialization
         protected override void Awake()
         {
             base.Awake();
             _popUpResultPublisher = GlobalMessagePipe.GetPublisher<PopUpResultEvent>();
         }
+        #endregion
 
+        #region Pop Up
         public bool TryCreatePopUp(PopUpData popUpData, out Guid guid)
         {
             guid = Guid.Empty;
@@ -82,5 +89,6 @@ namespace MadDuck.Scripts.Managers
                 Debug.LogWarning($"Pop Up with ID {result.Id} not found.");
             }
         }
+        #endregion
     }
 }

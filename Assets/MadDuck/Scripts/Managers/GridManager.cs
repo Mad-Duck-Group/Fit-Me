@@ -120,9 +120,6 @@ namespace MadDuck.Scripts.Managers
         [Title("Infected Debug")]
         [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public float RandomInfectedTime { get; private set; }
         [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> infectedBlocks = new();
-        
-        public Grid Grid => _grid;
-
         private void UpdateGridOffset()
         {
             switch (gridHorizontalOffsetType)
@@ -156,15 +153,15 @@ namespace MadDuck.Scripts.Managers
         }
         #endregion
 
-        #region Fields
+        #region Fields and Properties
         private Grid _grid;
         private List<Cell> _previousValidationCells = new();
         public static event Action<Block> OnBlockInfected;
         public static event Action<Block> OnBlockDisinfected;
+        public Grid Grid => _grid;
         #endregion
         
-        #region Initialization
-
+        #region Events
         private void OnEnable()
         {
             GameManager.OnSceneActivated += OnSceneActivated;
@@ -174,7 +171,14 @@ namespace MadDuck.Scripts.Managers
         {
             GameManager.OnSceneActivated -= OnSceneActivated;
         }
-
+        
+        void OnSceneActivated()
+        {
+            CreateCells();
+        }
+        #endregion
+        
+        #region Initialization
         protected override void Awake()
         {
             base.Awake();
@@ -185,12 +189,9 @@ namespace MadDuck.Scripts.Managers
             }
             RandomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
         }
-
-        void OnSceneActivated()
-        {
-            CreateCells();
-        }
-
+        #endregion
+        
+        #region Grid Generation
         private void SetUpGridPreset()
         {
             var currentEndlessType = endlessType;
@@ -337,7 +338,8 @@ namespace MadDuck.Scripts.Managers
             }
         }
         #endregion
-    
+        
+        #region Blocks
         /// <summary>
         /// Validate the placement of the block and change the color of the cells
         /// </summary>
@@ -370,8 +372,7 @@ namespace MadDuck.Scripts.Managers
             cells.ForEach(cell => cell.SpriteRenderer.color = canBePlacedColor);
             return true;
         }
-    
-        #region Blocks
+        
         /// <summary>
         /// Place the block in the grid
         /// </summary>
@@ -479,8 +480,7 @@ namespace MadDuck.Scripts.Managers
                 RemoveBlock(block, destroy);
             }
         }
-        #endregion
-    
+        
         /// <summary>
         /// Reset the color of the previous validation cells
         /// </summary>
@@ -490,7 +490,9 @@ namespace MadDuck.Scripts.Managers
             _previousValidationCells.ForEach(cell => cell.SpriteRenderer.color = cell.OriginalColor);
             _previousValidationCells.Clear();
         }
-
+        #endregion
+    
+        #region Contacts
         /// <summary>
         /// Check for contact with other blocks
         /// </summary>
@@ -598,66 +600,8 @@ namespace MadDuck.Scripts.Managers
             }
             return CompareSchema(block, schemaIndex * 90f);
         }
-
-        #region Utils
-        /// <summary>
-        /// Get the cell by array index
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns>A Cell if it exists, null otherwise</returns>
-        public Cell GetCellByArrayIndex(int x, int y)
-        {
-            if (x < 0 || x >= currentGridSize.y || y < 0 || y >= currentGridSize.x)
-            {
-                return null;
-            }
-            return _cellArray[x, y];
-        }
-        
-        public Cell GetCellByArrayIndex(Vector2Int index)
-        {
-            return GetCellByArrayIndex(index.x, index.y);
-        }
-        
-        public Cell GetCellByGridIndex(int x, int y)
-        {
-            return GetCellByArrayIndex(currentOffset.y - y, x - currentOffset.x);
-        }
-        
-        public Cell GetCellByGridIndex(Vector2Int gridIndex)
-        {
-            return GetCellByGridIndex(gridIndex.x, gridIndex.y);
-        }
-    
-        /// <summary>
-        /// Get the cell by position, it will be rounded to the nearest cell
-        /// </summary>
-        /// <param name="position">Position to try to get a cell</param>
-        /// <returns>A Cell if it exists, null otherwise</returns>
-        public Cell GetCellByPosition(Vector3 position)
-        {
-            var worldToCell = _grid.WorldToCell(position);
-            int x = worldToCell.x;
-            int y = worldToCell.y;
-            return GetCellByGridIndex(x, y);
-        }
-        
-        public Bounds GetCellBounds(Cell cell)
-        {
-            var index = cell.GridIndex;
-            return GetCellBounds(index);
-        }
-
-        public Bounds GetCellBounds(Vector2Int gridIndex)
-        {
-            var cellBounds = _grid.GetBoundsLocal((Vector3Int)gridIndex);
-            var centerWorld = _grid.GetCellCenterWorld((Vector3Int)gridIndex);
-            cellBounds.center = centerWorld;
-            return cellBounds;
-        }
         #endregion
-
+        
         #region Infection
         private void InfectBlock(Block block)
         {
@@ -722,6 +666,65 @@ namespace MadDuck.Scripts.Managers
                 var blockToInfect = candidatesForInfection.GetRandomElement();
                 InfectBlock(blockToInfect);
             }
+        }
+        #endregion
+        
+        #region Utils
+        /// <summary>
+        /// Get the cell by array index
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns>A Cell if it exists, null otherwise</returns>
+        public Cell GetCellByArrayIndex(int x, int y)
+        {
+            if (x < 0 || x >= currentGridSize.y || y < 0 || y >= currentGridSize.x)
+            {
+                return null;
+            }
+            return _cellArray[x, y];
+        }
+        
+        public Cell GetCellByArrayIndex(Vector2Int index)
+        {
+            return GetCellByArrayIndex(index.x, index.y);
+        }
+        
+        public Cell GetCellByGridIndex(int x, int y)
+        {
+            return GetCellByArrayIndex(currentOffset.y - y, x - currentOffset.x);
+        }
+        
+        public Cell GetCellByGridIndex(Vector2Int gridIndex)
+        {
+            return GetCellByGridIndex(gridIndex.x, gridIndex.y);
+        }
+    
+        /// <summary>
+        /// Get the cell by position, it will be rounded to the nearest cell
+        /// </summary>
+        /// <param name="position">Position to try to get a cell</param>
+        /// <returns>A Cell if it exists, null otherwise</returns>
+        public Cell GetCellByPosition(Vector3 position)
+        {
+            var worldToCell = _grid.WorldToCell(position);
+            int x = worldToCell.x;
+            int y = worldToCell.y;
+            return GetCellByGridIndex(x, y);
+        }
+        
+        public Bounds GetCellBounds(Cell cell)
+        {
+            var index = cell.GridIndex;
+            return GetCellBounds(index);
+        }
+
+        public Bounds GetCellBounds(Vector2Int gridIndex)
+        {
+            var cellBounds = _grid.GetBoundsLocal((Vector3Int)gridIndex);
+            var centerWorld = _grid.GetCellCenterWorld((Vector3Int)gridIndex);
+            cellBounds.center = centerWorld;
+            return cellBounds;
         }
         #endregion
         

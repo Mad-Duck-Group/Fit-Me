@@ -30,6 +30,7 @@ namespace MadDuck.Scripts.UIs.PopUp
     
     public class PopUp : MonoBehaviour
     {
+        #region Inspectors
         [Title("Pop Up References")]
         [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private Image background;
@@ -40,7 +41,9 @@ namespace MadDuck.Scripts.UIs.PopUp
 
         [Title("Pop Up Debug")] [SerializeField, ReadOnly]
         private SerializableDictionary<int, PopUpChoice> popUpChoices = new();
-
+        #endregion
+        
+        #region Initialization
         public void Initialize(Guid guid, PopUpData popUpData, Action<PopUpResultEvent> onPopUpResult)
         {
             titleText.text = popUpData.title;
@@ -75,7 +78,10 @@ namespace MadDuck.Scripts.UIs.PopUp
                 Hide();
             }
         }
+        #endregion
 
+
+        #region Visibility
         public void Show()
         {
             canvasGroup.transform.localScale = Vector3.zero;
@@ -90,5 +96,6 @@ namespace MadDuck.Scripts.UIs.PopUp
                 Destroy(gameObject);
             });
         }
+        #endregion
     }
 }
