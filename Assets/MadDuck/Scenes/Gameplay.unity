@@ -2471,6 +2471,9 @@ MonoBehaviour:
   <PreInfectTime>k__BackingField: 4
   <InfectionTimeRange>k__BackingField: {x: 3, y: 10}
   maxInfectionCount: 2
+  infectColor:
+    serializedVersion: 2
+    rgba: 4278190080
 --- !u!4 &1077234520
 Transform:
   m_ObjectHideFlags: 0

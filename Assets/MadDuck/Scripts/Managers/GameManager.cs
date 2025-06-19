@@ -112,6 +112,9 @@ public class GameManager : MonoSingleton<GameManager>
     private int _currentInfectionCount;
     private readonly List<float> _listInfectTimePercent = new();
     private int _listInfectIndex;
+    
+    [Header("Debug Settings")]
+    public Color32 infectColor = new(255, 0, 0, 255);
 
     private float _runningTime;
     private GameState _beforePauseState;

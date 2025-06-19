@@ -35,7 +35,10 @@ namespace MadDuck.Scripts.Items
                 _blockHovered = null;
                 return;
             }
-            if (_blockHovered && _blockHovered.BlockType == itemBlockHoveredEvent.block.BlockType) return;
+            if (_blockHovered &&
+                _blockHovered.BlockType == itemBlockHoveredEvent.block.BlockType &&
+                (itemBlockHoveredEvent.block.BlockState == BlockState.Normal || 
+                 itemBlockHoveredEvent.block.BlockState == BlockState.PreInfected)) return;
             _blocksToDestroy.ForEach(b =>
             {
                 b.StopFlashing();

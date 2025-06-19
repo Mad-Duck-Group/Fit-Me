@@ -124,6 +124,8 @@ namespace MadDuck.Scripts.Units
             {
                 atom.ParentBlock = this;
             }
+
+            _infectColor = GameManager.Instance.infectColor;
         }
 
         public void Initialize()
