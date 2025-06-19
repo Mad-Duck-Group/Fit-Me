@@ -2,6 +2,7 @@
 using System.Linq;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Units;
+using MadDuck.Scripts.Utils.Inspectors;
 using MessagePipe;
 using PrimeTween;
 using Redcode.Extensions;
@@ -26,10 +27,14 @@ namespace MadDuck.Scripts.Items
     public class ItemView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         [field: SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private Canvas itemCanvas;
+        [SerializeField] private Canvas itemCountCanvas;
         [field: SerializeField] private Image icon;
         [field: SerializeField] private TMP_Text countText;
         [field: SerializeReference, Sirenix.OdinInspector.ReadOnly] private Item item;
-        
+        [SerializeField, SortingLayer] private int originalSortingLayer;
+        [SerializeField, SortingLayer] private int targetSortingLayer;
+
         private Vector3 _initialPosition;
         private IPublisher<ItemBlockHoveredEvent> _itemBlockHoveredPublisher;
         private Transform _parentTransform;
@@ -50,6 +55,8 @@ namespace MadDuck.Scripts.Items
             icon.sprite = item.ItemData.ItemIcon;
             _parentTransform = canvasGroup.transform.parent;
             _parentSiblingIndex = canvasGroup.transform.GetSiblingIndex();
+            itemCanvas.sortingLayerID = originalSortingLayer;
+            itemCountCanvas.sortingLayerID = originalSortingLayer;
             item.OnUsed += OnItemUsed;
             item.OnCancelled += OnItemCancelled;
         }
@@ -80,6 +87,7 @@ namespace MadDuck.Scripts.Items
             {
                 canvasGroup.transform.SetParent(_parentTransform);
                 canvasGroup.transform.SetSiblingIndex(_parentSiblingIndex);
+                itemCanvas.sortingLayerID = originalSortingLayer;
                 //LayoutRebuilder.ForceRebuildLayoutImmediate(_parentTransform as RectTransform);
                 canvasGroup.blocksRaycasts = true;
             });
@@ -108,12 +116,13 @@ namespace MadDuck.Scripts.Items
             if (!item.Selectable()) return;
             item.Select();
             var position = canvasGroup.transform.position;
-            var mousePosition = PointerManager.Instance.MouseCanvasPosition;
+            var mousePosition = PointerManager.Instance.MouseWorldPosition;
             Debug.Log($"Mouse position: {mousePosition}, Item position: {position}");
             _mousePositionDifference = (mousePosition - position).WithZ(0);
             _initialPosition = canvasGroup.transform.position;
             canvasGroup.transform.SetParent(_canvas.transform);
             canvasGroup.blocksRaycasts = false;
+            itemCanvas.sortingLayerID = targetSortingLayer;
             _isDragging = true;
         }
 
@@ -125,7 +134,7 @@ namespace MadDuck.Scripts.Items
                 return;
             if (!_isDragging) return;
             if (!item.Selectable()) return;
-            var mousePosition = PointerManager.Instance.MouseCanvasPosition;
+            var mousePosition = PointerManager.Instance.MouseWorldPosition;
             canvasGroup.transform.position = mousePosition - _mousePositionDifference;
             //Debug.Log($"All hovered objects: {string.Join(", ", eventData.hovered)}");
             var blockUnderMouse = eventData.hovered

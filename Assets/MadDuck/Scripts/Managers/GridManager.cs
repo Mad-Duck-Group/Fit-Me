@@ -120,6 +120,8 @@ namespace MadDuck.Scripts.Managers
         [Title("Infected Debug")]
         [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public float RandomInfectedTime { get; private set; }
         [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> infectedBlocks = new();
+        
+        public Grid Grid => _grid;
 
         private void UpdateGridOffset()
         {

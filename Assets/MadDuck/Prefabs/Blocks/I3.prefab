@@ -75,8 +75,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1074494647
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.627451, g: 0.91764706, b: 0.19607843, a: 1}
@@ -204,8 +204,11 @@ MonoBehaviour:
   spriteRenderer: {fileID: 7785059257178429}
   spriteResolver: {fileID: 3187264189042238362}
   allowPickUpAfterPlacement: 0
+  pickUpScaleMultiplier: 1.2
+  <BlockState>k__BackingField: 0
   <IsPlaced>k__BackingField: 0
   <BlockCells>k__BackingField: []
+  <BlockSchemas>k__BackingField: []
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
@@ -214,19 +217,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: <BlockSchemas>k__BackingField
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[System.Int32[,], mscorlib]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    SerializationNodes: []
 --- !u!50 &-8494117548032651288
 Rigidbody2D:
   serializedVersion: 5
@@ -374,8 +365,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1074494647
+  m_SortingLayer: 2
   m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 17b9ca029600210489c5cc7e86daaaed, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -415,7 +406,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_CategoryHash: 1.4470151e-16
-  m_labelHash: 0.00000003317807
+  m_labelHash: 7.561034e-20
   m_SpriteKey: 0
   m_SpriteHash: 318682553
 --- !u!1 &7127425133297225052
@@ -493,8 +484,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1074494647
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.627451, g: 0.91764706, b: 0.19607843, a: 1}
@@ -640,8 +631,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1074494647
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.627451, g: 0.91764706, b: 0.19607843, a: 1}

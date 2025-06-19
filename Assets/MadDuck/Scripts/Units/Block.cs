@@ -13,6 +13,7 @@ using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.U2D.Animation;
 using Random = UnityEngine.Random;
 
@@ -79,6 +80,9 @@ namespace MadDuck.Scripts.Units
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private SpriteResolver spriteResolver;
         [SerializeField] private bool allowPickUpAfterPlacement;
+        
+        [Title("Block Settings")]
+        [SerializeField] private float pickUpScaleMultiplier = 1.2f;
         
         [Title("Block Debug")]
         [field: SerializeField, DisplayAsString] public BlockState BlockState { get; private set; } = BlockState.Normal;
@@ -180,7 +184,9 @@ namespace MadDuck.Scripts.Units
             {
                 _transformTween.Stop();
             }
-            _transformTween = Tween.Scale(spriteRenderer.transform, spriteRenderer.transform.localScale * 1.2f, 0.2f);
+            var gridSize = GridManager.Instance.Grid.cellSize;
+            Tween.Scale(transform, gridSize, 0.2f);
+            _transformTween = Tween.Scale(spriteRenderer.transform, spriteRenderer.transform.localScale * pickUpScaleMultiplier, 0.2f);
         }
 
         /// <summary>
