@@ -10,7 +10,6 @@ public class InputFieldHandler : MonoBehaviour
 
     public void OnSubmit()
     {
-        output.text = "Your age is " + userAge.text;
         StartCoroutine(WaitAndDisable());
     }
 

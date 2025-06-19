@@ -15752,7 +15752,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 308f805c5b90db7488b43c6666b43edf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  output: {fileID: 1708370037}
+  output: {fileID: 0}
   userAge: {fileID: 117169176}
   agePanal: {fileID: 471322435}
   mainmenuPanal: {fileID: 1913037922}
