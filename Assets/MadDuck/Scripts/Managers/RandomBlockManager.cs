@@ -38,6 +38,7 @@ namespace MadDuck.Scripts.Managers
         [SerializeField] private SpawnPoint[] spawnPoints;
 
         [Title("Random Settings")]
+        [SerializeField] private int maxRandomAmount = 3;
         [SerializeField] private float objectScale = 0.5f;
         #endregion
         
@@ -94,14 +95,17 @@ namespace MadDuck.Scripts.Managers
             //var blockFaces = Enum.GetValues(typeof(BlockFaces)).Cast<BlockFaces>().ToList();
             var allSchemas = blockPrefabDictionary.Values
                 .SelectMany(x => x.BlockSchemas.Select(schema => (x.BlockFace, BlockSchema: schema)));
-            var shuffledSchemas = allSchemas.Shuffled();
+            var shuffledSchemas = allSchemas.Shuffled().ToList();
             GridManager.Instance.CreateVacantSchema(out var vacantSchema);
             var firstThreeSchemas = shuffledSchemas
                 .Where(s => ArrayHelper.CanBFitInA(vacantSchema, s.BlockSchema.schema, 
                     out vacantSchema, true))
-                .Take(3)
-                .Shuffled()
+                .Take(maxRandomAmount)
                 .ToList();
+            var remainingAmount = maxRandomAmount - firstThreeSchemas.Count;
+            if (remainingAmount > 0) 
+                firstThreeSchemas.AddRange(shuffledSchemas.GetRandomElements(remainingAmount));
+            firstThreeSchemas = firstThreeSchemas.Shuffled().ToList();
             for (int i = 0; i < firstThreeSchemas.Count; i++)
             {
                 if (!spawnPoints[i].IsFree)
