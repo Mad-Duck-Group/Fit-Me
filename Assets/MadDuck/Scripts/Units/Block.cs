@@ -91,7 +91,7 @@ namespace MadDuck.Scripts.Units
         public int SpawnIndex { get; set; }
         
         [SerializeField] private Color _originalColor = Color.white;
-        public Color InfectColor = Color.black;
+        private Color _infectColor = Color.black;
         
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
@@ -254,7 +254,7 @@ namespace MadDuck.Scripts.Units
                         StopPreInfectFlash();
                         break;
                     case BlockState.Normal:
-                        spriteRenderer.color = _beforeFlashColor;
+                        spriteRenderer.color = _originalColor;
                         break;
                 }
             }
@@ -264,7 +264,7 @@ namespace MadDuck.Scripts.Units
         public void PreInfectFlash()
         {
             spriteRenderer.color = _originalColor;
-            _preInfectTween = Tween.Color(spriteRenderer, InfectColor, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
+            _preInfectTween = Tween.Color(spriteRenderer, _infectColor, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
         }
         
         public void StopPreInfectFlash()
@@ -273,7 +273,11 @@ namespace MadDuck.Scripts.Units
             {
                 _preInfectTween.Complete();
             }
-            spriteRenderer.color = InfectColor;
+
+            if (BlockState == BlockState.Normal)
+            { spriteRenderer.color = _originalColor; }
+            else
+            { spriteRenderer.color = _infectColor; }
         }
         
         public async UniTask PreInfect()

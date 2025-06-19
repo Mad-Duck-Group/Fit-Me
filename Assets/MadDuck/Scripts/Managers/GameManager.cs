@@ -100,6 +100,7 @@ public class GameManager : MonoSingleton<GameManager>
     
     [Header("Infected Settings")] 
     [SerializeField] private List<GameDifficultySettings> gameDifficultySettings;
+    [SerializeField] private bool checkGameDifficulty;
     [SerializeField] private bool usePercentage;
     [SerializeField, HideIf(nameof(usePercentage))] private float startInfectTimeRange = 10f;
     [SerializeField, ShowIf(nameof(usePercentage)), MinValue(0.1f)] private Vector2 firstInfectTimePercentRange = new(0.1f, 0.5f);
@@ -111,6 +112,7 @@ public class GameManager : MonoSingleton<GameManager>
     private readonly List<float> _listInfectTimePercent = new();
     private int _listInfectIndex;
 
+    private float _runningTime;
     private GameState _beforePauseState;
     private bool _sceneActivated;
     private int _previousReRollScore;
@@ -182,6 +184,7 @@ public class GameManager : MonoSingleton<GameManager>
             case ScoreTypes.FitMe:
                 ChangeScore(scorePerFitMe);
                 ChangeGameTimer(gameTimer);
+                GameDifficulty();
                 break;
         }
         //if (_score - _previousReRollScore < reRollScoreThreshold) return;
@@ -276,15 +279,27 @@ public class GameManager : MonoSingleton<GameManager>
     private void UpdateSafeInfectedTimer()
     {
         if (CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
+        _runningTime += Time.deltaTime;
         var elapsedTime = gameTimer - _currentGameTimer;
-        switch (usePercentage)
+
+        switch (checkGameDifficulty)
         {
-            case false:
-                if (elapsedTime < startInfectTimeRange || _currentInfectionCount >= maxInfectionCount) return;
-                break;
             case true:
-                if (_listInfectIndex < 0 || _listInfectIndex >= _listInfectTimePercent.Count) return;
-                if (elapsedTime < _listInfectTimePercent[_listInfectIndex]) return;
+                if (_score < gameDifficultySettings[_currentGameDifficultyIndex].maxScorePerDifficulty) return;
+                if (_runningTime < _listInfectTimePercent[_listInfectIndex]) return;
+                break;
+            
+            case false:
+                switch (usePercentage)
+                {
+                    case false:
+                        if (elapsedTime < startInfectTimeRange || _currentInfectionCount >= maxInfectionCount) return;
+                        break;
+                    case true:
+                        if (_listInfectIndex < 0 || _listInfectIndex >= _listInfectTimePercent.Count) return;
+                        if (elapsedTime < _listInfectTimePercent[_listInfectIndex]) return;
+                        break;
+                }
                 break;
         }
 
@@ -312,6 +327,10 @@ public class GameManager : MonoSingleton<GameManager>
         {
             _currentGameDifficultyIndex++;
         }
+        
+        maxInfectionCount = gameDifficultySettings[_currentGameDifficultyIndex].maxInfectionCount;
+        InfectionTimeRange = gameDifficultySettings[_currentGameDifficultyIndex].InfectionTimeRange;
+        PreInfectTime = gameDifficultySettings[_currentGameDifficultyIndex].PreInfectTime;
     }
 
     public void ChangeGameTimer(float value, bool bump = true)
