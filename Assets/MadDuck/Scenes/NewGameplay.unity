@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: de5e36dd72240e7468652faa890c9b12, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -433,7 +433,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -239}
+  m_AnchoredPosition: {x: 0, y: -224}
   m_SizeDelta: {x: 1000, y: 100}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &48437865
@@ -2602,6 +2602,7 @@ MonoBehaviour:
   - <Transform>k__BackingField: {fileID: 424758547}
     <IsFree>k__BackingField: 0
     <CurrentBlock>k__BackingField: {fileID: 0}
+  maxRandomAmount: 3
   objectScale: 0.5
 --- !u!1 &1094725370
 GameObject:
@@ -3393,8 +3394,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1199776826, guid: 419c5fb5fefe5734aaa6799edc82120c, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: -1142031703, guid: 419c5fb5fefe5734aaa6799edc82120c, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -3523,9 +3524,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -456.49023, y: -147}
+  m_AnchoredPosition: {x: 0, y: -160}
   m_SizeDelta: {x: 948.9885, y: 227.9472}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1775298398
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4421,9 +4422,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -339.66, y: -80}
+  m_AnchoredPosition: {x: 0, y: -92}
   m_SizeDelta: {x: 715.32007, y: 107.08}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2040727031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4559,8 +4560,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -46, y: -41}
-  m_SizeDelta: {x: 70, y: 70}
+  m_AnchoredPosition: {x: -40, y: -40}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &2072578247
 MonoBehaviour:
@@ -4692,18 +4693,23 @@ MonoBehaviour:
   blackColor: {r: 0, g: 0, b: 0, a: 1}
   canBePlacedColor: {r: 0.07678461, g: 1, b: 0, a: 1}
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
-  gridType: 0
-  gridSize: {x: 6, y: 8}
+  gridPresets:
+  - {fileID: 11400000, guid: 0c9addcad39fb2e47a6304f9760f97ab, type: 2}
+  endlessType: 3
+  generatedGridType: 3
   randomGridXRange: {x: 6, y: 6}
   randomGridYRange: {x: 8, y: 8}
+  bridgeWidthRange: {x: 2, y: 3}
   gridHorizontalOffsetType: 0
   customOffsetX: 0
   gridVerticalOffsetType: 1
   customOffsetY: 8
   destroyThreshold: 3
+  currentGridPreset: {fileID: 11400000, guid: 0c9addcad39fb2e47a6304f9760f97ab, type: 2}
+  currentGridSize: {x: 6, y: 8}
   currentOffset: {x: -3, y: 8}
-  blocksOnGrid: []
-  drawAllCustomGridCells: 0
+  <BlocksOnGrid>k__BackingField: []
+  drawAllCustomGridCells: 1
   <RandomInfectedTime>k__BackingField: 0
   infectedBlocks: []
   serializationData:
@@ -4715,78 +4721,9 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: _customGrid
-      Entry: 7
-      Data: 0|System.Boolean[,], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 18
-    - Name: ranks
-      Entry: 1
-      Data: 6|3
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
     - Name: _cellArray
       Entry: 7
-      Data: 1|MadDuck.Scripts.Units.Cell[,], Assembly-CSharp
+      Data: 0|MadDuck.Scripts.Units.Cell[,], Assembly-CSharp
     - Name: 
       Entry: 12
       Data: 0
@@ -4801,7 +4738,7 @@ MonoBehaviour:
       Data: 
     - Name: _vacantSchema
       Entry: 7
-      Data: 2|System.Int32[,], mscorlib
+      Data: 1|System.Int32[,], mscorlib
     - Name: 
       Entry: 12
       Data: 0
