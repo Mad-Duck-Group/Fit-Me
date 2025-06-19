@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a26356aec23a14e4a8712c45138be796
+guid: 0ccf2a3efcd2b424180e43d8e5b552ef
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3473189470481018839
-    second: Energy 1_0
+      213: -3609087861179011298
+    second: ChestGacha_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Energy 1_0
+      name: ChestGacha_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 109
-        height: 109
+        width: 537
+        height: 570
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9201a5e0490cccfc0800000000000000
-      internalID: -3473189470481018839
+      spriteID: e1f204746b1f9edc0800000000000000
+      internalID: -3609087861179011298
       vertices: []
       indices: 
       edges: []
@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ChestGacha_0: -3609087861179011298
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 15335245ac08c444f8c458d2034414b2
+guid: 5bfa8d5819e2af4498976cd609f0ba31
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1151905075149521417
-    second: Shop_0
+      213: 4119096856201313718
+    second: KeyBox 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Shop_0
+      name: KeyBox 1_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 248
-        height: 126
+        width: 806
+        height: 1091
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7fd3ebcef6c9300f0800000000000000
-      internalID: -1151905075149521417
+      spriteID: 6bdbe4d44c8f92930800000000000000
+      internalID: 4119096856201313718
       vertices: []
       indices: 
       edges: []
