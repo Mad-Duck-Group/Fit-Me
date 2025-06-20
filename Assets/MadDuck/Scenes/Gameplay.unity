@@ -2465,12 +2465,12 @@ MonoBehaviour:
     <PreInfectTime>k__BackingField: 5
     <InfectionTimeRange>k__BackingField: {x: 1, y: 5}
   checkGameDifficulty: 0
-  usePercentage: 1
+  usePercentage: 0
   startInfectTimeRange: 10
   firstInfectTimePercentRange: {x: 0.1, y: 0.6}
   <PreInfectTime>k__BackingField: 4
   <InfectionTimeRange>k__BackingField: {x: 3, y: 10}
-  maxInfectionCount: 2
+  maxInfectionCount: 1
   infectColor:
     serializedVersion: 2
     rgba: 4278190080

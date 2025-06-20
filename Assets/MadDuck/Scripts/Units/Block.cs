@@ -90,7 +90,7 @@ namespace MadDuck.Scripts.Units
         [SerializeField] private bool allowPickUpAfterPlacement;
         
         [Title("Block Debug")]
-        [SerializeField, ReadOnly] private FlashState flashState = FlashState.None;
+        [SerializeField, ReadOnly] private FlashState flashState;
         [field: SerializeField, DisplayAsString] public BlockState BlockState { get; private set; } = BlockState.Normal;
         [field: SerializeField, DisplayAsString] public bool IsPlaced { get; private set; }
         [field: SerializeField] public List<Cell> BlockCells { get; set; }
@@ -99,7 +99,7 @@ namespace MadDuck.Scripts.Units
         public int SpawnIndex { get; set; }
         
         [SerializeField] private Color _originalColor = Color.white;
-        private Color _infectColor = Color.black;
+        private Color _infectColor;
         
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
@@ -134,7 +134,7 @@ namespace MadDuck.Scripts.Units
             _originalPosition = transform.position;
             _originalRotation = transform.eulerAngles;
             _originalScale = transform.localScale;
-            _originalColor = spriteRenderer.color;
+            //_originalColor = spriteRenderer.color;
             //GridManager.OnBlockInfected += OnBlockInfected;
             //GridManager.OnBlockDisinfected += OnBlockDisinfected;
         }
@@ -242,75 +242,95 @@ namespace MadDuck.Scripts.Units
             
         }
 
-        public void StartFlashing()
+        public void StartFlashing(FlashState flashState)
         {
-            StopPreInfectFlash();
-            
-            flashState = FlashState.Flashing;
-            _beforeFlashColor = spriteRenderer.color;
-            _flashTween = Tween.Color(spriteRenderer, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
+            switch (flashState)
+            {
+                case FlashState.Flashing:
+                    if(_flashTween.isAlive) return;
+                    
+                    if (_preInfectTween.isAlive)
+                    { _preInfectTween.Complete(); }
+                    
+                    spriteRenderer.color = _originalColor;
+                    _flashTween = Tween.Color(spriteRenderer, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
+                    break;
+                
+                case FlashState.PreInfectFlash:
+                    if (BlockState != BlockState.PreInfected) return;
+                    if(_preInfectTween.isAlive) return;
+                    
+                    spriteRenderer.color = _originalColor;
+                    _preInfectTween = Tween.Color(spriteRenderer, _infectColor, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
+                    break;
+                
+                case FlashState.None:
+                    if (BlockState is BlockState.PreInfected)
+                        StartFlashing(FlashState.PreInfectFlash);
+                    else if (BlockState is BlockState.Infected or BlockState.Normal)
+                        StopFlashing();
+                    break;
+            }
         }
-        
+
         public void StopFlashing()
         {
             if (_flashTween.isAlive)
             {
                 _flashTween.Complete();
-                switch (BlockState)
-                {
-                    case BlockState.Infected:
-                        StopPreInfectFlash();
-                        break;
-                    case BlockState.PreInfected:
-                        PreInfectFlash();
-                        break;
-                    case BlockState.Normal:
-                        spriteRenderer.color = _originalColor;
-                        break;
-                }
+                _flashTween = default;
+                spriteRenderer.color = _originalColor;
+            }
+
+            switch (BlockState)
+            {
+                case BlockState.Infected or BlockState.PreInfected:
+                    StopPreInfectFlash();
+                    break;
+                
+                case BlockState.Normal:
+                        flashState = FlashState.None;
+                    break;
             }
         }
 
-        
-        public void PreInfectFlash()
-        {
-            flashState = FlashState.PreInfectFlash;
-            spriteRenderer.color = _originalColor;
-            _preInfectTween = Tween.Color(spriteRenderer, _infectColor, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
-        }
-        
         public void StopPreInfectFlash()
         {
             if (_preInfectTween.isAlive)
             {
                 _preInfectTween.Complete();
+                _preInfectTween = default;
             }
-            spriteRenderer.color = BlockState switch
+            
+            switch (BlockState)
             {
-                BlockState.Normal => _originalColor,
-                BlockState.PreInfected or BlockState.Infected => _infectColor,
-                _ => spriteRenderer.color
-            };
+                case BlockState.PreInfected:
+                    StartFlashing(FlashState.PreInfectFlash);
+                    break;
+                
+                case BlockState.Infected:
+                        flashState = FlashState.None;
+                    spriteRenderer.color = _infectColor;
+                    break;
+            }
         }
-        
+
         public async UniTask PreInfect()
         {
             BlockState = BlockState.PreInfected;
             if (BlockState == BlockState.PreInfected)
-                PreInfectFlash();
+                StartFlashing(FlashState.PreInfectFlash);
             
             if (BlockState != BlockState.PreInfected) return;
             await UniTask.WaitForSeconds(GameManager.Instance.PreInfectTime,
                 cancellationToken: destroyCancellationToken);
-            StopPreInfectFlash();
-            Infect();
+            GridManager.Instance.InfectBlock(this);
         }
         
         public void Infect()
         {
-            StopPreInfectFlash();
-            _beforeFlashColor = _originalColor;
             BlockState = BlockState.Infected;
+            StopFlashing();
             StartInfectTimer();
         }
         

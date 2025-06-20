@@ -606,11 +606,12 @@ namespace MadDuck.Scripts.Managers
         #endregion
 
         #region Infection
-        private void InfectBlock(Block block)
+
+        public void InfectBlock(Block block)
         {
             if (GameManager.Instance.CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
             infectedBlocks.Add(block);
-            block.PreInfect();
+            block.Infect();
             OnBlockInfected?.Invoke(block);
             RandomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
         }
@@ -623,17 +624,18 @@ namespace MadDuck.Scripts.Managers
             infectedBlocks.Remove(block);
         }
         
-        public void InfectRandomBlock()
+        public async UniTask InfectRandomBlock()
         {
             if (blocksOnGrid.Count == 0) return;
             Block block = blocksOnGrid.GetRandomElement();
+            
             if (block.BlockState != BlockState.Normal) return;
-            InfectBlock(block);
+            block.PreInfect();
         }
 
         public void InfectAdjacentBlocks(Block sourceBlock)
         {
-            if (!sourceBlock || sourceBlock.BlockState != BlockState.Infected) return;
+            if (!sourceBlock || sourceBlock.BlockState is not (BlockState.Infected or BlockState.PreInfected)) return;
 
             var candidatesForInfection = new List<Block>();
 
@@ -667,8 +669,8 @@ namespace MadDuck.Scripts.Managers
 
             if (candidatesForInfection.Count > 0)
             {
-                var blockToInfect = candidatesForInfection.GetRandomElement();
-                InfectBlock(blockToInfect);
+                var blockToInfect = candidatesForInfection.GetRandomElement(); 
+                blockToInfect.PreInfect();
             }
         }
         #endregion
