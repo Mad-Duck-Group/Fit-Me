@@ -40,7 +40,7 @@ namespace MadDuck.Scripts.Items
             if (_blockHovered && _blockHovered == itemBlockHoveredEvent.block) return;
             if (_blockHovered) _blockHovered.StopFlashing();
             _blockHovered = itemBlockHoveredEvent.block;
-            _blockHovered.StartFlashing();
+            _blockHovered.StartFlashing(FlashState.Flashing);
         }
 
         private void OnBlockInfected(Block block)

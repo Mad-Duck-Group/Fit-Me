@@ -42,8 +42,8 @@ namespace MadDuck.Scripts.Items
             });
             _blockHovered = itemBlockHoveredEvent.block;
             var sameColorBlocks = GridManager.Instance.BlocksOnGrid
-                .Where(b => b.BlockType == _blockHovered.BlockType && b.BlockState is BlockState.Normal).ToList();
-            sameColorBlocks.ForEach(b => b.StartFlashing());
+                .Where(b => b.BlockType == _blockHovered.BlockType && b.BlockState is not BlockState.Infected).ToList();
+            sameColorBlocks.ForEach(b => b.StartFlashing(FlashState.Flashing));
             _blocksToDestroy = sameColorBlocks.ToList();
         }
         

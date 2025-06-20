@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Utils;
@@ -23,7 +24,15 @@ namespace MadDuck.Scripts.Units
     public enum BlockState
     {
         Normal,
+        PreInfected,
         Infected
+    }
+    
+    public enum FlashState
+    {
+        None,
+        Flashing,
+        PreInfectFlash
     }
     
     public enum BlockTypes
@@ -88,6 +97,7 @@ namespace MadDuck.Scripts.Units
         [SerializeField] private float pickUpScaleMultiplier = 1.2f;
         
         [Title("Block Debug")]
+        [SerializeField, ReadOnly] private FlashState flashState;
         [field: SerializeField, DisplayAsString] public BlockState BlockState { get; private set; } = BlockState.Normal;
         [field: SerializeField, DisplayAsString] public bool IsPlaced { get; private set; }
         [field: SerializeField] public List<Cell> BlockCells { get; set; }
@@ -97,15 +107,18 @@ namespace MadDuck.Scripts.Units
         #endregion
         
         #region Fields and Properties
+        [SerializeField] private Color _originalColor = Color.white;
+        private Color _infectColor;
+        
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
         private Vector3 _originalScale;
         private Vector3 _originalSpriteScale;
-        private Color _originalColor;
         private Color _beforeFlashColor;
         private Vector3 _mousePositionDifference;
         private Tween _transformTween;
         private Tween _flashTween;
+        private Tween _preInfectTween;
         private bool _isDragging;
         public BlockTypes BlockType => blockType;
         public BlockFaces BlockFace => blockFace;
@@ -121,6 +134,8 @@ namespace MadDuck.Scripts.Units
             {
                 atom.ParentBlock = this;
             }
+
+            _infectColor = GameManager.Instance.infectColor;
         }
 
         public void Initialize()
@@ -129,7 +144,9 @@ namespace MadDuck.Scripts.Units
             _originalPosition = transform.position;
             _originalRotation = transform.eulerAngles;
             _originalScale = transform.localScale;
-            _originalColor = spriteRenderer.color;
+            //_originalColor = spriteRenderer.color;
+            //GridManager.OnBlockInfected += OnBlockInfected;
+            //GridManager.OnBlockDisinfected += OnBlockDisinfected;
         }
 
         private void StartInfectTimer()
@@ -184,19 +201,156 @@ namespace MadDuck.Scripts.Units
         }
         #endregion
 
-        #region Infection
+        public void PickUpBlock()
+        {
+            //Tween the block to (1, 1, 1) scale
+            if (_transformTween.isAlive)
+            {
+                _transformTween.Stop();
+            }
+            _transformTween = Tween.Scale(spriteRenderer.transform, spriteRenderer.transform.localScale * 1.2f, 0.2f);
+        }
+
+        /// <summary>
+        /// Return the block to its original position, rotation and scale
+        /// </summary>
+        public void ReturnToOriginal()
+        {
+            //Tween the block to the original position
+            if (_transformTween.isAlive)
+            {
+                _transformTween.Stop();
+            }
+            _transformTween = Tween.Position(transform, _originalPosition, 0.2f).OnComplete(() => SetRendererSortingOrder(1));
+            //Tween the block to the original rotation
+            Tween.Rotation(transform, _originalRotation, 0.2f);
+            //Tween the block to the original scale
+            Tween.Scale(transform, _originalScale, 0.2f);
+            Tween.Scale(spriteRenderer.transform, _originalSpriteScale, 0.2f);
+            GridManager.Instance.ResetPreviousValidationCells();
+        }
+
+        /// <summary>
+        /// Set the sorting order of atoms
+        /// </summary>
+        /// <param name="order">Order to render</param>
+        public void SetRendererSortingOrder(int order)
+        {
+            if (!spriteRenderer)
+            {
+                foreach (var atom in atoms)
+                {
+                    atom.SpriteRenderer.sortingOrder = order;
+                }
+                return;
+            }
+            spriteRenderer.sortingOrder = order;
+        }
+
+        /// <summary>
+        /// Handle rotation of the block
+        /// </summary>
+        private void HandleBlockManipulation()
+        {
+            
+        }
+
+        public void StartFlashing(FlashState flashState)
+        {
+            switch (flashState)
+            {
+                case FlashState.Flashing:
+                    if(_flashTween.isAlive) return;
+                    
+                    if (_preInfectTween.isAlive)
+                    { _preInfectTween.Complete(); }
+                    
+                    spriteRenderer.color = _originalColor;
+                    _flashTween = Tween.Color(spriteRenderer, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
+                    break;
+                
+                case FlashState.PreInfectFlash:
+                    if (BlockState != BlockState.PreInfected) return;
+                    if(_preInfectTween.isAlive) return;
+                    
+                    spriteRenderer.color = _originalColor;
+                    _preInfectTween = Tween.Color(spriteRenderer, _infectColor, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
+                    break;
+                
+                case FlashState.None:
+                    if (BlockState is BlockState.PreInfected)
+                        StartFlashing(FlashState.PreInfectFlash);
+                    else if (BlockState is BlockState.Infected or BlockState.Normal)
+                        StopFlashing();
+                    break;
+            }
+        }
+
+        public void StopFlashing()
+        {
+            if (_flashTween.isAlive)
+            {
+                _flashTween.Complete();
+                _flashTween = default;
+                spriteRenderer.color = _originalColor;
+            }
+
+            switch (BlockState)
+            {
+                case BlockState.Infected or BlockState.PreInfected:
+                    StopPreInfectFlash();
+                    break;
+                
+                case BlockState.Normal:
+                        flashState = FlashState.None;
+                    break;
+            }
+        }
+
+        public void StopPreInfectFlash()
+        {
+            if (_preInfectTween.isAlive)
+            {
+                _preInfectTween.Complete();
+                _preInfectTween = default;
+            }
+            
+            switch (BlockState)
+            {
+                case BlockState.PreInfected:
+                    StartFlashing(FlashState.PreInfectFlash);
+                    break;
+                
+                case BlockState.Infected:
+                        flashState = FlashState.None;
+                    spriteRenderer.color = _infectColor;
+                    break;
+            }
+        }
+
+        public async UniTask PreInfect()
+        {
+            BlockState = BlockState.PreInfected;
+            if (BlockState == BlockState.PreInfected)
+                StartFlashing(FlashState.PreInfectFlash);
+            
+            if (BlockState != BlockState.PreInfected) return;
+            await UniTask.WaitForSeconds(GameManager.Instance.PreInfectTime,
+                cancellationToken: destroyCancellationToken);
+            GridManager.Instance.InfectBlock(this);
+        }
+        
         public void Infect()
         {
-            spriteRenderer.color = Color.gray;
-            _beforeFlashColor = spriteRenderer.color;
             BlockState = BlockState.Infected;
+            StopFlashing();
             StartInfectTimer();
         }
         
         public void Disinfect()
         {
             spriteRenderer.color = _originalColor;
-            _beforeFlashColor = spriteRenderer.color;
+            //_beforeFlashColor = spriteRenderer.color;
             BlockState = BlockState.Normal;
             _infectionSubscription?.Dispose();
         }

@@ -28,6 +28,14 @@ public enum ScoreTypes
     FitMe,
 }
 
+public enum GameDifficulty
+{
+    Easy,
+    Normal,
+    Hard,
+    Insane
+}
+
 public enum GameState
 {
     CountOff,
@@ -38,6 +46,16 @@ public enum GameState
     GameClear
 }
 #endregion
+
+[Serializable]
+public struct GameDifficultySettings
+{
+    [BoxGroup] public GameDifficulty difficulty;
+    [BoxGroup] public float maxScorePerDifficulty;
+    [BoxGroup] public int maxInfectionCount;
+    [field: SerializeField] public float PreInfectTime { get; private set; }
+    [field: SerializeField, BoxGroup] public Vector2 InfectionTimeRange { get; private set; }
+}
 
 public class GameManager : MonoSingleton<GameManager>
 {
@@ -95,18 +113,15 @@ public class GameManager : MonoSingleton<GameManager>
     [TabGroup("Settings", "Score")]
     [SerializeField] private int scorePerFitMe = 10000;
     
-    [TabGroup("Settings", "Infection")]
+    [Header("Infected Settings")] 
+    [SerializeField, Redcode.Extensions.ReadOnly] private GameDifficulty difficulty;
+    [SerializeField] private List<GameDifficultySettings> gameDifficultySettings;
+    [SerializeField] private bool checkGameDifficulty;
     [SerializeField] private bool usePercentage;
-    [TabGroup("Settings", "Infection")]
-    [SerializeField, HideIf(nameof(usePercentage))] 
-    private float startInfectTimeRange = 10f;
-    [TabGroup("Settings", "Infection")]
-    [SerializeField, ShowIf(nameof(usePercentage)), MinValue(0.1f)] 
-    private Vector2 firstInfectTimePercentRange = new(0.1f, 0.5f);
-    [field: TabGroup("Settings", "Infection")]
-    [field: SerializeField, MinValue(0.1f)] 
-    public Vector2 InfectionTimeRange { get; private set; } = new(0, 10);
-    [TabGroup("Settings", "Infection")]
+    [SerializeField, HideIf(nameof(usePercentage))] private float startInfectTimeRange = 10f;
+    [SerializeField, ShowIf(nameof(usePercentage)), MinValue(0.1f)] private Vector2 firstInfectTimePercentRange = new(0.1f, 0.5f);
+    [field: SerializeField] public float PreInfectTime { get; private set; } = 1f;
+    [field: SerializeField, MinValue(0.1f)] public Vector2 InfectionTimeRange { get; private set; } = new(0, 10);
     [SerializeField] private int maxInfectionCount = 1;
     #endregion
     
@@ -124,9 +139,15 @@ public class GameManager : MonoSingleton<GameManager>
     #endregion
 
     #region Fields and Properties
+    private int _currentGameDifficultyIndex;
     private int _currentInfectionCount;
     private readonly List<float> _listInfectTimePercent = new();
     private int _listInfectIndex;
+    
+    [Header("Debug Settings")]
+    public Color32 infectColor = new(255, 0, 0, 255);
+
+    private float _runningTime;
     private GameState _beforePauseState;
     private bool _sceneActivated;
     private int _previousReRollScore;
@@ -233,30 +254,61 @@ public class GameManager : MonoSingleton<GameManager>
     private void UpdateSafeInfectedTimer()
     {
         if (CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
+        _runningTime += Time.deltaTime;
         var elapsedTime = gameTimer - _currentGameTimer;
-        switch (usePercentage)
+
+        switch (checkGameDifficulty)
         {
-            case false:
-                if (elapsedTime < startInfectTimeRange || _currentInfectionCount >= maxInfectionCount) return;
-                break;
             case true:
+                if (_score < gameDifficultySettings[_currentGameDifficultyIndex].maxScorePerDifficulty) return;
                 if (_listInfectIndex < 0 || _listInfectIndex >= _listInfectTimePercent.Count) return;
-                if (elapsedTime < _listInfectTimePercent[_listInfectIndex]) return;
+                if (_runningTime < _listInfectTimePercent[_listInfectIndex]) return;
+                break;
+            
+            case false:
+                switch (usePercentage)
+                {
+                    case false:
+                        if (elapsedTime < startInfectTimeRange || _currentInfectionCount >= maxInfectionCount) return;
+                        break;
+                    case true:
+                        if (_listInfectIndex < 0 || _listInfectIndex >= _listInfectTimePercent.Count) return;
+                        if (elapsedTime < _listInfectTimePercent[_listInfectIndex]) return;
+                        break;
+                }
                 break;
         }
 
-        if (maxInfectionCount >= 2)
+        switch (maxInfectionCount)
         {
-            if (!usePercentage || _currentInfectionCount >= maxInfectionCount) return; 
-            GridManager.Instance.InfectRandomBlock();
-            _currentInfectionCount++;
-            _listInfectIndex++;
+            case 0:
+            case >= 2 when !usePercentage || _currentInfectionCount >= maxInfectionCount:
+                return;
+            case >= 2:
+                GridManager.Instance.InfectRandomBlock();
+                _currentInfectionCount++;
+                _listInfectIndex++;
+                break;
+            default:
+                GridManager.Instance.InfectRandomBlock();
+                _currentInfectionCount++;
+                break;
         }
-        else
+    }
+    
+    public void GameDifficulty()
+    {
+        if (gameDifficultySettings.Count == 0) return;
+        if (_currentGameDifficultyIndex >= gameDifficultySettings.Count) return;
+        if (_score >= gameDifficultySettings[_currentGameDifficultyIndex].maxScorePerDifficulty)
         {
-            GridManager.Instance.InfectRandomBlock();
-            _currentInfectionCount++;
+            difficulty = gameDifficultySettings[_currentGameDifficultyIndex].difficulty;
+            _currentGameDifficultyIndex++;
         }
+        
+        maxInfectionCount = gameDifficultySettings[_currentGameDifficultyIndex].maxInfectionCount;
+        InfectionTimeRange = gameDifficultySettings[_currentGameDifficultyIndex].InfectionTimeRange;
+        PreInfectTime = gameDifficultySettings[_currentGameDifficultyIndex].PreInfectTime;
     }
     #endregion
     
