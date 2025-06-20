@@ -113,16 +113,24 @@ public class GameManager : MonoSingleton<GameManager>
     [TabGroup("Settings", "Score")]
     [SerializeField] private int scorePerFitMe = 10000;
     
-    [Header("Infected Settings")] 
-    [SerializeField, Redcode.Extensions.ReadOnly] private GameDifficulty difficulty;
+    [TabGroup("Settings", "Infection")]
     [SerializeField] private List<GameDifficultySettings> gameDifficultySettings;
+    [TabGroup("Settings", "Infection")]
     [SerializeField] private bool checkGameDifficulty;
+    [TabGroup("Settings", "Infection")]
     [SerializeField] private bool usePercentage;
+    [TabGroup("Settings", "Infection")]
     [SerializeField, HideIf(nameof(usePercentage))] private float startInfectTimeRange = 10f;
+    [TabGroup("Settings", "Infection")]
     [SerializeField, ShowIf(nameof(usePercentage)), MinValue(0.1f)] private Vector2 firstInfectTimePercentRange = new(0.1f, 0.5f);
+    [field: TabGroup("Settings", "Infection")]
     [field: SerializeField] public float PreInfectTime { get; private set; } = 1f;
+    [field: TabGroup("Settings", "Infection")]
     [field: SerializeField, MinValue(0.1f)] public Vector2 InfectionTimeRange { get; private set; } = new(0, 10);
+    [TabGroup("Settings", "Infection")]
     [SerializeField] private int maxInfectionCount = 1;
+    [TabGroup("Settings", "Infection")]
+    public Color32 infectColor = new(255, 0, 0, 255);
     #endregion
     
     // [Header("Reroll Settings")] 
@@ -135,6 +143,9 @@ public class GameManager : MonoSingleton<GameManager>
     [field: Title("Game Manager Debug")]
     [field: SerializeField, DisplayAsString]
     public SerializableReactiveProperty<GameState> CurrentGameState { get; private set; } = new(GameState.CountOff);
+    
+    [field: Title("Infection Debug")]
+    [SerializeField, DisplayAsString] private GameDifficulty difficulty;
     #endregion
     #endregion
 
@@ -143,10 +154,6 @@ public class GameManager : MonoSingleton<GameManager>
     private int _currentInfectionCount;
     private readonly List<float> _listInfectTimePercent = new();
     private int _listInfectIndex;
-    
-    [Header("Debug Settings")]
-    public Color32 infectColor = new(255, 0, 0, 255);
-
     private float _runningTime;
     private GameState _beforePauseState;
     private bool _sceneActivated;

@@ -70,7 +70,7 @@ namespace MadDuck.Scripts.Items
             }
             
             _blockHovered.StopFlashing();
-            GridManager.Instance.DisinfectBlock(_blockHovered);
+            GridManager.Instance.DisinfectBlock(_blockHovered, true);
             _blockHovered = null;
             NotifyUsed();
             GameManager.Instance.CurrentGameState.Value = GameState.PlaceBlock;

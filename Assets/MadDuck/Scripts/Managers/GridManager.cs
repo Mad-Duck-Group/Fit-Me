@@ -120,37 +120,6 @@ namespace MadDuck.Scripts.Managers
         [Title("Infected Debug")]
         [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public float RandomInfectedTime { get; private set; }
         [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> infectedBlocks = new();
-        private void UpdateGridOffset()
-        {
-            switch (gridHorizontalOffsetType)
-            {
-                case GridOffsetType.Automatic:
-                    currentOffset.x = -Mathf.FloorToInt(currentGridSize.x / 2f);
-                    if (currentGridSize.x % 2 != 0)
-                    {
-                        if (!_grid) _grid = GetComponent<Grid>();
-                        transform.SetPositionX(-_grid.cellSize.x / 2f);
-                    }
-                    else
-                    {
-                        transform.SetPositionX(0f);
-                    }
-                    break;
-                case GridOffsetType.Custom:
-                    currentOffset.x = customOffsetX;
-                    break;
-            }
-            
-            switch (gridVerticalOffsetType)
-            {
-                case GridOffsetType.Automatic:
-                    currentOffset.y = Mathf.FloorToInt(currentGridSize.y / 2f);
-                    break;
-                case GridOffsetType.Custom:
-                    currentOffset.y = customOffsetY;
-                    break;
-            }
-        }
         #endregion
 
         #region Fields and Properties
@@ -291,6 +260,38 @@ namespace MadDuck.Scripts.Managers
             _cellArray = new Cell[0, 0];
             _vacantSchema = new int[0, 0];
             CreateCells();
+        }
+        
+        private void UpdateGridOffset()
+        {
+            switch (gridHorizontalOffsetType)
+            {
+                case GridOffsetType.Automatic:
+                    currentOffset.x = -Mathf.FloorToInt(currentGridSize.x / 2f);
+                    if (currentGridSize.x % 2 != 0)
+                    {
+                        if (!_grid) _grid = GetComponent<Grid>();
+                        transform.SetPositionX(-_grid.cellSize.x / 2f);
+                    }
+                    else
+                    {
+                        transform.SetPositionX(0f);
+                    }
+                    break;
+                case GridOffsetType.Custom:
+                    currentOffset.x = customOffsetX;
+                    break;
+            }
+            
+            switch (gridVerticalOffsetType)
+            {
+                case GridOffsetType.Automatic:
+                    currentOffset.y = Mathf.FloorToInt(currentGridSize.y / 2f);
+                    break;
+                case GridOffsetType.Custom:
+                    currentOffset.y = customOffsetY;
+                    break;
+            }
         }
         
         /// <summary>
@@ -613,21 +614,22 @@ namespace MadDuck.Scripts.Managers
             RandomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
         }
 
-        public void DisinfectBlock(Block block)
+        public void DisinfectBlock(Block block, bool updateGrid = false)
         {
             if (GameManager.Instance.CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
             block.Disinfect();
             OnBlockDisinfected?.Invoke(block);
             infectedBlocks.Remove(block);
+            if (updateGrid) UpdateBlockOnGrid(block);
         }
         
         public async UniTask InfectRandomBlock()
         {
-            if (blocksOnGrid.Count == 0) return;
-            Block block = blocksOnGrid.GetRandomElement();
+            if (BlocksOnGrid.Count == 0) return;
+            Block block = BlocksOnGrid.GetRandomElement();
             
             if (block.BlockState != BlockState.Normal) return;
-            block.PreInfect();
+            block.PreInfect().Forget();
         }
 
         public void InfectAdjacentBlocks(Block sourceBlock)
@@ -667,7 +669,7 @@ namespace MadDuck.Scripts.Managers
             if (candidatesForInfection.Count > 0)
             {
                 var blockToInfect = candidatesForInfection.GetRandomElement(); 
-                blockToInfect.PreInfect();
+                blockToInfect.PreInfect().Forget();
             }
         }
         #endregion
