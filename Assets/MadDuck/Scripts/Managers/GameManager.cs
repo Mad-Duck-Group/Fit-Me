@@ -114,9 +114,10 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField] private int scorePerFitMe = 10000;
     
     [TabGroup("Settings", "Infection")]
-    [SerializeField] private List<GameDifficultySettings> gameDifficultySettings;
-    [TabGroup("Settings", "Infection")]
     [SerializeField] private bool checkGameDifficulty;
+    [TabGroup("Settings", "Infection")]
+    [SerializeField, ShowIf(nameof(checkGameDifficulty))]
+    private List<GameDifficultySettings> gameDifficultySettings;
     [TabGroup("Settings", "Infection")]
     [SerializeField] private bool usePercentage;
     [TabGroup("Settings", "Infection")]
