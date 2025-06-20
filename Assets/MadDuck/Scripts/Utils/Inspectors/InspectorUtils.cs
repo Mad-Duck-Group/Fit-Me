@@ -14,4 +14,23 @@ namespace MadDuck.Scripts.Utils.Inspectors
     {
         [MinValue(0), MaxValue(1)] public float percentage;
     }
+
+    public static class InspectorSettings
+    {
+        private static UIEditors.MadduckInspectorSettings instance;
+        public const string GameDesignerModeKey = "@InspectorSettings.GameDesignerMode";
+
+        public static bool GameDesignerMode
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = Resources.Load<UIEditors.MadduckInspectorSettings>("UIEditors/MadduckInspectorSettings");
+                }
+
+                return instance != null && instance.gameDesignerMode;
+            }
+        }
+    }
 }

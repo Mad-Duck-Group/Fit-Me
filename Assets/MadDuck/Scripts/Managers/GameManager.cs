@@ -44,24 +44,34 @@ public class GameManager : MonoSingleton<GameManager>
     #region Inspectors
 
     #region References
-    [Title("References")]
+    [HideIfGroup("References", Condition = InspectorSettings.GameDesignerModeKey)]
+    [BoxGroup("References/Box", LabelText = "References", CenterLabel = true)]
     [SerializeField, HideLabel] private InspectorVoid referencesTitle;
-    [TabGroup("References", "Count Off")]
+    [TabGroup("References/Box/Tab", "Timer")]
+    [SerializeField] private Slider timerSlider;
+    [TabGroup("References/Box/Tab", "Timer")]
+    [SerializeField] private Image timerFill;
+    [TabGroup("References/Box/Tab", "Timer")]
+    [SerializeField] private Color startColor = Color.green;
+    [TabGroup("References/Box/Tab", "Timer")]
+    [SerializeField] private Color endColor = Color.red;
+    
+    [TabGroup("References/Box/Tab", "Count Off")]
     [SerializeField] private GameObject countOffPanel;
-    [TabGroup("References", "Count Off")]
+    [TabGroup("References/Box/Tab", "Count Off")]
     [SerializeField] private TMP_Text countOffText;
     
-    [TabGroup("References", "Pause")]
+    [TabGroup("References/Box/Tab", "Pause")]
     [SerializeField] private GameObject pausePanel;
-    [TabGroup("References", "Pause")]
+    [TabGroup("References/Box/Tab", "Pause")]
     [SerializeField] private Slider volumeSlider;
     
-    [TabGroup("References", "Game Over")]
+    [TabGroup("References/Box/Tab", "Game Over")]
     [SerializeField] private GameObject gameOverPanel;
-    [TabGroup("References", "Game Over")]
+    [TabGroup("References/Box/Tab", "Game Over")]
     [SerializeField] private TMP_Text gameOverText;
     
-    [TabGroup("References", "Score")]
+    [TabGroup("References/Box/Tab", "Score")]
     [SerializeField] private TMP_Text scoreText;
     #endregion
 
@@ -70,14 +80,6 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField, HideLabel] private InspectorVoid settingsTitle;
     [TabGroup("Settings", "Timer")]
     [SerializeField] private float gameTimer = 60f;
-    [TabGroup("Settings", "Timer")]
-    [SerializeField] private Slider timerSlider;
-    [TabGroup("Settings", "Timer")]
-    [SerializeField] private Image timerFill;
-    [TabGroup("Settings", "Timer")]
-    [SerializeField] private Color startColor = Color.green;
-    [TabGroup("Settings", "Timer")]
-    [SerializeField] private Color endColor = Color.red;
     [TabGroup("Settings", "Timer")]
     [SerializeField] private float bombTimeBonus = 10f;
     

@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/MadDuck/UIBuilder/StyleSheets/Test.uss?fileID=7433441132597879392&amp;guid=b9f07983cb6b19645b21b9242c658d12&amp;type=3#Test" />
+    <Style src="project://database/Assets/MadDuck/UIBuilder/StyleSheets/testtest.uss?fileID=7433441132597879392&amp;guid=a4e9b41ce79f6484398c37718e608fc1&amp;type=3#testtest" />
+    <ui:VisualElement style="flex-grow: 1; align-items: center; justify-content: center;">
+        <ui:VisualElement class="border" style="flex-grow: 0; width: 885px; height: 852px; position: absolute; top: 1047px; left: 51px;" />
+        <ui:Toggle label="Toggle" data-source="project://database/Assets/MadDuck/ScriptableObjects/UIEditors/MadduckInspectorSettings.asset?fileID=11400000&amp;guid=8604edb76727a7d42961904908cc8a4e&amp;type=2#MadduckInspectorSettings" data-source-path="gameDesignerMode" style="top: 951px; left: 53px; position: absolute; font-size: 41px; -unity-text-align: middle-center;" />
+    </ui:VisualElement>
+</ui:UXML>

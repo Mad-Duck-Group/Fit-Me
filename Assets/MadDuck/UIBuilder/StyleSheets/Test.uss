@@ -1,0 +1,57 @@
+.border {
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-left-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-top-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
+}
+
+VisualElement > .unity-toggle {
+    border-left-color: rgb(255, 0, 0);
+    border-right-color: rgb(255, 0, 0);
+    border-top-color: rgb(255, 0, 0);
+    border-bottom-color: rgb(255, 0, 0);
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+}
+
+VisualElement > .unity-toggle > .unity-toggle__input {
+    width: 70px;
+    height: 70px;
+    align-content: center;
+    align-self: auto;
+    justify-content: center;
+}
+
+VisualElement > .unity-toggle > .unity-toggle__input > #unity-checkmark {
+    flex-grow: 0;
+    height: 50%;
+    flex-direction: row;
+    align-items: center;
+    width: 50%;
+    -unity-text-align: upper-left;
+    align-self: center;
+    align-content: auto;
+    justify-content: center;
+    bottom: auto;
+    right: auto;
+    flex-basis: auto;
+    flex-wrap: nowrap;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+}

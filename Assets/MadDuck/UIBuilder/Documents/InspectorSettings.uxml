@@ -1,0 +1,11 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/MadDuck/UIBuilder/StyleSheets/InspectorSettings.uss?fileID=7433441132597879392&amp;guid=b14a8b5d17ec14d4f829f720c3b17454&amp;type=3#InspectorSettings" />
+    <engine:VisualElement name="topElement" style="flex-grow: 1; background-color: rgba(255, 255, 255, 0); background-image: url(&quot;project://database/Assets/MadDuck/Arts/Sprites/BG/Background.png?fileID=2800000&amp;guid=371a422561ec1174897e43549ac68f5f&amp;type=3#Background&quot;); -unity-background-scale-mode: scale-and-crop; color: rgb(0, 0, 0);">
+        <engine:Label text="Inspector Settings" name="top-label" class="header-background" style="font-size: 30px;" />
+        <engine:Toggle label="Game Designer Mode" name="game-designer-mode-toggle" data-source="project://database/Assets/Resources/UIEditors/MadduckInspectorSettings.asset?fileID=11400000&amp;guid=8604edb76727a7d42961904908cc8a4e&amp;type=2#MadduckInspectorSettings" class="header-background text-color">
+            <Bindings>
+                <engine:DataBinding property="value" data-source-path="gameDesignerMode" binding-mode="TwoWay" />
+            </Bindings>
+        </engine:Toggle>
+    </engine:VisualElement>
+</engine:UXML>

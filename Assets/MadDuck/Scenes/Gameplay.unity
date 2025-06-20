@@ -2430,33 +2430,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f77e2926b91087945b118ceb457851c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameTimer: 60
   timerSlider: {fileID: 1775298398}
   timerFill: {fileID: 21702743}
   startColor: {r: 0, g: 1, b: 0, a: 1}
   endColor: {r: 1, g: 0, b: 0, a: 1}
-  bombTimeBonus: 10
-  countOffTime: 0
   countOffPanel: {fileID: 1094725370}
   countOffText: {fileID: 454863654}
   pausePanel: {fileID: 1548690409}
   volumeSlider: {fileID: 670731307}
   gameOverPanel: {fileID: 732374993}
   gameOverText: {fileID: 48437865}
-  gameClearPanel: {fileID: 1717826399}
-  gameClearText: {fileID: 1104195669}
   scoreText: {fileID: 2040727031}
+  gameTimer: 60
+  bombTimeBonus: 10
+  countOffTime: 0
   scorePerPlacement: 100
   scorePerCombo: 100
   scorePerBomb: 200
   scorePerFitMe: 10000
-  <CurrentGameState>k__BackingField:
-    value: 0
   usePercentage: 1
   startInfectTimeRange: 10
   firstInfectTimePercentRange: {x: 0.1, y: 0.6}
   <InfectionTimeRange>k__BackingField: {x: 3, y: 10}
   maxInfectionCount: 2
+  <CurrentGameState>k__BackingField:
+    value: 0
 --- !u!4 &1077234520
 Transform:
   m_ObjectHideFlags: 0
@@ -2527,6 +2525,7 @@ MonoBehaviour:
   - <Transform>k__BackingField: {fileID: 424758547}
     <IsFree>k__BackingField: 0
     <CurrentBlock>k__BackingField: {fileID: 0}
+  maxRandomAmount: 3
   objectScale: 0.5
 --- !u!1 &1094725370
 GameObject:
@@ -4341,17 +4340,21 @@ MonoBehaviour:
   blackColor: {r: 0, g: 0, b: 0, a: 1}
   canBePlacedColor: {r: 0.07678461, g: 1, b: 0, a: 1}
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
-  gridType: 0
-  gridSize: {x: 6, y: 8}
+  gridPresets: []
+  endlessType: 3
+  generatedGridType: 1
   randomGridXRange: {x: 6, y: 6}
   randomGridYRange: {x: 8, y: 8}
+  bridgeWidthRange: {x: 2, y: 3}
   gridHorizontalOffsetType: 0
   customOffsetX: 0
   gridVerticalOffsetType: 1
   customOffsetY: 8
   destroyThreshold: 3
+  currentGridPreset: {fileID: 0}
+  currentGridSize: {x: 10, y: 10}
   currentOffset: {x: -3, y: 8}
-  blocksOnGrid: []
+  <BlocksOnGrid>k__BackingField: []
   drawAllCustomGridCells: 0
   <RandomInfectedTime>k__BackingField: 0
   infectedBlocks: []
@@ -4364,78 +4367,9 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: _customGrid
-      Entry: 7
-      Data: 0|System.Boolean[,], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 18
-    - Name: ranks
-      Entry: 1
-      Data: 6|3
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
     - Name: _cellArray
       Entry: 7
-      Data: 1|MadDuck.Scripts.Units.Cell[,], Assembly-CSharp
+      Data: 0|MadDuck.Scripts.Units.Cell[,], Assembly-CSharp
     - Name: 
       Entry: 12
       Data: 0
@@ -4450,7 +4384,7 @@ MonoBehaviour:
       Data: 
     - Name: _vacantSchema
       Entry: 7
-      Data: 2|System.Int32[,], mscorlib
+      Data: 1|System.Int32[,], mscorlib
     - Name: 
       Entry: 12
       Data: 0
