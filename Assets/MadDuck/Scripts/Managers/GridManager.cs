@@ -433,6 +433,7 @@ namespace MadDuck.Scripts.Managers
             {
                 _vacantSchema = vacantSchema;
                 GameManager.Instance.AddScore(ScoreTypes.FitMe);
+                GameManager.Instance.GameDifficulty();
                 RemoveAllBlocks(true);
                 RegenerateGrid();
                 return true;
