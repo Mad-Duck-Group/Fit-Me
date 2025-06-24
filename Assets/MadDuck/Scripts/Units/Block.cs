@@ -42,68 +42,32 @@ namespace MadDuck.Scripts.Units
         Green,
         Purple
     }
-
-    public enum BlockFaces
-    {
-        I1,
-        I2,
-        I3,
-        I4,
-        S,
-        SMirror,
-        L,
-        LMirror,
-        T,
-        TwoByTwo
-    }
     #endregion
 
-    [Serializable]
-    [ShowOdinSerializedPropertiesInInspector]
-    public record BlockSchema
-    {
-        [TableMatrix(SquareCells = true, Transpose = true, DrawElementMethod = nameof(DrawSchemaMatrix),
-            IsReadOnly = true)]
-        [ShowInInspector]
-        public int[,] schema = { };
-        public int index;
-        
-        public BlockSchema(int[,] schema, int index)
-        {
-            this.schema = schema;
-            this.index = index;
-        }
-        
-        private static int DrawSchemaMatrix(Rect rect, int value)
-        {
-            EditorGUI.DrawRect(rect.Padding(1), value == 1 ? Color.green : Color.grey);
-            return value;
-        }
-    }
-    
     [ShowOdinSerializedPropertiesInInspector]
     public class Block : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, ISerializationCallbackReceiver, ISupportsPrefabSerialization
     {
         #region Inspectors
         [Title("Block References")]
-        [SerializeField] private BlockTypes blockType;
-        [SerializeField] private BlockFaces blockFace;
-        [SerializeField] private Atom[] atoms;
+        [SerializeField] private Atom atomPrefab;
+        [SerializeField] private Transform atomParent;
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private SpriteResolver spriteResolver;
-        [SerializeField] private bool allowPickUpAfterPlacement;
-        
+
         [Title("Block Settings")]
         [SerializeField] private Color originalColor = Color.white;
         [SerializeField] private float pickUpScaleMultiplier = 1.2f;
+        [field: SerializeField] public bool AllowPickUpAfterPlacement { get; private set; }
         
-        [Title("Block Debug")]
+        [field: Title("Block Debug")]
+        [field: SerializeField, DisplayAsString] public BlockTypes BlockType { get; private set; }
+        [field: SerializeField, DisplayAsString] public string BlockFace { get; private set; }
+        [field: SerializeField, ReadOnly] public List<Atom> Atoms { get; private set; } = new();
+        [field: SerializeField, ReadOnly] public BlockPreset BlockPreset { get; private set; }
         [SerializeField, DisplayAsString] private FlashState flashState;
         [field: SerializeField, DisplayAsString] public BlockState BlockState { get; private set; } = BlockState.Normal;
         [field: SerializeField, DisplayAsString] public bool IsPlaced { get; private set; }
         [field: SerializeField] public List<Cell> BlockCells { get; set; }
-        [TableList(AlwaysExpanded = true)]
-        [field: SerializeField] public List<BlockSchema> BlockSchemas { get; private set; } = new();
         public int SpawnIndex { get; set; }
         #endregion
         
@@ -119,21 +83,12 @@ namespace MadDuck.Scripts.Units
         private Tween _flashTween;
         private Tween _preInfectTween;
         private bool _isDragging;
-        public BlockTypes BlockType => blockType;
-        public BlockFaces BlockFace => blockFace;
-        public Atom[] Atoms => atoms;
-        public bool AllowPickUpAfterPlacement => allowPickUpAfterPlacement;
         private IDisposable _infectionSubscription;
         #endregion
 
         #region Initialization
         private void Start()
         {
-            foreach (var atom in atoms)
-            {
-                atom.ParentBlock = this;
-            }
-
             _infectColor = GameManager.Instance.infectColor;
         }
 
@@ -143,6 +98,7 @@ namespace MadDuck.Scripts.Units
             _originalPosition = transform.position;
             _originalRotation = transform.eulerAngles;
             _originalScale = transform.localScale;
+            Atoms.ForEach(a => a.ParentBlock = this);
             //_originalColor = spriteRenderer.color;
             //GridManager.OnBlockInfected += OnBlockInfected;
             //GridManager.OnBlockDisinfected += OnBlockDisinfected;
@@ -166,37 +122,49 @@ namespace MadDuck.Scripts.Units
         #endregion
 
         #region Schema
-        /// <summary>
-        /// Generate the schema of the block, 1 is an atom, 0 is empty
-        /// </summary>
-        [Button("Test Schema")]
-        public void GenerateSchema()
+        public void GenerateAtom(string blockFace, BlockPreset preset)
         {
-            Vector3 currentScale = transform.localScale;
-            transform.localScale = Vector3.one;
-            Atom[] sortByX = Atoms.OrderByDescending(atom => atom.transform.position.x).ToArray();
-            Atom[] sortByY = Atoms.OrderByDescending(atom => atom.transform.position.y).ToArray();
-            Atom mostRight = sortByX.First();
-            Atom mostLeft = sortByX.Last();
-            Atom mostUp = sortByY.First();
-            Atom mostDown = sortByY.Last();
-            int column = Mathf.RoundToInt(mostRight.transform.position.x - mostLeft.transform.position.x) + 1;
-            int row = Mathf.RoundToInt(mostUp.transform.position.y - mostDown.transform.position.y) + 1;
-            int[,] originalSchema = new int[row, column];
-            Debug.Log("row: " + row + " column: " + column);
-            foreach (var atom in Atoms)
+            var row = preset.BlockSize.y;
+            var column = preset.BlockSize.x;
+            BlockFace = blockFace;
+            BlockPreset = preset;
+            for (var x = 0; x < row; x++)
             {
-                int x = Mathf.RoundToInt(mostRight.transform.position.x - atom.transform.position.x);
-                int y = Mathf.RoundToInt(atom.transform.position.y - mostDown.transform.position.y);
-                originalSchema[y, x] = 1;
+                for (var y = 0; y < column; y++)
+                {
+                    if (preset.BlockSchema.schema[x, y] == 0)
+                    {
+                        continue;
+                    }
+                    float spawnPosX = -column / 2f + 0.5f + y;
+                    float spawnPosY = row / 2f - 0.5f - x;
+                    Vector3 spawnPosition = new Vector3(spawnPosX, spawnPosY, 0);
+                    var atom = Instantiate(atomPrefab, spawnPosition, Quaternion.identity, atomParent);
+                    atom.ParentBlock = this;
+                    var hasTop = HasElement(x - 1, y);
+                    var hasBottom = HasElement(x + 1, y);
+                    var hasLeft = HasElement(x, y - 1);
+                    var hasRight = HasElement(x, y + 1);
+                    atom.SpriteOutlineController.outlineTop = !hasTop;
+                    atom.SpriteOutlineController.outlineBottom = !hasBottom;
+                    atom.SpriteOutlineController.outlineLeft = !hasLeft;
+                    atom.SpriteOutlineController.outlineRight = !hasRight;
+                    atom.SpriteOutlineController.UpdateOutline();
+                    Atoms.Add(atom);
+                }
             }
-            BlockSchemas.Clear();
-            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate180(originalSchema), 0));
-            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate270(BlockSchemas[0].schema), 1));
-            BlockSchemas.Add(new BlockSchema(originalSchema, 2));
-            BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate90(BlockSchemas[0].schema), 3));
-            //BlockSchemas = BlockSchemas.Distinct().ToList(); //Remove duplicates
-            transform.localScale = currentScale;
+            var spritePositionX = -column / 2f + 0.5f;
+            var spritePositionY = row / 2f - 0.5f;
+            spriteRenderer.transform.localPosition = new Vector3(spritePositionX, spritePositionY, 0);
+            spriteRenderer.gameObject.SetActive(false); //NOTE: Disable sprite renderer for now until the sprite asset is fixed
+            BlockPreset.GenerateSchema();
+            
+            bool HasElement(int x, int y)
+            {
+                if (x < 0 || x >= row || y < 0 || y >= column)
+                    return false;
+                return preset.BlockSchema.schema[x, y] == 1;
+            }
         }
         #endregion
 
@@ -222,8 +190,8 @@ namespace MadDuck.Scripts.Units
         
         public void Disinfect()
         {
-            spriteRenderer.color = originalColor;
-            //_beforeFlashColor = spriteRenderer.color;
+            //spriteRenderer.color = originalColor; NOTE: Disable for now, until the sprite asset is fixed
+            SetAtomColor(originalColor);
             BlockState = BlockState.Normal;
             _infectionSubscription?.Dispose();
         }
@@ -297,17 +265,25 @@ namespace MadDuck.Scripts.Units
         #endregion
         
         #region Utils
-        public void ChangeColor(BlockTypes type, bool updateGrid = true)
+        public void ChangeType(BlockTypes type, bool updateGrid = true)
         {
-            blockType = type;
-            if (!RandomBlockManager.Instance.SpriteLibraryAssets.TryGetValue(type, out var spriteAsset))
+            BlockType = type;
+            //NOTE: Disable sprite resolver for now until the sprite asset is fixed
+            /*if (!RandomBlockManager.Instance.SpriteLibraryAssets.TryGetValue(type, out var spriteAsset))
             {
                 Debug.LogError($"Sprite asset for block type {type} not found.");
                 return;
             }
             spriteResolver.spriteLibrary.spriteLibraryAsset = spriteAsset;
-            spriteResolver.SetCategoryAndLabel("Face", blockFace.ToString());
-            spriteResolver.ResolveSpriteToSpriteRenderer();
+            spriteResolver.SetCategoryAndLabel("Face", BlockFace);
+            spriteResolver.ResolveSpriteToSpriteRenderer();*/
+            if (!RandomBlockManager.Instance.AtomColorDictionary.TryGetValue(type, out var color))
+            {
+                Debug.LogError($"Color for block type {type} not found.");
+                return;
+            }
+            originalColor = color;
+            SetAtomColor(color);
             if (!updateGrid) return;
             GridManager.Instance.UpdateBlockOnGrid(this);
         }
@@ -322,16 +298,24 @@ namespace MadDuck.Scripts.Units
                     if (_preInfectTween.isAlive)
                     { _preInfectTween.Complete(); }
                     
-                    spriteRenderer.color = originalColor;
-                    _flashTween = Tween.Color(spriteRenderer, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
+                    /*spriteRenderer.color = originalColor;
+                    _flashTween = Tween.Color(spriteRenderer, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);*/ 
+                    //NOTE: Disable for now, until the sprite asset is fixed
+                    SetAtomColor(originalColor);
+                    _flashTween = Tween.Custom(originalColor, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo,
+                        onValueChange: SetAtomColor);
                     break;
                 
                 case FlashState.PreInfectFlash:
                     if (BlockState != BlockState.PreInfected) return;
                     if(_preInfectTween.isAlive) return;
                     
-                    spriteRenderer.color = originalColor;
-                    _preInfectTween = Tween.Color(spriteRenderer, _infectColor, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);
+                    /*spriteRenderer.color = originalColor;
+                    _preInfectTween = Tween.Color(spriteRenderer, _infectColor, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);*/
+                    //NOTE: Disable for now, until the sprite asset is fixed
+                    SetAtomColor(originalColor);
+                    _preInfectTween = Tween.Custom(originalColor, _infectColor, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo,
+                        onValueChange: SetAtomColor);
                     break;
                 
                 case FlashState.None:
@@ -349,7 +333,8 @@ namespace MadDuck.Scripts.Units
             {
                 _flashTween.Complete();
                 _flashTween = default;
-                spriteRenderer.color = originalColor;
+                //spriteRenderer.color = originalColor; NOTE: Disable for now, until the sprite asset is fixed
+                SetAtomColor(originalColor);
             }
 
             switch (BlockState)
@@ -380,7 +365,8 @@ namespace MadDuck.Scripts.Units
                 
                 case BlockState.Infected:
                     flashState = FlashState.None;
-                    spriteRenderer.color = _infectColor;
+                    //spriteRenderer.color = _infectColor; NOTE: Disable for now, until the sprite asset is fixed
+                    SetAtomColor(_infectColor);
                     break;
             }
         }
@@ -402,15 +388,12 @@ namespace MadDuck.Scripts.Units
         /// </summary>
         public void ReturnToOriginal()
         {
-            //Tween the block to the original position
             if (_transformTween.isAlive)
             {
                 _transformTween.Stop();
             }
             _transformTween = Tween.Position(transform, _originalPosition, 0.2f).OnComplete(() => SetRendererSortingOrder(1));
-            //Tween the block to the original rotation
             Tween.Rotation(transform, _originalRotation, 0.2f);
-            //Tween the block to the original scale
             Tween.Scale(transform, _originalScale, 0.2f);
             Tween.Scale(spriteRenderer.transform, _originalSpriteScale, 0.2f);
             GridManager.Instance.ResetPreviousValidationCells();
@@ -422,15 +405,13 @@ namespace MadDuck.Scripts.Units
         /// <param name="order">Order to render</param>
         public void SetRendererSortingOrder(int order)
         {
-            if (!spriteRenderer)
-            {
-                foreach (var atom in atoms)
-                {
-                    atom.SpriteRenderer.sortingOrder = order;
-                }
-                return;
-            }
+            Atoms.ForEach(atom => atom.SpriteRenderer.sortingOrder = order);
             spriteRenderer.sortingOrder = order;
+        }
+
+        public void SetAtomColor(Color color)
+        {
+            Atoms.ForEach(atom => atom.SpriteRenderer.color = color);
         }
         #endregion
         

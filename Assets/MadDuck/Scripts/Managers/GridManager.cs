@@ -183,13 +183,13 @@ namespace MadDuck.Scripts.Managers
             newGridPreset.GridSize = new Vector2Int(randomX, randomY);
             if (newGridPreset.PresetGridType is GridType.Custom)
             {
-                newGridPreset.CustomGrid = new bool[randomY, randomX];
-                var row = newGridPreset.CustomGrid.GetLength(0);
-                var column = newGridPreset.CustomGrid.GetLength(1);
+                newGridPreset.customGrid = new int[randomY, randomX];
+                var row = newGridPreset.customGrid.GetLength(0);
+                var column = newGridPreset.customGrid.GetLength(1);
                 for (int x = 0; x < row; x++)
                 {
                     var hasBridge = Random.Range(0, 2) == 0;
-                    var bridgeIndices = new bool[column];
+                    var bridgeIndices = new int[column];
                     if (hasBridge)
                     {
                         var bridgeWidth = Random.Range(bridgeWidthRange.x, bridgeWidthRange.y + 1);
@@ -197,15 +197,15 @@ namespace MadDuck.Scripts.Managers
                     }
                     for (int y = 0; y < column; y++)
                     {
-                        if (hasBridge) newGridPreset.CustomGrid[x, y] = bridgeIndices[y];
-                        else newGridPreset.CustomGrid[x, y] = true;
+                        if (hasBridge) newGridPreset.customGrid[x, y] = bridgeIndices[y];
+                        else newGridPreset.customGrid[x, y] = 1;
                     }
                 }
             }
             currentGridPreset = newGridPreset;
         }
 
-        private bool[] GetBridgeIndex(int bridgeWidth, int columnCount)
+        private int[] GetBridgeIndex(int bridgeWidth, int columnCount)
         {
             var divisible = columnCount % bridgeWidth == 0 ? 0 : 1;
             var maxBridge = Mathf.FloorToInt(columnCount / (float)bridgeWidth) + divisible;
@@ -229,13 +229,13 @@ namespace MadDuck.Scripts.Managers
                 validRanges.Clear();
             }
             //create bool array from validRanges
-            var bridgeIndices = new bool[columnCount];
+            var bridgeIndices = new int[columnCount];
             if (validRanges.Count == 0)
             {
                 Debug.LogWarning("No valid ranges found, creating a full bridge.");
                 for (var i = 0; i < columnCount; i++)
                 {
-                    bridgeIndices[i] = true;
+                    bridgeIndices[i] = 1;
                 }
                 return bridgeIndices;
             }
@@ -244,7 +244,7 @@ namespace MadDuck.Scripts.Managers
                 Debug.Log($"Adding bridge from {range.start} to {range.end}");
                 for (var i = range.start; i <= range.end; i++)
                 {
-                    bridgeIndices[i] = true;
+                    bridgeIndices[i] = 1;
                 }
             }
             return bridgeIndices;
@@ -310,7 +310,7 @@ namespace MadDuck.Scripts.Managers
             {
                 for (int y = 0; y < column; y++)
                 {
-                    if (currentGridPreset.PresetGridType is GridType.Custom && !currentGridPreset.CustomGrid[x, y]) continue; 
+                    if (currentGridPreset.PresetGridType is GridType.Custom && currentGridPreset.customGrid[x, y] == 0) continue; 
                     var halfSize = cellSize / 2;
                     Vector3 spawnPosition =
                         (Vector3)(new Vector2(halfSize, halfSize) +
@@ -365,7 +365,7 @@ namespace MadDuck.Scripts.Managers
                 ResetPreviousValidationCells();
             }
             _previousValidationCells = cells;
-            if (cells.Count < block.Atoms.Length)
+            if (cells.Count < block.Atoms.Count)
             {
                 cells.ForEach(cell => cell.SpriteRenderer.color = cannotBePlacedColor);
                 return false;
@@ -396,7 +396,7 @@ namespace MadDuck.Scripts.Managers
                 }
                 cells.Add(cell);
             }
-            for (var i = 0; i < block.Atoms.Length; i++)
+            for (var i = 0; i < block.Atoms.Count; i++)
             {
                 var atom = block.Atoms[i];
                 cells[i].SetAtom(atom);
@@ -584,7 +584,7 @@ namespace MadDuck.Scripts.Managers
         {
             var index = (int)currentZEulerAngle / 90;
             Debug.Log("Block " + block.name + " angle: " + currentZEulerAngle + ", index: " + index);
-            if (ArrayHelper.CanBFitInA(_vacantSchema, block.BlockSchemas[index].schema, out _))
+            if (ArrayHelper.CanBFitInA(_vacantSchema, block.BlockPreset.BlockSchemas[index].schema, out _))
             {
                 Debug.Log("Block " + block.name + " can be placed");
                 return true;
@@ -594,7 +594,7 @@ namespace MadDuck.Scripts.Managers
         
         public bool CompareSchema(Block block, int schemaIndex)
         {
-            if (schemaIndex < 0 || schemaIndex >= block.BlockSchemas.Count)
+            if (schemaIndex < 0 || schemaIndex >= block.BlockPreset.BlockSchemas.Count)
             {
                 Debug.LogError("Invalid schema index: " + schemaIndex);
                 return false;
@@ -754,7 +754,7 @@ namespace MadDuck.Scripts.Managers
                 {
                     var textColor = Color.green;
                     var handleColor = Color.green;
-                    if (currentGridPreset.PresetGridType is GridType.Custom && !currentGridPreset.CustomGrid[x, y])
+                    if (currentGridPreset.PresetGridType is GridType.Custom && currentGridPreset.customGrid[x, y] == 0)
                     {
                         if (!drawAllCustomGridCells) continue;
                         handleColor = Color.red;

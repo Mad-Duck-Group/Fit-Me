@@ -2598,7 +2598,7 @@ Transform:
   m_GameObject: {fileID: 1077234518}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 103.15542, y: 258.2626, z: -2.5816035}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2637,18 +2637,39 @@ MonoBehaviour:
     - {fileID: 7108339969198208228, guid: d735eb892d4707747ba705279d277b27, type: 3}
     - {fileID: 7108339969198208228, guid: 1ec90d31a2f16d94d8f47e6e94019df6, type: 3}
     - {fileID: 7108339969198208228, guid: 77f23642d724cd841ae0bf68fbf4a5f1, type: 3}
-  blockPrefabDictionary:
-    keys: 010000000200000003000000040000000500000006000000070000000800000009000000
+  <AtomColorDictionary>k__BackingField:
+    keys: 00000000010000000200000003000000
     values:
-    - {fileID: 5260637757451686444, guid: d45ab7ae7168b0442a3d23b3d58213d0, type: 3}
-    - {fileID: 7556221709410000165, guid: 79f1fec33fc5b6e45814a69f7727cbc9, type: 3}
-    - {fileID: 1469584244278912653, guid: d05e1eee2fcac634ca52d9786072f3eb, type: 3}
-    - {fileID: 56799901832475511, guid: 7e4775f068dbddb4d82bc2b9adbd8754, type: 3}
-    - {fileID: 8293335298662665959, guid: ee109b35fcfeb0648a866a68c532213e, type: 3}
-    - {fileID: 1755609332638426803, guid: 88640166699c4ee4e92b0440c5973818, type: 3}
-    - {fileID: 7581123733778832381, guid: 686157dd236d3cd48bcaf8af602c1252, type: 3}
-    - {fileID: 5975049201414031642, guid: d963d81015a4eed4bb1d3c511fba52fe, type: 3}
-    - {fileID: 1274395652884110066, guid: 79a2158c73a60574ca9f421ff81f3988, type: 3}
+    - {r: 0.7924528, g: 0.00000008187204, b: 0, a: 1}
+    - {r: 1, g: 0.8644681, b: 0, a: 1}
+    - {r: 0, g: 1, b: 0.04225135, a: 1}
+    - {r: 0.86792135, g: 0, b: 1, a: 1}
+  blockPrefab: {fileID: 595384841925304144, guid: 2d37578e89800d44c8762f2cac9ce405, type: 3}
+  blockPresetDictionary:
+    keys:
+    - I2
+    - I3
+    - T
+    - L
+    - LMirror
+    - S
+    - SMirror
+    - 2x2
+    - X
+    - SmallL
+    - SmallSlash
+    values:
+    - {fileID: 11400000, guid: 6fcf449b41e211b46ad57b74424caf7e, type: 2}
+    - {fileID: 11400000, guid: b86b3d2ed40ba784f9c03f029ea303e7, type: 2}
+    - {fileID: 11400000, guid: a7abb7d66beaded4893b8d03421a765c, type: 2}
+    - {fileID: 11400000, guid: 70cebc9579ab3c147becb95f1634ddea, type: 2}
+    - {fileID: 11400000, guid: 9da727f874726fa41b75baa424e9b356, type: 2}
+    - {fileID: 11400000, guid: 4e664ecc81b61674bb851301da8106c3, type: 2}
+    - {fileID: 11400000, guid: 26f172e86e4345c449922778aec60579, type: 2}
+    - {fileID: 11400000, guid: 621724dee829e5b47814ebef21f528f0, type: 2}
+    - {fileID: 11400000, guid: ff7a2031f339f374db0a6fc37fd5d436, type: 2}
+    - {fileID: 11400000, guid: 4b2df45ee9fb0ce40b00cda3fb8d585f, type: 2}
+    - {fileID: 11400000, guid: 7c3db559533d10943950f7a4be1e3f73, type: 2}
   spawnPoints:
   - <Transform>k__BackingField: {fileID: 1824884509}
     <IsFree>k__BackingField: 0

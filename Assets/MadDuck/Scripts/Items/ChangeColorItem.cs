@@ -140,7 +140,7 @@ namespace MadDuck.Scripts.Items
             if (popUpResultEvent.choiceId.HasValue && _blockHovered)
             {
                 var blockType = (BlockTypes)popUpResultEvent.choiceId.Value;
-                _blockHovered.ChangeColor(blockType);
+                _blockHovered.ChangeType(blockType);
             }
             else
             {

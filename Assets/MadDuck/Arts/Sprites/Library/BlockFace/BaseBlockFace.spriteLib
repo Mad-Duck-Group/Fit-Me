@@ -17,8 +17,8 @@ MonoBehaviour:
     m_Hash: 623301721
     m_CategoryList: []
     m_OverrideEntries:
-    - m_Name: TwoByTwo
-      m_Hash: 115441876
+    - m_Name: 2x2
+      m_Hash: 933186194
       m_Sprite: {fileID: 0}
       m_FromMain: 0
       m_SpriteOverride: {fileID: 0}
@@ -70,5 +70,5 @@ MonoBehaviour:
     m_FromMain: 0
     m_EntryOverrideCount: 10
   m_PrimaryLibraryGUID: 
-  m_ModificationHash: 638853389666881025
+  m_ModificationHash: 638863674481010241
   m_Version: 1
