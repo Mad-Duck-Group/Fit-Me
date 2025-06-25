@@ -122,7 +122,7 @@ public class GameManager : MonoSingleton<GameManager>
     [field: TabGroup("Settings", "Infection"), HideIf(nameof(infectionThreshold))] 
     [field: SerializeField, MinValue(0.1f)] public Vector2 InfectionTimeRange { get; private set; } = new(0, 10);
     [TabGroup("Settings", "Infection"),] 
-    [SerializeField, Sirenix.OdinInspector.ReadOnly] private int maxInfectionCount = 1;
+    [SerializeField, HideIf(nameof(infectionThreshold))] private int maxInfectionCount = 1;
     [TabGroup("Settings", "Infection")]
     public Color32 infectColor = new(255, 0, 0, 255);
     
@@ -467,6 +467,7 @@ public class GameManager : MonoSingleton<GameManager>
         Debug.Log("Game Over!");
         gameOverText.text = fail ? "Failed!" : "Time's Up!";
         gameOverPanel.SetActive(true);
+        
         Tween.Scale(gameOverText.transform, 1, 0.5f, ease: Ease.OutBounce);
     }
     #endregion
