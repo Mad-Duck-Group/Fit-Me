@@ -626,6 +626,7 @@ namespace MadDuck.Scripts.Managers
         public void InfectBlock(Block block)
         {
             if (GameManager.Instance.CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
+            preInfectBlocks.Remove(block);
             infectedBlocks.Add(block);
             block.Infect();
             OnBlockInfected?.Invoke(block);
@@ -645,9 +646,10 @@ namespace MadDuck.Scripts.Managers
         {
             if (BlocksOnGrid.Count == 0) return;
             Block block = BlocksOnGrid.GetRandomElement();
-            
+
             if (block.BlockState != BlockState.Normal) return;
             block.PreInfect().Forget();
+            preInfectBlocks.Add(block);
         }
 
         public void InfectAdjacentBlocks(Block sourceBlock)
@@ -688,6 +690,7 @@ namespace MadDuck.Scripts.Managers
             {
                 var blockToInfect = candidatesForInfection.GetRandomElement(); 
                 blockToInfect.PreInfect().Forget();
+                preInfectBlocks.Add(blockToInfect);
             }
         }
         #endregion

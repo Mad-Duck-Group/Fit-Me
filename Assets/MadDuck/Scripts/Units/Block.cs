@@ -378,6 +378,8 @@ namespace MadDuck.Scripts.Units
             
             if (_preInfectTween.isAlive)
             { _preInfectTween.Stop(); }
+            
+            SetAtomColor(originalColor);
         }
         
         public void PickUpBlock()
