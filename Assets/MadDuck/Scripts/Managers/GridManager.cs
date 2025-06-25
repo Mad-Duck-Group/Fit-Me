@@ -118,6 +118,7 @@ namespace MadDuck.Scripts.Managers
         private bool drawAllCustomGridCells = true;
 
         [Title("Infected Debug")]
+        private List<Block> preInfectBlocks = new();
         
         [Button("Test Fit-me")]
         private void TestFitMe()
@@ -612,6 +613,14 @@ namespace MadDuck.Scripts.Managers
         #endregion
         
         #region Infection
+        
+        public void StopPreInfectFlash()
+        {
+            foreach (var block in preInfectBlocks)
+            {
+                block.StopAllFlash();
+            }
+        }
 
         public void InfectBlock(Block block)
         {

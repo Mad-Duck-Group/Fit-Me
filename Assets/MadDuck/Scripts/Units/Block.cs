@@ -371,6 +371,15 @@ namespace MadDuck.Scripts.Units
             }
         }
         
+        public void StopAllFlash()
+        {
+            if (_flashTween.isAlive)
+            { _flashTween.Stop(); }
+            
+            if (_preInfectTween.isAlive)
+            { _preInfectTween.Stop(); }
+        }
+        
         public void PickUpBlock()
         {
             //Tween the block to (1, 1, 1) scale

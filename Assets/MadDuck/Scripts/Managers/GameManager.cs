@@ -469,8 +469,8 @@ public class GameManager : MonoSingleton<GameManager>
         Debug.Log("Game Over!");
         gameOverText.text = fail ? "Failed!" : "Time's Up!";
         gameOverPanel.SetActive(true);
-        
         Tween.Scale(gameOverText.transform, 1, 0.5f, ease: Ease.OutBounce);
+        GridManager.Instance.StopPreInfectFlash();
     }
     #endregion
 
