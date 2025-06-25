@@ -1,4 +1,5 @@
 ﻿using MadDuck.Scripts.Managers;
+using MadDuck.Scripts.Utils;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using Sirenix.Utilities;
@@ -25,60 +26,32 @@ namespace MadDuck.Scripts.Units
         [Button("Refresh Custom Grid"), ShowIf("@PresetGridType.HasFlag(GridType.Custom)"), DisableInPlayMode]
         private void RefreshCustomGrid()
         {
-            var newCustomGrid = new bool[GridSize.y, GridSize.x];
-            var oldRow = CustomGrid.GetLength(0);
-            var oldColumn = CustomGrid.GetLength(1);
-            var newRow = newCustomGrid.GetLength(0);
-            var newColumn = newCustomGrid.GetLength(1);
-            for (int x = 0; x < newRow; x++)
-            {
-                for (int y = 0; y < newColumn; y++)
-                {
-                    if (x >= newRow || y >= newColumn)
-                    {
-                        continue;
-                    }
-                    if (x >= oldRow || y >= oldColumn)
-                    {
-                        newCustomGrid[x, y] = false;
-                        continue;
-                    }
-                    if (x < newRow && y < GridSize.x)
-                    {
-                        newCustomGrid[x, y] = CustomGrid[x, y];
-                    }
-                    else
-                    {
-                        newCustomGrid[x, y] = false;
-                    }
-                }
-            }
-            CustomGrid = newCustomGrid;
+            ArrayHelper.ResizeArrayKeepMembers(ref customGrid, GridSize);
         }
         [TitleGroup("Grid Settings")]
         [Button("Clear Custom Grid"), ShowIf("@PresetGridType.HasFlag(GridType.Custom)"), DisableInPlayMode]
         private void ClearCustomGrid()
         {
-            CustomGrid = new bool[GridSize.y, GridSize.x];
+            customGrid = new int[GridSize.y, GridSize.x];
         }
         [TitleGroup("Grid Settings")]
         [field: TableMatrix(SquareCells = true, HorizontalTitle = "Custom Grid",
             DrawElementMethod = nameof(DrawCustomGridMatrix), Transpose = true)]
         [field: SerializeField, ShowIf("@PresetGridType.HasFlag(GridType.Custom)")]
-        public bool[,] CustomGrid { get; set; }= { };
+        public int[,] customGrid = { };
         #endregion
 
         #region Table Matrix
-        private static bool DrawCustomGridMatrix(Rect rect, bool value)
+        private static int DrawCustomGridMatrix(Rect rect, int value)
         {
             if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
             {
-                value = !value;
+                value = value == 1 ? 0 : 1; // Toggle between 0 and 1
                 GUI.changed = true;
                 Event.current.Use();
             }
 
-            EditorGUI.DrawRect(rect.Padding(1), value ? Color.green : Color.grey);
+            EditorGUI.DrawRect(rect.Padding(1), value == 1 ? Color.green : Color.grey);
             return value;
         }
         #endregion

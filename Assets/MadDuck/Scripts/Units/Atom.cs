@@ -1,17 +1,18 @@
+using MadDuck.Scripts.Utils;
 using UnityEngine;
 
 namespace MadDuck.Scripts.Units
 {
     public class Atom : MonoBehaviour
     {
-        private SpriteRenderer _spriteRenderer;
-        private Block _parentBlock;
-        public Block ParentBlock {get => _parentBlock; set => _parentBlock = value;}
-        public SpriteRenderer SpriteRenderer => _spriteRenderer;
+        public SpriteRenderer SpriteRenderer { get; private set; }
+        public Block ParentBlock { get; set; }
+        public SpriteOutlineController SpriteOutlineController { get; private set; }
 
         void Awake()
         {
-            _spriteRenderer = GetComponent<SpriteRenderer>();
+            SpriteRenderer = GetComponent<SpriteRenderer>();
+            SpriteOutlineController = GetComponent<SpriteOutlineController>();
         }
     }
 }

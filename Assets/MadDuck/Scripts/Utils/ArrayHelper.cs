@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace MadDuck.Scripts.Utils
@@ -138,6 +139,39 @@ namespace MadDuck.Scripts.Utils
             }
             placedArray = simulatePlacement ? tempPlacedArray : a; // If not simulating, return original array
             return true;
+        }
+
+        public static void ResizeArrayKeepMembers(ref int[,] array, Vector2Int newSize)
+        {
+            var newArray = new int[newSize.y, newSize.x];
+            var oldRow = array.GetLength(0);
+            var oldColumn = array.GetLength(1);
+            var newRow = newArray.GetLength(0);
+            var newColumn = newArray.GetLength(1);
+            for (int x = 0; x < newRow; x++)
+            {
+                for (int y = 0; y < newColumn; y++)
+                {
+                    if (x >= newRow || y >= newColumn)
+                    {
+                        continue;
+                    }
+                    if (x >= oldRow || y >= oldColumn)
+                    {
+                        newArray[x, y] = 0;
+                        continue;
+                    }
+                    if (x < newRow && y < newSize.x)
+                    {
+                        newArray[x, y] = array[x, y];
+                    }
+                    else
+                    {
+                        newArray[x, y] = 0;
+                    }
+                }
+            }
+            array = newArray;
         }
     }
 }

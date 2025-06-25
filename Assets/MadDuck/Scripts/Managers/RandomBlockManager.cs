@@ -34,7 +34,10 @@ namespace MadDuck.Scripts.Managers
 
         [Title("Random References")] 
         [field: SerializeField] public SerializableDictionary<BlockTypes, SpriteLibraryAsset> SpriteLibraryAssets { get; private set; } = new();
-        [SerializeField] private SerializableDictionary<BlockFaces, Block> blockPrefabDictionary = new();
+        [field: SerializeField] public SerializableDictionary<BlockTypes, Color> AtomColorDictionary { get; private set; } = new();
+        [SerializeField] private Block blockPrefab;
+        [SerializeField] [DictionaryDrawerSettings(KeyLabel = "Block Face", ValueLabel = "Block Preset")] 
+        private SerializableDictionary<string, BlockPreset> blockPresetDictionary = new();
         [SerializeField] private SpawnPoint[] spawnPoints;
 
         [Title("Random Settings")]
@@ -44,6 +47,7 @@ namespace MadDuck.Scripts.Managers
         
         #region Fields
         private Tween _scaleTween;
+        private readonly Dictionary<string, Block> _blockPool = new();
         #endregion
         
         #region Initialization
@@ -67,10 +71,15 @@ namespace MadDuck.Scripts.Managers
         
         private void OnSceneActivated()
         {
-            foreach (var block in blockPrefabDictionary.Values.ToList())
-            {
-                block.GenerateSchema();
-            }
+           foreach (var pair in blockPresetDictionary)
+           {
+               if (_blockPool.ContainsKey(pair.Key)) continue;
+               var block = Instantiate(blockPrefab, transform);
+               block.name = pair.Key;
+               block.GenerateAtom(pair.Key, pair.Value);
+               block.gameObject.SetActive(false);
+               _blockPool.Add(pair.Key, block);
+           }
         }
         #endregion
         
@@ -80,18 +89,11 @@ namespace MadDuck.Scripts.Managers
         /// </summary>
         public void SpawnRandomBlock()
         {
-           
-            // var randomBlocks = new List<KeyValuePair<BlockTypes, BlockFaces>>();
-            // foreach (var type in blockTypes)
-            // {
-            //     var randomFace = blockFaces.GetRandomElement();
-            //     randomBlocks.Add(new KeyValuePair<BlockTypes, BlockFaces>(type, randomFace));
-            // }
             if (spawnPoints.Any(x => !x.IsFree)) return;
             var blockTypes = Enum.GetValues(typeof(BlockTypes)).Cast<BlockTypes>().ToList();
-            //var blockFaces = Enum.GetValues(typeof(BlockFaces)).Cast<BlockFaces>().ToList();
-            var allSchemas = blockPrefabDictionary.Values
-                .SelectMany(x => x.BlockSchemas.Select(schema => (x.BlockFace, BlockSchema: schema)));
+            var allSchemas = _blockPool
+                .SelectMany(x => x.Value.BlockPreset.BlockSchemas
+                    .Select(schema => (BlockFace: x.Key, BlockSchema: schema)));
             var shuffledSchemas = allSchemas.Shuffled().ToList();
             GridManager.Instance.CreateVacantSchema(out var vacantSchema);
             var firstThreeSchemas = shuffledSchemas
@@ -113,14 +115,19 @@ namespace MadDuck.Scripts.Managers
                 var randomBlock = firstThreeSchemas[i];
                 var blockType = blockTypes.GetRandomElement();
                 var blockFace = randomBlock.BlockFace;
-                var index = randomBlock.BlockSchema.index;
-                var blockPrefab = blockPrefabDictionary[blockFace];
-                Block block = Instantiate(blockPrefab, spawnTransform.position, Quaternion.identity, transform);
-                block.ChangeColor(blockType, false);
+                var index = randomBlock.BlockSchema.Index;
+                if (!_blockPool.ContainsKey(blockFace))
+                {
+                    Debug.LogError($"Block face {blockFace} not found in block pool.");
+                    continue;
+                }
+                var blockToSpawn = _blockPool[blockFace];
+                Block block = Instantiate(blockToSpawn, spawnTransform.position, Quaternion.identity, transform);
+                block.gameObject.SetActive(true);
+                block.ChangeType(blockType, false);
                 block.SpawnIndex = i;
                 block.transform.localScale = Vector3.zero;
                 Vector3 scale = new Vector3(objectScale, objectScale, 1f);
-                block.GenerateSchema();
                 int randomRotation = index * 90;
                 block.transform.eulerAngles = new Vector3(0, 0, randomRotation);
                 _scaleTween = Tween.Scale(block.transform, scale, 0.2f).OnComplete(() => block.Initialize());
