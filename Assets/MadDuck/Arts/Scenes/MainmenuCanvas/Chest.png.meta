@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: 8275bb2b7db071741930618506726da5
+guid: 4efcb4cee098d07418048033bbcdad57
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8631583685087249796
-    second: OkBox_0
-  - first:
-      213: 4276225611683023041
-    second: OkBox_1
+      213: -2296552054835153169
+    second: Group 118_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -103,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: OkBox_0
+      name: Group 118_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 354
-        height: 200
+        width: 116
+        height: 125
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -118,30 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 485cea621ab89c770800000000000000
-      internalID: 8631583685087249796
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: OkBox_1
-      rect:
-        serializedVersion: 2
-        x: 337
-        y: 195
-        width: 8
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 1c84bc39984385b30800000000000000
-      internalID: 4276225611683023041
+      spriteID: fe67b53e2120120e0800000000000000
+      internalID: -2296552054835153169
       vertices: []
       indices: 
       edges: []
@@ -150,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -160,8 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      OkBox_0: 8631583685087249796
-      OkBox_1: 4276225611683023041
+      Group 118_0: -2296552054835153169
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
