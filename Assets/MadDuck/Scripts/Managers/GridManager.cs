@@ -123,7 +123,7 @@ namespace MadDuck.Scripts.Managers
         private void TestFitMe()
         {
             GameManager.Instance.AddScore(ScoreTypes.FitMe);
-            GameManager.Instance.GameDifficulty();
+            GameManager.Instance.NextGameDifficulty();
         }
         [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public float RandomInfectedTime { get; private set; }
         [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> infectedBlocks = new();
@@ -440,7 +440,7 @@ namespace MadDuck.Scripts.Managers
             {
                 _vacantSchema = vacantSchema;
                 GameManager.Instance.AddScore(ScoreTypes.FitMe);
-                GameManager.Instance.GameDifficulty();
+                GameManager.Instance.NextGameDifficulty();
                 RemoveAllBlocks(true);
                 RegenerateGrid();
                 return true;

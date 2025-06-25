@@ -125,8 +125,6 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField, HideIf(nameof(infectionThreshold))] private int maxInfectionCount = 1;
     [TabGroup("Settings", "Infection")]
     public Color32 infectColor = new(255, 0, 0, 255);
-    
-    [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public bool canInfect;
     #endregion
     
     // [Header("Reroll Settings")] 
@@ -142,12 +140,13 @@ public class GameManager : MonoSingleton<GameManager>
     
     [field: Title("Infection Debug")]
     [SerializeField, DisplayAsString] private int difficulty;
+    [SerializeField, Sirenix.OdinInspector.ReadOnly] private int _currentGameDifficultyIndex;
+    [SerializeField, Sirenix.OdinInspector.ReadOnly] private int _currentInfectionCount;
+    [SerializeField, Sirenix.OdinInspector.ReadOnly] private bool canInfect;
     #endregion
     #endregion
 
     #region Fields and Properties
-    [SerializeField, Sirenix.OdinInspector.ReadOnly] private int _currentGameDifficultyIndex;
-    [SerializeField, Sirenix.OdinInspector.ReadOnly] private int _currentInfectionCount;
     private readonly List<float> _listInfectTimePercent = new();
     private int _listInfectIndex;
     private GameState _beforePauseState;
@@ -168,7 +167,7 @@ public class GameManager : MonoSingleton<GameManager>
         gameOverPanel.SetActive(false);
         gameOverText.transform.localScale = Vector3.zero;
         pausePanel.SetActive(false);
-        GameDifficulty();
+        NextGameDifficulty();
         UpdateScoreText(false);
         volumeSlider.gameObject.SetActive(false);
         ActivateScene();
@@ -289,7 +288,10 @@ public class GameManager : MonoSingleton<GameManager>
         _listInfectIndex++;
     }
     
-    public void GameDifficulty()
+    /// <summary>
+    /// Change the game the next difficulty
+    /// </summary>
+    public void NextGameDifficulty()
     {
         if (gameDifficultySettings.Count == 0) return;
         if (_currentGameDifficultyIndex >= gameDifficultySettings.Count) return;
