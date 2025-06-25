@@ -2565,18 +2565,20 @@ MonoBehaviour:
   scorePerCombo: 100
   scorePerBomb: 200
   scorePerFitMe: 10000
-  checkGameDifficulty: 0
+  infectionThreshold: 1
   gameDifficultySettings:
-  - difficulty: 0
-    maxScorePerDifficulty: 500
-    maxInfectionCount: 0
+  - Difficulty: 0
+    MaxScorePerDifficulty: 500
+    MaxInfectionCount: 0
+    FirstInfectTimePercentRange: {x: 0, y: 0}
     <PreInfectTime>k__BackingField: 0
     <InfectionTimeRange>k__BackingField: {x: 0, y: 0}
-  - difficulty: 1
-    maxScorePerDifficulty: 1000
-    maxInfectionCount: 1
+  - Difficulty: 1
+    MaxScorePerDifficulty: 1000
+    MaxInfectionCount: 1
+    FirstInfectTimePercentRange: {x: 1, y: 10}
     <PreInfectTime>k__BackingField: 5
-    <InfectionTimeRange>k__BackingField: {x: 1, y: 5}
+    <InfectionTimeRange>k__BackingField: {x: 2, y: 5}
   usePercentage: 0
   startInfectTimeRange: 10
   firstInfectTimePercentRange: {x: 0.1, y: 0.6}
@@ -2586,9 +2588,14 @@ MonoBehaviour:
   infectColor:
     serializedVersion: 2
     rgba: 4281677109
+  canInfect: 0
   <CurrentGameState>k__BackingField:
     value: 0
   difficulty: 0
+  _currentGameDifficultyIndex: 0
+  _currentInfectionCount: 0
+  _score: 0
+  runningTime: 0
 --- !u!4 &1077234520
 Transform:
   m_ObjectHideFlags: 0

@@ -118,6 +118,13 @@ namespace MadDuck.Scripts.Managers
         private bool drawAllCustomGridCells = true;
 
         [Title("Infected Debug")]
+        
+        [Button("Test Fit-me")]
+        private void TestFitMe()
+        {
+            GameManager.Instance.AddScore(ScoreTypes.FitMe);
+            GameManager.Instance.GameDifficulty();
+        }
         [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public float RandomInfectedTime { get; private set; }
         [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> infectedBlocks = new();
         #endregion
@@ -433,6 +440,7 @@ namespace MadDuck.Scripts.Managers
             {
                 _vacantSchema = vacantSchema;
                 GameManager.Instance.AddScore(ScoreTypes.FitMe);
+                GameManager.Instance.GameDifficulty();
                 RemoveAllBlocks(true);
                 RegenerateGrid();
                 return true;
