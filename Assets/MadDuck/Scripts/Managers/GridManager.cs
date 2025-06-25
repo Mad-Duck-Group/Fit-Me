@@ -420,6 +420,7 @@ namespace MadDuck.Scripts.Managers
             if (!UpdateBlockOnGrid(block))
             {
                 RandomBlockManager.Instance.FreeSpawnPoint(block.SpawnIndex);
+                RandomBlockManager.Instance.ResetSpawnPoint(); //NOTE: Old spawning system
                 RandomBlockManager.Instance.SpawnRandomBlock();
             }
             else

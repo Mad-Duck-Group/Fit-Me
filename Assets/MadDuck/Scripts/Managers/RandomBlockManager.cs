@@ -89,13 +89,13 @@ namespace MadDuck.Scripts.Managers
         /// </summary>
         public void SpawnRandomBlock()
         {
-            if (spawnPoints.Any(x => !x.IsFree)) return;
+            //if (spawnPoints.Any(x => !x.IsFree)) return;
             var blockTypes = Enum.GetValues(typeof(BlockTypes)).Cast<BlockTypes>().ToList();
             var allSchemas = _blockPool
                 .SelectMany(x => x.Value.BlockPreset.BlockSchemas
                     .Select(schema => (BlockFace: x.Key, BlockSchema: schema)));
             var shuffledSchemas = allSchemas.Shuffled().ToList();
-            GridManager.Instance.CreateVacantSchema(out var vacantSchema);
+            /*GridManager.Instance.CreateVacantSchema(out var vacantSchema);
             var firstThreeSchemas = shuffledSchemas
                 .Where(s => ArrayHelper.CanBFitInA(vacantSchema, s.BlockSchema.schema, 
                     out vacantSchema, true))
@@ -104,15 +104,19 @@ namespace MadDuck.Scripts.Managers
             var remainingAmount = maxRandomAmount - firstThreeSchemas.Count;
             if (remainingAmount > 0) 
                 firstThreeSchemas.AddRange(shuffledSchemas.GetRandomElements(remainingAmount));
-            firstThreeSchemas = firstThreeSchemas.Shuffled().ToList();
-            for (int i = 0; i < firstThreeSchemas.Count; i++)
+            var randomSchemas = firstThreeSchemas.Shuffled().ToList();*/
+            //NOTE: Disable smart random for now to test the pure random spawning
+            var randomSchemas = shuffledSchemas
+                .Take(maxRandomAmount)
+                .ToList();
+            for (int i = 0; i < randomSchemas.Count; i++)
             {
                 if (!spawnPoints[i].IsFree)
                 {
                     continue;
                 }
                 Transform spawnTransform = spawnPoints[i].Transform;
-                var randomBlock = firstThreeSchemas[i];
+                var randomBlock = randomSchemas[i];
                 var blockType = blockTypes.GetRandomElement();
                 var blockFace = randomBlock.BlockFace;
                 var index = randomBlock.BlockSchema.Index;
