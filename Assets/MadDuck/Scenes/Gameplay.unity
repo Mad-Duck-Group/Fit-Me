@@ -2558,7 +2558,7 @@ MonoBehaviour:
   gameOverPanel: {fileID: 732374993}
   gameOverText: {fileID: 48437865}
   scoreText: {fileID: 2040727031}
-  gameTimer: 60
+  gameTimer: 600
   bombTimeBonus: 10
   countOffTime: 0
   scorePerPlacement: 100
@@ -2588,12 +2588,12 @@ MonoBehaviour:
   infectColor:
     serializedVersion: 2
     rgba: 4281677109
-  canInfect: 0
   <CurrentGameState>k__BackingField:
     value: 0
   difficulty: 0
   _currentGameDifficultyIndex: 0
   _currentInfectionCount: 0
+  canInfect: 0
   _score: 0
   runningTime: 0
 --- !u!4 &1077234520
@@ -2688,6 +2688,8 @@ MonoBehaviour:
     <IsFree>k__BackingField: 0
     <CurrentBlock>k__BackingField: {fileID: 0}
   maxRandomAmount: 3
+  smartRandom: 1
+  smartRandomThreshold: 6
   objectScale: 0.3
 --- !u!1 &1094725370
 GameObject:
@@ -4796,6 +4798,7 @@ MonoBehaviour:
   <BlocksOnGrid>k__BackingField: []
   drawAllCustomGridCells: 1
   <RandomInfectedTime>k__BackingField: 0
+  preInfectBlocks: []
   infectedBlocks: []
   serializationData:
     SerializedFormat: 2

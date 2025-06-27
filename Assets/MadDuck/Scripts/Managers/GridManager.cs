@@ -118,8 +118,6 @@ namespace MadDuck.Scripts.Managers
         private bool drawAllCustomGridCells = true;
 
         [Title("Infected Debug")]
-        private List<Block> preInfectBlocks = new();
-        
         [Button("Test Fit-me")]
         private void TestFitMe()
         {
@@ -127,6 +125,7 @@ namespace MadDuck.Scripts.Managers
             GameManager.Instance.NextGameDifficulty();
         }
         [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public float RandomInfectedTime { get; private set; }
+        [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> preInfectBlocks = new();
         [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> infectedBlocks = new();
         #endregion
 
@@ -438,7 +437,7 @@ namespace MadDuck.Scripts.Managers
         /// <returns>true if Fit Me, false otherwise</returns>
         public bool UpdateBlockOnGrid(Block block)
         {
-            if (!CreateVacantSchema(out var vacantSchema)) //Fit Me!
+            if (!CreateVacantSchema(out var vacantSchema, out _)) //Fit Me!
             {
                 _vacantSchema = vacantSchema;
                 GameManager.Instance.AddScore(ScoreTypes.FitMe);
@@ -473,6 +472,8 @@ namespace MadDuck.Scripts.Managers
             }
             DisinfectBlock(block);
             BlocksOnGrid.Remove(block);
+            infectedBlocks.Remove(block);
+            preInfectBlocks.Remove(block);
             if (destroy)
             {
                 Destroy(block.gameObject);
@@ -538,8 +539,9 @@ namespace MadDuck.Scripts.Managers
         /// Create a schema of the vacant cells, 1 is vacant, 0 is occupied
         /// </summary>
         /// <returns>true if there are vacant cells, false otherwise</returns>
-        public bool CreateVacantSchema(out int[,] vacantSchema)
+        public bool CreateVacantSchema(out int[,] vacantSchema, out int vacantCount)
         {
+            vacantCount = 0;
             var row = currentGridSize.y;
             var column = currentGridSize.x;
             vacantSchema = new int[row, column];
@@ -552,6 +554,7 @@ namespace MadDuck.Scripts.Managers
                     if (!cell) continue;
                     if (cell.CurrentAtom) continue;
                     vacantSchema[x, y] = 1;
+                    vacantCount++;
                     isVacant = true;
                 }
             }
@@ -567,7 +570,7 @@ namespace MadDuck.Scripts.Managers
         /// <returns>true if the block can be placed, false otherwise</returns>
         public bool CheckAvailableBlock(List<Block> blockToCheck, out List<Block> availableBlocks)
         {
-            CreateVacantSchema(out var vacantSchema);
+            CreateVacantSchema(out var vacantSchema, out _);
             _vacantSchema = vacantSchema;
             availableBlocks = new List<Block>();
             foreach (var block in blockToCheck)

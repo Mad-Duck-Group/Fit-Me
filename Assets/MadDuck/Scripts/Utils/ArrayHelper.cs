@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using MadDuck.Scripts.Units;
 using UnityEngine;
 
 namespace MadDuck.Scripts.Utils
@@ -36,7 +38,7 @@ namespace MadDuck.Scripts.Utils
 
             return rotatedArray;
         }
-    
+
         public static int[,] Rotate180(int[,] array)
         {
             int rows = array.GetLength(0);
@@ -73,7 +75,7 @@ namespace MadDuck.Scripts.Utils
 
             return rotatedArray;
         }
-    
+
         public static bool CanBFitInA(int[,] a, int[,] b, out int[,] placedArray, bool simulatePlacement = false)
         {
             int rowsA = a.GetLength(0);
@@ -139,6 +141,22 @@ namespace MadDuck.Scripts.Utils
             }
             placedArray = simulatePlacement ? tempPlacedArray : a; // If not simulating, return original array
             return true;
+        }
+
+        public static int CountMember(this int[,] array, Func<int, bool> predicate)
+        {
+            int count = 0;
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                for (int j = 0; j < array.GetLength(1); j++)
+                {
+                    if (predicate(array[i, j]))
+                    {
+                        count++;
+                    }
+                }
+            }
+            return count;
         }
 
         public static void ResizeArrayKeepMembers(ref int[,] array, Vector2Int newSize)

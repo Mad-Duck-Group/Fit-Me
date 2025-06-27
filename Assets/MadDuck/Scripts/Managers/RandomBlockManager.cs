@@ -9,6 +9,7 @@ using PrimeTween;
 using Redcode.Extensions;
 using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
+using Unity.VisualScripting;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -42,6 +43,8 @@ namespace MadDuck.Scripts.Managers
 
         [Title("Random Settings")]
         [SerializeField] private int maxRandomAmount = 3;
+        [SerializeField] private bool smartRandom = true;
+        [SerializeField, ShowIf(nameof(smartRandom)), MinValue(1)] private int smartRandomThreshold = 6;
         [SerializeField] private float objectScale = 0.5f;
         #endregion
         
@@ -95,20 +98,35 @@ namespace MadDuck.Scripts.Managers
                 .SelectMany(x => x.Value.BlockPreset.BlockSchemas
                     .Select(schema => (BlockFace: x.Key, BlockSchema: schema)));
             var shuffledSchemas = allSchemas.Shuffled().ToList();
-            /*GridManager.Instance.CreateVacantSchema(out var vacantSchema);
-            var firstThreeSchemas = shuffledSchemas
-                .Where(s => ArrayHelper.CanBFitInA(vacantSchema, s.BlockSchema.schema, 
-                    out vacantSchema, true))
-                .Take(maxRandomAmount)
-                .ToList();
-            var remainingAmount = maxRandomAmount - firstThreeSchemas.Count;
-            if (remainingAmount > 0) 
-                firstThreeSchemas.AddRange(shuffledSchemas.GetRandomElements(remainingAmount));
-            var randomSchemas = firstThreeSchemas.Shuffled().ToList();*/
-            //NOTE: Disable smart random for now to test the pure random spawning
-            var randomSchemas = shuffledSchemas
-                .Take(maxRandomAmount)
-                .ToList();
+            List<(string BlockFace, BlockSchema BlockSchema)> randomSchemas;
+            GridManager.Instance.CreateVacantSchema(out var vacantSchema,out var vacantCount);
+            if (smartRandom && vacantCount <= smartRandomThreshold)
+            {
+                /*var bestFitSchemas = shuffledSchemas
+                    .Where(s => ArrayHelper.CanBFitInA(vacantSchema, s.BlockSchema.schema, 
+                        out vacantSchema, true))
+                    .Take(maxRandomAmount)
+                    .ToList();*/
+                var bestFits = FindBestFit(vacantSchema, shuffledSchemas)
+                    .OrderBy(x => x.VacantCount)
+                    .ThenBy(x => x.SchemaList.Count)
+                    .ToList();
+                var bestFitSchemas = bestFits
+                    .SelectMany(x => x.SchemaList)
+                    .Take(maxRandomAmount)
+                    .ToList();
+                var remainingAmount = maxRandomAmount - bestFitSchemas.Count;
+                if (remainingAmount > 0) 
+                    bestFitSchemas.AddRange(shuffledSchemas.GetRandomElements(remainingAmount));
+                randomSchemas = bestFitSchemas.ToList();
+            }
+            else
+            {
+                randomSchemas = shuffledSchemas
+                    .Take(maxRandomAmount)
+                    .ToList();
+            }
+
             for (int i = 0; i < randomSchemas.Count; i++)
             {
                 if (!spawnPoints[i].IsFree)
@@ -138,6 +156,36 @@ namespace MadDuck.Scripts.Managers
                 spawnPoints[i].IsFree = false;
                 spawnPoints[i].CurrentBlock = block;
             }
+        }
+
+        /// <summary>
+        /// Returns the best fit for the vacant schema from the list of schemas to check. UNSORTED.
+        /// </summary>
+        /// <param name="vacantSchema"></param>
+        /// <param name="schemasToCheck"></param>
+        /// <param name="previouslyTraversed"></param>
+        /// <returns></returns>
+        private static List<(int VacantCount, List<(string BlockFace, BlockSchema BlockSchema)> SchemaList)> FindBestFit(int[,] vacantSchema,
+            List<(string BlockFace, BlockSchema BlockSchema)> schemasToCheck,
+            List<(string BlockFace, BlockSchema BlockSchema)> previouslyTraversed = null)
+        {
+            List<(int, List<(string BlockFace, BlockSchema BlockSchema)>)> unsorted = new();
+            foreach (var schema in schemasToCheck)
+            {
+                var traversed = new List<(string BlockFace, BlockSchema BlockSchema)>();
+                if (previouslyTraversed != null)
+                {
+                    traversed.AddRange(previouslyTraversed);
+                }
+                if (!ArrayHelper.CanBFitInA(vacantSchema, schema.BlockSchema.schema, out var placedArray, true))
+                    continue;
+                traversed.Add(schema);
+                var bestFits = FindBestFit(placedArray, schemasToCheck, traversed);
+                unsorted.AddRange(bestFits);
+            }
+            if (previouslyTraversed != null && unsorted.Count == 0) 
+                unsorted.Add((vacantSchema.CountMember(x => x == 1), previouslyTraversed));
+            return unsorted;
         }
         #endregion
         

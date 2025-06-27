@@ -72,7 +72,7 @@ namespace MadDuck.Scripts.Units
         public void GenerateSchema()
         {
             BlockSchemas.Clear();
-            var originalBlockSchema = new BlockSchema(BlockSchema.schema.Clone() as int[,], 0);
+            var originalBlockSchema = BlockSchema;
             BlockSchemas.Add(new BlockSchema(originalBlockSchema.schema, 0));
             BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate270(originalBlockSchema.schema), 1));
             BlockSchemas.Add(new BlockSchema(ArrayHelper.Rotate180(originalBlockSchema.schema), 2));
