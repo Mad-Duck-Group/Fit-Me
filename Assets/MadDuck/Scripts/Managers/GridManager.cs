@@ -119,6 +119,7 @@ namespace MadDuck.Scripts.Managers
 
         [Title("Infected Debug")]
         private List<Block> preInfectBlocks = new();
+        private int totalInfected;
         
         [Button("Test Fit-me")]
         private void TestFitMe()
@@ -615,12 +616,21 @@ namespace MadDuck.Scripts.Managers
         
         #region Infection
         
-        public void StopPreInfectFlash()
+        public void StopAllPreInfectFlash()
         {
             foreach (var block in preInfectBlocks)
             {
                 block.StopAllFlash();
             }
+        }
+
+        /// <summary>
+        /// Limit infect
+        /// </summary>
+        private bool Limiter()
+        {
+            totalInfected = infectedBlocks.Count + preInfectBlocks.Count;
+            return totalInfected >= GameManager.Instance.MaxInfectionCount;
         }
 
         public void InfectBlock(Block block)
@@ -639,21 +649,29 @@ namespace MadDuck.Scripts.Managers
             block.Disinfect();
             OnBlockDisinfected?.Invoke(block);
             infectedBlocks.Remove(block);
+            GameManager.Instance.ProtectedState();
             if (updateGrid) UpdateBlockOnGrid(block);
         }
         
-        public async UniTask InfectRandomBlock()
+        public void InfectRandomBlock()
         {
+            if (Limiter()) return;
+            
             if (BlocksOnGrid.Count == 0) return;
             Block block = BlocksOnGrid.GetRandomElement();
 
-            if (block.BlockState != BlockState.Normal) return;
+            if (block.BlockState != BlockState.Normal)
+            {
+                InfectRandomBlock();
+                return;
+            }
             block.PreInfect().Forget();
             preInfectBlocks.Add(block);
         }
 
         public void InfectAdjacentBlocks(Block sourceBlock)
         {
+            if (Limiter()) return;
             if (!sourceBlock || sourceBlock.BlockState is not (BlockState.Infected or BlockState.PreInfected)) return;
 
             var candidatesForInfection = new List<Block>();
@@ -685,7 +703,7 @@ namespace MadDuck.Scripts.Managers
                     }
                 }
             }
-
+            
             if (candidatesForInfection.Count > 0)
             {
                 var blockToInfect = candidatesForInfection.GetRandomElement(); 
