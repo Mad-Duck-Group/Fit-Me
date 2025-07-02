@@ -259,7 +259,14 @@ public class GameManager : MonoSingleton<GameManager>
         }
     }
     */
-    
+
+    private void InfectTimeSystem()
+    {
+        if (GridManager.Instance.BlocksOnGrid.Count <= 0) 
+            runningTime = 0;
+        
+        runningTime += Time.deltaTime;
+    }
     
     /// <summary>
     /// Update the infected timer
@@ -267,7 +274,7 @@ public class GameManager : MonoSingleton<GameManager>
     private void UpdateSafeInfectedTimer()
     {
         if (CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
-        runningTime += Time.deltaTime;
+        InfectTimeSystem();
         //var elapsedTime = gameTimer - _currentGameTimer;
 
         if (infectionThreshold)
@@ -296,6 +303,8 @@ public class GameManager : MonoSingleton<GameManager>
         _currentInfectionCount++;
         _listInfectIndex++;
     }
+    
+    
     
     /// <summary>
     /// เอาไว้กันไม่ให้ติดเชื้อทันทีหลังจากใช้ไอเทม
