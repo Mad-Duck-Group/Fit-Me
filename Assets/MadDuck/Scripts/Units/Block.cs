@@ -55,6 +55,7 @@ namespace MadDuck.Scripts.Units
         [SerializeField] private SpriteResolver spriteResolver;
 
         [Title("Block Settings")]
+        [SerializeField] private bool useAtomSprite;
         [SerializeField] private Color originalColor = Color.white;
         [SerializeField] private float pickUpScaleMultiplier = 1.2f;
         [field: SerializeField] public bool AllowPickUpAfterPlacement { get; private set; }
@@ -156,7 +157,14 @@ namespace MadDuck.Scripts.Units
             // var spritePositionX = -column / 2f + 0.5f;
             // var spritePositionY = row / 2f - 0.5f;
             // spriteRenderer.transform.localPosition = new Vector3(spritePositionX, spritePositionY, 0);
-            //spriteRenderer.gameObject.SetActive(false); //NOTE: Disable sprite renderer for now until the sprite asset is fixed
+            if (useAtomSprite)
+            {
+                spriteRenderer.enabled = false;
+            }
+            else
+            {
+                Atoms.ForEach(a => a.SpriteRenderer.enabled = false);
+            }
             BlockPreset.GenerateSchema();
             
             bool HasElement(int x, int y)
@@ -190,7 +198,6 @@ namespace MadDuck.Scripts.Units
         
         public void Disinfect()
         {
-            spriteRenderer.color = originalColor; //NOTE: Disable for now, until the sprite asset is fixed
             SetColor(originalColor);
             BlockState = BlockState.Normal;
             _infectionSubscription?.Dispose();
@@ -268,15 +275,17 @@ namespace MadDuck.Scripts.Units
         public void ChangeType(BlockTypes type, bool updateGrid = true)
         {
             BlockType = type;
-            //NOTE: Disable sprite resolver for now until the sprite asset is fixed
-            if (!RandomBlockManager.Instance.SpriteLibraryAssets.TryGetValue(type, out var spriteAsset))
+            if (!useAtomSprite)
             {
-                Debug.LogError($"Sprite asset for block type {type} not found.");
-                return;
+                if (!RandomBlockManager.Instance.SpriteLibraryAssets.TryGetValue(type, out var spriteAsset))
+                {
+                    Debug.LogError($"Sprite asset for block type {type} not found.");
+                    return;
+                }
+                spriteResolver.spriteLibrary.spriteLibraryAsset = spriteAsset;
+                spriteResolver.SetCategoryAndLabel("Face", BlockFace);
+                spriteResolver.ResolveSpriteToSpriteRenderer();
             }
-            spriteResolver.spriteLibrary.spriteLibraryAsset = spriteAsset;
-            spriteResolver.SetCategoryAndLabel("Face", BlockFace);
-            spriteResolver.ResolveSpriteToSpriteRenderer();
             if (!RandomBlockManager.Instance.AtomColorDictionary.TryGetValue(type, out var color))
             {
                 Debug.LogError($"Color for block type {type} not found.");
@@ -297,11 +306,6 @@ namespace MadDuck.Scripts.Units
                     
                     if (_preInfectTween.isAlive)
                     { _preInfectTween.Complete(); }
-                    
-                    /*
-                    _flashTween = Tween.Color(spriteRenderer, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);*/ 
-                    //NOTE: Disable for now, until the sprite asset is fixed
-                    spriteRenderer.color = originalColor;
                     SetColor(originalColor);
                     _flashTween = Tween.Custom(originalColor, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo,
                         onValueChange: SetColor);
@@ -310,11 +314,6 @@ namespace MadDuck.Scripts.Units
                 case FlashState.PreInfectFlash:
                     if (BlockState != BlockState.PreInfected) return;
                     if(_preInfectTween.isAlive) return;
-                    
-                    /*
-                    _preInfectTween = Tween.Color(spriteRenderer, _infectColor, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo);*/
-                    //NOTE: Disable for now, until the sprite asset is fixed
-                    spriteRenderer.color = originalColor;
                     SetColor(originalColor);
                     _preInfectTween = Tween.Custom(originalColor, _infectColor, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo,
                         onValueChange: SetColor);
@@ -335,7 +334,6 @@ namespace MadDuck.Scripts.Units
             {
                 _flashTween.Complete();
                 _flashTween = default;
-                spriteRenderer.color = originalColor; //NOTE: Disable for now, until the sprite asset is fixed
                 SetColor(originalColor);
             }
 
@@ -367,7 +365,6 @@ namespace MadDuck.Scripts.Units
                 
                 case BlockState.Infected:
                     flashState = FlashState.None;
-                    spriteRenderer.color = _infectColor; //NOTE: Disable for now, until the sprite asset is fixed
                     SetColor(_infectColor);
                     break;
             }
@@ -424,7 +421,11 @@ namespace MadDuck.Scripts.Units
 
         public void SetColor(Color color)
         {
-            //Atoms.ForEach(atom => atom.SpriteRenderer.color = color);
+            if (useAtomSprite)
+            {
+                Atoms.ForEach(atom => atom.SpriteRenderer.color = color);
+                return;
+            }
             spriteRenderer.color = color;
         }
         #endregion
