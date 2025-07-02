@@ -2640,10 +2640,10 @@ MonoBehaviour:
   <SpriteLibraryAssets>k__BackingField:
     keys: 00000000010000000200000003000000
     values:
-    - {fileID: 7108339969198208228, guid: 7ed210c84d4cb69438fb68ab1651b54f, type: 3}
-    - {fileID: 7108339969198208228, guid: d735eb892d4707747ba705279d277b27, type: 3}
-    - {fileID: 7108339969198208228, guid: 1ec90d31a2f16d94d8f47e6e94019df6, type: 3}
-    - {fileID: 7108339969198208228, guid: 77f23642d724cd841ae0bf68fbf4a5f1, type: 3}
+    - {fileID: 7108339969198208228, guid: d04ed54898238d441966e17d6ecd5139, type: 3}
+    - {fileID: 7108339969198208228, guid: d04ed54898238d441966e17d6ecd5139, type: 3}
+    - {fileID: 7108339969198208228, guid: d04ed54898238d441966e17d6ecd5139, type: 3}
+    - {fileID: 7108339969198208228, guid: d04ed54898238d441966e17d6ecd5139, type: 3}
   <AtomColorDictionary>k__BackingField:
     keys: 00000000010000000200000003000000
     values:
@@ -2662,9 +2662,6 @@ MonoBehaviour:
     - S
     - SMirror
     - 2x2
-    - X
-    - SmallL
-    - SmallSlash
     values:
     - {fileID: 11400000, guid: 6fcf449b41e211b46ad57b74424caf7e, type: 2}
     - {fileID: 11400000, guid: b86b3d2ed40ba784f9c03f029ea303e7, type: 2}
@@ -2674,9 +2671,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 4e664ecc81b61674bb851301da8106c3, type: 2}
     - {fileID: 11400000, guid: 26f172e86e4345c449922778aec60579, type: 2}
     - {fileID: 11400000, guid: 621724dee829e5b47814ebef21f528f0, type: 2}
-    - {fileID: 11400000, guid: ff7a2031f339f374db0a6fc37fd5d436, type: 2}
-    - {fileID: 11400000, guid: 4b2df45ee9fb0ce40b00cda3fb8d585f, type: 2}
-    - {fileID: 11400000, guid: 7c3db559533d10943950f7a4be1e3f73, type: 2}
   spawnPoints:
   - <Transform>k__BackingField: {fileID: 1824884509}
     <IsFree>k__BackingField: 0
@@ -4782,19 +4776,19 @@ MonoBehaviour:
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
   gridPresets:
   - {fileID: 11400000, guid: 0c9addcad39fb2e47a6304f9760f97ab, type: 2}
-  endlessType: 3
-  generatedGridType: 3
-  randomGridXRange: {x: 6, y: 6}
-  randomGridYRange: {x: 8, y: 8}
+  endlessType: 2
+  generatedGridType: 1
+  randomGridXRange: {x: 8, y: 8}
+  randomGridYRange: {x: 10, y: 10}
   bridgeWidthRange: {x: 2, y: 3}
   gridHorizontalOffsetType: 0
   customOffsetX: 0
   gridVerticalOffsetType: 1
-  customOffsetY: 8
+  customOffsetY: 12
   destroyThreshold: 3
   currentGridPreset: {fileID: 11400000, guid: 0c9addcad39fb2e47a6304f9760f97ab, type: 2}
   currentGridSize: {x: 6, y: 8}
-  currentOffset: {x: -3, y: 8}
+  currentOffset: {x: -3, y: 12}
   <BlocksOnGrid>k__BackingField: []
   drawAllCustomGridCells: 1
   <RandomInfectedTime>k__BackingField: 0
@@ -4862,7 +4856,7 @@ Grid:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2127847346}
   m_Enabled: 1
-  m_CellSize: {x: 0.5, y: 0.5, z: 1}
+  m_CellSize: {x: 0.35, y: 0.35, z: 1}
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
