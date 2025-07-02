@@ -142,15 +142,18 @@ namespace MadDuck.Scripts.Units
                     Vector3 spawnPosition = new Vector3(spawnPosX, spawnPosY, 0);
                     var atom = Instantiate(atomPrefab, spawnPosition, Quaternion.identity, atomParent);
                     atom.ParentBlock = this;
-                    var hasTop = HasElement(x - 1, y);
-                    var hasBottom = HasElement(x + 1, y);
-                    var hasLeft = HasElement(x, y - 1);
-                    var hasRight = HasElement(x, y + 1);
-                    atom.SpriteOutlineController.outlineTop = !hasTop;
-                    atom.SpriteOutlineController.outlineBottom = !hasBottom;
-                    atom.SpriteOutlineController.outlineLeft = !hasLeft;
-                    atom.SpriteOutlineController.outlineRight = !hasRight;
-                    atom.SpriteOutlineController.UpdateOutline();
+                    if (useAtomSprite)
+                    {
+                        var hasTop = HasElement(x - 1, y);
+                        var hasBottom = HasElement(x + 1, y);
+                        var hasLeft = HasElement(x, y - 1);
+                        var hasRight = HasElement(x, y + 1);
+                        atom.SpriteOutlineController.outlineTop = !hasTop;
+                        atom.SpriteOutlineController.outlineBottom = !hasBottom;
+                        atom.SpriteOutlineController.outlineLeft = !hasLeft;
+                        atom.SpriteOutlineController.outlineRight = !hasRight;
+                        atom.SpriteOutlineController.UpdateOutline();
+                    }
                     Atoms.Add(atom);
                 }
             }
