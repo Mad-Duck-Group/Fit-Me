@@ -218,11 +218,19 @@ public class GameManager : MonoSingleton<GameManager>
     private void OnEnable()
     {
         GridManager.OnBlockDestroyed += OnBlockDestroyed;
+        GridManager.OnBlockInfected += OnBlockInfection;
     }
 
     private void OnDisable()
     {
         GridManager.OnBlockDestroyed -= OnBlockDestroyed;
+        GridManager.OnBlockInfected -= OnBlockInfection;
+    }
+
+    private void OnBlockInfection(Block block)
+    {
+        if (!aboutToInfectBlocks.Contains(block)) return;
+        aboutToInfectBlocks.Remove(block);
     }
 
     private void OnBlockDestroyed(Block block)
