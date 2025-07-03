@@ -2558,7 +2558,6 @@ MonoBehaviour:
   gameOverPanel: {fileID: 732374993}
   gameOverText: {fileID: 48437865}
   scoreText: {fileID: 2040727031}
-  gameTimer: 600
   bombTimeBonus: 10
   countOffTime: 0
   scorePerPlacement: 100
@@ -2569,13 +2568,15 @@ MonoBehaviour:
   gameDifficultySettings:
   - Difficulty: 0
     MaxScorePerDifficulty: 500
+    StartInfectionCount: 0
     MaxInfectionCount: 0
     FirstInfectTimePercentRange: {x: 0, y: 0}
     <PreInfectTime>k__BackingField: 0
     <InfectionTimeRange>k__BackingField: {x: 0, y: 0}
   - Difficulty: 1
     MaxScorePerDifficulty: 1000
-    MaxInfectionCount: 1
+    StartInfectionCount: 1
+    MaxInfectionCount: 5
     FirstInfectTimePercentRange: {x: 1, y: 10}
     <PreInfectTime>k__BackingField: 5
     <InfectionTimeRange>k__BackingField: {x: 2, y: 5}
@@ -2584,7 +2585,8 @@ MonoBehaviour:
   firstInfectTimePercentRange: {x: 0.1, y: 0.6}
   <PreInfectTime>k__BackingField: 4
   <InfectionTimeRange>k__BackingField: {x: 3, y: 10}
-  maxInfectionCount: 1
+  startInfectionCount: 1
+  MaxInfectionCount: 10
   infectColor:
     serializedVersion: 2
     rgba: 4281677109

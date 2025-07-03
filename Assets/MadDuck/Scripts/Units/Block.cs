@@ -25,7 +25,8 @@ namespace MadDuck.Scripts.Units
     {
         Normal,
         PreInfected,
-        Infected
+        Infected,
+        Protected
     }
     
     public enum FlashState
@@ -85,6 +86,7 @@ namespace MadDuck.Scripts.Units
         private Tween _preInfectTween;
         private bool _isDragging;
         private IDisposable _infectionSubscription;
+        private float _protectedTime;
         #endregion
 
         #region Initialization
@@ -180,6 +182,20 @@ namespace MadDuck.Scripts.Units
         #endregion
 
         #region Infection
+
+        /// <summary>
+        /// Change state of the block to Protected state.
+        /// In a Protected state, the block cannot be PreInfect and Infect.
+        /// </summary>
+        public async UniTask Protected()
+        {
+            BlockState = BlockState.Protected;
+            
+            await UniTask.WaitForSeconds(_protectedTime,
+                cancellationToken: destroyCancellationToken);
+            BlockState = BlockState.Normal;
+        }
+        
         public async UniTask PreInfect()
         {
             BlockState = BlockState.PreInfected;
