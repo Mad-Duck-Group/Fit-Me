@@ -118,7 +118,6 @@ namespace MadDuck.Scripts.Managers
         private bool drawAllCustomGridCells = true;
 
         [Title("Infected Debug")]
-        private List<Block> preInfectBlocks = new();
         private int totalInfected;
         
         [Button("Test Fit-me")]
@@ -630,9 +629,10 @@ namespace MadDuck.Scripts.Managers
         }
 
         /// <summary>
-        /// Limit infect
+        /// Check if more blocks can be infected
         /// </summary>
-        private bool Limiter()
+        /// <returns>>true if more blocks can be infected, false otherwise</returns>
+        private bool CanInfectMore()
         {
             totalInfected = infectedBlocks.Count + preInfectBlocks.Count;
             return totalInfected >= GameManager.Instance.MaxInfectionCount;
@@ -654,13 +654,13 @@ namespace MadDuck.Scripts.Managers
             block.Disinfect();
             OnBlockDisinfected?.Invoke(block);
             infectedBlocks.Remove(block);
-            GameManager.Instance.ProtectedState();
+            //GameManager.Instance.ProtectedState();
             if (updateGrid) UpdateBlockOnGrid(block);
         }
         
         public void InfectRandomBlock()
         {
-            if (Limiter()) return;
+            if (CanInfectMore()) return;
             
             if (BlocksOnGrid.Count == 0) return;
             Block block = BlocksOnGrid.GetRandomElement();
@@ -676,7 +676,7 @@ namespace MadDuck.Scripts.Managers
 
         public void InfectAdjacentBlocks(Block sourceBlock)
         {
-            if (Limiter()) return;
+            if (CanInfectMore()) return;
             if (!sourceBlock || sourceBlock.BlockState is not (BlockState.Infected or BlockState.PreInfected)) return;
 
             var candidatesForInfection = new List<Block>();
