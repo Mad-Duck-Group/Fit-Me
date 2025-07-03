@@ -639,7 +639,7 @@ namespace MadDuck.Scripts.Managers
         private bool CanInfectMore()
         {
             totalInfected = infectedBlocks.Count + preInfectBlocks.Count;
-            return totalInfected >= GameManager.Instance.MaxInfectionCount;
+            return totalInfected < GameManager.Instance.MaxInfectionCount;
         }
 
         public void InfectBlock(Block block)
@@ -662,25 +662,21 @@ namespace MadDuck.Scripts.Managers
             if (updateGrid) UpdateBlockOnGrid(block);
         }
         
-        public void InfectRandomBlock()
+        public bool InfectRandomBlock()
         {
-            if (CanInfectMore()) return;
-            
-            if (BlocksOnGrid.Count == 0) return;
-            Block block = BlocksOnGrid.GetRandomElement();
-
-            if (block.BlockState != BlockState.Normal)
-            {
-                InfectRandomBlock();
-                return;
-            }
+            if (!CanInfectMore()) return false;
+            if (BlocksOnGrid.Count == 0) return false;
+            var infectableBlocks = BlocksOnGrid.Where(block => block.BlockState == BlockState.Normal).ToList();
+            if (infectableBlocks.Count == 0) return false;
+            var block = infectableBlocks.GetRandomElement();
             block.PreInfect().Forget();
             preInfectBlocks.Add(block);
+            return true;
         }
 
         public void InfectAdjacentBlocks(Block sourceBlock)
         {
-            if (CanInfectMore()) return;
+            if (!CanInfectMore()) return;
             if (!sourceBlock || sourceBlock.BlockState is not (BlockState.Infected or BlockState.PreInfected)) return;
 
             var candidatesForInfection = new List<Block>();

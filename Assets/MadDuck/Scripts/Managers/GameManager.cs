@@ -132,6 +132,7 @@ public class GameManager : MonoSingleton<GameManager>
     
     [field: Title("Infection Debug")]
     [SerializeField, DisplayAsString] private int difficultyIndex;
+
     [SerializeField, Sirenix.OdinInspector.ReadOnly] private int currentInfectionCount;
     [SerializeField, Sirenix.OdinInspector.ReadOnly] private bool canInfect;
     [SerializeField, Sirenix.OdinInspector.ReadOnly] private float runningTime;
@@ -139,7 +140,7 @@ public class GameManager : MonoSingleton<GameManager>
     #endregion
 
     #region Fields and Properties
-    private readonly List<float> _listInfectTimePercent = new();
+    private readonly List<float> _listInfectTime = new();
     private int _listInfectIndex;
     private GameState _beforePauseState;
     private bool _sceneActivated;
@@ -265,8 +266,8 @@ public class GameManager : MonoSingleton<GameManager>
         if (infectionThreshold)
         {
             if (!canInfect) return;
-            if (_listInfectIndex < 0 || _listInfectIndex >= _listInfectTimePercent.Count) return;
-            if (runningTime < _listInfectTimePercent[_listInfectIndex]) return;
+            if (_listInfectIndex < 0 || _listInfectIndex >= _listInfectTime.Count) return;
+            if (runningTime < _listInfectTime[_listInfectIndex]) return;
         }
         else
         {
@@ -276,15 +277,15 @@ public class GameManager : MonoSingleton<GameManager>
             }
             else
             {
-                if (_listInfectIndex < 0 || _listInfectIndex >= _listInfectTimePercent.Count) return;
-                if (runningTime < _listInfectTimePercent[_listInfectIndex]) return;
+                if (_listInfectIndex < 0 || _listInfectIndex >= _listInfectTime.Count) return;
+                if (runningTime < _listInfectTime[_listInfectIndex]) return;
             }
         }
 
         if (startInfectionCount == 0 || currentInfectionCount >= startInfectionCount) return;
 
         Debug.Log("Have Infect");
-        GridManager.Instance.InfectRandomBlock();
+        if (!GridManager.Instance.InfectRandomBlock()) return;
         currentInfectionCount++;
         _listInfectIndex++;
     }
@@ -310,8 +311,6 @@ public class GameManager : MonoSingleton<GameManager>
     public void NextGameDifficulty()
     {
         if (gameDifficultySettings.Count == 0) return;
-        if (difficultyIndex >= gameDifficultySettings.Count) return;
-        
         if (score >= gameDifficultySettings[difficultyIndex].MaxScorePerDifficulty)
         {
             difficultyIndex++;
@@ -398,13 +397,13 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void CalculateInfectTime()
     {
-        _listInfectTimePercent.Clear();
+        _listInfectTime.Clear();
         switch (infectionThreshold)
         {
             case true:
                 for (int i = currentInfectionCount; i < startInfectionCount; i++)
                 {
-                    _listInfectTimePercent.Add(Random.Range(
+                    _listInfectTime.Add(Random.Range(
                         gameDifficultySettings[difficultyIndex].FirstInfectTimeRange.x, 
                         gameDifficultySettings[difficultyIndex].FirstInfectTimeRange.y));
                 }
@@ -413,11 +412,11 @@ public class GameManager : MonoSingleton<GameManager>
             case false:
                 for (int i = currentInfectionCount; i < startInfectionCount; i++)
                 {
-                    _listInfectTimePercent.Add(Random.Range(firstInfectTimePercentRange.x, firstInfectTimePercentRange.y));
+                    _listInfectTime.Add(Random.Range(firstInfectTimePercentRange.x, firstInfectTimePercentRange.y));
                 }
                 break;
         }
-        _listInfectTimePercent.Sort();
+        _listInfectTime.Sort();
     }
     
     
