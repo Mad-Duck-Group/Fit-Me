@@ -2694,22 +2694,27 @@ MonoBehaviour:
   scoreText: {fileID: 2040727031}
   bombTimeBonus: 10
   countOffTime: 0
-  scorePerPlacement: 100
+  scorePerPlacement: 20
   scorePerCombo: 100
   scorePerBomb: 200
-  scorePerFitMe: 10000
+  scorePerFitMe: 5000
   infectionThreshold: 1
   gameDifficultySettings:
-  - <MaxScorePerDifficulty>k__BackingField: 500
+  - <MaxScorePerDifficulty>k__BackingField: 1
     <InfectionCountRange>k__BackingField: {x: 0, y: 0}
     <InfectionTimeRange>k__BackingField: {x: 0, y: 0}
     <FirstInfectTimeRange>k__BackingField: {x: 0, y: 0}
     <PreInfectTime>k__BackingField: 0
-  - <MaxScorePerDifficulty>k__BackingField: 1000
-    <InfectionCountRange>k__BackingField: {x: 2, y: 10}
-    <InfectionTimeRange>k__BackingField: {x: 2, y: 5}
-    <FirstInfectTimeRange>k__BackingField: {x: 1, y: 10}
-    <PreInfectTime>k__BackingField: 5
+  - <MaxScorePerDifficulty>k__BackingField: 5000
+    <InfectionCountRange>k__BackingField: {x: 1, y: 3}
+    <InfectionTimeRange>k__BackingField: {x: 12, y: 12}
+    <FirstInfectTimeRange>k__BackingField: {x: 12, y: 12}
+    <PreInfectTime>k__BackingField: 7
+  - <MaxScorePerDifficulty>k__BackingField: 10000
+    <InfectionCountRange>k__BackingField: {x: 1, y: 6}
+    <InfectionTimeRange>k__BackingField: {x: 12, y: 12}
+    <FirstInfectTimeRange>k__BackingField: {x: 12, y: 12}
+    <PreInfectTime>k__BackingField: 7
   usePercentage: 0
   startInfectTimeRange: 10
   firstInfectTimePercentRange: {x: 0.1, y: 0.6}
@@ -2792,6 +2797,7 @@ MonoBehaviour:
     - S
     - SMirror
     - 2x2
+    - I1
     values:
     - {fileID: 11400000, guid: 6fcf449b41e211b46ad57b74424caf7e, type: 2}
     - {fileID: 11400000, guid: b86b3d2ed40ba784f9c03f029ea303e7, type: 2}
@@ -2801,6 +2807,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 4e664ecc81b61674bb851301da8106c3, type: 2}
     - {fileID: 11400000, guid: 26f172e86e4345c449922778aec60579, type: 2}
     - {fileID: 11400000, guid: 621724dee829e5b47814ebef21f528f0, type: 2}
+    - {fileID: 11400000, guid: b283f4e73d5666f46a6e541b0b2da1c2, type: 2}
   spawnPoints:
   - <Transform>k__BackingField: {fileID: 1824884509}
     <IsFree>k__BackingField: 0
@@ -5164,9 +5171,11 @@ MonoBehaviour:
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
   gridPresets:
   - {fileID: 11400000, guid: 0c9addcad39fb2e47a6304f9760f97ab, type: 2}
+  - {fileID: 11400000, guid: 00c82d2d85419804bb39dfadb62b5920, type: 2}
+  - {fileID: 11400000, guid: 5e0c41445055fb0438787360a727e7fa, type: 2}
   endlessType: 1
   generatedGridType: 1
-  randomGridXRange: {x: 8, y: 8}
+  randomGridXRange: {x: 6, y: 9}
   randomGridYRange: {x: 10, y: 10}
   bridgeWidthRange: {x: 2, y: 3}
   gridHorizontalOffsetType: 0
@@ -5175,7 +5184,7 @@ MonoBehaviour:
   customOffsetY: 12
   destroyThreshold: 3
   currentGridPreset: {fileID: 11400000, guid: 0c9addcad39fb2e47a6304f9760f97ab, type: 2}
-  currentGridSize: {x: 6, y: 8}
+  currentGridSize: {x: 6, y: 9}
   currentOffset: {x: -3, y: 12}
   <BlocksOnGrid>k__BackingField: []
   drawAllCustomGridCells: 1
