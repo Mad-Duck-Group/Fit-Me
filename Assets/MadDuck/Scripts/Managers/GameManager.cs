@@ -79,6 +79,9 @@ public class GameManager : MonoSingleton<GameManager>
     
     [TabGroup("References/Box/Tab", "Score")]
     [SerializeField] private TMP_Text scoreText;
+    
+    [TabGroup("References/Box/Tab", "Other")]
+    [SerializeField] private TMP_Text versionText;
     #endregion
 
     #region Settings
@@ -154,6 +157,7 @@ public class GameManager : MonoSingleton<GameManager>
     #region Initialization
     void Start()
     {
+        versionText.text = $"{Application.version}";
         CurrentGameState.Value = GameState.CountOff;
         //_currentGameTimer = gameTimer;
         gameOverPanel.SetActive(false);
