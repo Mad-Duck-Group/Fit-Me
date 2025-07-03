@@ -3,7 +3,8 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace MadDuck.Scripts.UIEditors
-{
+{ 
+    #if UNITY_EDITOR
     public class MadduckInspectorSettingsEditor : EditorWindow
     {   
         [SerializeField]
@@ -21,4 +22,5 @@ namespace MadDuck.Scripts.UIEditors
             visualTreeAsset.CloneTree(rootVisualElement);
         }
     }
+    #endif
 }

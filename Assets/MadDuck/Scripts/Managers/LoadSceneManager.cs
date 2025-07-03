@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using MessagePipe;
@@ -103,6 +104,19 @@ namespace MadDuck.Scripts.Managers
         #endregion
         
         #region Scene Loading
+        
+        public void ReloadScene(LoadSceneMode loadSceneMode, bool useLoadingScene)
+        {
+            var currentSceneName = SceneManager.GetActiveScene().path;
+            var sceneType = scenes.FirstOrDefault(x => x.Value.Path == currentSceneName).Key;
+            if (sceneType == default)
+            {
+                Debug.LogError($"Current scene '{currentSceneName}' not found in the dictionary.");
+                return;
+            }
+            LoadScene(sceneType, loadSceneMode, useLoadingScene);
+        }
+        
         public void LoadScene(SceneType sceneType, LoadSceneMode loadSceneMode, bool useLoadingScene)
         {
             if (_asyncOperation is { isDone: false } || _fadeTween.isAlive) return;

@@ -171,7 +171,7 @@ MonoBehaviour:
   atomParent: {fileID: 2095651514694813086}
   spriteRenderer: {fileID: 8366650113457672929}
   spriteResolver: {fileID: 5081757133613753413}
-  useAtomSprite: 0
+  useAtomSprite: 1
   originalColor: {r: 1, g: 1, b: 1, a: 1}
   pickUpScaleMultiplier: 1.1
   <AllowPickUpAfterPlacement>k__BackingField: 0

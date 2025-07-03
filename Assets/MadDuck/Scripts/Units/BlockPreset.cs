@@ -14,7 +14,9 @@ namespace MadDuck.Scripts.Units
     [ShowOdinSerializedPropertiesInInspector]
     public record BlockSchema
     {
+        #if UNITY_EDITOR
         [field: TableMatrix(SquareCells = true, Transpose = true, DrawElementMethod = nameof(DrawSchemaMatrix))]
+        #endif
         [field: SerializeField]
         public int[,] schema = { };
         public int Index { get; private set; }
@@ -30,8 +32,10 @@ namespace MadDuck.Scripts.Units
             Index = index;
         }
         
+        #if UNITY_EDITOR
         private static int DrawSchemaMatrix(Rect rect, int value)
         {
+            
             if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
             {
                 value = value == 1 ? 0 : 1; // Toggle between 0 and 1
@@ -41,7 +45,10 @@ namespace MadDuck.Scripts.Units
 
             EditorGUI.DrawRect(rect.Padding(1), value == 1 ? Color.green : Color.grey);
             return value;
+            
         }
+        #endif
+        
     }
     
     [CreateAssetMenu(fileName = "Block Preset", menuName = "MadDuck/Block Preset", order = 1)]

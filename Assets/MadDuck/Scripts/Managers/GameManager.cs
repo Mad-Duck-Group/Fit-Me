@@ -1,21 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Utils.Inspectors;
-using MessagePipe;
 using PrimeTween;
 using R3;
-using Redcode.Extensions;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -80,6 +73,8 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField] private GameObject gameOverPanel;
     [TabGroup("References/Box/Tab", "Game Over")]
     [SerializeField] private TMP_Text gameOverText;
+    [TabGroup("References/Box/Tab", "Game Over")]
+    [SerializeField] private Button retryButton;
     
     [TabGroup("References/Box/Tab", "Score")]
     [SerializeField] private TMP_Text scoreText;
@@ -165,6 +160,11 @@ public class GameManager : MonoSingleton<GameManager>
         NextGameDifficulty();
         UpdateScoreText(false);
         volumeSlider.gameObject.SetActive(false);
+        retryButton.gameObject.SetActive(false);
+        retryButton.onClick.AddListener(() =>
+        {
+            LoadSceneManager.Instance.ReloadScene(LoadSceneMode.Single, false);
+        });
         ActivateScene();
     }
     
@@ -469,6 +469,7 @@ public class GameManager : MonoSingleton<GameManager>
         gameOverPanel.SetActive(true);
         Tween.Scale(gameOverText.transform, 1, 0.5f, ease: Ease.OutBounce);
         GridManager.Instance.StopAllPreInfectFlash();
+        retryButton.gameObject.SetActive(true);
     }
     #endregion
 

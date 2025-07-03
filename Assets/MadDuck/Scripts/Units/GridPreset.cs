@@ -35,12 +35,15 @@ namespace MadDuck.Scripts.Units
             customGrid = new int[GridSize.y, GridSize.x];
         }
         [TitleGroup("Grid Settings")]
+        #if UNITY_EDITOR
         [field: TableMatrix(SquareCells = true, HorizontalTitle = "Custom Grid",
             DrawElementMethod = nameof(DrawCustomGridMatrix), Transpose = true)]
+        #endif
         [field: SerializeField, ShowIf("@PresetGridType.HasFlag(GridType.Custom)")]
         public int[,] customGrid = { };
         #endregion
 
+        #if UNITY_EDITOR
         #region Table Matrix
         private static int DrawCustomGridMatrix(Rect rect, int value)
         {
@@ -55,5 +58,6 @@ namespace MadDuck.Scripts.Units
             return value;
         }
         #endregion
+        #endif
     }
 }

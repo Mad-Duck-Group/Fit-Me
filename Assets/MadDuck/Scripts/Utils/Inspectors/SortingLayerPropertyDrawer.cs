@@ -4,10 +4,12 @@ using UnityEngine;
 
 namespace MadDuck.Scripts.Utils.Inspectors
 {
+    
     public class SortingLayerAttribute : PropertyAttribute
     {
     }
 
+    #if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(SortingLayerAttribute))]
     public class SortingLayerPropertyDrawer : PropertyDrawer
     {
@@ -56,4 +58,5 @@ namespace MadDuck.Scripts.Utils.Inspectors
             methodInfo.Invoke(null, parameters);
         }
     }
+    #endif
 }

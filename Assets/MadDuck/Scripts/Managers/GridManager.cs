@@ -4,17 +4,17 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Units;
 using MadDuck.Scripts.Utils;
-using Microsoft.Unity.VisualStudio.Editor;
 using Redcode.Extensions;
 using Sirenix.OdinInspector;
-using Sirenix.OdinInspector.Editor;
 using Sirenix.Serialization;
 using Sirenix.Utilities;
 using UnityCommunity.UnitySingleton;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
+#if UNITY_EDITOR
+using Sirenix.OdinInspector.Editor;
+#endif
 
 namespace MadDuck.Scripts.Managers
 {
@@ -106,11 +106,15 @@ namespace MadDuck.Scripts.Managers
         private Vector2Int currentGridSize = new(10, 10);
         [SerializeField, Sirenix.OdinInspector.ReadOnly] 
         private Vector2Int currentOffset = new(0, 0);
+        #if UNITY_EDITOR
         [TableMatrix(SquareCells = true, HorizontalTitle = "Cell Array", IsReadOnly = true,
             DrawElementMethod = nameof(DrawCellArrayMatrix), Transpose = true)]
+        #endif
         [SerializeField] private Cell[,] _cellArray = {};
+        #if UNITY_EDITOR
         [TableMatrix(SquareCells = true, HorizontalTitle = "Vacant Schema", IsReadOnly = true,
             DrawElementMethod = nameof(DrawVacantSchemaMatrix), Transpose = true)]
+        #endif
         [SerializeField] private int[,] _vacantSchema = {};
         [field: SerializeField, Sirenix.OdinInspector.ReadOnly] 
         public List<Block> BlocksOnGrid { get; private set; } = new();
@@ -823,7 +827,8 @@ namespace MadDuck.Scripts.Managers
         }
         #endif
         #endregion
-
+        
+        #if UNITY_EDITOR
         #region Table Matrix
         private static int DrawVacantSchemaMatrix(Rect rect, int value)
         {
@@ -838,6 +843,7 @@ namespace MadDuck.Scripts.Managers
             return cell;
         }
         #endregion
+        #endif
         
         #region Serialization
         public void OnBeforeSerialize()
@@ -858,6 +864,7 @@ namespace MadDuck.Scripts.Managers
             set => serializationData = value;
         }
         #endregion
+        
     }
 
     #if UNITY_EDITOR
