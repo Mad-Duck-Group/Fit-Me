@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MadDuck.Scripts.Managers;
+using MadDuck.Scripts.Units;
 using MadDuck.Scripts.Utils.Inspectors;
 using PrimeTween;
 using R3;
@@ -133,7 +134,7 @@ public class GameManager : MonoSingleton<GameManager>
     [field: Title("Infection Debug")]
     [SerializeField, DisplayAsString] private int difficultyIndex;
 
-    [SerializeField, Sirenix.OdinInspector.ReadOnly] private int currentInfectionCount;
+    [ShowInInspector, Sirenix.OdinInspector.ReadOnly] private int CurrentInfectionCount => GridManager.Instance.InfectionCount;
     [SerializeField, Sirenix.OdinInspector.ReadOnly] private bool canInfect;
     [SerializeField, Sirenix.OdinInspector.ReadOnly] private float runningTime;
     #endregion
@@ -212,6 +213,29 @@ public class GameManager : MonoSingleton<GameManager>
     }
     #endregion
     
+    #region Events
+
+    private void OnEnable()
+    {
+        GridManager.OnBlockDestroyed += OnBlockDestroyed;
+    }
+
+    private void OnDisable()
+    {
+        GridManager.OnBlockDestroyed -= OnBlockDestroyed;
+    }
+
+    private void OnBlockDestroyed(Block block)
+    {
+        if (!aboutToInfectBlocks.Contains(block)) return;
+        aboutToInfectBlocks.Remove(block);
+        CalculateInfectTime();
+        _listInfectIndex = 0;
+        runningTime = 0;
+    }
+
+    #endregion
+    
     #region Updates
     void Update()
     {
@@ -251,6 +275,7 @@ public class GameManager : MonoSingleton<GameManager>
     /// <summary>
     /// Update the infection timer
     /// </summary>
+    private List<Block> aboutToInfectBlocks = new();
     private void UpdateInfectionTimer()
     {
         if (CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
@@ -263,6 +288,7 @@ public class GameManager : MonoSingleton<GameManager>
             runningTime = 0;
         }
 
+
         if (infectionThreshold)
         {
             if (!canInfect) return;
@@ -273,7 +299,7 @@ public class GameManager : MonoSingleton<GameManager>
         {
             if (!usePercentage)
             {
-                if (runningTime < startInfectTimeRange || currentInfectionCount >= startInfectionCount) return;
+                if (runningTime < startInfectTimeRange || CurrentInfectionCount >= startInfectionCount) return;
             }
             else
             {
@@ -282,11 +308,18 @@ public class GameManager : MonoSingleton<GameManager>
             }
         }
 
-        if (startInfectionCount == 0 || currentInfectionCount >= startInfectionCount) return;
+        if (startInfectionCount == 0 || CurrentInfectionCount >= startInfectionCount) return;
 
         Debug.Log("Have Infect");
-        if (!GridManager.Instance.InfectRandomBlock()) return;
-        currentInfectionCount++;
+        if (!GridManager.Instance.InfectRandomBlock(out var infectedBlock))
+        {
+            CalculateInfectTime();
+            _listInfectIndex = 0;
+            runningTime = 0;
+            return;
+        }
+        aboutToInfectBlocks.Add(infectedBlock);
+        //CurrentInfectionCount++;
         _listInfectIndex++;
     }
     
@@ -297,8 +330,8 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     public void ProtectedState()
     {
-        if (currentInfectionCount <= 0) return;
-        currentInfectionCount--;
+        if (CurrentInfectionCount <= 0) return;
+        //CurrentInfectionCount--;
         
         if (_listInfectIndex > 0) _listInfectIndex--;
         runningTime = 0;
@@ -401,7 +434,7 @@ public class GameManager : MonoSingleton<GameManager>
         switch (infectionThreshold)
         {
             case true:
-                for (int i = currentInfectionCount; i < startInfectionCount; i++)
+                for (int i = CurrentInfectionCount; i < startInfectionCount; i++)
                 {
                     _listInfectTime.Add(Random.Range(
                         gameDifficultySettings[difficultyIndex].FirstInfectTimeRange.x, 
@@ -410,7 +443,7 @@ public class GameManager : MonoSingleton<GameManager>
                 break;
             
             case false:
-                for (int i = currentInfectionCount; i < startInfectionCount; i++)
+                for (int i = CurrentInfectionCount; i < startInfectionCount; i++)
                 {
                     _listInfectTime.Add(Random.Range(firstInfectTimePercentRange.x, firstInfectTimePercentRange.y));
                 }

@@ -2724,7 +2724,6 @@ MonoBehaviour:
     value: 0
   score: 0
   difficultyIndex: 0
-  currentInfectionCount: 0
   canInfect: 0
   runningTime: 0
 --- !u!4 &1077234520
@@ -5165,7 +5164,7 @@ MonoBehaviour:
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
   gridPresets:
   - {fileID: 11400000, guid: 0c9addcad39fb2e47a6304f9760f97ab, type: 2}
-  endlessType: 2
+  endlessType: 1
   generatedGridType: 1
   randomGridXRange: {x: 8, y: 8}
   randomGridYRange: {x: 10, y: 10}

@@ -133,11 +133,14 @@ namespace MadDuck.Scripts.Managers
         [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public float RandomInfectedTime { get; private set; }
         [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> preInfectBlocks = new();
         [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> infectedBlocks = new();
+        [SerializeField, Sirenix.OdinInspector.ReadOnly] public int InfectionCount => infectedBlocks.Count;
         #endregion
 
         #region Fields and Properties
         private Grid _grid;
         private List<Cell> _previousValidationCells = new();
+        
+        public static event Action<Block> OnBlockDestroyed;
         public static event Action<Block> OnBlockInfected;
         public static event Action<Block> OnBlockDisinfected;
         public Grid Grid => _grid;
@@ -480,6 +483,7 @@ namespace MadDuck.Scripts.Managers
             BlocksOnGrid.Remove(block);
             infectedBlocks.Remove(block);
             preInfectBlocks.Remove(block);
+            OnBlockDestroyed?.Invoke(block);
             if (destroy)
             {
                 Destroy(block.gameObject);
@@ -662,15 +666,17 @@ namespace MadDuck.Scripts.Managers
             if (updateGrid) UpdateBlockOnGrid(block);
         }
         
-        public bool InfectRandomBlock()
+        public bool InfectRandomBlock(out Block block)
         {
+            block = null;
             if (!CanInfectMore()) return false;
             if (BlocksOnGrid.Count == 0) return false;
             var infectableBlocks = BlocksOnGrid.Where(block => block.BlockState == BlockState.Normal).ToList();
             if (infectableBlocks.Count == 0) return false;
-            var block = infectableBlocks.GetRandomElement();
-            block.PreInfect().Forget();
-            preInfectBlocks.Add(block);
+            var infectBlock = infectableBlocks.GetRandomElement();
+            infectBlock.PreInfect().Forget();
+            preInfectBlocks.Add(infectBlock);
+            block = infectBlock;
             return true;
         }
 
