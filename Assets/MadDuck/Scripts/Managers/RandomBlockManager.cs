@@ -164,12 +164,22 @@ namespace MadDuck.Scripts.Managers
         /// <param name="vacantSchema"></param>
         /// <param name="schemasToCheck"></param>
         /// <param name="previouslyTraversed"></param>
+        /// <param name="currentDepth"></param>
+        /// <param name="maxDepth"></param>
         /// <returns></returns>
         private static List<(int VacantCount, List<(string BlockFace, BlockSchema BlockSchema)> SchemaList)> FindBestFit(int[,] vacantSchema,
             List<(string BlockFace, BlockSchema BlockSchema)> schemasToCheck,
-            List<(string BlockFace, BlockSchema BlockSchema)> previouslyTraversed = null)
+            List<(string BlockFace, BlockSchema BlockSchema)> previouslyTraversed = null, int currentDepth = 0, int maxDepth = 5)
         {
             List<(int, List<(string BlockFace, BlockSchema BlockSchema)>)> unsorted = new();
+            if (currentDepth >= maxDepth)
+            {
+                if (previouslyTraversed != null)
+                {
+                    unsorted.Add((vacantSchema.CountMember(x => x == 1), previouslyTraversed));
+                }
+                return unsorted;
+            }
             foreach (var schema in schemasToCheck)
             {
                 var traversed = new List<(string BlockFace, BlockSchema BlockSchema)>();
@@ -180,7 +190,7 @@ namespace MadDuck.Scripts.Managers
                 if (!ArrayHelper.CanBFitInA(vacantSchema, schema.BlockSchema.schema, out var placedArray, true))
                     continue;
                 traversed.Add(schema);
-                var bestFits = FindBestFit(placedArray, schemasToCheck, traversed);
+                var bestFits = FindBestFit(placedArray, schemasToCheck, traversed, currentDepth + 1, maxDepth);
                 unsorted.AddRange(bestFits);
             }
             if (previouslyTraversed != null && unsorted.Count == 0) 
