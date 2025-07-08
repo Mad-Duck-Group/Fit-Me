@@ -2822,6 +2822,7 @@ MonoBehaviour:
   maxRandomAmount: 3
   smartRandom: 1
   smartRandomThreshold: 6
+  smartRandomDepth: 5
   objectScale: 0.3
 --- !u!1 &1094725370
 GameObject:
@@ -4266,7 +4267,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 12.099976, y: 15.900024}
+  m_AnchoredPosition: {x: 12.100098, y: 15.900391}
   m_SizeDelta: {x: 1079.1, y: 65.6049}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1837467012
@@ -5309,8 +5310,6 @@ MonoBehaviour:
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
   gridPresets:
   - {fileID: 11400000, guid: 0c9addcad39fb2e47a6304f9760f97ab, type: 2}
-  - {fileID: 11400000, guid: 00c82d2d85419804bb39dfadb62b5920, type: 2}
-  - {fileID: 11400000, guid: 5e0c41445055fb0438787360a727e7fa, type: 2}
   endlessType: 1
   generatedGridType: 1
   randomGridXRange: {x: 6, y: 9}

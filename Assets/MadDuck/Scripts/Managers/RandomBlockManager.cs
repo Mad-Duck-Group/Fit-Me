@@ -45,6 +45,7 @@ namespace MadDuck.Scripts.Managers
         [SerializeField] private int maxRandomAmount = 3;
         [SerializeField] private bool smartRandom = true;
         [SerializeField, ShowIf(nameof(smartRandom)), MinValue(1)] private int smartRandomThreshold = 6;
+        [SerializeField, ShowIf(nameof(smartRandom)), MinValue(1)] private int smartRandomDepth = 1;
         [SerializeField] private float objectScale = 0.5f;
         #endregion
         
@@ -96,7 +97,7 @@ namespace MadDuck.Scripts.Managers
             var blockTypes = Enum.GetValues(typeof(BlockTypes)).Cast<BlockTypes>().ToList();
             var allSchemas = _blockPool
                 .SelectMany(x => x.Value.BlockPreset.BlockSchemas
-                    .Select(schema => (BlockFace: x.Key, BlockSchema: schema)));
+                    .Select(schema => (BlockFace: x.Key, BlockSchema: schema))).ToList();
             var shuffledSchemas = allSchemas.Shuffled().ToList();
             List<(string BlockFace, BlockSchema BlockSchema)> randomSchemas;
             GridManager.Instance.CreateVacantSchema(out var vacantSchema,out var vacantCount);
@@ -107,10 +108,7 @@ namespace MadDuck.Scripts.Managers
                         out vacantSchema, true))
                     .Take(maxRandomAmount)
                     .ToList();*/
-                var bestFits = FindBestFit(vacantSchema, shuffledSchemas)
-                    .OrderBy(x => x.VacantCount)
-                    .ThenBy(x => x.SchemaList.Count)
-                    .ToList();
+                var bestFits = FindBestFitSorted(vacantSchema, shuffledSchemas);
                 var bestFitSchemas = bestFits
                     .SelectMany(x => x.SchemaList)
                     .Take(maxRandomAmount)
@@ -158,6 +156,19 @@ namespace MadDuck.Scripts.Managers
             }
         }
 
+        private List<(int VacantCount, List<(string BlockFace, BlockSchema BlockSchema)> SchemaList)>
+            FindBestFitSorted(int[,] vacantSchema,
+                List<(string BlockFace, BlockSchema BlockSchema)> schemasToCheck)
+        {
+            var sortedSchemas = schemasToCheck
+                    .OrderByDescending(x => x.BlockSchema.schema.CountMember(y => y == 1))
+                    .ToList();
+            return FindBestFit(vacantSchema, sortedSchemas)
+                .OrderBy(x => x.VacantCount)
+                .ThenBy(x => x.SchemaList.Count)
+                .ToList();
+        }
+
         /// <summary>
         /// Returns the best fit for the vacant schema from the list of schemas to check. UNSORTED.
         /// </summary>
@@ -165,19 +176,29 @@ namespace MadDuck.Scripts.Managers
         /// <param name="schemasToCheck"></param>
         /// <param name="previouslyTraversed"></param>
         /// <param name="currentDepth"></param>
-        /// <param name="maxDepth"></param>
+        /// <param name="vacantToBeat"></param>
+        /// <param name="blockCountToBeat"></param>
         /// <returns></returns>
-        private static List<(int VacantCount, List<(string BlockFace, BlockSchema BlockSchema)> SchemaList)> FindBestFit(int[,] vacantSchema,
+        private List<(int VacantCount, List<(string BlockFace, BlockSchema BlockSchema)> SchemaList)> FindBestFit(int[,] vacantSchema,
             List<(string BlockFace, BlockSchema BlockSchema)> schemasToCheck,
-            List<(string BlockFace, BlockSchema BlockSchema)> previouslyTraversed = null, int currentDepth = 0, int maxDepth = 5)
+            List<(string BlockFace, BlockSchema BlockSchema)> previouslyTraversed = null, 
+            int currentDepth = 0, 
+            int vacantToBeat = int.MaxValue, 
+            int blockCountToBeat = int.MaxValue)
         {
-            List<(int, List<(string BlockFace, BlockSchema BlockSchema)>)> unsorted = new();
-            if (currentDepth >= maxDepth)
+            List<(int VacantCount, List<(string BlockFace, BlockSchema BlockSchema)> SchemaList)> unsorted = new();
+            var vacantCount = vacantSchema.CountMember(x => x == 1);
+            if (currentDepth >= smartRandomDepth)
             {
                 if (previouslyTraversed != null)
                 {
-                    unsorted.Add((vacantSchema.CountMember(x => x == 1), previouslyTraversed));
+                    unsorted.Add((vacantCount, previouslyTraversed));
                 }
+                return unsorted;
+            }
+            if (previouslyTraversed != null && vacantCount >= vacantToBeat && previouslyTraversed.Count + 1 >= blockCountToBeat)
+            {
+                unsorted.Add((vacantCount, previouslyTraversed));
                 return unsorted;
             }
             foreach (var schema in schemasToCheck)
@@ -190,11 +211,22 @@ namespace MadDuck.Scripts.Managers
                 if (!ArrayHelper.CanBFitInA(vacantSchema, schema.BlockSchema.schema, out var placedArray, true))
                     continue;
                 traversed.Add(schema);
-                var bestFits = FindBestFit(placedArray, schemasToCheck, traversed, currentDepth + 1, maxDepth);
-                unsorted.AddRange(bestFits);
+                var bestFits = FindBestFit(placedArray, schemasToCheck, traversed, 
+                    currentDepth + 1, vacantToBeat, blockCountToBeat);
+                var best = bestFits.OrderBy(x => x.VacantCount)
+                    .ThenBy(x => x.SchemaList.Count)
+                    .FirstOrDefault();
+                if (best.VacantCount >= vacantToBeat || best.SchemaList.Count >= blockCountToBeat)
+                    continue;
+                unsorted.Add(best);
+                var bestUnsorted = unsorted.OrderBy(x => x.VacantCount)
+                    .ThenBy(x => x.SchemaList.Count)
+                    .FirstOrDefault();
+                vacantToBeat = bestUnsorted.VacantCount;
+                blockCountToBeat = bestUnsorted.SchemaList.Count;
             }
             if (previouslyTraversed != null && unsorted.Count == 0) 
-                unsorted.Add((vacantSchema.CountMember(x => x == 1), previouslyTraversed));
+                unsorted.Add((vacantCount, previouslyTraversed));
             return unsorted;
         }
         #endregion

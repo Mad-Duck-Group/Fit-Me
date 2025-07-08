@@ -162,5 +162,5 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  <PresetGridType>k__BackingField: 2
-  <GridSize>k__BackingField: {x: 6, y: 7}
+  <PresetGridType>k__BackingField: 1
+  <GridSize>k__BackingField: {x: 6, y: 4}
