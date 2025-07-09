@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -28,6 +29,30 @@ namespace MadDuck.Scripts.Managers
 
             [field: SerializeField, DisplayAsString] public bool IsFree { get; set; } = true;
             [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public Block CurrentBlock { get; set; }
+        }
+        
+        private struct FaceAndSchemaData
+        {
+            public readonly string blockFace;
+            public readonly BlockSchema blockSchema;
+            
+            public FaceAndSchemaData(string blockFace, BlockSchema blockSchema)
+            {
+                this.blockFace = blockFace;
+                this.blockSchema = blockSchema;
+            }
+        }
+        
+        private struct BestFitResult
+        {
+            public readonly int vacantCount;
+            public readonly List<FaceAndSchemaData> schemaList;
+
+            public BestFitResult(int vacantCount, List<FaceAndSchemaData> schemaList)
+            {
+                this.vacantCount = vacantCount;
+                this.schemaList = schemaList;
+            }
         }
         #endregion
 
@@ -97,20 +122,15 @@ namespace MadDuck.Scripts.Managers
             var blockTypes = Enum.GetValues(typeof(BlockTypes)).Cast<BlockTypes>().ToList();
             var allSchemas = _blockPool
                 .SelectMany(x => x.Value.BlockPreset.BlockSchemas
-                    .Select(schema => (BlockFace: x.Key, BlockSchema: schema))).ToList();
+                    .Select(schema => new FaceAndSchemaData(x.Key, schema))).ToList();
             var shuffledSchemas = allSchemas.Shuffled().ToList();
-            List<(string BlockFace, BlockSchema BlockSchema)> randomSchemas;
+            List<FaceAndSchemaData> randomSchemas;
             GridManager.Instance.CreateVacantSchema(out var vacantSchema,out var vacantCount);
             if (smartRandom && vacantCount <= smartRandomThreshold)
             {
-                /*var bestFitSchemas = shuffledSchemas
-                    .Where(s => ArrayHelper.CanBFitInA(vacantSchema, s.BlockSchema.schema, 
-                        out vacantSchema, true))
-                    .Take(maxRandomAmount)
-                    .ToList();*/
                 var bestFits = FindBestFitSorted(vacantSchema, shuffledSchemas);
                 var bestFitSchemas = bestFits
-                    .SelectMany(x => x.SchemaList)
+                    .SelectMany(x => x.schemaList)
                     .Take(maxRandomAmount)
                     .ToList();
                 var remainingAmount = maxRandomAmount - bestFitSchemas.Count;
@@ -134,8 +154,8 @@ namespace MadDuck.Scripts.Managers
                 Transform spawnTransform = spawnPoints[i].Transform;
                 var randomBlock = randomSchemas[i];
                 var blockType = blockTypes.GetRandomElement();
-                var blockFace = randomBlock.BlockFace;
-                var index = randomBlock.BlockSchema.Index;
+                var blockFace = randomBlock.blockFace;
+                var index = randomBlock.blockSchema.Index;
                 if (!_blockPool.ContainsKey(blockFace))
                 {
                     Debug.LogError($"Block face {blockFace} not found in block pool.");
@@ -155,18 +175,25 @@ namespace MadDuck.Scripts.Managers
                 spawnPoints[i].CurrentBlock = block;
             }
         }
-
-        private List<(int VacantCount, List<(string BlockFace, BlockSchema BlockSchema)> SchemaList)>
-            FindBestFitSorted(int[,] vacantSchema,
-                List<(string BlockFace, BlockSchema BlockSchema)> schemasToCheck)
+        
+        /// <summary>
+        /// Finds the best fit for the vacant schema from the list of schemas to check. SORTED.
+        /// </summary>
+        /// <param name="vacantSchema"></param>
+        /// <param name="schemasToCheck"></param>
+        /// <returns></returns>
+        private List<BestFitResult> FindBestFitSorted(int[,] vacantSchema,
+                List<FaceAndSchemaData> schemasToCheck)
         {
             var sortedSchemas = schemasToCheck
-                    .OrderByDescending(x => x.BlockSchema.schema.CountMember(y => y == 1))
+                    .OrderByDescending(x => x.blockSchema.schema.CountMember(y => y == 1))
                     .ToList();
-            return FindBestFit(vacantSchema, sortedSchemas)
-                .OrderBy(x => x.VacantCount)
-                .ThenBy(x => x.SchemaList.Count)
+            var bestFits = FindBestFit(vacantSchema, sortedSchemas);
+            bestFits = bestFits
+                .OrderBy(x => x.vacantCount)
+                .ThenBy(x => x.schemaList.Count)
                 .ToList();
+            return bestFits;
         }
 
         /// <summary>
@@ -179,54 +206,60 @@ namespace MadDuck.Scripts.Managers
         /// <param name="vacantToBeat"></param>
         /// <param name="blockCountToBeat"></param>
         /// <returns></returns>
-        private List<(int VacantCount, List<(string BlockFace, BlockSchema BlockSchema)> SchemaList)> FindBestFit(int[,] vacantSchema,
-            List<(string BlockFace, BlockSchema BlockSchema)> schemasToCheck,
-            List<(string BlockFace, BlockSchema BlockSchema)> previouslyTraversed = null, 
-            int currentDepth = 0, 
+        private List<BestFitResult> FindBestFit(
+            int[,] vacantSchema, List<FaceAndSchemaData> schemasToCheck,
+            List<FaceAndSchemaData> previouslyTraversed = null, 
+            int currentDepth = 0,
             int vacantToBeat = int.MaxValue, 
             int blockCountToBeat = int.MaxValue)
         {
-            List<(int VacantCount, List<(string BlockFace, BlockSchema BlockSchema)> SchemaList)> unsorted = new();
+            List<BestFitResult> unsorted = new();
             var vacantCount = vacantSchema.CountMember(x => x == 1);
             if (currentDepth >= smartRandomDepth)
             {
                 if (previouslyTraversed != null)
                 {
-                    unsorted.Add((vacantCount, previouslyTraversed));
+                    unsorted.Add(new BestFitResult(vacantCount, previouslyTraversed));
                 }
+
                 return unsorted;
             }
-            if (previouslyTraversed != null && vacantCount >= vacantToBeat && previouslyTraversed.Count + 1 >= blockCountToBeat)
+
+            if (previouslyTraversed != null && vacantCount >= vacantToBeat &&
+                previouslyTraversed.Count + 1 >= blockCountToBeat)
             {
-                unsorted.Add((vacantCount, previouslyTraversed));
+                unsorted.Add(new BestFitResult(vacantCount, previouslyTraversed));
                 return unsorted;
             }
+
             foreach (var schema in schemasToCheck)
             {
-                var traversed = new List<(string BlockFace, BlockSchema BlockSchema)>();
+                var traversed = new List<FaceAndSchemaData>();
                 if (previouslyTraversed != null)
                 {
                     traversed.AddRange(previouslyTraversed);
                 }
-                if (!ArrayHelper.CanBFitInA(vacantSchema, schema.BlockSchema.schema, out var placedArray, true))
+
+                if (!ArrayHelper.CanBFitInA(vacantSchema, schema.blockSchema.schema, out var placedArray, true))
                     continue;
                 traversed.Add(schema);
-                var bestFits = FindBestFit(placedArray, schemasToCheck, traversed, 
-                    currentDepth + 1, vacantToBeat, blockCountToBeat);
-                var best = bestFits.OrderBy(x => x.VacantCount)
-                    .ThenBy(x => x.SchemaList.Count)
+                var bestFits = FindBestFit(placedArray, schemasToCheck, traversed, currentDepth + 1, vacantToBeat,
+                    blockCountToBeat);
+                var best = bestFits
+                    .OrderBy(x => x.vacantCount)
+                    .ThenBy(x => x.schemaList.Count)
                     .FirstOrDefault();
-                if (best.VacantCount >= vacantToBeat || best.SchemaList.Count >= blockCountToBeat)
+                if (best.vacantCount >= vacantToBeat || best.schemaList.Count >= blockCountToBeat) 
                     continue;
                 unsorted.Add(best);
-                var bestUnsorted = unsorted.OrderBy(x => x.VacantCount)
-                    .ThenBy(x => x.SchemaList.Count)
+                var bestUnsorted = unsorted.OrderBy(x => x.vacantCount).ThenBy(x => x.schemaList.Count)
                     .FirstOrDefault();
-                vacantToBeat = bestUnsorted.VacantCount;
-                blockCountToBeat = bestUnsorted.SchemaList.Count;
+                vacantToBeat = bestUnsorted.vacantCount;
+                blockCountToBeat = bestUnsorted.schemaList.Count;
             }
+
             if (previouslyTraversed != null && unsorted.Count == 0) 
-                unsorted.Add((vacantCount, previouslyTraversed));
+                unsorted.Add(new BestFitResult(vacantCount, previouslyTraversed));
             return unsorted;
         }
         #endregion
@@ -254,16 +287,6 @@ namespace MadDuck.Scripts.Managers
                 spawnPoint.CurrentBlock = null;
             }
         }
-
-        // public void ReRoll()
-        // {
-        //     DestroyBlock(true);
-        //     SpawnRandomBlock();
-        //     if (GameManager.Instance.CurrentReRoll <= 0)
-        //     {
-        //         GameOverCheck();
-        //     }
-        // }
 
         public async UniTask GameOverCheck()
         {
