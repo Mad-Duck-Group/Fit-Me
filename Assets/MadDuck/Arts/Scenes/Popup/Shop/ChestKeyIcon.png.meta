@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ChestKeyIcon_0: 5458465347103891239
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
