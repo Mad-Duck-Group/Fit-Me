@@ -45,6 +45,7 @@ namespace MadDuck.Scripts.Items
 
         private void OnBlockInfected(Block block)
         {
+            if (block.BlockState is not BlockState.Infected) return;
             if (!Selectable())
             {
                 Cancel();
@@ -65,7 +66,7 @@ namespace MadDuck.Scripts.Items
         {
             _blockHoveredSubscriber?.Dispose();
             _popUpDisposable?.Dispose();
-            GridManager.OnBlockInfected -= OnBlockInfected;
+            GridManager.OnBlockStateChanged -= OnBlockInfected;
         }
 
         public override bool Selectable()
@@ -79,7 +80,7 @@ namespace MadDuck.Scripts.Items
         public override void Select()
         {
             GameManager.Instance.CurrentGameState.Value = GameState.UseItem;
-            GridManager.OnBlockInfected += OnBlockInfected;
+            GridManager.OnBlockStateChanged += OnBlockInfected;
         }
 
         public override void Cancel()
@@ -89,7 +90,7 @@ namespace MadDuck.Scripts.Items
             _popUpDisposable?.Dispose();
             NotifyCancelled();
             GameManager.Instance.CurrentGameState.Value = GameState.PlaceBlock;
-            GridManager.OnBlockInfected -= OnBlockInfected;
+            GridManager.OnBlockStateChanged -= OnBlockInfected;
         }
 
         public override void Use()

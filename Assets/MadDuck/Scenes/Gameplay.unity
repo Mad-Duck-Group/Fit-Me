@@ -2724,7 +2724,6 @@ MonoBehaviour:
     value: 0
   score: 0
   difficultyIndex: 0
-  currentInfectionCount: 0
   canInfect: 0
   runningTime: 0
 --- !u!4 &1077234520
@@ -5175,11 +5174,11 @@ MonoBehaviour:
   gridVerticalOffsetType: 1
   customOffsetY: 12
   destroyThreshold: 3
-  currentGridPreset: {fileID: 11400000, guid: 0c9addcad39fb2e47a6304f9760f97ab, type: 2}
+  currentGridPreset: {fileID: 0}
   currentGridSize: {x: 6, y: 8}
   currentOffset: {x: -3, y: 12}
-  <BlocksOnGrid>k__BackingField: []
   drawAllCustomGridCells: 1
+  totalInfected: 0
   <RandomInfectedTime>k__BackingField: 0
   preInfectBlocks: []
   infectedBlocks: []
