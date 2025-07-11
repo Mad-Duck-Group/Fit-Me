@@ -137,6 +137,7 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField, DisplayAsString] private int difficultyIndex;
     
     [SerializeField, Sirenix.OdinInspector.ReadOnly] private bool canInfect;
+    [SerializeField] private bool haveInfect = false;
     [SerializeField, Sirenix.OdinInspector.ReadOnly] private float runningTime;
     #endregion
     #endregion
@@ -240,12 +241,15 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void OnBlockOnGridCountChanged(int newCount)
     {
+        if (newCount > 0 && !haveInfect)
+        { RandomSpawnInfection(); }
         Debug.Log($"Block count on grid changed: {newCount}");
     }
 
     private void OnPreInfectBlockDestroyed(Block block)
     {
         if (block.BlockState != BlockState.PreInfected) return;
+        block.StopFlashing();
         if (!_aboutToInfectBlocks.Contains(block)) return;
         _aboutToInfectBlocks.Remove(block);
         CalculateInfectTime();
@@ -253,7 +257,7 @@ public class GameManager : MonoSingleton<GameManager>
         if (GridManager.Instance.totalInfected > gameDifficultySettings[difficultyIndex].InfectionCountRange.x)
             return;
 
-        StartInfectionStep();
+        RandomSpawnInfection();
         //StartCoroutine(InfectionLoop());
     }
 
@@ -269,9 +273,6 @@ public class GameManager : MonoSingleton<GameManager>
     void Update()
     {
         if (!_sceneActivated) return;
-        RunningTime();
-        //UpdateGameTimer();
-        //UpdateInfectionTimer();
     }
 
     
@@ -302,51 +303,10 @@ public class GameManager : MonoSingleton<GameManager>
     }
     */
 
-    private void RunningTime()
-    {
-        if (GridManager.Instance.BlocksOnGrid.Count > 0)
-        {
-            runningTime += Time.deltaTime;
-        }
-        else
-        {
-            runningTime = 0;
-        }
-    }
     
     /// <summary>
     /// Update the infection timer
     /// </summary>
-    private void UpdateInfectionTimer()
-    {
-        if (CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
-
-        if (infectionThreshold)
-        {
-            if (!canInfect) return;
-            if (GridManager.Instance.totalInfected >= _listInfectTime.Count) return;
-            if (runningTime < _listInfectTime[GridManager.Instance.totalInfected]) return;
-        }
-        else
-        {
-            if (!usePercentage)
-            {
-                if (runningTime < startInfectTimeRange || GridManager.Instance.totalInfected >= startInfectionCount) return;
-            }
-            else
-            {
-                if (GridManager.Instance.totalInfected >= _listInfectTime.Count) return;
-                if (runningTime < _listInfectTime[GridManager.Instance.totalInfected]) return;
-            }
-        }
-
-        if (startInfectionCount == 0 || GridManager.Instance.totalInfected >= startInfectionCount) return;
-
-        Debug.Log("Have Infect");
-        if (!GridManager.Instance.InfectRandomBlock(out var infectedBlock)) { return; }
-        _aboutToInfectBlocks.Add(infectedBlock);
-    }
-    
     IEnumerator InfectionLoop()
     {
         if(!canInfect) yield break;
@@ -375,31 +335,35 @@ public class GameManager : MonoSingleton<GameManager>
         }
     }
 
-    private void StartInfectionStep()
+    private void RandomSpawnInfection()
     {
         if (!canInfect) return;
+        if (GridManager.Instance.totalInfected >= gameDifficultySettings[difficultyIndex].InfectionCountRange.x)
+        {
+            _infectionDisposable?.Dispose();
+            haveInfect = false;
+            return;
+        }
+        
+        haveInfect = true;
         
         _infectionDisposable?.Dispose();
         
         CalculateInfectTime();
         float delay = _listInfectTime[0];
 
+        
         _infectionDisposable = Observable
             .Timer(TimeSpan.FromSeconds(delay))
             .Subscribe(_ =>
             {
+                
                 if (GridManager.Instance.InfectRandomBlock(out var block))
                     _aboutToInfectBlocks.Add(block);
 
-                if (GridManager.Instance.totalInfected >= gameDifficultySettings[difficultyIndex].FirstInfectTimeRange.x)
-                {
-                    _infectionDisposable?.Dispose();
-                }
-                else
-                {
-                    StartInfectionStep();
-                }
             });
+
+        haveInfect = false;
     }
 
     /// <summary>
@@ -424,8 +388,7 @@ public class GameManager : MonoSingleton<GameManager>
                 difficultyIndex = gameDifficultySettings.Count - 1;
         }
         runningTime = 0;
-
-        StartInfectionStep();
+        
         //StartCoroutine(InfectionLoop());
         SetValueToDifficulty(gameDifficultySettings[difficultyIndex]);
     }
@@ -441,6 +404,8 @@ public class GameManager : MonoSingleton<GameManager>
         PreInfectTime = gameDifficulty.PreInfectTime;
         InfectionTimeRange = gameDifficulty.InfectionTimeRange;
         MaxInfectionCount = maxCount;
+        
+        RandomSpawnInfection();
     }
     #endregion
 
