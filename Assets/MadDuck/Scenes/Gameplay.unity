@@ -5323,8 +5323,8 @@ MonoBehaviour:
   currentGridPreset: {fileID: 11400000, guid: 5e0c41445055fb0438787360a727e7fa, type: 2}
   currentGridSize: {x: 12, y: 7}
   currentOffset: {x: -3, y: 12}
-  <BlocksOnGrid>k__BackingField: []
   drawAllCustomGridCells: 1
+  totalInfected: 0
   <RandomInfectedTime>k__BackingField: 0
   preInfectBlocks: []
   infectedBlocks: []

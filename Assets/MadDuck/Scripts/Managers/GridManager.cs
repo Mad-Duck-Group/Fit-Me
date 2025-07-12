@@ -4,6 +4,8 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Units;
 using MadDuck.Scripts.Utils;
+using ObservableCollections;
+using R3;
 using Redcode.Extensions;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -116,13 +118,15 @@ namespace MadDuck.Scripts.Managers
             DrawElementMethod = nameof(DrawVacantSchemaMatrix), Transpose = true)]
         #endif
         [SerializeField] private int[,] _vacantSchema = {};
-        [field: SerializeField, Sirenix.OdinInspector.ReadOnly] 
-        public List<Block> BlocksOnGrid { get; private set; } = new();
+
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly]
+        private List<Block> DebugBlockOnGrid => new(BlocksOnGrid);
+        public ObservableList<Block> BlocksOnGrid { get; private set; } = new();
         [SerializeField, ShowIf("@currentGridPreset && currentGridPreset.PresetGridType.HasFlag(GridType.Custom)")]
         private bool drawAllCustomGridCells = true;
 
         [Title("Infected Debug")]
-        private int totalInfected;
+        [Sirenix.OdinInspector.ReadOnly] public int totalInfected;
         
         [Button("Test Fit-me")]
         private void TestFitMe()
@@ -139,10 +143,9 @@ namespace MadDuck.Scripts.Managers
         #region Fields and Properties
         private Grid _grid;
         private List<Cell> _previousValidationCells = new();
-        
+        public static event Action<Block> OnBlockStateChanged;
+        public static event Action<Block> OnBlockPlaced;
         public static event Action<Block> OnBlockDestroyed;
-        public static event Action<Block> OnBlockInfected;
-        public static event Action<Block> OnBlockDisinfected;
         public Grid Grid => _grid;
         #endregion
         
@@ -436,6 +439,7 @@ namespace MadDuck.Scripts.Managers
                 RandomBlockManager.Instance.ResetSpawnPoint();
                 RandomBlockManager.Instance.SpawnRandomBlock();
             }
+            OnBlockPlaced?.Invoke(block);
             return true;
         }
 
@@ -652,7 +656,7 @@ namespace MadDuck.Scripts.Managers
             preInfectBlocks.Remove(block);
             infectedBlocks.Add(block);
             block.Infect();
-            OnBlockInfected?.Invoke(block);
+            OnBlockStateChanged?.Invoke(block);
             RandomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
         }
 
@@ -660,7 +664,7 @@ namespace MadDuck.Scripts.Managers
         {
             if (GameManager.Instance.CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
             block.Disinfect();
-            OnBlockDisinfected?.Invoke(block);
+            OnBlockStateChanged?.Invoke(block);
             infectedBlocks.Remove(block);
             //GameManager.Instance.ProtectedState();
             if (updateGrid) UpdateBlockOnGrid(block);
@@ -675,6 +679,7 @@ namespace MadDuck.Scripts.Managers
             if (infectableBlocks.Count == 0) return false;
             var infectBlock = infectableBlocks.GetRandomElement();
             infectBlock.PreInfect().Forget();
+            OnBlockStateChanged?.Invoke(infectBlock);
             preInfectBlocks.Add(infectBlock);
             block = infectBlock;
             return true;
@@ -719,6 +724,7 @@ namespace MadDuck.Scripts.Managers
             {
                 var blockToInfect = candidatesForInfection.GetRandomElement(); 
                 blockToInfect.PreInfect().Forget();
+                OnBlockStateChanged?.Invoke(blockToInfect);
                 preInfectBlocks.Add(blockToInfect);
             }
         }
