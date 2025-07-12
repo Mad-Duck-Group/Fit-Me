@@ -2692,7 +2692,7 @@ MonoBehaviour:
   gameOverText: {fileID: 48437865}
   retryButton: {fileID: 1187707225}
   scoreText: {fileID: 2040727031}
-  versionText: {fileID: 1837467012}
+  versionText: {fileID: 2040727031}
   bombTimeBonus: 10
   countOffTime: 0
   scorePerPlacement: 20
@@ -2706,15 +2706,15 @@ MonoBehaviour:
     <InfectionTimeRange>k__BackingField: {x: 0, y: 0}
     <FirstInfectTimeRange>k__BackingField: {x: 0, y: 0}
     <PreInfectTime>k__BackingField: 0
-  - <MaxScorePerDifficulty>k__BackingField: 5000
+  - <MaxScorePerDifficulty>k__BackingField: 500
     <InfectionCountRange>k__BackingField: {x: 1, y: 3}
-    <InfectionTimeRange>k__BackingField: {x: 12, y: 12}
-    <FirstInfectTimeRange>k__BackingField: {x: 12, y: 12}
+    <InfectionTimeRange>k__BackingField: {x: 6, y: 6}
+    <FirstInfectTimeRange>k__BackingField: {x: 6, y: 6}
     <PreInfectTime>k__BackingField: 7
-  - <MaxScorePerDifficulty>k__BackingField: 10000
+  - <MaxScorePerDifficulty>k__BackingField: 1000
     <InfectionCountRange>k__BackingField: {x: 1, y: 6}
-    <InfectionTimeRange>k__BackingField: {x: 12, y: 12}
-    <FirstInfectTimeRange>k__BackingField: {x: 12, y: 12}
+    <InfectionTimeRange>k__BackingField: {x: 6, y: 6}
+    <FirstInfectTimeRange>k__BackingField: {x: 6, y: 6}
     <PreInfectTime>k__BackingField: 7
   usePercentage: 0
   startInfectTimeRange: 10
@@ -2730,8 +2730,7 @@ MonoBehaviour:
     value: 0
   score: 0
   difficultyIndex: 0
-  canInfect: 0
-  runningTime: 0
+  hostInfectionRunning: 0
 --- !u!4 &1077234520
 Transform:
   m_ObjectHideFlags: 0
@@ -2822,7 +2821,7 @@ MonoBehaviour:
   maxRandomAmount: 3
   smartRandom: 1
   smartRandomThreshold: 6
-  smartRandomDepth: 5
+  smartRandomDepth: 1
   objectScale: 0.3
 --- !u!1 &1094725370
 GameObject:
@@ -5324,7 +5323,6 @@ MonoBehaviour:
   currentGridSize: {x: 12, y: 7}
   currentOffset: {x: -3, y: 12}
   drawAllCustomGridCells: 1
-  totalInfected: 0
   <RandomInfectedTime>k__BackingField: 0
   preInfectBlocks: []
   infectedBlocks: []

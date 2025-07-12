@@ -12,6 +12,7 @@ using TMPro;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -43,6 +44,7 @@ public struct GameDifficultySettings
     [field: SerializeField] public Vector2 InfectionTimeRange { get; private set; }
     [field: SerializeField] public Vector2 FirstInfectTimeRange { get; private set; }
     [field: SerializeField] public float PreInfectTime { get; private set; }
+    [ShowInInspector, ReadOnly] public bool CanInfect => InfectionCountRange.x >= 1;
 }
 
 public class GameManager : MonoSingleton<GameManager>
@@ -138,21 +140,18 @@ public class GameManager : MonoSingleton<GameManager>
     
     [field: Title("Infection Debug")]
     [SerializeField, DisplayAsString] private int difficultyIndex;
-    
-    [SerializeField, Sirenix.OdinInspector.ReadOnly] private bool canInfect;
-    [SerializeField] private bool haveInfect = false;
-    [SerializeField, Sirenix.OdinInspector.ReadOnly] private float runningTime;
+    [ShowInInspector, ReadOnly] private GameDifficultySettings CurrentGameDifficultySettings => 
+        gameDifficultySettings.Count > 0 ? gameDifficultySettings[difficultyIndex] : default;
+    [SerializeField, DisplayAsString] private bool hostInfectionRunning;
     #endregion
     #endregion
 
     #region Fields and Properties
     private readonly List<float> _listInfectTime = new();
     private readonly List<Block> _aboutToInfectBlocks = new();
-    //private int _listInfectIndex;
     private GameState _beforePauseState;
     private bool _sceneActivated;
     private int _previousReRollScore;
-    //private float _currentGameTimer;
     private bool _countDownPlayed;
     public static event Action OnSceneActivated;
     private IDisposable _infectionDisposable;
@@ -228,6 +227,7 @@ public class GameManager : MonoSingleton<GameManager>
     {
         GridManager.OnBlockDestroyed += OnPreInfectBlockDestroyed;
         GridManager.OnBlockStateChanged += OnBlockInfected;
+        GridManager.OnBlockPlaced += OnBlockPlaced;
     }
 
     private void LateSubscribe()
@@ -240,14 +240,23 @@ public class GameManager : MonoSingleton<GameManager>
     {
         GridManager.OnBlockDestroyed -= OnPreInfectBlockDestroyed;
         GridManager.OnBlockStateChanged -= OnBlockInfected;
+        GridManager.OnBlockPlaced -= OnBlockPlaced;
         _blockOnGridCountDisposable?.Dispose();
+    }
+
+    private void OnBlockPlaced(Block block)
+    {
+        if (GridManager.Instance.BlocksOnGrid.Count == 0) return;
+        if (GridManager.Instance.TotalInfected != 0) return;
+        if (hostInfectionRunning) return;
+        RandomSpawnInfection();
     }
 
     private void OnBlockOnGridCountChanged(int newCount)
     {
-        if (newCount > 0 && !haveInfect)
-        { RandomSpawnInfection(); }
-        Debug.Log($"Block count on grid changed: {newCount}");
+        if (newCount != 0) return;
+        _infectionDisposable?.Dispose();
+        hostInfectionRunning = false;
     }
 
     private void OnPreInfectBlockDestroyed(Block block)
@@ -257,12 +266,9 @@ public class GameManager : MonoSingleton<GameManager>
         if (!_aboutToInfectBlocks.Contains(block)) return;
         _aboutToInfectBlocks.Remove(block);
         CalculateInfectTime();
-        runningTime = 0;
-        if (GridManager.Instance.totalInfected > gameDifficultySettings[difficultyIndex].InfectionCountRange.x)
+        if (GridManager.Instance.TotalInfected > CurrentGameDifficultySettings.InfectionCountRange.x)
             return;
-
         RandomSpawnInfection();
-        //StartCoroutine(InfectionLoop());
     }
 
     private void OnBlockInfected(Block block)
@@ -272,38 +278,7 @@ public class GameManager : MonoSingleton<GameManager>
         _aboutToInfectBlocks.Remove(block);
     }
     #endregion
-    
-    #region Events
 
-    private void OnEnable()
-    {
-        GridManager.OnBlockDestroyed += OnBlockDestroyed;
-        GridManager.OnBlockInfected += OnBlockInfection;
-    }
-
-    private void OnDisable()
-    {
-        GridManager.OnBlockDestroyed -= OnBlockDestroyed;
-        GridManager.OnBlockInfected -= OnBlockInfection;
-    }
-
-    private void OnBlockInfection(Block block)
-    {
-        if (!aboutToInfectBlocks.Contains(block)) return;
-        aboutToInfectBlocks.Remove(block);
-    }
-
-    private void OnBlockDestroyed(Block block)
-    {
-        if (!aboutToInfectBlocks.Contains(block)) return;
-        aboutToInfectBlocks.Remove(block);
-        CalculateInfectTime();
-        _listInfectIndex = 0;
-        runningTime = 0;
-    }
-
-    #endregion
-    
     #region Updates
     void Update()
     {
@@ -338,67 +313,27 @@ public class GameManager : MonoSingleton<GameManager>
     }
     */
 
-    
-    /// <summary>
-    /// Update the infection timer
-    /// </summary>
-    IEnumerator InfectionLoop()
-    {
-        if(!canInfect) yield break;
-        
-        CalculateInfectTime();
-        float timer = 0f;
-
-        while (true)
-        {
-            timer += Time.deltaTime;
-
-            if (timer >= _listInfectTime[0])
-            {
-                if (GridManager.Instance.InfectRandomBlock(out var block))
-                {
-                    _aboutToInfectBlocks.Add(block);
-                }
-
-                if (GridManager.Instance.totalInfected >= gameDifficultySettings[difficultyIndex].FirstInfectTimeRange.x)
-                    break;
-                
-                timer = 0f;
-                CalculateInfectTime();
-            }
-            yield return null;
-        }
-    }
-
     private void RandomSpawnInfection()
     {
-        if (!canInfect) return;
-        if (GridManager.Instance.totalInfected >= gameDifficultySettings[difficultyIndex].InfectionCountRange.x)
+        if (!CurrentGameDifficultySettings.CanInfect) return;
+        if (GridManager.Instance.TotalInfected >= CurrentGameDifficultySettings.InfectionCountRange.x)
         {
             _infectionDisposable?.Dispose();
-            haveInfect = false;
+            hostInfectionRunning = false;
             return;
         }
-        
-        haveInfect = true;
-        
         _infectionDisposable?.Dispose();
-        
         CalculateInfectTime();
         float delay = _listInfectTime[0];
-
-        
+        hostInfectionRunning = true;
         _infectionDisposable = Observable
             .Timer(TimeSpan.FromSeconds(delay))
             .Subscribe(_ =>
             {
-                
                 if (GridManager.Instance.InfectRandomBlock(out var block))
                     _aboutToInfectBlocks.Add(block);
-
+                hostInfectionRunning = false;
             });
-
-        haveInfect = false;
     }
 
     /// <summary>
@@ -406,7 +341,6 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     public void ProtectedState()
     {
-        runningTime = 0;
         CalculateInfectTime();
     }
     
@@ -415,32 +349,28 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     public void NextGameDifficulty()
     {
+        _aboutToInfectBlocks.Clear();
         if (gameDifficultySettings.Count == 0) return;
-        if (score >= gameDifficultySettings[difficultyIndex].MaxScorePerDifficulty)
+        if (score >= CurrentGameDifficultySettings.MaxScorePerDifficulty)
         {
             difficultyIndex++;
             if (difficultyIndex >= gameDifficultySettings.Count)
                 difficultyIndex = gameDifficultySettings.Count - 1;
         }
-        runningTime = 0;
         
-        //StartCoroutine(InfectionLoop());
-        SetValueToDifficulty(gameDifficultySettings[difficultyIndex]);
+        SetValueToDifficulty(CurrentGameDifficultySettings);
     }
 
     private void SetValueToDifficulty(GameDifficultySettings gameDifficulty)
     {
         var minCount = gameDifficulty.InfectionCountRange.x;
         var maxCount = gameDifficulty.InfectionCountRange.y;
-        canInfect = minCount >= 1;
         difficultyIndex = gameDifficultySettings.IndexOf(gameDifficulty);
         startInfectionCount = minCount;
         firstInfectTimePercentRange = gameDifficulty.FirstInfectTimeRange;
         PreInfectTime = gameDifficulty.PreInfectTime;
         InfectionTimeRange = gameDifficulty.InfectionTimeRange;
         MaxInfectionCount = maxCount;
-        
-        RandomSpawnInfection();
     }
     #endregion
 
@@ -507,16 +437,16 @@ public class GameManager : MonoSingleton<GameManager>
         switch (infectionThreshold)
         {
             case true:
-                for (int i = GridManager.Instance.totalInfected; i < gameDifficultySettings[difficultyIndex].InfectionCountRange.x; i++)
+                for (int i = GridManager.Instance.TotalInfected; i < CurrentGameDifficultySettings.InfectionCountRange.x; i++)
                 {
                     _listInfectTime.Add(Random.Range(
-                        gameDifficultySettings[difficultyIndex].FirstInfectTimeRange.x, 
-                        gameDifficultySettings[difficultyIndex].FirstInfectTimeRange.y));
+                        CurrentGameDifficultySettings.FirstInfectTimeRange.x, 
+                        CurrentGameDifficultySettings.FirstInfectTimeRange.y));
                 }
                 break;
             
             case false:
-                for (int i = GridManager.Instance.totalInfected; i < startInfectionCount; i++)
+                for (int i = GridManager.Instance.TotalInfected; i < startInfectionCount; i++)
                 {
                     _listInfectTime.Add(Random.Range(firstInfectTimePercentRange.x, firstInfectTimePercentRange.y));
                 }

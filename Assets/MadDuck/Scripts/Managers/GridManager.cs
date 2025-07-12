@@ -126,7 +126,7 @@ namespace MadDuck.Scripts.Managers
         private bool drawAllCustomGridCells = true;
 
         [Title("Infected Debug")]
-        [Sirenix.OdinInspector.ReadOnly] public int totalInfected;
+        [ShowInInspector, DisplayAsString] public int TotalInfected => preInfectBlocks.Count + infectedBlocks.Count;
         
         [Button("Test Fit-me")]
         private void TestFitMe()
@@ -137,7 +137,6 @@ namespace MadDuck.Scripts.Managers
         [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public float RandomInfectedTime { get; private set; }
         [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> preInfectBlocks = new();
         [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> infectedBlocks = new();
-        [SerializeField, Sirenix.OdinInspector.ReadOnly] public int InfectionCount => infectedBlocks.Count;
         #endregion
 
         #region Fields and Properties
@@ -454,9 +453,9 @@ namespace MadDuck.Scripts.Managers
             {
                 _vacantSchema = vacantSchema;
                 GameManager.Instance.AddScore(ScoreTypes.FitMe);
-                GameManager.Instance.NextGameDifficulty();
                 RemoveAllBlocks(true);
                 RegenerateGrid();
+                GameManager.Instance.NextGameDifficulty();
                 return true;
             }
             var contacts = new List<Block>();
@@ -646,8 +645,7 @@ namespace MadDuck.Scripts.Managers
         /// <returns>>true if more blocks can be infected, false otherwise</returns>
         private bool CanInfectMore()
         {
-            totalInfected = infectedBlocks.Count + preInfectBlocks.Count;
-            return totalInfected < GameManager.Instance.MaxInfectionCount;
+            return TotalInfected < GameManager.Instance.MaxInfectionCount;
         }
 
         public void InfectBlock(Block block)
