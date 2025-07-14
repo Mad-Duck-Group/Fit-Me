@@ -672,8 +672,10 @@ namespace MadDuck.Scripts.Managers
         public bool InfectRandomBlock(out Block block)
         {
             block = null;
+            if (preInfectBlocks.Count >= 1) return false;
             if (!CanInfectMore()) return false;
             if (BlocksOnGrid.Count == 0) return false;
+            
             var infectableBlocks = BlocksOnGrid.Where(block => block.BlockState == BlockState.Normal).ToList();
             if (infectableBlocks.Count == 0) return false;
             var infectBlock = infectableBlocks.GetRandomElement();
@@ -687,6 +689,7 @@ namespace MadDuck.Scripts.Managers
         public void InfectAdjacentBlocks(Block sourceBlock)
         {
             if (!CanInfectMore()) return;
+            if (preInfectBlocks.Count >= 1) return;
             if (!sourceBlock || sourceBlock.BlockState is not (BlockState.Infected or BlockState.PreInfected)) return;
 
             var candidatesForInfection = new List<Block>();
