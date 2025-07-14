@@ -30,6 +30,12 @@ namespace MadDuck.Scripts.Managers
             [field: SerializeField, DisplayAsString] public bool IsFree { get; set; } = true;
             [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public Block CurrentBlock { get; set; }
         }
+
+        [Serializable]
+        public record BlockViewDictionaryData
+        {
+            [field: SerializeField] public SerializableDictionary<string, BlockView> BlockViewDictionary { get; private set; } = new();
+        }
         
         private struct FaceAndSchemaData
         {
@@ -59,9 +65,9 @@ namespace MadDuck.Scripts.Managers
         #region Inspectors
 
         [Title("Random References")] 
-        [field: SerializeField] public SerializableDictionary<BlockTypes, SpriteLibraryAsset> SpriteLibraryAssets { get; private set; } = new();
-        [field: SerializeField] public SerializableDictionary<BlockTypes, Color> AtomColorDictionary { get; private set; } = new();
         [SerializeField] private Block blockPrefab;
+        [field: SerializeField] public SerializableDictionary<BlockTypes, BlockViewDictionaryData> BlockViewDatabase { get; private set; } = new();
+        [field: SerializeField] public SerializableDictionary<BlockTypes, Color> AtomColorDictionary { get; private set; } = new();
         [SerializeField] [DictionaryDrawerSettings(KeyLabel = "Block Face", ValueLabel = "Block Preset")] 
         private SerializableDictionary<string, BlockPreset> blockPresetDictionary = new();
         [SerializeField] private SpawnPoint[] spawnPoints;

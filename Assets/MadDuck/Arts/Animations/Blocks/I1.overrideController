@@ -6,6 +6,6 @@ AnimatorOverrideController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Jelly
+  m_Name: I1
   m_Controller: {fileID: 9100000, guid: f1f33db8e940703428cf1777a56fdef5, type: 2}
   m_Clips: []

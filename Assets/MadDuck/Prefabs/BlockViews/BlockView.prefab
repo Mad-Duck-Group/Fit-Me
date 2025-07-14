@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4936501770835252353}
   - component: {fileID: 5889855149828274974}
+  - component: {fileID: 7334463432806019827}
   m_Layer: 0
   m_Name: BlockView
   m_TagString: Untagged
@@ -55,6 +56,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7334463432806019827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2616369826545184939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36e6e1091d26d2647a097063952365b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  idleVariantCount: 2
+  originalColor: {r: 1, g: 1, b: 1, a: 1}
+  pickUpScaleMultiplier: 1.2
 --- !u!1 &7933645232937094862
 GameObject:
   m_ObjectHideFlags: 0

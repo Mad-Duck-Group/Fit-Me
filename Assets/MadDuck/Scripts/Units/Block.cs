@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Utils;
+using MadDuck.Scripts.Utils.Inspectors;
 using PrimeTween;
 using R3;
 using Sirenix.OdinInspector;
@@ -52,13 +53,12 @@ namespace MadDuck.Scripts.Units
         [Title("Block References")]
         [SerializeField] private Atom atomPrefab;
         [SerializeField] private Transform atomParent;
-        [SerializeField] private SpriteRenderer spriteRenderer;
-        [SerializeField] private SpriteResolver spriteResolver;
 
         [Title("Block Settings")]
         [SerializeField] private bool useAtomSprite;
-        [SerializeField] private Color originalColor = Color.white;
-        [SerializeField] private float pickUpScaleMultiplier = 1.2f;
+        [SerializeField, SortingLayer] private int originalSortingLayer;
+        [SerializeField, SortingLayer] private int pickUpSortingLayer;
+        [SerializeField] private Color originalAtomColor = Color.white;
         [field: SerializeField] public bool AllowPickUpAfterPlacement { get; private set; }
         
         [field: Title("Block Debug")]
@@ -69,7 +69,8 @@ namespace MadDuck.Scripts.Units
         [SerializeField, DisplayAsString] private FlashState flashState;
         [field: SerializeField, DisplayAsString] public BlockState BlockState { get; private set; } = BlockState.Normal;
         [field: SerializeField, DisplayAsString] public bool IsPlaced { get; private set; }
-        [field: SerializeField] public List<Cell> BlockCells { get; set; }
+        [field: SerializeField, ReadOnly] public List<Cell> BlockCells { get; set; }
+        [field: SerializeField, ReadOnly] private BlockView blockView;
         public int SpawnIndex { get; set; }
         #endregion
         
@@ -78,7 +79,6 @@ namespace MadDuck.Scripts.Units
         private Vector3 _originalPosition;
         private Vector3 _originalRotation;
         private Vector3 _originalScale;
-        private Vector3 _originalSpriteScale;
         private Color _beforeFlashColor;
         private Vector3 _mousePositionDifference;
         private Tween _transformTween;
@@ -97,7 +97,6 @@ namespace MadDuck.Scripts.Units
 
         public void Initialize()
         {
-            _originalSpriteScale = spriteRenderer.transform.localScale;
             _originalPosition = transform.position;
             _originalRotation = transform.eulerAngles;
             _originalScale = transform.localScale;
@@ -144,27 +143,24 @@ namespace MadDuck.Scripts.Units
                     Vector3 spawnPosition = new Vector3(spawnPosX, spawnPosY, 0);
                     var atom = Instantiate(atomPrefab, spawnPosition, Quaternion.identity, atomParent);
                     atom.ParentBlock = this;
-                    if (useAtomSprite)
-                    {
-                        var hasTop = HasElement(x - 1, y);
-                        var hasBottom = HasElement(x + 1, y);
-                        var hasLeft = HasElement(x, y - 1);
-                        var hasRight = HasElement(x, y + 1);
-                        atom.SpriteOutlineController.outlineTop = !hasTop;
-                        atom.SpriteOutlineController.outlineBottom = !hasBottom;
-                        atom.SpriteOutlineController.outlineLeft = !hasLeft;
-                        atom.SpriteOutlineController.outlineRight = !hasRight;
-                        atom.SpriteOutlineController.UpdateOutline();
-                    }
+                    var hasTop = HasElement(x - 1, y);
+                    var hasBottom = HasElement(x + 1, y);
+                    var hasLeft = HasElement(x, y - 1);
+                    var hasRight = HasElement(x, y + 1);
+                    atom.SpriteOutlineController.outlineTop = !hasTop;
+                    atom.SpriteOutlineController.outlineBottom = !hasBottom;
+                    atom.SpriteOutlineController.outlineLeft = !hasLeft;
+                    atom.SpriteOutlineController.outlineRight = !hasRight;
+                    atom.SpriteOutlineController.UpdateOutline();
                     Atoms.Add(atom);
                 }
             }
             // var spritePositionX = -column / 2f + 0.5f;
             // var spritePositionY = row / 2f - 0.5f;
             // spriteRenderer.transform.localPosition = new Vector3(spritePositionX, spritePositionY, 0);
-            if (useAtomSprite)
+            if (useAtomSprite && blockView)
             {
-                spriteRenderer.enabled = false;
+                blockView.gameObject.SetActive(false);
             }
             else
             {
@@ -217,7 +213,7 @@ namespace MadDuck.Scripts.Units
         
         public void Disinfect()
         {
-            SetColor(originalColor);
+            SetColor(originalAtomColor);
             BlockState = BlockState.Normal;
             _infectionSubscription?.Dispose();
         }
@@ -245,7 +241,8 @@ namespace MadDuck.Scripts.Units
             var mousePosition = PointerManager.Instance.MouseWorldPosition;
             _mousePositionDifference = new Vector3(mousePosition.x - position.x,
                 mousePosition.y - position.y, 0);
-            SetRendererSortingOrder(2);
+            //ChangeSortingOrder(1);
+            SetSortingLayer(pickUpSortingLayer);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -277,8 +274,9 @@ namespace MadDuck.Scripts.Units
             {
                 IsPlaced = true;
                 _mousePositionDifference = Vector3.zero;
-                SetRendererSortingOrder(1);
-                Tween.Scale(spriteRenderer.transform, _originalSpriteScale, 0.2f);
+                if (blockView) blockView.Place();
+                //ChangeSortingOrder(-1);
+                SetSortingLayer(originalSortingLayer);
                 RandomBlockManager.Instance.GameOverCheck().Forget();
             }
             else
@@ -296,24 +294,53 @@ namespace MadDuck.Scripts.Units
             BlockType = type;
             if (!useAtomSprite)
             {
-                if (!RandomBlockManager.Instance.SpriteLibraryAssets.TryGetValue(type, out var spriteAsset))
+                if (!GetBlockView(out var blockViewPrefab))
                 {
-                    Debug.LogError($"Sprite asset for block type {type} not found.");
+                    Debug.LogWarning($"BlockView for block type {BlockType} not found. Fall back to atom sprite.");
+                    useAtomSprite = true;
+                    Atoms.ForEach(atom => atom.SpriteRenderer.enabled = true);
+                    ChangeType(type, updateGrid);
                     return;
                 }
-                spriteResolver.spriteLibrary.spriteLibraryAsset = spriteAsset;
-                spriteResolver.SetCategoryAndLabel("Face", BlockFace);
-                spriteResolver.ResolveSpriteToSpriteRenderer();
+                if (blockView)
+                {
+                    Destroy(blockView.gameObject);
+                }
+                blockView = Instantiate(blockViewPrefab, transform.position, Quaternion.identity, transform);
             }
-            if (!RandomBlockManager.Instance.AtomColorDictionary.TryGetValue(type, out var color))
+            else
             {
-                Debug.LogError($"Color for block type {type} not found.");
-                return;
+                if (!RandomBlockManager.Instance.AtomColorDictionary.TryGetValue(type, out var color))
+                {
+                    Debug.LogError($"Color for block type {type} not found.");
+                    return;
+                }
+                originalAtomColor = color;
+                SetColor(color);
             }
-            originalColor = color;
-            SetColor(color);
             if (!updateGrid) return;
             GridManager.Instance.UpdateBlockOnGrid(this);
+        }
+
+        private bool GetBlockView(out BlockView blockView)
+        {
+            blockView = null;
+            if (!RandomBlockManager.Instance.BlockViewDatabase.TryGetValue(BlockType, out var blockViewDictionaryData))
+            {
+                Debug.LogWarning($"BlockView for block type {BlockType} not found in the database.");
+                return false;
+            }
+            if (!blockViewDictionaryData.BlockViewDictionary.TryGetValue(BlockFace, out blockView))
+            {
+                Debug.LogWarning($"BlockView for block type {BlockType} and face {BlockFace} not found in the database.");
+                return false;
+            }
+            if (!blockView)
+            {
+                Debug.LogWarning($"BlockView for block type {BlockType} and face {BlockFace} is null.");
+                return false;
+            }
+            return true;
         }
         
         public void StartFlashing(FlashState flashState)
@@ -325,16 +352,16 @@ namespace MadDuck.Scripts.Units
                     
                     if (_preInfectTween.isAlive)
                     { _preInfectTween.Complete(); }
-                    SetColor(originalColor);
-                    _flashTween = Tween.Custom(originalColor, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo,
+                    SetColor(originalAtomColor);
+                    _flashTween = Tween.Custom(originalAtomColor, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo,
                         onValueChange: SetColor);
                     break;
                 
                 case FlashState.PreInfectFlash:
                     if (BlockState != BlockState.PreInfected) return;
                     if(_preInfectTween.isAlive) return;
-                    SetColor(originalColor);
-                    _preInfectTween = Tween.Custom(originalColor, _infectColor, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo,
+                    SetColor(originalAtomColor);
+                    _preInfectTween = Tween.Custom(originalAtomColor, _infectColor, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo,
                         onValueChange: SetColor);
                     break;
                 
@@ -353,7 +380,7 @@ namespace MadDuck.Scripts.Units
             {
                 _flashTween.Complete();
                 _flashTween = default;
-                SetColor(originalColor);
+                SetColor(originalAtomColor);
             }
 
             switch (BlockState)
@@ -397,7 +424,7 @@ namespace MadDuck.Scripts.Units
             if (_preInfectTween.isAlive)
             { _preInfectTween.Stop(); }
             
-            SetColor(originalColor);
+            SetColor(originalAtomColor);
         }
         
         public void PickUpBlock()
@@ -409,7 +436,7 @@ namespace MadDuck.Scripts.Units
             }
             var gridSize = GridManager.Instance.Grid.cellSize;
             Tween.Scale(transform, gridSize, 0.2f);
-            _transformTween = Tween.Scale(spriteRenderer.transform, spriteRenderer.transform.localScale * pickUpScaleMultiplier, 0.2f);
+            if (blockView) blockView.PickUp();
         }
 
         /// <summary>
@@ -421,21 +448,46 @@ namespace MadDuck.Scripts.Units
             {
                 _transformTween.Stop();
             }
-            _transformTween = Tween.Position(transform, _originalPosition, 0.2f).OnComplete(() => SetRendererSortingOrder(1));
+            SetSortingLayer(originalSortingLayer);
+            _transformTween = Tween.Position(transform, _originalPosition, 0.2f);
             Tween.Rotation(transform, _originalRotation, 0.2f);
             Tween.Scale(transform, _originalScale, 0.2f);
-            Tween.Scale(spriteRenderer.transform, _originalSpriteScale, 0.2f);
+            if (blockView) blockView.Place();
             GridManager.Instance.ResetPreviousValidationCells();
+        }
+
+        public void SetSortingLayer(int layer)
+        {
+            if (useAtomSprite)
+            {
+                Atoms.ForEach(atom => atom.SpriteRenderer.sortingLayerID = layer);
+                return;
+            }
+            blockView.SetSortingLayer(layer);
         }
 
         /// <summary>
         /// Set the sorting order of atoms
         /// </summary>
         /// <param name="order">Order to render</param>
-        public void SetRendererSortingOrder(int order)
+        public void SetSortingOrder(int order)
         {
-            Atoms.ForEach(atom => atom.SpriteRenderer.sortingOrder = order);
-            spriteRenderer.sortingOrder = order;
+            if (useAtomSprite)
+            {
+                Atoms.ForEach(atom => atom.SpriteRenderer.sortingOrder = order);
+                return;
+            }
+            blockView.SetSortingOrder(order);
+        }
+        
+        public void ChangeSortingOrder(int change)
+        {
+            if (useAtomSprite)
+            {
+                Atoms.ForEach(atom => atom.SpriteRenderer.sortingOrder += change);
+                return;
+            }
+            blockView.ChangeSortingOrder(change);
         }
 
         public void SetColor(Color color)
@@ -445,7 +497,7 @@ namespace MadDuck.Scripts.Units
                 Atoms.ForEach(atom => atom.SpriteRenderer.color = color);
                 return;
             }
-            spriteRenderer.color = color;
+            blockView.SetColor(color);
         }
         #endregion
         
