@@ -21,6 +21,8 @@ MonoBehaviour:
   m_OverrideGlobalSceneList: 1
   m_Scenes:
   - m_enabled: 1
+    m_path: Assets/MadDuck/Scenes/MainMenu.unity
+  - m_enabled: 1
     m_path: Assets/MadDuck/Scenes/Gameplay.unity
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:

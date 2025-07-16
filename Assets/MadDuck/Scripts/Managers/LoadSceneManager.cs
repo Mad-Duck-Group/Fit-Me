@@ -3,11 +3,14 @@ using System.Collections;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using MadDuck.Scripts.UIs.Panels.MainMenu;
 using MessagePipe;
 using PrimeTween;
+using R3;
 using Redcode.Extensions;
 using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -46,12 +49,12 @@ namespace MadDuck.Scripts.Managers
         [Title("Scenes")]
         [SerializeField] private SerializableDictionary<SceneType, SceneReference> scenes;
 
-        [Title("Fade")] 
-        [SerializeField] private Image background;
-        [SerializeField] private float fadeOutTime = 1.5f;
-        [SerializeField] private Ease fadeOutEase = Ease.OutQuint;
-        [SerializeField] private Ease fadeInEase = Ease.InQuint;
-        
+        [field: Title("Transition")] 
+        [field: SerializeField] public InterfaceReference<ICascadeScreen> CascadeScreen { get; private set; }
+        [SerializeField] private bool minimumLoadingScreenDuration = true;
+        [SerializeField, ShowIf(nameof(minimumLoadingScreenDuration))] 
+        private float loadingScreenDuration = 1f;
+
         [Title("Debug")]
         [SerializeField] private SceneType debugSceneType;
         [Button("Debug Load Scene")]
@@ -88,8 +91,6 @@ namespace MadDuck.Scripts.Managers
         {
             _loadSceneEventListener = GlobalMessagePipe.GetSubscriber<LoadSceneEvent>()
                 .Subscribe(OnLoadSceneEvent);
-            background.color = new Color(0, 0, 0, 0);
-            background.gameObject.SetActive(false);
         }
 
         private void OnDisable()
@@ -117,7 +118,7 @@ namespace MadDuck.Scripts.Managers
             LoadScene(sceneType, loadSceneMode, useLoadingScene);
         }
         
-        public void LoadScene(SceneType sceneType, LoadSceneMode loadSceneMode, bool useLoadingScene)
+        public async void LoadScene(SceneType sceneType, LoadSceneMode loadSceneMode, bool useLoadingScene)
         {
             if (_asyncOperation is { isDone: false } || _fadeTween.isAlive) return;
             string sceneName;
@@ -133,12 +134,10 @@ namespace MadDuck.Scripts.Managers
             NextScene = sceneName;
             LoadSceneMode = loadSceneMode;
             OnStartFadeOut?.Invoke();
-            background.gameObject.SetActive(true);
-            _fadeTween = Tween.Alpha(background, 0f, 1f, fadeOutTime, fadeOutEase, useUnscaledTime: true)
-                .OnComplete(() =>
-                {
-                    OnFadeOutComplete(useLoadingScene);
-                });
+            CascadeScreen.Value.Show();
+            await CascadeScreen.Value.TransitionIn().ToUniTask();
+            await CascadeScreen.Value.TransitionBefore().ToUniTask();
+            OnFadeOutComplete(useLoadingScene);
         }
 
         private void OnFadeOutComplete(bool useLoadingScene)
@@ -146,7 +145,6 @@ namespace MadDuck.Scripts.Managers
             OnFinishFadeOut?.Invoke();
             if (useLoadingScene)
             {
-                background.color = new Color(0, 0, 0, 0);
                 string loadingScene;
                 if (scenes.TryGetValue(SceneType.Loading, out SceneReference loadingSceneReference))
                 {
@@ -172,7 +170,19 @@ namespace MadDuck.Scripts.Managers
             SceneManager.activeSceneChanged += UnloadScene;
             _asyncOperation = SceneManager.LoadSceneAsync(NextScene, LoadSceneMode);
             _asyncOperation.allowSceneActivation = false;
-            await UniTask.WaitWhile(() => _asyncOperation.progress < 0.9f, cancellationToken: cancellationToken);
+            var progressCts = new CancellationTokenSource();
+            Observable.EveryValueChanged(_asyncOperation, f => f.progress, cancellationToken: progressCts.Token)
+                .Subscribe(progress => CascadeScreen.Value.Progress = progress)
+                .AddTo(this);
+            if (!minimumLoadingScreenDuration)
+                await UniTask.WaitWhile(() => _asyncOperation.progress < 0.9f, cancellationToken: cancellationToken);
+            else
+            {
+                await UniTask.WhenAll(UniTask.WaitWhile(() => _asyncOperation.progress < 0.9f, cancellationToken: cancellationToken),
+                    UniTask.WaitForSeconds(loadingScreenDuration, ignoreTimeScale: true, cancellationToken: cancellationToken));
+            }
+            progressCts.Cancel();
+            CascadeScreen.Value.Progress = 1f;
             if (cancellationToken.IsCancellationRequested)
             {
                 return;
@@ -189,7 +199,7 @@ namespace MadDuck.Scripts.Managers
             _loadSceneCts?.Cancel();
         }
 
-        private void UnloadScene(Scene lastScene, Scene current)
+        private async void UnloadScene(Scene lastScene, Scene current)
         {
             Debug.Log("Unloading " + lastScene.name);
             if (LoadSceneMode == LoadSceneMode.Additive)
@@ -197,12 +207,11 @@ namespace MadDuck.Scripts.Managers
                 SceneManager.UnloadSceneAsync(lastScene);
             }
             OnStartFadeIn?.Invoke();
-            _fadeTween = Tween.Alpha(background, 1f, 0f, fadeOutTime, fadeInEase, useUnscaledTime: true)
-                .OnComplete(() =>
-                {
-                    background.gameObject.SetActive(false);
-                    OnFinishFadeIn?.Invoke();
-                });
+            await CascadeScreen.Value.TransitionAfter().ToUniTask();
+            await CascadeScreen.Value.TransitionOut().ToUniTask();
+            CascadeScreen.Value.Hide();
+            CascadeScreen.Value.Progress = 0f;
+            OnFinishFadeIn?.Invoke();
             SceneManager.activeSceneChanged -= UnloadScene;
         }
         #endregion

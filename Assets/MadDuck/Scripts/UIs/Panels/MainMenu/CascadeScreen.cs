@@ -8,14 +8,14 @@ using UnityEngine;
 
 namespace MadDuck.Scripts.UIs.Panels.MainMenu
 {
-    public interface ILoadingScreen : IUIPanel
+    public interface ICascadeScreen : IUIPanel
     {
         Sequence TransitionBefore();
         Sequence TransitionAfter();
         float Progress { get; set; }
     }
     
-    public class LoadingScreen : UIPanel, ILoadingScreen
+    public class CascadeScreen : UIPanel, ICascadeScreen
     {
         [Serializable]
         private struct BlockTween
@@ -32,7 +32,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         [SerializeField] private TweenSettings<float> transitionOutTweenSettings;
         
         [TitleGroup("Debug")]
-        [ShowInInspector, ProgressBar(0, 1)] public float Progress { get; set; }
+        [ShowInInspector, ProgressBar(0f, 1f)] public float Progress { get; set; }
         private Sequence _blockSequence;
 
         protected override void Awake()
