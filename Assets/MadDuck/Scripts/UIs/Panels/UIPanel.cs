@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using MadDuck.Scripts.UIs.Panels.MainMenu;
+using MadDuck.Scripts.UIs.Panels.Transition;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -39,6 +40,7 @@ namespace MadDuck.Scripts.UIs.Panels
         Sequence TransitionOut();
         void ActivateInput();
         void DeactivateInput();
+        void ClearEvents();
     }
 
     [RequireComponent(typeof(CanvasGroup))]
@@ -65,7 +67,7 @@ namespace MadDuck.Scripts.UIs.Panels
         protected CanvasGroup panelCanvasGroup;
         protected Sequence transitionSequence;
         public event Action<UIPanel, CrossFadeSettings, Action> ChangeUIPanelCallback;
-        public event Action<ICascadeScreen, UIPanel> LoadingScreenCallback;
+        public event Action<ITransitionScreen, UIPanel> LoadingScreenCallback;
         #endregion
 
         #region Initialization
@@ -140,9 +142,9 @@ namespace MadDuck.Scripts.UIs.Panels
             ChangeUIPanelCallback?.Invoke(newPanel, crossFadeSettings, customCrossFade);
         }
         
-        protected void CascadeScreen(ICascadeScreen cascade, UIPanel next)
+        protected void CascadeScreen(ITransitionScreen transition, UIPanel next)
         {
-            LoadingScreenCallback?.Invoke(cascade, next);
+            LoadingScreenCallback?.Invoke(transition, next);
         }
         
         public void ClearEvents()

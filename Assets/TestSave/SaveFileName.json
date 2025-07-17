@@ -14,5 +14,69 @@
     "$type": "Esper.ESave.SavableObjects.SavableData`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
     "value": 999,
     "id": "Disinfectant"
+  },
+  "ScoreData": {
+    "$type": "Esper.ESave.SavableObjects.SavableData`1[[MadDuck.Scripts.Managers.ScoreData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "value": {
+      "$type": "MadDuck.Scripts.Managers.ScoreData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "highScore": 0,
+      "runData": {
+        "$type": "System.Collections.Generic.List`1[[MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+        "$values": [
+          {
+            "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "dateTime": "2025-07-17T13:29:18.2903151+07:00",
+            "score": 0
+          },
+          {
+            "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "dateTime": "2025-07-17T13:29:17.3311469+07:00",
+            "score": 0
+          },
+          {
+            "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "dateTime": "2025-07-17T13:29:01.1772178+07:00",
+            "score": 0
+          }
+        ]
+      }
+    },
+    "id": "ScoreData"
+  },
+  "RecentFitMe": {
+    "$type": "Esper.ESave.SavableObjects.SavableData`1[[MadDuck.Scripts.Managers.FitMeData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "value": {
+      "$type": "MadDuck.Scripts.Managers.FitMeData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "mostFitMe": 0,
+      "runData": {
+        "$type": "System.Collections.Generic.List`1[[MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+        "$values": [
+          {
+            "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "dateTime": "2025-07-17T13:29:18.2903151+07:00",
+            "fitMe": 0
+          },
+          {
+            "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "dateTime": "2025-07-17T13:29:17.3311469+07:00",
+            "fitMe": 0
+          },
+          {
+            "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "dateTime": "2025-07-17T13:29:01.1817235+07:00",
+            "fitMe": 0
+          }
+        ]
+      }
+    },
+    "id": "RecentFitMe"
+  },
+  "AchievementData": {
+    "$type": "Esper.ESave.SavableObjects.SavableData`1[[MadDuck.Scripts.Managers.AchievementData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "value": {
+      "$type": "MadDuck.Scripts.Managers.AchievementData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "completedCount": 0
+    },
+    "id": "AchievementData"
   }
 }

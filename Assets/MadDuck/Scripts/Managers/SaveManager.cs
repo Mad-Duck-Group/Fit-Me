@@ -37,7 +37,7 @@ namespace MadDuck.Scripts.Managers
         public void Load()
         {
             if (!SaveFileSetup) SaveFileSetup = GetComponent<SaveFileSetup>();
-            var operation = CurrentSaveFile.Load();
+            var operation = CurrentSaveFile.Load(true);
             operation.onOperationEnded.AddListener(() =>
             {
                 if (operation.state == SaveFileOperation.OperationState.Completed)

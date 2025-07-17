@@ -33,8 +33,8 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
                 .Group(Tween.Alpha(panelCanvasGroup, transitionInTweenSettings))
                 .OnComplete(() =>
                 {
-                    TweenLogo();
                     TransitionState = TransitionState.Idle;
+                    TweenLogo();
                 });
             return transitionSequence;
         }

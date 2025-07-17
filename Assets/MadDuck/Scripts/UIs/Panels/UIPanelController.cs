@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.UIs.Panels.MainMenu;
+using MadDuck.Scripts.UIs.Panels.Transition;
 using MadDuck.Scripts.Utils.Inspectors;
 using PrimeTween;
 using Sherbert.Framework.Generic;
@@ -87,24 +88,24 @@ namespace MadDuck.Scripts.UIs.Panels
                 panel.ClearEvents();
             }
 
-            async void LoadingScene(ICascadeScreen cascade, UIPanel next)
+            async void LoadingScene(ITransitionScreen transition, UIPanel next)
             {
                 panel.LoadingScreenCallback -= LoadingScene;
-                cascade.Show();
-                await cascade.TransitionIn().ToUniTask();
-                await cascade.TransitionBefore().ToUniTask();
+                transition.Show();
+                await transition.TransitionIn().ToUniTask();
+                await transition.TransitionBefore().ToUniTask();
                 await panel.TransitionOut().ToUniTask();
                 UnfocusPanel(panel);
                 panel.Hide();
                 panel.ClearEvents();
-                FocusPanel(cascade as UIPanel);
+                FocusPanel(transition as UIPanel);
                 next.Show();
                 await UniTask.WhenAll(next.TransitionIn().ToUniTask(), UniTask.WaitForSeconds(loadingScreenDuration));
-                await cascade.TransitionAfter().ToUniTask();
-                await cascade.TransitionOut().ToUniTask();
-                UnfocusPanel(cascade as UIPanel);
-                cascade.Hide();
-                (cascade as UIPanel).ClearEvents();
+                await transition.TransitionAfter().ToUniTask();
+                await transition.TransitionOut().ToUniTask();
+                UnfocusPanel(transition as UIPanel);
+                transition.Hide();
+                transition.ClearEvents();
                 FocusPanel(next);
             }
         }

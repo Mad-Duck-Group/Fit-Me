@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.UIs.Panels.MainMenu;
+using MadDuck.Scripts.UIs.Panels.Transition;
 using MessagePipe;
 using PrimeTween;
 using R3;
@@ -43,14 +45,22 @@ namespace MadDuck.Scripts.Managers
         Gameplay
     }
 
-    public class LoadSceneManager : PersistentMonoSingleton<LoadSceneManager>
+    public enum TransitionScreenType
+    {
+        BlockCascade,
+        BlockPopUp
+    }
+
+    [ShowOdinSerializedPropertiesInInspector]
+    public class LoadSceneManager : PersistentMonoSingleton<LoadSceneManager>, ISerializationCallbackReceiver, ISupportsPrefabSerialization
     {
         #region Inspectors
         [Title("Scenes")]
         [SerializeField] private SerializableDictionary<SceneType, SceneReference> scenes;
 
         [field: Title("Transition")] 
-        [field: SerializeField] public InterfaceReference<ICascadeScreen> CascadeScreen { get; private set; }
+        [field: OdinSerialize] public SerializableDictionary<TransitionScreenType, ITransitionScreen> TransitionScreens 
+        { get; private set; } = new();
         [SerializeField] private bool minimumLoadingScreenDuration = true;
         [SerializeField, ShowIf(nameof(minimumLoadingScreenDuration))] 
         private float loadingScreenDuration = 1f;
@@ -70,6 +80,7 @@ namespace MadDuck.Scripts.Managers
         public static event Action OnStartFadeIn;
         public static event Action OnFinishFadeIn;
     
+        private ITransitionScreen _currentTransitionScreen;
         private IDisposable _loadSceneEventListener;
         private Tween _fadeTween;
         private AsyncOperation _asyncOperation;
@@ -134,9 +145,10 @@ namespace MadDuck.Scripts.Managers
             NextScene = sceneName;
             LoadSceneMode = loadSceneMode;
             OnStartFadeOut?.Invoke();
-            CascadeScreen.Value.Show();
-            await CascadeScreen.Value.TransitionIn().ToUniTask();
-            await CascadeScreen.Value.TransitionBefore().ToUniTask();
+            _currentTransitionScreen = TransitionScreens.Values.GetRandomElement();
+            _currentTransitionScreen.Show();
+            await _currentTransitionScreen.TransitionIn().ToUniTask();
+            await _currentTransitionScreen.TransitionBefore().ToUniTask();
             OnFadeOutComplete(useLoadingScene);
         }
 
@@ -172,7 +184,7 @@ namespace MadDuck.Scripts.Managers
             _asyncOperation.allowSceneActivation = false;
             var progressCts = new CancellationTokenSource();
             Observable.EveryValueChanged(_asyncOperation, f => f.progress, cancellationToken: progressCts.Token)
-                .Subscribe(progress => CascadeScreen.Value.Progress = progress)
+                .Subscribe(progress => _currentTransitionScreen.Progress = progress)
                 .AddTo(this);
             if (!minimumLoadingScreenDuration)
                 await UniTask.WaitWhile(() => _asyncOperation.progress < 0.9f, cancellationToken: cancellationToken);
@@ -182,7 +194,7 @@ namespace MadDuck.Scripts.Managers
                     UniTask.WaitForSeconds(loadingScreenDuration, ignoreTimeScale: true, cancellationToken: cancellationToken));
             }
             progressCts.Cancel();
-            CascadeScreen.Value.Progress = 1f;
+            _currentTransitionScreen.Progress = 1f;
             if (cancellationToken.IsCancellationRequested)
             {
                 return;
@@ -207,12 +219,32 @@ namespace MadDuck.Scripts.Managers
                 SceneManager.UnloadSceneAsync(lastScene);
             }
             OnStartFadeIn?.Invoke();
-            await CascadeScreen.Value.TransitionAfter().ToUniTask();
-            await CascadeScreen.Value.TransitionOut().ToUniTask();
-            CascadeScreen.Value.Hide();
-            CascadeScreen.Value.Progress = 0f;
+            await _currentTransitionScreen.TransitionAfter().ToUniTask();
+            await _currentTransitionScreen.TransitionOut().ToUniTask();
+            _currentTransitionScreen.Hide();
+            _currentTransitionScreen.Progress = 0f;
+            _currentTransitionScreen = null;
             OnFinishFadeIn?.Invoke();
             SceneManager.activeSceneChanged -= UnloadScene;
+        }
+        #endregion
+
+        #region Serialization
+        [SerializeField, HideInInspector]
+        private SerializationData serializationData;
+        SerializationData ISupportsPrefabSerialization.SerializationData 
+        {
+            get => serializationData;
+            set => serializationData = value;
+        }
+        public void OnBeforeSerialize()
+        {
+            UnitySerializationUtility.SerializeUnityObject(this, ref serializationData);
+        }
+
+        public void OnAfterDeserialize()
+        {
+            UnitySerializationUtility.DeserializeUnityObject(this, ref serializationData);
         }
         #endregion
     }

@@ -30,7 +30,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
 
         private void OnButtonClicked(MainMenuPanelType mainMenuPanelType)
         {
-            //ChangePanel(MainMenuManager.Instance.PanelDictionary[mainMenuPanelType], crossFadeSettings);
+            ChangePanel(MainMenuManager.Instance.PanelDictionary[mainMenuPanelType], crossFadeSettings);
         }
 
         public override Sequence TransitionIn()

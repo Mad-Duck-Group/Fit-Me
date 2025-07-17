@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
-using MadDuck.Scripts.Managers;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace MadDuck.Scripts.UIs.Panels.MainMenu
+namespace MadDuck.Scripts.UIs.Panels.Transition
 {
-    public interface ICascadeScreen : IUIPanel
+    public interface ITransitionScreen : IUIPanel
     {
         Sequence TransitionBefore();
         Sequence TransitionAfter();
         float Progress { get; set; }
     }
     
-    public class CascadeScreen : UIPanel, ICascadeScreen
+    public class BlockCascadeScreen : UIPanel, ITransitionScreen
     {
         [Serializable]
         private struct BlockTween

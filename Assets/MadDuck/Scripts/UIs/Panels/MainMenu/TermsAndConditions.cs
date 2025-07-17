@@ -1,5 +1,6 @@
 ﻿using MadDuck.Scripts.Managers;
 using PrimeTween;
+using Redcode.Extensions;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,7 +24,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
 
         private void OnAcceptButtonClicked()
         {
-            var loadingPanel = LoadSceneManager.Instance.CascadeScreen.Value;
+            var loadingPanel = LoadSceneManager.Instance.TransitionScreens.Values.GetRandomElement();
             var mainMenuPanel = MainMenuManager.Instance.PanelDictionary[MainMenuPanelType.MainMenu];
             CascadeScreen(loadingPanel, mainMenuPanel);
         }
