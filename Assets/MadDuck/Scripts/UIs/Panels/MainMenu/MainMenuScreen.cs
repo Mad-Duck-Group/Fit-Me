@@ -1,29 +1,39 @@
-﻿using Cysharp.Threading.Tasks;
-using MadDuck.Scripts.Managers;
+﻿using MadDuck.Scripts.Managers;
 using PrimeTween;
 using Sirenix.OdinInspector;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace MadDuck.Scripts.UIs.Panels.MainMenu
 {
-    public class SplashScreen : UIPanel
+    public class MainMenuScreen : UIPanel
     {
         [Title("References")]
-        [SerializeField] private RectTransform madduckLogo;
-        [SerializeField] private float splashScreenDuration = 3f;
+        [SerializeField] private Button playButton;
+        [SerializeField] private Button settingsButton;
+        [SerializeField] private Button statsButton;
+        [SerializeField] private Button achievementsButton;
+        [SerializeField] private TMP_Text versionText;
 
         [Title("Tween")] 
         [SerializeField] private TweenSettings<float> transitionInTweenSettings;
         [SerializeField] private TweenSettings<float> transitionOutTweenSettings;
-        [SerializeField] private TweenSettings<Vector3> logoScaleTweenSettings;
-
-        private Sequence _logoSequence;
-
+        
         public override void Initialize()
         {
             base.Initialize();
-            madduckLogo.localScale = Vector3.zero; // Start with the logo scaled down
+            playButton.onClick.AddListener(() => LoadSceneManager.Instance.LoadScene(SceneType.Gameplay, LoadSceneMode.Single, false));
+            settingsButton.onClick.AddListener(() => OnButtonClicked(MainMenuPanelType.Settings));
+            statsButton.onClick.AddListener(() => OnButtonClicked(MainMenuPanelType.Stats));
+            achievementsButton.onClick.AddListener(() => OnButtonClicked(MainMenuPanelType.Achievements));
+            versionText.text = Application.version;
+        }
+
+        private void OnButtonClicked(MainMenuPanelType mainMenuPanelType)
+        {
+            ChangePanel(this, MainMenuManager.Instance.PanelDictionary[mainMenuPanelType], CrossFadeSettings);
         }
 
         public override Sequence TransitionIn()
@@ -34,7 +44,6 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
                 .OnComplete(() =>
                 {
                     TransitionState = TransitionState.Idle;
-                    TweenLogo();
                 });
             return transitionSequence;
         }
@@ -46,23 +55,9 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
                 .Group(Tween.Alpha(panelCanvasGroup, transitionOutTweenSettings))
                 .OnComplete(() =>
                 {
-                     TransitionState = TransitionState.Idle;
+                    TransitionState = TransitionState.Idle;
                 });
             return transitionSequence;
         }
-
-        private void TweenLogo()
-        {
-            _logoSequence = Sequence.Create()
-                .Group(Tween.Scale(madduckLogo, logoScaleTweenSettings))
-                .OnComplete(OnComplete);
-            
-            async void OnComplete()
-            {
-                await UniTask.WaitForSeconds(splashScreenDuration);
-                ChangePanel(this, MainMenuManager.Instance.PanelDictionary[MainMenuPanelType.TermsAndConditions], CrossFadeSettings);
-            }
-        }
-        
     }
 }

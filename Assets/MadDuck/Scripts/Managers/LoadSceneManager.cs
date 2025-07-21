@@ -93,6 +93,10 @@ namespace MadDuck.Scripts.Managers
         #region Initialization
         private void Start()
         {
+            TransitionScreens.Values.ForEach(screen =>
+            {
+                screen.Initialize();
+            });
             if (!FirstSceneLoaded) OnFinishFadeIn?.Invoke();
         }
         #endregion

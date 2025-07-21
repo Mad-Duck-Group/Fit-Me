@@ -1,29 +1,32 @@
-﻿using Cysharp.Threading.Tasks;
-using MadDuck.Scripts.Managers;
+﻿using MadDuck.Scripts.Managers;
 using PrimeTween;
+using Redcode.Extensions;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace MadDuck.Scripts.UIs.Panels.MainMenu
 {
-    public class SplashScreen : UIPanel
+    public class TermsAndConditionsScreen : UIPanel
     {
         [Title("References")]
-        [SerializeField] private RectTransform madduckLogo;
-        [SerializeField] private float splashScreenDuration = 3f;
-
+        [SerializeField] private Button acceptButton;
+        
         [Title("Tween")] 
         [SerializeField] private TweenSettings<float> transitionInTweenSettings;
         [SerializeField] private TweenSettings<float> transitionOutTweenSettings;
-        [SerializeField] private TweenSettings<Vector3> logoScaleTweenSettings;
-
-        private Sequence _logoSequence;
-
+        
         public override void Initialize()
         {
             base.Initialize();
-            madduckLogo.localScale = Vector3.zero; // Start with the logo scaled down
+            acceptButton.onClick.AddListener(OnAcceptButtonClicked);
+        }
+
+        private void OnAcceptButtonClicked()
+        {
+            var loadingPanel = LoadSceneManager.Instance.TransitionScreens.Values.GetRandomElement();
+            var mainMenuPanel = MainMenuManager.Instance.PanelDictionary[MainMenuPanelType.MainMenu];
+            TransitionScreen(loadingPanel,this, mainMenuPanel);
         }
 
         public override Sequence TransitionIn()
@@ -34,7 +37,6 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
                 .OnComplete(() =>
                 {
                     TransitionState = TransitionState.Idle;
-                    TweenLogo();
                 });
             return transitionSequence;
         }
@@ -46,23 +48,9 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
                 .Group(Tween.Alpha(panelCanvasGroup, transitionOutTweenSettings))
                 .OnComplete(() =>
                 {
-                     TransitionState = TransitionState.Idle;
+                    TransitionState = TransitionState.Idle;
                 });
             return transitionSequence;
         }
-
-        private void TweenLogo()
-        {
-            _logoSequence = Sequence.Create()
-                .Group(Tween.Scale(madduckLogo, logoScaleTweenSettings))
-                .OnComplete(OnComplete);
-            
-            async void OnComplete()
-            {
-                await UniTask.WaitForSeconds(splashScreenDuration);
-                ChangePanel(this, MainMenuManager.Instance.PanelDictionary[MainMenuPanelType.TermsAndConditions], CrossFadeSettings);
-            }
-        }
-        
     }
 }

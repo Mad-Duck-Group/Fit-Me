@@ -2,37 +2,31 @@
 using PrimeTween;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace MadDuck.Scripts.UIs.Panels.MainMenu
 {
-    public class MainMenuPanel : UIPanel
+    public class MainMenuSettingScreen : UIPanel
     {
         [Title("References")]
-        [SerializeField] private Button playButton;
-        [SerializeField] private Button settingsButton;
-        [SerializeField] private Button statsButton;
-        [SerializeField] private Button achievementsButton;
+        [SerializeField] private Button backButton;
         
-        [Title("Tween")] 
+        [Title("Tween")]
         [SerializeField] private TweenSettings<float> transitionInTweenSettings;
         [SerializeField] private TweenSettings<float> transitionOutTweenSettings;
         
-        protected override void Awake()
+        public override void Initialize()
         {
-            base.Awake();
-            playButton.onClick.AddListener(() => LoadSceneManager.Instance.LoadScene(SceneType.Gameplay, LoadSceneMode.Single, false));
-            settingsButton.onClick.AddListener(() => OnButtonClicked(MainMenuPanelType.Settings));
-            statsButton.onClick.AddListener(() => OnButtonClicked(MainMenuPanelType.Stats));
-            achievementsButton.onClick.AddListener(() => OnButtonClicked(MainMenuPanelType.Achievements));
+            base.Initialize();
+            backButton.onClick.AddListener(OnBackButtonClicked);
         }
-
-        private void OnButtonClicked(MainMenuPanelType mainMenuPanelType)
+        
+        private void OnBackButtonClicked()
         {
-            ChangePanel(MainMenuManager.Instance.PanelDictionary[mainMenuPanelType], crossFadeSettings);
+            var mainMenuPanel = MainMenuManager.Instance.PanelDictionary[MainMenuPanelType.MainMenu];
+            ChangePanel(this, mainMenuPanel, CrossFadeSettings);
         }
-
+        
         public override Sequence TransitionIn()
         {
             TransitionState = TransitionState.TransitioningIn;
@@ -47,7 +41,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         
         public override Sequence TransitionOut()
         {
-            TransitionState = TransitionState.TransitioningIn;
+            TransitionState = TransitionState.TransitioningOut;
             transitionSequence = Sequence.Create()
                 .Group(Tween.Alpha(panelCanvasGroup, transitionOutTweenSettings))
                 .OnComplete(() =>

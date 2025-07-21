@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.UIs.Panels;
+using Redcode.Extensions;
 using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
 using UnityCommunity.UnitySingleton;
@@ -18,13 +19,20 @@ namespace MadDuck.Scripts.Managers
     }
     public class MainMenuManager : MonoSingleton<MainMenuManager>
     {
-        [Title("References")] 
+        [Title("References")]
         [field: SerializeField] public SerializableDictionary<MainMenuPanelType, UIPanel> PanelDictionary { get; private set; }
         [SerializeReference, HideReferenceObjectPicker, HideLabel] private UIPanelController panelController = new();
+        
+        [Title("Settings")]
+        [SerializeField] private MainMenuPanelType initialPanelType = MainMenuPanelType.SplashScreen;
 
         private void Start()
         {
-            panelController.ChangePanel(PanelDictionary[MainMenuPanelType.SplashScreen]).Forget();
+            PanelDictionary.Values.ForEach(p =>
+            {
+                p.Initialize();
+            });
+            panelController.ShowPanel(PanelDictionary[initialPanelType]).Forget();
         }
     }
 }

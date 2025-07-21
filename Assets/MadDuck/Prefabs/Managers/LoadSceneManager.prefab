@@ -356,7 +356,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6860775362522067300
 RectTransform:
   m_ObjectHideFlags: 0
@@ -444,8 +444,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3996b6a904845829ef8ba42a6ff469c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  crossFadeSettings:
-    crossFadeType: 3
+  <CrossFadeSettings>k__BackingField:
+    crossFadeType: 0
     customOffset: 0
   blockTweens:
   - block: {fileID: 5515647721750082982}
@@ -858,7 +858,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2872223258779845257
 RectTransform:
   m_ObjectHideFlags: 0
@@ -946,8 +946,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c093e5ada8d146e3a3173f8f02f5afe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  crossFadeSettings:
-    crossFadeType: 3
+  <CrossFadeSettings>k__BackingField:
+    crossFadeType: 0
     customOffset: 0
   blockTweens:
   - block: {fileID: 2232970530138829923}

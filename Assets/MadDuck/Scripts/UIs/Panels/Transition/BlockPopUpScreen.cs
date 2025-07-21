@@ -27,9 +27,9 @@ namespace MadDuck.Scripts.UIs.Panels.Transition
         [ShowInInspector, ProgressBar(0f, 1f)] public float Progress { get; set; }
         private Sequence _blockSequence;
 
-        protected override void Awake()
+        public override void Initialize()
         {
-            base.Awake();
+            base.Initialize();
             foreach (var blockTween in blockTweens)
             {
                 blockTween.block.localScale = blockTween.scaleTweenSettings.startValue; // Initialize blocks to their start scale

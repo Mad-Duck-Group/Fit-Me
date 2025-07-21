@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.UIs.Panels.MainMenu;
 using MadDuck.Scripts.UIs.Panels.Transition;
 using PrimeTween;
@@ -33,7 +35,7 @@ namespace MadDuck.Scripts.UIs.Panels
         VisibilityState VisibilityState { get; }
         TransitionState TransitionState { get; }
         InputState InputState { get; }
-        
+        void Initialize();
         void Show();
         void Hide();
         Sequence TransitionIn();
@@ -48,7 +50,7 @@ namespace MadDuck.Scripts.UIs.Panels
     {
         #region Inspectors
         [TitleGroup("Cross Fade", order: 9)]
-        [SerializeField] protected CrossFadeSettings crossFadeSettings;
+        [field: SerializeField] public CrossFadeSettings CrossFadeSettings { get; private set; }
         
         [TitleGroup("Debug", order: 10)]
         [ShowInInspector, DisplayAsString]
@@ -66,20 +68,23 @@ namespace MadDuck.Scripts.UIs.Panels
 
         protected CanvasGroup panelCanvasGroup;
         protected Sequence transitionSequence;
-        public event Action<UIPanel, CrossFadeSettings, Action> ChangeUIPanelCallback;
-        public event Action<ITransitionScreen, UIPanel> LoadingScreenCallback;
+        public delegate UniTask OnChangeUIPanel(UIPanel previous, UIPanel next, CrossFadeSettings crossFadeSettings, 
+            Action customCrossFade, CancellationToken cancellationToken = default);
+        public event OnChangeUIPanel ChangePanelCallback;
+        public delegate UniTask OnLoadingScreen(ITransitionScreen transitionScreen, UIPanel previous, UIPanel next);
+        public event OnLoadingScreen TransitionScreenCallback;
+        public CancellationTokenSource CancellationTokenSource { get; private set; } = new();
         #endregion
 
         #region Initialization
 
-        protected virtual void Awake()
+        public virtual void Initialize()
         {
             panelCanvasGroup = GetComponent<CanvasGroup>();
             if (panelCanvasGroup == null)
             {
                 Debug.LogError($"UIPanel {name} requires a CanvasGroup component.");
             }
-
             Hide();
             DeactivateInput();
         }
@@ -90,14 +95,16 @@ namespace MadDuck.Scripts.UIs.Panels
 
         public virtual void Show()
         {
+            gameObject.SetActive(true);
             VisibilityState = VisibilityState.Shown;
-            panelCanvasGroup.gameObject.SetActive(true);
+            panelCanvasGroup.alpha = 1f;
         }
 
         public virtual void Hide()
         {
             VisibilityState = VisibilityState.Hidden;
-            panelCanvasGroup.gameObject.SetActive(false);
+            panelCanvasGroup.alpha = 0f;
+            gameObject.SetActive(false);
         }
 
         #endregion
@@ -137,20 +144,28 @@ namespace MadDuck.Scripts.UIs.Panels
         #endregion
 
         #region Events
-        protected void ChangePanel(UIPanel newPanel, CrossFadeSettings crossFadeSettings = default, Action customCrossFade = null)
+        protected void ChangePanel(UIPanel previous, UIPanel next, CrossFadeSettings crossFadeSettings = default, Action customCrossFade = null)
         {
-            ChangeUIPanelCallback?.Invoke(newPanel, crossFadeSettings, customCrossFade);
+            next.CancelTransition();
+            CancellationTokenSource = new CancellationTokenSource();
+            ChangePanelCallback?.Invoke(previous, next, crossFadeSettings, customCrossFade, CancellationTokenSource.Token);
         }
         
-        protected void CascadeScreen(ITransitionScreen transition, UIPanel next)
+        protected void TransitionScreen(ITransitionScreen transition, UIPanel previous, UIPanel next)
         {
-            LoadingScreenCallback?.Invoke(transition, next);
+            TransitionScreenCallback?.Invoke(transition, previous, next);
         }
         
         public void ClearEvents()
         {
-            ChangeUIPanelCallback = null;
-            LoadingScreenCallback = null;
+            ChangePanelCallback = null;
+            TransitionScreenCallback = null;
+        }
+
+        public void CancelTransition()
+        {
+            transitionSequence.Stop();
+            CancellationTokenSource?.Cancel();
         }
         #endregion
     }
