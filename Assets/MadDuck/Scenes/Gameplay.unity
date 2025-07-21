@@ -136,7 +136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &16883434
 RectTransform:
   m_ObjectHideFlags: 0
@@ -154,7 +154,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1.1646729, y: 0}
+  m_AnchoredPosition: {x: -1.1645508, y: 0}
   m_SizeDelta: {x: -64, y: -120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &16883435
@@ -1019,7 +1019,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &94534297
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1037,7 +1037,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1.1646729, y: 0}
+  m_AnchoredPosition: {x: -1.1645508, y: 0}
   m_SizeDelta: {x: -64, y: -120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &94534298
@@ -3194,7 +3194,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1077234519}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: BackToMenu
         m_Mode: 1
@@ -4012,7 +4012,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1077234519}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: BackToMenu
         m_Mode: 1
@@ -5004,11 +5004,22 @@ MonoBehaviour:
   endColor: {r: 1, g: 0, b: 0, a: 1}
   countOffPanel: {fileID: 1094725370}
   countOffText: {fileID: 454863654}
-  pausePanel: {fileID: 1548690409}
+  pausePanel: {fileID: 94534296}
   volumeSlider: {fileID: 670731307}
-  gameOverPanel: {fileID: 732374993}
+  resumeButton: {fileID: 1372341659}
+  helpButton: {fileID: 484146212}
+  mainMenuButton: {fileID: 853951284}
+  closeSFXButton: {fileID: 1148954551}
+  closeMusicButton: {fileID: 1007654436}
+  gameOverPanel: {fileID: 1635131233}
   gameOverText: {fileID: 48437865}
   retryButton: {fileID: 1187707225}
+  continueButton: {fileID: 1752724440}
+  resultPanel: {fileID: 16883433}
+  resultScoreText: {fileID: 302111781}
+  fitScoreText: {fileID: 413101247}
+  homeButton: {fileID: 686236533}
+  tryAgainButton: {fileID: 1516650629}
   scoreText: {fileID: 2040727031}
   versionText: {fileID: 2040727031}
   bombTimeBonus: 10
@@ -6467,7 +6478,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1077234519}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ResumeGame
         m_Mode: 1
@@ -6875,9 +6886,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1077234519}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: BackToMenu
+        m_MethodName: Retry
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7326,7 +7337,7 @@ GameObject:
   - component: {fileID: 1635131236}
   - component: {fileID: 1635131235}
   m_Layer: 5
-  m_Name: GameClearPanel New
+  m_Name: GameOverPanel New
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7349,7 +7360,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1.1646729, y: 0}
+  m_AnchoredPosition: {x: -1.1645508, y: 0}
   m_SizeDelta: {x: -64, y: -120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1635131235
@@ -7961,9 +7972,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1077234519}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: BackToMenu
+        m_MethodName: Continue
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9207,9 +9218,9 @@ RectTransform:
   - {fileID: 2047601842}
   - {fileID: 302111780}
   - {fileID: 1940998587}
-  - {fileID: 1516650627}
-  - {fileID: 686236531}
   - {fileID: 1445252350}
+  - {fileID: 686236531}
+  - {fileID: 1516650627}
   m_Father: {fileID: 16883434}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -9817,7 +9828,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2072578245
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9882,7 +9893,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1077234519}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: PauseGame
         m_Mode: 1

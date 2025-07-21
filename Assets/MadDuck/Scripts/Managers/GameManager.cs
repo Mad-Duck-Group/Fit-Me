@@ -73,6 +73,16 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField] private GameObject pausePanel;
     [TabGroup("References/Box/Tab", "Pause")]
     [SerializeField] private Slider volumeSlider;
+    [TabGroup("References/Box/Tab", "Pause")]
+    [SerializeField] private Button resumeButton;
+    [TabGroup("References/Box/Tab", "Pause")]
+    [SerializeField] private Button helpButton;
+    [TabGroup("References/Box/Tab", "Pause")]
+    [SerializeField] private Button mainMenuButton;
+    [TabGroup("References/Box/Tab", "Pause")]
+    [SerializeField] private Button closeSFXButton;
+    [TabGroup("References/Box/Tab", "Pause")]
+    [SerializeField] private Button closeMusicButton;
     
     [TabGroup("References/Box/Tab", "Game Over")]
     [SerializeField] private GameObject gameOverPanel;
@@ -80,6 +90,19 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField] private TMP_Text gameOverText;
     [TabGroup("References/Box/Tab", "Game Over")]
     [SerializeField] private Button retryButton;
+    [TabGroup("References/Box/Tab", "Game Over")]
+    [SerializeField] private Button continueButton;
+    
+    [TabGroup("References/Box/Tab", "Result")]
+    [SerializeField] private GameObject resultPanel;
+    [TabGroup("References/Box/Tab", "Result")]
+    [SerializeField] private TMP_Text resultScoreText;
+    [TabGroup("References/Box/Tab", "Result")]
+    [SerializeField] private TMP_Text fitScoreText;
+    [TabGroup("References/Box/Tab", "Result")]
+    [SerializeField] private Button homeButton;
+    [TabGroup("References/Box/Tab", "Result")]
+    [SerializeField] private Button tryAgainButton;
     
     [TabGroup("References/Box/Tab", "Score")]
     [SerializeField] private TMP_Text scoreText;
@@ -521,5 +544,31 @@ public class GameManager : MonoSingleton<GameManager>
         //LoadSceneManager.Instance.Retry = true;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+    #endregion
+
+    #region Another Button
+
+    public void MuteSFX()
+    {
+        
+    }
+
+    public void MuteMusic()
+    {
+        
+    }
+
+    public void Continue()
+    {
+        resultPanel.gameObject.SetActive(true);
+        gameOverPanel.gameObject.SetActive(false);
+    }
+    
+    public void PlayContinue()
+    {
+        GridManager.Instance.RemoveAllBlocks();
+        gameOverPanel.gameObject.SetActive(false);
+    }
+    
     #endregion
 }
