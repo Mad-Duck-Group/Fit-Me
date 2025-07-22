@@ -193,11 +193,11 @@ public class GameManager : MonoSingleton<GameManager>
         NextGameDifficulty();
         UpdateScoreText(false);
         volumeSlider.gameObject.SetActive(false);
-        retryButton.gameObject.SetActive(false);
-        retryButton.onClick.AddListener(() =>
+        //retryButton.gameObject.SetActive(false);
+        /*retryButton.onClick.AddListener(() =>
         {
             LoadSceneManager.Instance.ReloadScene(LoadSceneMode.Single, false);
-        });
+        });*/
         ActivateScene();
     }
     
@@ -527,7 +527,7 @@ public class GameManager : MonoSingleton<GameManager>
         gameOverPanel.SetActive(true);
         Tween.Scale(gameOverText.transform, 1, 0.5f, ease: Ease.OutBounce);
         GridManager.Instance.StopAllPreInfectFlash();
-        retryButton.gameObject.SetActive(true);
+        //retryButton.gameObject.SetActive(true);
     }
     #endregion
 

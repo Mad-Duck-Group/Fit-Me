@@ -5013,7 +5013,7 @@ MonoBehaviour:
   closeMusicButton: {fileID: 1007654436}
   gameOverPanel: {fileID: 1635131233}
   gameOverText: {fileID: 48437865}
-  retryButton: {fileID: 1187707225}
+  retryButton: {fileID: 0}
   continueButton: {fileID: 1752724440}
   resultPanel: {fileID: 16883433}
   resultScoreText: {fileID: 302111781}
