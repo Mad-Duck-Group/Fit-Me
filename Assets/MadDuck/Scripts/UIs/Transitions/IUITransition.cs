@@ -33,12 +33,12 @@ namespace MadDuck.Scripts.UIs.Transitions
         public CrossFadeType crossFadeType;
         public bool useTransitionScreen;
         public float customOffset;
-        [field: TabGroup("Transitions", "Transitions")]
-        [field: OdinSerialize, HideIf(nameof(crossFadeType), CrossFadeType.OnlyOut)] 
+        [field: TabGroup("Transitions", "Next In")]
+        [field: OdinSerialize, DisableIf(nameof(crossFadeType), CrossFadeType.OnlyOut)] 
         [field: HideLabel]
         public IUITransition nextIn;
         [field: TabGroup("Transitions", "Previous Out")]
-        [field: OdinSerialize, HideIf(nameof(crossFadeType), CrossFadeType.OnlyIn)] 
+        [field: OdinSerialize, DisableIf(nameof(crossFadeType), CrossFadeType.OnlyIn)] 
         [field: HideLabel]
         public IUITransition previousOut;
         [field: TabGroup("Transitions", "Transition In")]
