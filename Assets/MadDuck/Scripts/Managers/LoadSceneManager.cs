@@ -6,6 +6,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.UIs.Panels.MainMenu;
 using MadDuck.Scripts.UIs.Panels.Transition;
+using MadDuck.Scripts.UIs.Transitions;
 using MessagePipe;
 using PrimeTween;
 using R3;
@@ -151,7 +152,6 @@ namespace MadDuck.Scripts.Managers
             OnStartFadeOut?.Invoke();
             _currentTransitionScreen = TransitionScreens.Values.GetRandomElement();
             _currentTransitionScreen.Show();
-            await _currentTransitionScreen.TransitionIn().ToUniTask();
             await _currentTransitionScreen.TransitionBefore().ToUniTask();
             OnFadeOutComplete(useLoadingScene);
         }
@@ -224,7 +224,6 @@ namespace MadDuck.Scripts.Managers
             }
             OnStartFadeIn?.Invoke();
             await _currentTransitionScreen.TransitionAfter().ToUniTask();
-            await _currentTransitionScreen.TransitionOut().ToUniTask();
             _currentTransitionScreen.Hide();
             _currentTransitionScreen.Progress = 0f;
             _currentTransitionScreen = null;

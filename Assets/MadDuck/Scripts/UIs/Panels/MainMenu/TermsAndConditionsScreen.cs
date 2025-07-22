@@ -1,21 +1,25 @@
-﻿using MadDuck.Scripts.Managers;
+﻿using System.Threading;
+using Cysharp.Threading.Tasks;
+using MadDuck.Scripts.Managers;
+using MadDuck.Scripts.UIs.Transitions;
 using PrimeTween;
 using Redcode.Extensions;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace MadDuck.Scripts.UIs.Panels.MainMenu
 {
+    [ShowOdinSerializedPropertiesInInspector]
     public class TermsAndConditionsScreen : UIPanel
     {
         [Title("References")]
         [SerializeField] private Button acceptButton;
         
-        [Title("Tween")] 
-        [SerializeField] private TweenSettings<float> transitionInTweenSettings;
-        [SerializeField] private TweenSettings<float> transitionOutTweenSettings;
-        
+        [Title("Screen")]
+        [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule mainMenuCrossFadeRule = new();
+
         public override void Initialize()
         {
             base.Initialize();
@@ -25,32 +29,9 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         private void OnAcceptButtonClicked()
         {
             var loadingPanel = LoadSceneManager.Instance.TransitionScreens.Values.GetRandomElement();
-            var mainMenuPanel = MainMenuManager.Instance.PanelDictionary[MainMenuPanelType.MainMenu];
-            TransitionScreen(loadingPanel,this, mainMenuPanel);
-        }
-
-        public override Sequence TransitionIn()
-        {
-            TransitionState = TransitionState.TransitioningIn;
-            transitionSequence = Sequence.Create()
-                .Group(Tween.Alpha(panelCanvasGroup, transitionInTweenSettings))
-                .OnComplete(() =>
-                {
-                    TransitionState = TransitionState.Idle;
-                });
-            return transitionSequence;
-        }
-        
-        public override Sequence TransitionOut()
-        {
-            TransitionState = TransitionState.TransitioningIn;
-            transitionSequence = Sequence.Create()
-                .Group(Tween.Alpha(panelCanvasGroup, transitionOutTweenSettings))
-                .OnComplete(() =>
-                {
-                    TransitionState = TransitionState.Idle;
-                });
-            return transitionSequence;
+            transitionCts = new CancellationTokenSource();
+            PanelController.ChangePanelWithTransition(loadingPanel,this, mainMenuCrossFadeRule.nextPanel, mainMenuCrossFadeRule.crossFadeSettings, 
+                transitionCts.Token).Forget();
         }
     }
 }

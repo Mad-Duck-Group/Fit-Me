@@ -5,8 +5,12 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.UIs.Panels.MainMenu;
 using MadDuck.Scripts.UIs.Panels.Transition;
+using MadDuck.Scripts.UIs.Transitions;
+using MadDuck.Scripts.Utils.Inspectors;
 using PrimeTween;
+using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEngine;
 
 namespace MadDuck.Scripts.UIs.Panels
@@ -32,48 +36,52 @@ namespace MadDuck.Scripts.UIs.Panels
     
     public interface IUIPanel
     {
+        string PanelName { get;}
         VisibilityState VisibilityState { get; }
-        TransitionState TransitionState { get; }
+        TransitionState TransitionState { get; set; }
         InputState InputState { get; }
+        UIPanelController PanelController { get; set; }
+        SerializableDictionary<string, Component> TransitionObjectProviders { get; }
         void Initialize();
         void Show();
         void Hide();
-        Sequence TransitionIn();
-        Sequence TransitionOut();
         void ActivateInput();
         void DeactivateInput();
-        void ClearEvents();
+        void CancelTransition();
+        void OnPanelReady();
     }
 
     [RequireComponent(typeof(CanvasGroup))]
-    public abstract class UIPanel : MonoBehaviour, IUIPanel
+    [ShowOdinSerializedPropertiesInInspector]
+    public abstract class UIPanel : MonoBehaviour, IUIPanel, ISerializationCallbackReceiver, ISupportsPrefabSerialization
     {
         #region Inspectors
         [TitleGroup("Cross Fade", order: 9)]
-        [field: SerializeField] public CrossFadeSettings CrossFadeSettings { get; private set; }
-        
+        [InfoBox(
+            "Key 'PanelCanvasGroup' is reserved for the CanvasGroup component of the panel. Do not use it for other components.", InfoMessageType.Warning)]
+        [ShowInInspector, HideLabel]
+        private InspectorVoid _keyInfo;
+        [field: TitleGroup("Cross Fade", order: 9)]
+        [field: SerializeField] public SerializableDictionary<string, Component> TransitionObjectProviders { get; private set; } = new();
+
         [TitleGroup("Debug", order: 10)]
         [ShowInInspector, DisplayAsString]
         public VisibilityState VisibilityState { get; private set; } = VisibilityState.Hidden;
         [TitleGroup("Debug", order: 10)]
         [ShowInInspector, DisplayAsString]
-        public TransitionState TransitionState { get; protected set; } = TransitionState.Idle;
+        public TransitionState TransitionState { get; set; } = TransitionState.Idle;
         [TitleGroup("Debug", order: 10)]
         [ShowInInspector, DisplayAsString] 
         public InputState InputState { get; private set; } = InputState.Inactive;
-
+        [TitleGroup("Debug", order: 10)]
+        [ShowInInspector, ReadOnly]
+        public UIPanelController PanelController { get; set; }
         #endregion
 
         #region Fields and Properties
-
+        public string PanelName => gameObject.name;
         protected CanvasGroup panelCanvasGroup;
-        protected Sequence transitionSequence;
-        public delegate UniTask OnChangeUIPanel(UIPanel previous, UIPanel next, CrossFadeSettings crossFadeSettings, 
-            Action customCrossFade, CancellationToken cancellationToken = default);
-        public event OnChangeUIPanel ChangePanelCallback;
-        public delegate UniTask OnLoadingScreen(ITransitionScreen transitionScreen, UIPanel previous, UIPanel next);
-        public event OnLoadingScreen TransitionScreenCallback;
-        public CancellationTokenSource CancellationTokenSource { get; private set; } = new();
+        protected CancellationTokenSource transitionCts;
         #endregion
 
         #region Initialization
@@ -85,6 +93,7 @@ namespace MadDuck.Scripts.UIs.Panels
             {
                 Debug.LogError($"UIPanel {name} requires a CanvasGroup component.");
             }
+            TransitionObjectProviders.Add("PanelCanvasGroup", panelCanvasGroup);
             Hide();
             DeactivateInput();
         }
@@ -109,22 +118,6 @@ namespace MadDuck.Scripts.UIs.Panels
 
         #endregion
 
-        #region Transitions
-
-        public virtual Sequence TransitionIn()
-        {
-            TransitionState = TransitionState.TransitioningIn;
-            return default;
-        }
-
-        public virtual Sequence TransitionOut()
-        {
-            TransitionState = TransitionState.TransitioningOut;
-            return default;
-        }
-
-        #endregion
-
         #region Input Management
 
         public virtual void ActivateInput()
@@ -143,29 +136,34 @@ namespace MadDuck.Scripts.UIs.Panels
 
         #endregion
 
-        #region Events
-        protected void ChangePanel(UIPanel previous, UIPanel next, CrossFadeSettings crossFadeSettings = default, Action customCrossFade = null)
+        #region Others
+        public virtual void CancelTransition()
         {
-            next.CancelTransition();
-            CancellationTokenSource = new CancellationTokenSource();
-            ChangePanelCallback?.Invoke(previous, next, crossFadeSettings, customCrossFade, CancellationTokenSource.Token);
-        }
-        
-        protected void TransitionScreen(ITransitionScreen transition, UIPanel previous, UIPanel next)
-        {
-            TransitionScreenCallback?.Invoke(transition, previous, next);
-        }
-        
-        public void ClearEvents()
-        {
-            ChangePanelCallback = null;
-            TransitionScreenCallback = null;
+            transitionCts?.Cancel();
         }
 
-        public void CancelTransition()
+        public virtual void OnPanelReady()
         {
-            transitionSequence.Stop();
-            CancellationTokenSource?.Cancel();
+            
+        }
+        #endregion
+
+        #region Serialization
+        [SerializeField, HideInInspector]
+        private SerializationData serializationData;
+        SerializationData ISupportsPrefabSerialization.SerializationData 
+        {
+            get => serializationData;
+            set => serializationData = value;
+        }
+        public void OnBeforeSerialize()
+        {
+            UnitySerializationUtility.SerializeUnityObject(this, ref serializationData);
+        }
+
+        public void OnAfterDeserialize()
+        {
+            UnitySerializationUtility.DeserializeUnityObject(this, ref serializationData);
         }
         #endregion
     }

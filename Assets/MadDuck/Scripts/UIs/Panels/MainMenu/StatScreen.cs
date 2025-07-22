@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Managers;
+using MadDuck.Scripts.UIs.Transitions;
 using PrimeTween;
 using Redcode.Extensions;
 using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace MadDuck.Scripts.UIs.Panels.MainMenu
@@ -19,19 +23,26 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
             FitMe = 1,
             Achievement = 2,
         }
+
+        [Serializable]
+        private record PageCrossFadeRule
+        {
+            public IUIPanel thisPanel;
+            public CrossFadeSettings crossFadeSettings;
+        }
+        
         [Title("References")]
         [SerializeField] private Button backButton;
         [SerializeField] private Button nextPageButton;
         [SerializeField] private Button previousPageButton;
         [SerializeField] private TMP_Text pageTitleText;
-        [field: SerializeField] private SerializableDictionary<StatPage, UIPanel> PanelDictionary { get; set; } = new();
-        [SerializeReference, HideReferenceObjectPicker, HideLabel]
-        private UIPanelController panelController = new();
+        [field: OdinSerialize, HideReferenceObjectPicker] private SerializableDictionary<StatPage, PageCrossFadeRule> PanelDictionary { get; set; } = new();
+        [FormerlySerializedAs("panelController")] [SerializeReference, HideReferenceObjectPicker, HideLabel]
+        private UIPanelController pageController = new();
         
-        [Title("Tween")]
-        [SerializeField] private TweenSettings<float> transitionInTweenSettings;
-        [SerializeField] private TweenSettings<float> transitionOutTweenSettings;
-        
+        [Title("Panel")]
+        [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule mainMenuCrossFadeRule = new();
+
         [TitleGroup("Debug")]
         [SerializeField, DisplayAsString] private StatPage currentPage = StatPage.Score;
 
@@ -43,40 +54,17 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
             previousPageButton.onClick.AddListener(() => OnPagingButtonClicked(-1));
             PanelDictionary.Values.ForEach(p =>
             {
-                p.Initialize();
+                p.thisPanel.Initialize();
             });
-            panelController.ShowPanel(PanelDictionary[StatPage.Score]).Forget();
+            pageController.ShowPanel(PanelDictionary[StatPage.Score].thisPanel).Forget();
             UpdatePagingButtons();
         }
-        
-        public override Sequence TransitionIn()
+
+        private void OnBackButtonClicked()
         {
-            TransitionState = TransitionState.TransitioningIn;
-            transitionSequence = Sequence.Create()
-                .Group(Tween.Alpha(panelCanvasGroup, transitionInTweenSettings))
-                .OnComplete(() =>
-                {
-                    TransitionState = TransitionState.Idle;
-                });
-            return transitionSequence;
-        }
-        
-        public override Sequence TransitionOut()
-        {
-            TransitionState = TransitionState.TransitioningOut;
-            transitionSequence = Sequence.Create()
-                .Group(Tween.Alpha(panelCanvasGroup, transitionOutTweenSettings))
-                .OnComplete(() =>
-                {
-                    TransitionState = TransitionState.Idle;
-                });
-            return transitionSequence;
-        }
-        
-        private async void OnBackButtonClicked()
-        {
-            var mainMenuPanel = MainMenuManager.Instance.PanelDictionary[MainMenuPanelType.MainMenu];
-            ChangePanel(this, mainMenuPanel, CrossFadeSettings);
+            transitionCts = new CancellationTokenSource();
+            PanelController.ChangePanel(this, mainMenuCrossFadeRule.nextPanel, 
+                mainMenuCrossFadeRule.crossFadeSettings, transitionCts.Token).Forget();
         }
 
         private async void OnPagingButtonClicked(int change)
@@ -88,7 +76,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
             var nextPage = PanelDictionary[currentPage];
             pageTitleText.text = currentPage.ToString();
             panelCanvasGroup.interactable = false;
-            await panelController.ChangePanel(previousPage, nextPage, previousPage.CrossFadeSettings);
+            await pageController.ChangePanel(previousPage.thisPanel, nextPage.thisPanel, previousPage.crossFadeSettings);
             UpdatePagingButtons();
             panelCanvasGroup.interactable = true;
         }

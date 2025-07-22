@@ -1,5 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.UIs.Panels;
+using MadDuck.Scripts.UIs.Transitions;
 using Redcode.Extensions;
 using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
@@ -17,11 +21,12 @@ namespace MadDuck.Scripts.Managers
         Achievements,
         Settings,
     }
+    
     public class MainMenuManager : MonoSingleton<MainMenuManager>
     {
         [Title("References")]
         [field: SerializeField] public SerializableDictionary<MainMenuPanelType, UIPanel> PanelDictionary { get; private set; }
-        [SerializeReference, HideReferenceObjectPicker, HideLabel] private UIPanelController panelController = new();
+        [field: SerializeReference, HideReferenceObjectPicker, HideLabel] public UIPanelController PanelController { get; private set; } = new();
         
         [Title("Settings")]
         [SerializeField] private MainMenuPanelType initialPanelType = MainMenuPanelType.SplashScreen;
@@ -31,8 +36,9 @@ namespace MadDuck.Scripts.Managers
             PanelDictionary.Values.ForEach(p =>
             {
                 p.Initialize();
+                p.PanelController = PanelController;
             });
-            panelController.ShowPanel(PanelDictionary[initialPanelType]).Forget();
+            PanelController.ShowPanel(PanelDictionary[initialPanelType], cancellationToken: destroyCancellationToken).Forget();
         }
     }
 }

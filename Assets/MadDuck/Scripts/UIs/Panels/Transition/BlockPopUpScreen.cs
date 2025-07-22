@@ -19,10 +19,6 @@ namespace MadDuck.Scripts.UIs.Panels.Transition
         [Title("References")]
         [SerializeField] private List<BlockTween> blockTweens;
 
-        [Title("Tween")] 
-        [SerializeField] private TweenSettings<float> transitionInTweenSettings;
-        [SerializeField] private TweenSettings<float> transitionOutTweenSettings;
-        
         [TitleGroup("Debug")]
         [ShowInInspector, ProgressBar(0f, 1f)] public float Progress { get; set; }
         private Sequence _blockSequence;
@@ -34,30 +30,6 @@ namespace MadDuck.Scripts.UIs.Panels.Transition
             {
                 blockTween.block.localScale = blockTween.scaleTweenSettings.startValue; // Initialize blocks to their start scale
             }
-        }
-
-        public override Sequence TransitionIn()
-        {
-            TransitionState = TransitionState.TransitioningIn;
-            transitionSequence = Sequence.Create()
-                .Group(Tween.Alpha(panelCanvasGroup, transitionInTweenSettings))
-                .OnComplete(() =>
-                {
-                    TransitionState = TransitionState.Idle;
-                });
-            return transitionSequence;
-        }
-        
-        public override Sequence TransitionOut()
-        {
-            TransitionState = TransitionState.TransitioningIn;
-            transitionSequence = Sequence.Create()
-                .Group(Tween.Alpha(panelCanvasGroup, transitionOutTweenSettings))
-                .OnComplete(() =>
-                {
-                    TransitionState = TransitionState.Idle;
-                });
-            return transitionSequence;
         }
 
         public Sequence TransitionBefore()

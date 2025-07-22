@@ -1,6 +1,10 @@
-﻿using MadDuck.Scripts.Managers;
+﻿using System.Threading;
+using Cysharp.Threading.Tasks;
+using MadDuck.Scripts.Managers;
+using MadDuck.Scripts.UIs.Transitions;
 using PrimeTween;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,47 +21,30 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         [SerializeField] private Button achievementsButton;
         [SerializeField] private TMP_Text versionText;
 
-        [Title("Tween")] 
-        [SerializeField] private TweenSettings<float> transitionInTweenSettings;
-        [SerializeField] private TweenSettings<float> transitionOutTweenSettings;
-        
+        [Title("Panel")]
+        [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule settingsCrossFadeRule = new();
+        [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule statsCrossFadeRule = new();
+        [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule achievementsCrossFadeRule = new();
+
         public override void Initialize()
         {
             base.Initialize();
-            playButton.onClick.AddListener(() => LoadSceneManager.Instance.LoadScene(SceneType.Gameplay, LoadSceneMode.Single, false));
-            settingsButton.onClick.AddListener(() => OnButtonClicked(MainMenuPanelType.Settings));
-            statsButton.onClick.AddListener(() => OnButtonClicked(MainMenuPanelType.Stats));
-            achievementsButton.onClick.AddListener(() => OnButtonClicked(MainMenuPanelType.Achievements));
+            playButton.onClick.AddListener(() =>
+            {
+                DeactivateInput();
+                LoadSceneManager.Instance.LoadScene(SceneType.Gameplay, LoadSceneMode.Single, false);
+            });
+            settingsButton.onClick.AddListener(() => OnButtonClicked(settingsCrossFadeRule));
+            statsButton.onClick.AddListener(() => OnButtonClicked(statsCrossFadeRule));
+            achievementsButton.onClick.AddListener(() => OnButtonClicked(achievementsCrossFadeRule));
             versionText.text = Application.version;
         }
 
-        private void OnButtonClicked(MainMenuPanelType mainMenuPanelType)
+        private void OnButtonClicked(CrossFadeRule rule)
         {
-            ChangePanel(this, MainMenuManager.Instance.PanelDictionary[mainMenuPanelType], CrossFadeSettings);
-        }
-
-        public override Sequence TransitionIn()
-        {
-            TransitionState = TransitionState.TransitioningIn;
-            transitionSequence = Sequence.Create()
-                .Group(Tween.Alpha(panelCanvasGroup, transitionInTweenSettings))
-                .OnComplete(() =>
-                {
-                    TransitionState = TransitionState.Idle;
-                });
-            return transitionSequence;
-        }
-        
-        public override Sequence TransitionOut()
-        {
-            TransitionState = TransitionState.TransitioningIn;
-            transitionSequence = Sequence.Create()
-                .Group(Tween.Alpha(panelCanvasGroup, transitionOutTweenSettings))
-                .OnComplete(() =>
-                {
-                    TransitionState = TransitionState.Idle;
-                });
-            return transitionSequence;
+            transitionCts = new CancellationTokenSource();
+            PanelController.ChangePanel(this, rule.nextPanel, rule.crossFadeSettings, 
+                transitionCts.Token).Forget();
         }
     }
 }
