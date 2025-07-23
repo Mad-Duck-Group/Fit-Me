@@ -36,9 +36,9 @@ namespace MadDuck.Scripts.UIs.Panels
             panel.Show();
             if (crossFadeSettings != null)
             {
-                crossFadeSettings.nextIn.Initialize(panel);
+                crossFadeSettings.transitionGroupCollection.nextIn.Initialize(panel);
                 panel.TransitionState = TransitionState.TransitioningIn;
-                await crossFadeSettings.nextIn.Transition(cancellationToken);
+                await crossFadeSettings.transitionGroupCollection.nextIn.Transition(cancellationToken);
                 panel.TransitionState = TransitionState.Idle;
             }
             FocusPanel(panel);
@@ -49,64 +49,79 @@ namespace MadDuck.Scripts.UIs.Panels
             CancellationToken cancellationToken = default)
         {
             next.CancelTransition();
-            _currentCrossFadeSettings?.transitionIn?.CancelTransition();
-            _currentCrossFadeSettings?.transitionOut?.CancelTransition();
-            _currentCrossFadeSettings?.previousOut?.CancelTransition();
-            _currentCrossFadeSettings?.nextIn?.CancelTransition();
+            _currentCrossFadeSettings?.transitionGroupCollection?.CancelAll();
             _currentCrossFadeSettings = crossFadeSettings;
             UnfocusPanel(previous);
             if (crossFadeSettings == null)
             {
                 transition.Show();
                 FocusPanel(transition);
-                await transition.TransitionBefore().ToUniTask(cancellationToken: cancellationToken);
+                await transition.TransitionBeforeLoad(cancellationToken);
                 previous.Hide();
                 next.Show();
                 await UniTask.WaitForSeconds(loadingScreenDuration, cancellationToken: cancellationToken);
-                await transition.TransitionAfter().ToUniTask(cancellationToken: cancellationToken);
+                await transition.TransitionAfterLoad(cancellationToken);
                 UnfocusPanel(transition);
                 transition.Hide();
                 FocusPanel(next);
                 return;
             }
-            crossFadeSettings.nextIn.Initialize(next);
-            crossFadeSettings.previousOut.Initialize(previous);
-            crossFadeSettings.transitionIn.Initialize(transition);
-            crossFadeSettings.transitionOut.Initialize(transition);
+            
+            //Initialize
+            crossFadeSettings.transitionGroupCollection.nextIn.Initialize(next);
+            crossFadeSettings.transitionGroupCollection.previousOut.Initialize(previous);
+            crossFadeSettings.transitionGroupCollection.transitionIn.Initialize(transition);
+            crossFadeSettings.transitionGroupCollection.transitionOut.Initialize(transition);
+            //=======================================================================================//
+            
+            //Transition In
             transition.Show();
             transition.TransitionState = TransitionState.TransitioningIn;
-            await crossFadeSettings.transitionIn.Transition(cancellationToken: cancellationToken);
+            await crossFadeSettings.transitionGroupCollection.transitionIn.Transition(cancellationToken: cancellationToken);
             transition.TransitionState = TransitionState.Idle;
-            await transition.TransitionBefore().ToUniTask(cancellationToken: cancellationToken);
+            //=======================================================================================//
+            
+            //Transition Before Load
+            await transition.TransitionBeforeLoad(cancellationToken);
             FocusPanel(transition);
             transition.OnPanelReady();
+            //=======================================================================================//
+            
+            //Previous Out
             previous.TransitionState = TransitionState.TransitioningOut;
-            await crossFadeSettings.previousOut.Transition(cancellationToken: cancellationToken);
+            await crossFadeSettings.transitionGroupCollection.previousOut.Transition(cancellationToken: cancellationToken);
             previous.TransitionState = TransitionState.Idle;
             previous.Hide();
+            //=======================================================================================//
+            
+            //Next In
             next.Show();
             next.TransitionState = TransitionState.TransitioningIn;
-            await UniTask.WhenAll(crossFadeSettings.nextIn.Transition(cancellationToken: cancellationToken),
+            await UniTask.WhenAll(crossFadeSettings.transitionGroupCollection.nextIn.Transition(cancellationToken: cancellationToken),
                 UniTask.WaitForSeconds(loadingScreenDuration, cancellationToken: cancellationToken));
             next.TransitionState = TransitionState.Idle;
-            await transition.TransitionAfter().ToUniTask(cancellationToken: cancellationToken);
+            //=======================================================================================//
+            
+            //Transition After Load
+            await transition.TransitionAfterLoad(cancellationToken);
             transition.TransitionState = TransitionState.TransitioningOut;
-            await crossFadeSettings.transitionOut.Transition(cancellationToken: cancellationToken);
+            await crossFadeSettings.transitionGroupCollection.transitionOut.Transition(cancellationToken: cancellationToken);
             transition.TransitionState = TransitionState.Idle;
             UnfocusPanel(transition);
             transition.Hide();
+            //=======================================================================================//
+            
+            //Next Ready
             FocusPanel(next);
             next.OnPanelReady();
+            //=======================================================================================//
         }
         
         public async UniTask ChangePanel(IUIPanel previous, IUIPanel next, CrossFadeSettings crossFadeSettings = null, 
             CancellationToken cancellationToken = default)
         {
             next.CancelTransition();
-            _currentCrossFadeSettings?.transitionIn?.CancelTransition();
-            _currentCrossFadeSettings?.transitionOut?.CancelTransition();
-            _currentCrossFadeSettings?.previousOut?.CancelTransition();
-            _currentCrossFadeSettings?.nextIn?.CancelTransition();
+            _currentCrossFadeSettings?.transitionGroupCollection?.CancelAll();
             _currentCrossFadeSettings = crossFadeSettings;
             UnfocusPanel(previous);
             if (crossFadeSettings == null)
@@ -115,12 +130,12 @@ namespace MadDuck.Scripts.UIs.Panels
                 return;
             }
             UniTask transitionOut;
-            crossFadeSettings.previousOut.Initialize(previous);
+            crossFadeSettings.transitionGroupCollection.previousOut.Initialize(previous);
             switch (crossFadeSettings.crossFadeType)
             {
                 case CrossFadeType.Parallel:
                     previous.TransitionState = TransitionState.TransitioningOut;
-                    transitionOut = crossFadeSettings.previousOut.Transition(cancellationToken);
+                    transitionOut = crossFadeSettings.transitionGroupCollection.previousOut.Transition(cancellationToken);
                     await UniTask.WaitForSeconds(crossFadeSettings.customOffset, cancellationToken: cancellationToken);
                     ShowPanel(next, crossFadeSettings, cancellationToken: cancellationToken).Forget();
                     await transitionOut;
@@ -131,14 +146,14 @@ namespace MadDuck.Scripts.UIs.Panels
                     await ShowPanel(next, crossFadeSettings, cancellationToken: cancellationToken);
                     await UniTask.WaitForSeconds(crossFadeSettings.customOffset, cancellationToken: cancellationToken);
                     previous.TransitionState = TransitionState.TransitioningOut;
-                    transitionOut = crossFadeSettings.previousOut.Transition(cancellationToken);
+                    transitionOut = crossFadeSettings.transitionGroupCollection.previousOut.Transition(cancellationToken);
                     await transitionOut;
                     previous.TransitionState = TransitionState.Idle;
                     previous.Hide();
                     break;
                 case CrossFadeType.OutThenIn:
                     previous.TransitionState = TransitionState.TransitioningOut;
-                    transitionOut = crossFadeSettings.previousOut.Transition(cancellationToken);
+                    transitionOut = crossFadeSettings.transitionGroupCollection.previousOut.Transition(cancellationToken);
                     await transitionOut;
                     previous.TransitionState = TransitionState.Idle;
                     await UniTask.WaitForSeconds(crossFadeSettings.customOffset, cancellationToken: cancellationToken);
@@ -152,7 +167,7 @@ namespace MadDuck.Scripts.UIs.Panels
                     break;
                 case CrossFadeType.OnlyOut:
                     previous.TransitionState = TransitionState.TransitioningOut;
-                    await crossFadeSettings.previousOut.Transition(cancellationToken);
+                    await crossFadeSettings.transitionGroupCollection.previousOut.Transition(cancellationToken);
                     previous.TransitionState = TransitionState.Idle;
                     previous.Hide();
                     await UniTask.WaitForSeconds(crossFadeSettings.customOffset, cancellationToken: cancellationToken);

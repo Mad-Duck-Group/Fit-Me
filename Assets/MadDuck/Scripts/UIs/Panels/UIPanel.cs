@@ -36,12 +36,11 @@ namespace MadDuck.Scripts.UIs.Panels
     
     public interface IUIPanel
     {
-        string PanelName { get;}
+        string PanelName { get; }
         VisibilityState VisibilityState { get; }
         TransitionState TransitionState { get; set; }
         InputState InputState { get; }
         UIPanelController PanelController { get; set; }
-        SerializableDictionary<string, Component> TransitionObjectProviders { get; }
         void Initialize();
         void Show();
         void Hide();
@@ -49,6 +48,7 @@ namespace MadDuck.Scripts.UIs.Panels
         void DeactivateInput();
         void CancelTransition();
         void OnPanelReady();
+        bool TryGetTransitionObject<T>(string key, out T transitionObject) where T : Component;
     }
 
     [RequireComponent(typeof(CanvasGroup))]
@@ -56,12 +56,16 @@ namespace MadDuck.Scripts.UIs.Panels
     public abstract class UIPanel : MonoBehaviour, IUIPanel, ISerializationCallbackReceiver, ISupportsPrefabSerialization
     {
         #region Inspectors
-        [TitleGroup("Cross Fade", order: 9)]
-        [InfoBox(
-            "Key 'PanelCanvasGroup' is reserved for the CanvasGroup component of the panel. Do not use it for other components.", InfoMessageType.Warning)]
+        [TitleGroup("Transition", order: 9)]
+        [DetailedInfoBox("<b>Read Me</b>",
+            "Key:\n" +
+            "<b>PanelCanvasGroup</b>\n" +
+            "<b>PanelRectTransform</b>\n" +
+            "are reserved for components of the panel. Do not use these keys for other components.",
+            InfoMessageType.Warning)]
         [ShowInInspector, HideLabel]
         private InspectorVoid _keyInfo;
-        [field: TitleGroup("Cross Fade", order: 9)]
+        [field: TitleGroup("Transition", order: 9)]
         [field: SerializeField] public SerializableDictionary<string, Component> TransitionObjectProviders { get; private set; } = new();
 
         [TitleGroup("Debug", order: 10)]
@@ -94,6 +98,7 @@ namespace MadDuck.Scripts.UIs.Panels
                 Debug.LogError($"UIPanel {name} requires a CanvasGroup component.");
             }
             TransitionObjectProviders.Add("PanelCanvasGroup", panelCanvasGroup);
+            TransitionObjectProviders.Add("PanelRectTransform", transform as RectTransform);
             Hide();
             DeactivateInput();
         }
@@ -145,6 +150,18 @@ namespace MadDuck.Scripts.UIs.Panels
         public virtual void OnPanelReady()
         {
             
+        }
+
+        public virtual bool TryGetTransitionObject<T>(string key, out T transitionObject) where T : Component
+        {
+            if (TransitionObjectProviders.TryGetValue(key, out var obj) && obj is T component)
+            {
+                transitionObject = component;
+                return true;
+            }
+            transitionObject = null;
+            Debug.LogWarning($"Transition object with key '{key}' not found in panel '{PanelName}'. Ensure it is set up correctly.");
+            return false;
         }
         #endregion
 

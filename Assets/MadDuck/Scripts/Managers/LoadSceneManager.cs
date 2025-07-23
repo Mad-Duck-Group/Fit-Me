@@ -152,7 +152,7 @@ namespace MadDuck.Scripts.Managers
             OnStartFadeOut?.Invoke();
             _currentTransitionScreen = TransitionScreens.Values.GetRandomElement();
             _currentTransitionScreen.Show();
-            await _currentTransitionScreen.TransitionBefore().ToUniTask();
+            await _currentTransitionScreen.TransitionBeforeLoad();
             OnFadeOutComplete(useLoadingScene);
         }
 
@@ -223,7 +223,7 @@ namespace MadDuck.Scripts.Managers
                 SceneManager.UnloadSceneAsync(lastScene);
             }
             OnStartFadeIn?.Invoke();
-            await _currentTransitionScreen.TransitionAfter().ToUniTask();
+            await _currentTransitionScreen.TransitionAfterLoad();
             _currentTransitionScreen.Hide();
             _currentTransitionScreen.Progress = 0f;
             _currentTransitionScreen = null;

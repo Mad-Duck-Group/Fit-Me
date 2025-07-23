@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -8,8 +10,8 @@ namespace MadDuck.Scripts.UIs.Panels.Transition
 {
     public interface ITransitionScreen : IUIPanel
     {
-        Sequence TransitionBefore();
-        Sequence TransitionAfter();
+        UniTask TransitionBeforeLoad(CancellationToken cancellationToken = default);
+        UniTask TransitionAfterLoad(CancellationToken cancellationToken = default);
         float Progress { get; set; }
     }
     
@@ -38,17 +40,17 @@ namespace MadDuck.Scripts.UIs.Panels.Transition
             }
         }
 
-        public Sequence TransitionBefore()
+        public async UniTask TransitionBeforeLoad(CancellationToken cancellationToken = default)
         {
             _blockSequence = Sequence.Create();
             foreach (var blockTween in blockTweens)
             {
                 _blockSequence.Chain(Tween.UIAnchoredPosition(blockTween.block, blockTween.positionTweenSettings));
             }
-            return _blockSequence;
+            await _blockSequence.ToUniTask(cancellationToken: cancellationToken);
         }
 
-        public Sequence TransitionAfter()
+        public async UniTask TransitionAfterLoad(CancellationToken cancellationToken = default)
         {
             _blockSequence = Sequence.Create();
             var reverseTweens = new List<BlockTween>(blockTweens);
@@ -58,9 +60,13 @@ namespace MadDuck.Scripts.UIs.Panels.Transition
                 _blockSequence.Chain(Tween.UIAnchoredPosition(blockTween.block,
                     blockTween.positionTweenSettings.WithDirection(false)));
             }
-            return _blockSequence;
+            await _blockSequence.ToUniTask(cancellationToken: cancellationToken);
         }
 
-        
+        public override void CancelTransition()
+        {
+            base.CancelTransition();
+            _blockSequence.Stop();
+        }
     }
 }

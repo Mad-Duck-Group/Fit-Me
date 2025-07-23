@@ -3435,45 +3435,19 @@ MonoBehaviour:
     - Name: crossFadeType
       Entry: 3
       Data: 4
-    - Name: useTransitionScreen
-      Entry: 5
-      Data: false
     - Name: customOffset
       Entry: 4
       Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 2|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
     - Name: nextIn
       Entry: 7
-      Data: 2|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 3|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 0
-    - Name: endValue
-      Entry: 4
-      Data: 1
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 0.2
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 3|UnityEngine.AnimationCurve, UnityEngine.CoreModule
-    - Name: 
-      Entry: 7
-      Data: 4|UnityEngine.Keyframe[], UnityEngine.CoreModule
+      Data: 4|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -3484,109 +3458,20 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
       Entry: 8
       Data: 
     - Name: previousOut
       Entry: 7
-      Data: 5|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 5|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 1
-    - Name: endValue
-      Entry: 4
-      Data: 0
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 0.2
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 6|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 6|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
     - Name: 
-      Entry: 9
-      Data: 4
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
+      Entry: 12
       Data: 0
     - Name: 
-      Entry: 8
+      Entry: 13
       Data: 
     - Name: 
       Entry: 8
@@ -3595,10 +3480,45 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: transitionIn
-      Entry: 6
+      Entry: 7
+      Data: 7|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 8|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: transitionOut
-      Entry: 6
+      Entry: 7
+      Data: 9|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 10|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: 
       Entry: 8
@@ -4278,16 +4198,29 @@ MonoBehaviour:
     - Name: crossFadeType
       Entry: 3
       Data: 1
-    - Name: useTransitionScreen
-      Entry: 5
-      Data: false
     - Name: customOffset
       Entry: 4
       Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 2|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
     - Name: nextIn
       Entry: 7
-      Data: 2|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
+      Data: 3|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 4|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 5|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 6|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
+    - Name: objectKey
       Entry: 1
       Data: PanelCanvasGroup
     - Name: transitionSettings
@@ -4310,13 +4243,13 @@ MonoBehaviour:
       Data: 1
     - Name: ease
       Entry: 3
-      Data: 0
+      Data: 13
     - Name: customEase
       Entry: 7
-      Data: 3|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 7|UnityEngine.AnimationCurve, UnityEngine.CoreModule
     - Name: 
       Entry: 7
-      Data: 4|UnityEngine.Keyframe[], UnityEngine.CoreModule
+      Data: 8|UnityEngine.Keyframe[], UnityEngine.CoreModule
     - Name: 
       Entry: 12
       Data: 0
@@ -4365,39 +4298,79 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: previousOut
+    - Name: transitionGroupType
+      Entry: 3
+      Data: 0
+    - Name: delay
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
       Entry: 7
-      Data: 5|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
+      Data: 9|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 10|MadDuck.Scripts.UIs.Transitions.PositionTransition, Assembly-CSharp
+    - Name: rectTransformKey
       Entry: 1
-      Data: PanelCanvasGroup
+      Data: PanelRectTransform
+    - Name: positionType
+      Entry: 3
+      Data: 2
     - Name: transitionSettings
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
+      Data: PrimeTween.TweenSettings`1[[UnityEngine.Vector3, UnityEngine.CoreModule]],
+        PrimeTween.Runtime
     - Name: startFromCurrent
       Entry: 5
       Data: false
     - Name: startValue
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
       Entry: 4
-      Data: 1
-    - Name: endValue
+      Data: -1080
+    - Name: 
       Entry: 4
       Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: endValue
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: settings
       Entry: 7
       Data: PrimeTween.TweenSettings, PrimeTween.Runtime
     - Name: duration
       Entry: 4
-      Data: 1
+      Data: 0.5
     - Name: ease
       Entry: 3
-      Data: 0
+      Data: 13
     - Name: customEase
       Entry: 7
-      Data: 6|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 11|UnityEngine.AnimationCurve, UnityEngine.CoreModule
     - Name: 
       Entry: 9
-      Data: 4
+      Data: 8
     - Name: 
       Entry: 3
       Data: 8
@@ -4437,11 +4410,83 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: transitionGroupType
+      Entry: 3
+      Data: 0
+    - Name: delay
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: previousOut
+      Entry: 7
+      Data: 12|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 13|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: transitionIn
-      Entry: 6
+      Entry: 7
+      Data: 14|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 15|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: transitionOut
-      Entry: 6
+      Entry: 7
+      Data: 16|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 17|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: 
       Entry: 8
@@ -8810,7 +8855,7 @@ MonoBehaviour:
     - {fileID: 1997745645}
   <PanelController>k__BackingField:
     rid: 2851746639663595615
-  initialPanelType: 0
+  initialPanelType: 2
   references:
     version: 2
     RefIds:
@@ -12083,7 +12128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.8627451}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -12121,8 +12166,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <TransitionObjectProviders>k__BackingField:
-    keys: []
-    values: []
+    keys:
+    - Background
+    - Window
+    values:
+    - {fileID: 1532508622}
+    - {fileID: 726022314}
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
@@ -12145,16 +12194,48 @@ MonoBehaviour:
     - Name: crossFadeType
       Entry: 3
       Data: 4
-    - Name: useTransitionScreen
-      Entry: 5
-      Data: false
     - Name: customOffset
       Entry: 4
       Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 2|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
     - Name: nextIn
       Entry: 7
-      Data: 2|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
+      Data: 3|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 4|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: previousOut
+      Entry: 7
+      Data: 5|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 6|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 7|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 8|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
+    - Name: objectKey
       Entry: 1
       Data: PanelCanvasGroup
     - Name: transitionSettings
@@ -12165,25 +12246,25 @@ MonoBehaviour:
       Data: false
     - Name: startValue
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: endValue
       Entry: 4
-      Data: 1
+      Data: 0
     - Name: settings
       Entry: 7
       Data: PrimeTween.TweenSettings, PrimeTween.Runtime
     - Name: duration
       Entry: 4
-      Data: 1
+      Data: 0.5
     - Name: ease
       Entry: 3
       Data: 0
     - Name: customEase
       Entry: 7
-      Data: 3|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 9|UnityEngine.AnimationCurve, UnityEngine.CoreModule
     - Name: 
       Entry: 7
-      Data: 4|UnityEngine.Keyframe[], UnityEngine.CoreModule
+      Data: 10|UnityEngine.Keyframe[], UnityEngine.CoreModule
     - Name: 
       Entry: 12
       Data: 0
@@ -12232,71 +12313,17 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: previousOut
-      Entry: 7
-      Data: 5|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
-      Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 1
-    - Name: endValue
-      Entry: 4
-      Data: 0
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 0.2
-    - Name: ease
+    - Name: transitionGroupType
       Entry: 3
       Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 6|UnityEngine.AnimationCurve, UnityEngine.CoreModule
-    - Name: 
-      Entry: 9
-      Data: 4
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
+    - Name: delay
+      Entry: 4
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
-      Data: 0
     - Name: 
-      Entry: 8
+      Entry: 13
       Data: 
     - Name: 
       Entry: 8
@@ -12305,10 +12332,45 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: transitionIn
-      Entry: 6
+      Entry: 7
+      Data: 11|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 12|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: transitionOut
-      Entry: 6
+      Entry: 7
+      Data: 13|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 14|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: 
       Entry: 8
@@ -14746,7 +14808,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1764628305
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14842,45 +14904,19 @@ MonoBehaviour:
     - Name: crossFadeType
       Entry: 3
       Data: 1
-    - Name: useTransitionScreen
-      Entry: 5
-      Data: true
     - Name: customOffset
       Entry: 4
       Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 2|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
     - Name: nextIn
       Entry: 7
-      Data: 2|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 3|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 0
-    - Name: endValue
-      Entry: 4
-      Data: 1
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 1
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 3|UnityEngine.AnimationCurve, UnityEngine.CoreModule
-    - Name: 
-      Entry: 7
-      Data: 4|UnityEngine.Keyframe[], UnityEngine.CoreModule
+      Data: 4|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -14891,109 +14927,20 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
       Entry: 8
       Data: 
     - Name: previousOut
       Entry: 7
-      Data: 5|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 5|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 1
-    - Name: endValue
-      Entry: 4
-      Data: 0
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 1
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 6|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 6|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
     - Name: 
-      Entry: 9
-      Data: 4
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
+      Entry: 12
       Data: 0
     - Name: 
-      Entry: 8
+      Entry: 13
       Data: 
     - Name: 
       Entry: 8
@@ -15003,69 +14950,16 @@ MonoBehaviour:
       Data: 
     - Name: transitionIn
       Entry: 7
-      Data: 7|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 7|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 0
-    - Name: endValue
-      Entry: 4
-      Data: 1
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 0.01
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 8|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 8|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
     - Name: 
-      Entry: 9
-      Data: 4
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
+      Entry: 12
       Data: 0
     - Name: 
-      Entry: 8
+      Entry: 13
       Data: 
     - Name: 
       Entry: 8
@@ -15075,67 +14969,17 @@ MonoBehaviour:
       Data: 
     - Name: transitionOut
       Entry: 7
-      Data: 9|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 9|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 1
-    - Name: endValue
-      Entry: 4
+      Data: 10|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
       Data: 0
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 0.01
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 10|UnityEngine.AnimationCurve, UnityEngine.CoreModule
     - Name: 
-      Entry: 9
-      Data: 4
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
+      Entry: 13
       Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
-      Data: 0
     - Name: 
       Entry: 8
       Data: 
@@ -16332,18 +16176,31 @@ MonoBehaviour:
     - Name: crossFadeType
       Entry: 3
       Data: 3
-    - Name: useTransitionScreen
-      Entry: 5
-      Data: false
     - Name: customOffset
       Entry: 4
       Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 2|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
     - Name: nextIn
       Entry: 7
-      Data: 2|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
+      Data: 3|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 4|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 5|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 6|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
+    - Name: objectKey
       Entry: 1
-      Data: PanelCanvasGroup
+      Data: Background
     - Name: transitionSettings
       Entry: 7
       Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
@@ -16355,22 +16212,22 @@ MonoBehaviour:
       Data: 0
     - Name: endValue
       Entry: 4
-      Data: 1
+      Data: 0.25
     - Name: settings
       Entry: 7
       Data: PrimeTween.TweenSettings, PrimeTween.Runtime
     - Name: duration
       Entry: 4
-      Data: 0.2
+      Data: 0.5
     - Name: ease
       Entry: 3
-      Data: 0
+      Data: 13
     - Name: customEase
       Entry: 7
-      Data: 3|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 7|UnityEngine.AnimationCurve, UnityEngine.CoreModule
     - Name: 
       Entry: 7
-      Data: 4|UnityEngine.Keyframe[], UnityEngine.CoreModule
+      Data: 8|UnityEngine.Keyframe[], UnityEngine.CoreModule
     - Name: 
       Entry: 12
       Data: 0
@@ -16419,39 +16276,76 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: previousOut
+    - Name: transitionGroupType
+      Entry: 3
+      Data: 0
+    - Name: delay
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
       Entry: 7
-      Data: 5|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
+      Data: 9|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 10|MadDuck.Scripts.UIs.Transitions.ScaleTransition, Assembly-CSharp
+    - Name: rectTransformKey
       Entry: 1
-      Data: PanelCanvasGroup
+      Data: Window
     - Name: transitionSettings
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
+      Data: PrimeTween.TweenSettings`1[[UnityEngine.Vector3, UnityEngine.CoreModule]],
+        PrimeTween.Runtime
     - Name: startFromCurrent
       Entry: 5
       Data: false
     - Name: startValue
-      Entry: 4
-      Data: 1
-    - Name: endValue
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
       Entry: 4
       Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: endValue
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: settings
       Entry: 7
       Data: PrimeTween.TweenSettings, PrimeTween.Runtime
     - Name: duration
       Entry: 4
-      Data: 1
+      Data: 0.5
     - Name: ease
       Entry: 3
-      Data: 0
+      Data: 30
     - Name: customEase
       Entry: 7
-      Data: 6|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 11|UnityEngine.AnimationCurve, UnityEngine.CoreModule
     - Name: 
       Entry: 9
-      Data: 4
+      Data: 8
     - Name: 
       Entry: 3
       Data: 8
@@ -16491,11 +16385,83 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: transitionGroupType
+      Entry: 3
+      Data: 0
+    - Name: delay
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: previousOut
+      Entry: 7
+      Data: 12|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 13|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: transitionIn
-      Entry: 6
+      Entry: 7
+      Data: 14|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 15|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: transitionOut
-      Entry: 6
+      Entry: 7
+      Data: 16|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 17|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: 
       Entry: 8
@@ -16505,26 +16471,39 @@ MonoBehaviour:
       Data: 
     - Name: statsCrossFadeRule
       Entry: 7
-      Data: 7|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
+      Data: 18|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
     - Name: nextPanel
       Entry: 10
       Data: 1
     - Name: crossFadeSettings
       Entry: 7
-      Data: 8|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
+      Data: 19|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
     - Name: crossFadeType
       Entry: 3
       Data: 3
-    - Name: useTransitionScreen
-      Entry: 5
-      Data: false
     - Name: customOffset
       Entry: 4
       Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 20|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
     - Name: nextIn
       Entry: 7
-      Data: 9|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
+      Data: 21|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 22|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 23|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 24|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
+    - Name: objectKey
       Entry: 1
       Data: PanelCanvasGroup
     - Name: transitionSettings
@@ -16544,16 +16523,16 @@ MonoBehaviour:
       Data: PrimeTween.TweenSettings, PrimeTween.Runtime
     - Name: duration
       Entry: 4
-      Data: 0.2
+      Data: 0.5
     - Name: ease
       Entry: 3
-      Data: 0
+      Data: 13
     - Name: customEase
       Entry: 7
-      Data: 10|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 25|UnityEngine.AnimationCurve, UnityEngine.CoreModule
     - Name: 
       Entry: 9
-      Data: 4
+      Data: 8
     - Name: 
       Entry: 3
       Data: 8
@@ -16586,6 +16565,24 @@ MonoBehaviour:
       Data: 0
     - Name: 
       Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: transitionGroupType
+      Entry: 3
+      Data: 0
+    - Name: delay
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
       Data: 
     - Name: 
       Entry: 8
@@ -16595,69 +16592,16 @@ MonoBehaviour:
       Data: 
     - Name: previousOut
       Entry: 7
-      Data: 11|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 26|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 1
-    - Name: endValue
-      Entry: 4
-      Data: 0
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 0.2
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 12|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 27|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
     - Name: 
-      Entry: 9
-      Data: 4
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
+      Entry: 12
       Data: 0
     - Name: 
-      Entry: 8
+      Entry: 13
       Data: 
     - Name: 
       Entry: 8
@@ -16666,10 +16610,45 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: transitionIn
-      Entry: 6
+      Entry: 7
+      Data: 28|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 29|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: transitionOut
-      Entry: 6
+      Entry: 7
+      Data: 30|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 31|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: 
       Entry: 8
@@ -16679,26 +16658,39 @@ MonoBehaviour:
       Data: 
     - Name: achievementsCrossFadeRule
       Entry: 7
-      Data: 13|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
+      Data: 32|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
     - Name: nextPanel
       Entry: 10
       Data: 2
     - Name: crossFadeSettings
       Entry: 7
-      Data: 14|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
+      Data: 33|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
     - Name: crossFadeType
       Entry: 3
       Data: 3
-    - Name: useTransitionScreen
-      Entry: 5
-      Data: false
     - Name: customOffset
       Entry: 4
       Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 34|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
     - Name: nextIn
       Entry: 7
-      Data: 15|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
+      Data: 35|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 36|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 37|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 38|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
+    - Name: objectKey
       Entry: 1
       Data: PanelCanvasGroup
     - Name: transitionSettings
@@ -16718,16 +16710,16 @@ MonoBehaviour:
       Data: PrimeTween.TweenSettings, PrimeTween.Runtime
     - Name: duration
       Entry: 4
-      Data: 0.2
+      Data: 0.5
     - Name: ease
       Entry: 3
-      Data: 0
+      Data: 13
     - Name: customEase
       Entry: 7
-      Data: 16|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 39|UnityEngine.AnimationCurve, UnityEngine.CoreModule
     - Name: 
       Entry: 9
-      Data: 4
+      Data: 8
     - Name: 
       Entry: 3
       Data: 8
@@ -16760,6 +16752,24 @@ MonoBehaviour:
       Data: 0
     - Name: 
       Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: transitionGroupType
+      Entry: 3
+      Data: 0
+    - Name: delay
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
       Data: 
     - Name: 
       Entry: 8
@@ -16769,69 +16779,16 @@ MonoBehaviour:
       Data: 
     - Name: previousOut
       Entry: 7
-      Data: 17|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 40|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 1
-    - Name: endValue
-      Entry: 4
-      Data: 0
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 0.2
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 18|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 41|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
     - Name: 
-      Entry: 9
-      Data: 4
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
+      Entry: 12
       Data: 0
     - Name: 
-      Entry: 8
+      Entry: 13
       Data: 
     - Name: 
       Entry: 8
@@ -16840,10 +16797,45 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: transitionIn
-      Entry: 6
+      Entry: 7
+      Data: 42|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 43|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: transitionOut
-      Entry: 6
+      Entry: 7
+      Data: 44|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 45|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: 
       Entry: 8
@@ -18142,45 +18134,19 @@ MonoBehaviour:
     - Name: crossFadeType
       Entry: 3
       Data: 1
-    - Name: useTransitionScreen
-      Entry: 5
-      Data: false
     - Name: customOffset
       Entry: 4
       Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 3|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
     - Name: nextIn
       Entry: 7
-      Data: 3|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 4|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 0
-    - Name: endValue
-      Entry: 4
-      Data: 1
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 0.2
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 4|UnityEngine.AnimationCurve, UnityEngine.CoreModule
-    - Name: 
-      Entry: 7
-      Data: 5|UnityEngine.Keyframe[], UnityEngine.CoreModule
+      Data: 5|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -18191,109 +18157,20 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
       Entry: 8
       Data: 
     - Name: previousOut
       Entry: 7
-      Data: 6|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 6|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 1
-    - Name: endValue
-      Entry: 4
-      Data: 0
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 0.2
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 7|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 7|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
     - Name: 
-      Entry: 9
-      Data: 5
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
+      Entry: 12
       Data: 0
     - Name: 
-      Entry: 8
+      Entry: 13
       Data: 
     - Name: 
       Entry: 8
@@ -18302,10 +18179,45 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: transitionIn
-      Entry: 6
+      Entry: 7
+      Data: 8|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 9|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: transitionOut
-      Entry: 6
+      Entry: 7
+      Data: 10|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 11|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: 
       Entry: 8
@@ -18326,87 +18238,35 @@ MonoBehaviour:
       Data: 1
     - Name: 
       Entry: 7
-      Data: 8|MadDuck.Scripts.UIs.Panels.MainMenu.StatScreen+PageCrossFadeRule, Assembly-CSharp
+      Data: 12|MadDuck.Scripts.UIs.Panels.MainMenu.StatScreen+PageCrossFadeRule,
+        Assembly-CSharp
     - Name: thisPanel
       Entry: 10
       Data: 1
     - Name: crossFadeSettings
       Entry: 7
-      Data: 9|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
+      Data: 13|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
     - Name: crossFadeType
       Entry: 3
       Data: 1
-    - Name: useTransitionScreen
-      Entry: 5
-      Data: false
     - Name: customOffset
       Entry: 4
       Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 14|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
     - Name: nextIn
       Entry: 7
-      Data: 10|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 15|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 0
-    - Name: endValue
-      Entry: 4
-      Data: 1
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 0.2
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 11|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 16|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
     - Name: 
-      Entry: 9
-      Data: 5
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
+      Entry: 12
       Data: 0
     - Name: 
-      Entry: 8
+      Entry: 13
       Data: 
     - Name: 
       Entry: 8
@@ -18416,69 +18276,16 @@ MonoBehaviour:
       Data: 
     - Name: previousOut
       Entry: 7
-      Data: 12|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 17|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 1
-    - Name: endValue
-      Entry: 4
-      Data: 0
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 0.2
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 13|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 18|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
     - Name: 
-      Entry: 9
-      Data: 5
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
+      Entry: 12
       Data: 0
     - Name: 
-      Entry: 8
+      Entry: 13
       Data: 
     - Name: 
       Entry: 8
@@ -18487,10 +18294,45 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: transitionIn
-      Entry: 6
+      Entry: 7
+      Data: 19|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 20|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: transitionOut
-      Entry: 6
+      Entry: 7
+      Data: 21|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 22|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: 
       Entry: 8
@@ -18511,88 +18353,35 @@ MonoBehaviour:
       Data: 2
     - Name: 
       Entry: 7
-      Data: 14|MadDuck.Scripts.UIs.Panels.MainMenu.StatScreen+PageCrossFadeRule,
+      Data: 23|MadDuck.Scripts.UIs.Panels.MainMenu.StatScreen+PageCrossFadeRule,
         Assembly-CSharp
     - Name: thisPanel
       Entry: 10
       Data: 2
     - Name: crossFadeSettings
       Entry: 7
-      Data: 15|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
+      Data: 24|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
     - Name: crossFadeType
       Entry: 3
       Data: 1
-    - Name: useTransitionScreen
-      Entry: 5
-      Data: false
     - Name: customOffset
       Entry: 4
       Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 25|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
     - Name: nextIn
       Entry: 7
-      Data: 16|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 26|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 0
-    - Name: endValue
-      Entry: 4
-      Data: 1
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 0.2
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 17|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 27|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
     - Name: 
-      Entry: 9
-      Data: 5
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
+      Entry: 12
       Data: 0
     - Name: 
-      Entry: 8
+      Entry: 13
       Data: 
     - Name: 
       Entry: 8
@@ -18602,69 +18391,16 @@ MonoBehaviour:
       Data: 
     - Name: previousOut
       Entry: 7
-      Data: 18|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 28|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 1
-    - Name: endValue
-      Entry: 4
-      Data: 0
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 0.2
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 19|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 29|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
     - Name: 
-      Entry: 9
-      Data: 5
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
+      Entry: 12
       Data: 0
     - Name: 
-      Entry: 8
+      Entry: 13
       Data: 
     - Name: 
       Entry: 8
@@ -18673,10 +18409,45 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: transitionIn
-      Entry: 6
+      Entry: 7
+      Data: 30|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 31|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: transitionOut
-      Entry: 6
+      Entry: 7
+      Data: 32|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 33|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: 
       Entry: 8
@@ -18695,87 +18466,34 @@ MonoBehaviour:
       Data: 
     - Name: mainMenuCrossFadeRule
       Entry: 7
-      Data: 20|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
+      Data: 34|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
     - Name: nextPanel
       Entry: 10
       Data: 3
     - Name: crossFadeSettings
       Entry: 7
-      Data: 21|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
+      Data: 35|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
     - Name: crossFadeType
       Entry: 3
       Data: 4
-    - Name: useTransitionScreen
-      Entry: 5
-      Data: false
     - Name: customOffset
       Entry: 4
       Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 36|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
     - Name: nextIn
       Entry: 7
-      Data: 22|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 37|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 0
-    - Name: endValue
-      Entry: 4
-      Data: 1
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 0.2
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 23|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 38|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
     - Name: 
-      Entry: 9
-      Data: 5
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
+      Entry: 12
       Data: 0
     - Name: 
-      Entry: 8
+      Entry: 13
       Data: 
     - Name: 
       Entry: 8
@@ -18785,69 +18503,16 @@ MonoBehaviour:
       Data: 
     - Name: previousOut
       Entry: 7
-      Data: 24|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
-    - Name: canvasGroupKey
-      Entry: 1
-      Data: PanelCanvasGroup
-    - Name: transitionSettings
+      Data: 39|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
       Entry: 7
-      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
-    - Name: startFromCurrent
-      Entry: 5
-      Data: false
-    - Name: startValue
-      Entry: 4
-      Data: 1
-    - Name: endValue
-      Entry: 4
-      Data: 0
-    - Name: settings
-      Entry: 7
-      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
-    - Name: duration
-      Entry: 4
-      Data: 0.2
-    - Name: ease
-      Entry: 3
-      Data: 0
-    - Name: customEase
-      Entry: 7
-      Data: 25|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 40|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
     - Name: 
-      Entry: 9
-      Data: 5
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: cycles
-      Entry: 3
-      Data: 1
-    - Name: cycleMode
-      Entry: 3
-      Data: 0
-    - Name: startDelay
-      Entry: 4
-      Data: 0
-    - Name: endDelay
-      Entry: 4
-      Data: 0
-    - Name: useUnscaledTime
-      Entry: 5
-      Data: false
-    - Name: _useFixedUpdate
-      Entry: 5
-      Data: false
-    - Name: _updateType
-      Entry: 3
+      Entry: 12
       Data: 0
     - Name: 
-      Entry: 8
+      Entry: 13
       Data: 
     - Name: 
       Entry: 8
@@ -18856,10 +18521,45 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: transitionIn
-      Entry: 6
+      Entry: 7
+      Data: 41|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 42|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: transitionOut
-      Entry: 6
+      Entry: 7
+      Data: 43|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 44|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: 
       Entry: 8

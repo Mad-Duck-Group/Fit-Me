@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using PrimeTween;
 using Redcode.Extensions;
 using Sirenix.OdinInspector;
@@ -32,7 +34,7 @@ namespace MadDuck.Scripts.UIs.Panels.Transition
             }
         }
 
-        public Sequence TransitionBefore()
+        public async UniTask TransitionBeforeLoad(CancellationToken cancellationToken = default)
         {
             _blockSequence = Sequence.Create();
             var randomTweens = new List<BlockTween>(blockTweens);
@@ -40,10 +42,10 @@ namespace MadDuck.Scripts.UIs.Panels.Transition
             {
                 _blockSequence.Chain(Tween.Scale(blockTween.block, blockTween.scaleTweenSettings));
             }
-            return _blockSequence;
+            await _blockSequence.ToUniTask(cancellationToken: cancellationToken);
         }
 
-        public Sequence TransitionAfter()
+        public async UniTask TransitionAfterLoad(CancellationToken cancellationToken = default)
         {
             _blockSequence = Sequence.Create();
             var randomTweens = new List<BlockTween>(blockTweens);
@@ -52,9 +54,13 @@ namespace MadDuck.Scripts.UIs.Panels.Transition
                 _blockSequence.Chain(Tween.Scale(blockTween.block,
                     blockTween.scaleTweenSettings.WithDirection(false)));
             }
-            return _blockSequence;
+            await _blockSequence.ToUniTask(cancellationToken: cancellationToken);
         }
 
-        
+        public override void CancelTransition()
+        {
+            base.CancelTransition();
+            _blockSequence.Stop();
+        }
     }
 }

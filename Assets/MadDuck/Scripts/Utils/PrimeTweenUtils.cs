@@ -28,5 +28,16 @@ namespace MadDuck.Scripts.Utils
             }
             return seq;
         }
+        
+        public static TweenSettings<Vector2> ToVector2(this TweenSettings<Vector3> settings)
+        {
+            return new TweenSettings<Vector2>
+            {
+                startValue = settings.startValue,
+                endValue = settings.endValue,
+                settings = settings.settings,
+                startFromCurrent = settings.startFromCurrent,
+            };
+        }
     }
 }
