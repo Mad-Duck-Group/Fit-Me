@@ -340,6 +340,7 @@ MonoBehaviour:
     - line: '|     iPhone: 1'
     - line: '|     tvOS: 1'
     - line: '|   m_BuildTargetGroupLightmapEncodingQuality: []'
+    - line: '|   m_BuildTargetGroupHDRCubemapEncodingQuality: []'
     - line: '|   m_BuildTargetGroupLightmapSettings: []'
     - line: '|   m_BuildTargetGroupLoadStoreDebugModeSettings: []'
     - line: '|   m_BuildTargetNormalMapEncoding: []'
