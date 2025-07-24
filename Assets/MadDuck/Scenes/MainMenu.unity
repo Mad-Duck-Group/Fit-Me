@@ -9048,7 +9048,7 @@ MonoBehaviour:
     - {fileID: 1997745645}
   <PanelController>k__BackingField:
     rid: 2851746639663595615
-  initialPanelType: 2
+  initialPanelType: 0
   references:
     version: 2
     RefIds:

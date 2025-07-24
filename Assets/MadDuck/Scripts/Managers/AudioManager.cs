@@ -327,6 +327,14 @@ namespace MadDuck.Scripts.Managers
             bus.setMute(mute);
         }
         
+        public void ToggleMuteBus(BusType busType)
+        {
+            if (!GetBus(busType, out var bus)) return;
+            var result = bus.getMute(out var isMuted);
+            if (result is not RESULT.OK) return;
+            bus.setMute(!isMuted);
+        }
+        
         public void SetVolumeBus(BusType busType, float value, bool decibel = true)
         {
             if (!GetBus(busType, out var bus)) return;

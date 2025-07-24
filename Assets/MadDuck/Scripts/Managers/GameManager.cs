@@ -534,37 +534,34 @@ public class GameManager : MonoSingleton<GameManager>
     #region Scene Change
     public void BackToMenu()
     {
-        if (SceneManager.sceneCount > 1) return;
-        //SceneManager.LoadScene(SceneNames.MainMenu.ToString());
+        LoadSceneManager.Instance.LoadScene(SceneType.MainMenu, LoadSceneMode.Single, false);
     }
 
     public void Retry()
     {
-        if (SceneManager.sceneCount > 1) return;
-        //LoadSceneManager.Instance.Retry = true;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        LoadSceneManager.Instance.ReloadScene(LoadSceneMode.Single, false);
     }
     #endregion
 
     #region Another Button
 
-    public void MuteSFX()
+    public void ToggleMuteSFX()
     {
-        
+        AudioManager.Instance.ToggleMuteBus(BusType.SFX);
     }
 
-    public void MuteMusic()
+    public void ToggleMuteBGM()
     {
-        
+        AudioManager.Instance.ToggleMuteBus(BusType.BGM);
     }
 
-    public void Continue()
+    public void ToResultScreen()
     {
         resultPanel.gameObject.SetActive(true);
         gameOverPanel.gameObject.SetActive(false);
     }
     
-    public void PlayContinue()
+    public void Continue()
     {
         GridManager.Instance.RemoveAllBlocks();
         gameOverPanel.gameObject.SetActive(false);

@@ -31,6 +31,22 @@ namespace MadDuck.Scripts.Managers
         [Title("Settings")]
         [SerializeField] private MainMenuPanelType initialPanelType = MainMenuPanelType.SplashScreen;
 
+        private void OnEnable()
+        {
+            LoadSceneManager.OnFinishFadeIn += OnFinishFadeIn;
+        }
+
+        private void OnDisable()
+        {
+            LoadSceneManager.OnFinishFadeIn -= OnFinishFadeIn;
+        }
+
+        private void OnFinishFadeIn()
+        {
+            if (LoadSceneManager.FirstSceneLoaded) initialPanelType = MainMenuPanelType.MainMenu;
+            ShowFirstPanel();
+        }
+
         private void Start()
         {
             PanelDictionary.Values.ForEach(p =>
@@ -38,6 +54,10 @@ namespace MadDuck.Scripts.Managers
                 p.Initialize();
                 p.PanelController = PanelController;
             });
+        }
+
+        private void ShowFirstPanel()
+        {
             PanelController.ShowPanel(PanelDictionary[initialPanelType], cancellationToken: destroyCancellationToken).Forget();
         }
     }
