@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FMODUnity;
 using MadDuck.Scripts.Utils;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -70,6 +71,9 @@ namespace MadDuck.Scripts.Units
         {
             ArrayHelper.ResizeArrayKeepMembers(ref BlockSchema.schema, BlockSize);
         }
+        
+        [field: Title("Audios")]
+        [field: SerializeField] public EventReference PickupSfx { get; private set; }
         
         [field: TitleGroup("Block Debug")]
         [field: OdinSerialize, HideReferenceObjectPicker]

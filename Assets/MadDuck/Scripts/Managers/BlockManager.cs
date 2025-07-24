@@ -19,7 +19,7 @@ using Random = UnityEngine.Random;
 
 namespace MadDuck.Scripts.Managers
 {
-    public class RandomBlockManager : MonoSingleton<RandomBlockManager>
+    public class BlockManager : MonoSingleton<BlockManager>
     {
         #region Data Structures
         [Serializable]
@@ -303,7 +303,7 @@ namespace MadDuck.Scripts.Managers
             List<Block> blockToCheck = spawnPoints.Where(x => !x.IsFree).Select(spawnPoint => spawnPoint.CurrentBlock).ToList();
             if (!GridManager.Instance.CheckAvailableBlock(blockToCheck, out _))
             {
-                GameManager.Instance.GameOver(true);  
+                GameManager.Instance.GameOver();  
             }
         }
         #endregion

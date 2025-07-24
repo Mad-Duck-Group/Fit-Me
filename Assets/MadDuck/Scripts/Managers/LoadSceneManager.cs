@@ -16,6 +16,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -79,6 +80,7 @@ namespace MadDuck.Scripts.Managers
         public static event Action OnStartFadeOut;
         public static event Action OnFinishFadeOut;
         public static event Action OnStartFadeIn;
+        public static event Action OnFinishLoad;
         public static event Action OnFinishFadeIn;
     
         private ITransitionScreen _currentTransitionScreen;
@@ -98,7 +100,11 @@ namespace MadDuck.Scripts.Managers
             {
                 screen.Initialize();
             });
-            if (!FirstSceneLoaded) OnFinishFadeIn?.Invoke();
+            if (!FirstSceneLoaded)
+            {
+                OnFinishLoad?.Invoke();
+                OnFinishFadeIn?.Invoke();
+            }
         }
         #endregion
         
@@ -108,7 +114,7 @@ namespace MadDuck.Scripts.Managers
             _loadSceneEventListener = GlobalMessagePipe.GetSubscriber<LoadSceneEvent>()
                 .Subscribe(OnLoadSceneEvent);
         }
-
+        
         private void OnDisable()
         {
             _loadSceneEventListener?.Dispose();
@@ -199,15 +205,18 @@ namespace MadDuck.Scripts.Managers
             }
             progressCts.Cancel();
             _currentTransitionScreen.Progress = 1f;
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return;
-            }
             _asyncOperation.allowSceneActivation = true;
-            SceneManager.sceneLoaded += (scene, mode) => SceneManager.SetActiveScene(scene);
+            SceneManager.sceneLoaded += SetActiveScene;
             FirstSceneLoaded = true;
             Time.timeScale = 1f;
             _asyncOperation = null;
+        }
+        
+        private void SetActiveScene(Scene scene, LoadSceneMode mode)
+        {
+            SceneManager.sceneLoaded -= SetActiveScene;
+            SceneManager.SetActiveScene(scene);
+            OnFinishLoad?.Invoke();
         }
 
         public void CancelLoadScene()

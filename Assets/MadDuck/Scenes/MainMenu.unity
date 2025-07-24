@@ -17161,6 +17161,13 @@ MonoBehaviour:
   statsButton: {fileID: 1584516762}
   achievementsButton: {fileID: 521595763}
   versionText: {fileID: 1097475358}
+  mainMenuBgm:
+    Guid:
+      Data1: -134700402
+      Data2: 1117459467
+      Data3: -1263679087
+      Data4: 775962493
+    Path: event:/BGM/BGM01_Menu
 --- !u!225 &1897847860
 CanvasGroup:
   m_ObjectHideFlags: 0

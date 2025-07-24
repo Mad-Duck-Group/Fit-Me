@@ -1841,6 +1841,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &342182972
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1402617828738896277, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_Name
+      value: AudioManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
 --- !u!1 &395351172
 GameObject:
   m_ObjectHideFlags: 0
@@ -2230,7 +2287,7 @@ GameObject:
   - component: {fileID: 466326063}
   - component: {fileID: 466326062}
   m_Layer: 0
-  m_Name: RandomBlockManager
+  m_Name: BlockManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4495,7 +4552,7 @@ GameObject:
   - component: {fileID: 1007654437}
   - component: {fileID: 1007654436}
   m_Layer: 5
-  m_Name: CloseMusicButton
+  m_Name: MuteMusicButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4564,7 +4621,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1007654437}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1077234519}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: ToggleMuteBGM
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1007654437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5057,10 +5126,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f77e2926b91087945b118ceb457851c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timerSlider: {fileID: 1775298398}
-  timerFill: {fileID: 21702743}
-  startColor: {r: 0, g: 1, b: 0, a: 1}
-  endColor: {r: 1, g: 0, b: 0, a: 1}
   countOffPanel: {fileID: 1094725370}
   countOffText: {fileID: 454863654}
   pausePanel: {fileID: 94534296}
@@ -5072,7 +5137,6 @@ MonoBehaviour:
   closeMusicButton: {fileID: 1007654436}
   gameOverPanel: {fileID: 1635131233}
   gameOverText: {fileID: 48437865}
-  retryButton: {fileID: 0}
   continueButton: {fileID: 1752724440}
   resultPanel: {fileID: 16883433}
   resultScoreText: {fileID: 302111781}
@@ -5081,7 +5145,6 @@ MonoBehaviour:
   tryAgainButton: {fileID: 1516650629}
   scoreText: {fileID: 2040727031}
   versionText: {fileID: 2040727031}
-  bombTimeBonus: 10
   countOffTime: 0
   scorePerPlacement: 20
   scorePerCombo: 100
@@ -5114,6 +5177,34 @@ MonoBehaviour:
   infectColor:
     serializedVersion: 2
     rgba: 4281677109
+  gameplayBgm:
+    Guid:
+      Data1: -427414803
+      Data2: 1332713969
+      Data3: -480146507
+      Data4: -805563045
+    Path: event:/BGM/BGM02_Game Play
+  resultBgm:
+    Guid:
+      Data1: -482498507
+      Data2: 1128293352
+      Data3: -718018149
+      Data4: 1492871828
+    Path: event:/BGM/BGM03_Result
+  gameOverSfx:
+    Guid:
+      Data1: -1453155917
+      Data2: 1314617184
+      Data3: 2058765481
+      Data4: -1473537089
+    Path: event:/SFX/Game Play/GP03_Game Over
+  giveUpSfx:
+    Guid:
+      Data1: 2079650638
+      Data2: 1139855666
+      Data3: -186385515
+      Data4: 1959068079
+    Path: event:/SFX/Game Play/GP04_10s Continue
   <CurrentGameState>k__BackingField:
     value: 0
   score: 0
@@ -5586,7 +5677,7 @@ GameObject:
   - component: {fileID: 1148954552}
   - component: {fileID: 1148954551}
   m_Layer: 5
-  m_Name: CloseSFXButton
+  m_Name: MuteSFXButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5655,7 +5746,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1148954552}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1077234519}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: ToggleMuteSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1148954552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10150,6 +10253,7 @@ SceneRoots:
   - {fileID: 693030240}
   - {fileID: 619394802}
   - {fileID: 971228115}
+  - {fileID: 342182972}
   - {fileID: 806927507}
   - {fileID: 519420032}
   - {fileID: 107384131}

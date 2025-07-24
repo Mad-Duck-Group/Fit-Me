@@ -60,3 +60,10 @@ MonoBehaviour:
       Data: 
   <BlockSprite>k__BackingField: {fileID: 0}
   <BlockSize>k__BackingField: {x: 1, y: 1}
+  <PickupSfx>k__BackingField:
+    Guid:
+      Data1: 1268590727
+      Data2: 1187442805
+      Data3: 2013083567
+      Data4: -1722966579
+    Path: event:/SFX/Game Play/Loopie Woopie/I1

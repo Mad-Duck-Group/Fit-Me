@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Units;
 using MadDuck.Scripts.Utils.Inspectors;
@@ -54,15 +55,7 @@ public class GameManager : MonoSingleton<GameManager>
     #region References
     [HideIfGroup("References", Condition = InspectorSettings.GameDesignerModeKey)]
     [BoxGroup("References/Box", LabelText = "References", CenterLabel = true)]
-    [SerializeField, HideLabel] private InspectorVoid referencesTitle;
-    [TabGroup("References/Box/Tab", "Timer")]
-    [SerializeField] private Slider timerSlider;
-    [TabGroup("References/Box/Tab", "Timer")]
-    [SerializeField] private Image timerFill;
-    [TabGroup("References/Box/Tab", "Timer")]
-    [SerializeField] private Color startColor = Color.green;
-    [TabGroup("References/Box/Tab", "Timer")]
-    [SerializeField] private Color endColor = Color.red;
+    [ShowInInspector, HideLabel] private InspectorVoid _referencesTitle;
     
     [TabGroup("References/Box/Tab", "Count Off")]
     [SerializeField] private GameObject countOffPanel;
@@ -89,8 +82,6 @@ public class GameManager : MonoSingleton<GameManager>
     [TabGroup("References/Box/Tab", "Game Over")]
     [SerializeField] private TMP_Text gameOverText;
     [TabGroup("References/Box/Tab", "Game Over")]
-    [SerializeField] private Button retryButton;
-    [TabGroup("References/Box/Tab", "Game Over")]
     [SerializeField] private Button continueButton;
     
     [TabGroup("References/Box/Tab", "Result")]
@@ -113,10 +104,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     #region Settings
     [Title("Settings")]
-    [SerializeField, HideLabel] private InspectorVoid settingsTitle;
-    //[TabGroup("Settings", "Timer")] [SerializeField] private float gameTimer = 60f;
-    [TabGroup("Settings", "Timer")]
-    [SerializeField] private float bombTimeBonus = 10f;
+    [ShowInInspector, HideLabel] private InspectorVoid _settingsTitle;
     
     [TabGroup("Settings", "Count Off")]
     [SerializeField] private float countOffTime = 3f;
@@ -155,6 +143,21 @@ public class GameManager : MonoSingleton<GameManager>
     public Color32 infectColor = new(255, 0, 0, 255);
     #endregion
 
+    #region Audios
+    [Title("Audios")]
+    [ShowInInspector, HideLabel] private InspectorVoid _audiosTitle;
+    
+    [TabGroup("Audios", "BGM")]
+    [SerializeField] private EventReference gameplayBgm;
+    [TabGroup("Audios", "BGM")]
+    [SerializeField] private EventReference resultBgm;
+    
+    [TabGroup("Audios", "SFX")]
+    [SerializeField] private EventReference gameOverSfx;
+    [TabGroup("Audios", "SFX")]
+    [SerializeField] private EventReference giveUpSfx;
+    #endregion
+    
     #region Debug
     [field: Title("Game Manager Debug")]
     [field: SerializeField, DisplayAsString]
@@ -176,6 +179,7 @@ public class GameManager : MonoSingleton<GameManager>
     private bool _sceneActivated;
     private int _previousReRollScore;
     private bool _countDownPlayed;
+    private AudioReference _bgmReference;
     public static event Action OnSceneActivated;
     private IDisposable _infectionDisposable;
     private IDisposable _blockOnGridCountDisposable;
@@ -186,18 +190,12 @@ public class GameManager : MonoSingleton<GameManager>
     {
         versionText.text = $"{Application.version}";
         CurrentGameState.Value = GameState.CountOff;
-        //_currentGameTimer = gameTimer;
         gameOverPanel.SetActive(false);
         gameOverText.transform.localScale = Vector3.zero;
         pausePanel.SetActive(false);
         NextGameDifficulty();
         UpdateScoreText(false);
         volumeSlider.gameObject.SetActive(false);
-        //retryButton.gameObject.SetActive(false);
-        /*retryButton.onClick.AddListener(() =>
-        {
-            LoadSceneManager.Instance.ReloadScene(LoadSceneMode.Single, false);
-        });*/
         ActivateScene();
     }
     
@@ -217,9 +215,7 @@ public class GameManager : MonoSingleton<GameManager>
     {
         if (countOffTime <= 0)
         {
-            CurrentGameState.Value = GameState.PlaceBlock;
-            countOffPanel.SetActive(false);
-            RandomBlockManager.Instance.SpawnAtStart();
+            GameStart();
             Debug.Log("Count off time is 0 or less, starting game immediately.");
             return;
         }
@@ -237,11 +233,17 @@ public class GameManager : MonoSingleton<GameManager>
                 _ =>
                 {
                     // On completed (after countdown finishes)
-                    CurrentGameState.Value = GameState.PlaceBlock;
-                    countOffPanel.SetActive(false);
-                    RandomBlockManager.Instance.SpawnAtStart();
+                    GameStart();
                 })
             .AddTo(this);
+    }
+
+    private void GameStart()
+    {
+        CurrentGameState.Value = GameState.PlaceBlock;
+        countOffPanel.SetActive(false);
+        _bgmReference = AudioManager.Instance.PlayAudio(gameplayBgm, transform.position);
+        BlockManager.Instance.SpawnAtStart();
     }
     #endregion
 
@@ -307,34 +309,6 @@ public class GameManager : MonoSingleton<GameManager>
     {
         if (!_sceneActivated) return;
     }
-
-    
-    /*
-    /// <summary>
-    /// Update the game timer
-    /// </summary>
-    private void UpdateGameTimer()
-    {
-        if (CurrentGameState.Value is GameState.CountOff or GameState.Pause) return;
-        _currentGameTimer -= Time.deltaTime;
-        timerSlider.value = _currentGameTimer / gameTimer;
-        Color color = Color.Lerp(endColor, startColor, _currentGameTimer / gameTimer);
-        timerFill.color = color;
-        switch (_currentGameTimer)
-        {
-            case > 10 when _countDownPlayed:
-                _countDownPlayed = false;
-                break;
-            case <= 10 when !_countDownPlayed:
-                _countDownPlayed = true;
-                break;
-        }
-        if (_currentGameTimer <= 0 && CurrentGameState.Value is not (GameState.GameClear or GameState.GameOver))
-        {
-            GameOver();
-        }
-    }
-    */
 
     private void RandomSpawnInfection()
     {
@@ -427,17 +401,11 @@ public class GameManager : MonoSingleton<GameManager>
                 int bombScore = scorePerBomb * contactedAmount;
                 Debug.Log("Bomb Score: " + bombScore);
                 ChangeScore(bombScore);
-                //ChangeGameTimer(bombTimeBonus);
                 break;
             case ScoreTypes.FitMe:
                 ChangeScore(scorePerFitMe);
-                //ChangeGameTimer(gameTimer);
                 break;
         }
-        //if (_score - _previousReRollScore < reRollScoreThreshold) return;
-        //int reRoll = Mathf.FloorToInt((_score - _previousReRollScore) / (float)reRollScoreThreshold);
-        //if (ChangeReRoll(reRoll)) SoundManager.Instance.PlaySoundFX(SoundFXTypes.ReRollGain, out _);
-        //_previousReRollScore += reRollScoreThreshold;
     }
 
     /// <summary>
@@ -477,22 +445,6 @@ public class GameManager : MonoSingleton<GameManager>
         }
         _listInfectTime.Sort();
     }
-    
-    
-    
-    /*
-    public void ChangeGameTimer(float value, bool bump = true)
-    {
-        float newTimer = _currentGameTimer + value;
-        _currentGameTimer = Mathf.Clamp(newTimer, 0, gameTimer);
-        if (bump)
-        {
-            Tween.Scale(timerSlider.transform, 1.2f, 0.1f, cycleMode: CycleMode.Yoyo, cycles: 2);
-        }
-    }
-    */
-    
-    
     #endregion
     
     #region Pause
@@ -518,27 +470,28 @@ public class GameManager : MonoSingleton<GameManager>
     #endregion
     
     #region Game Over
-    public void GameOver(bool fail = false)
+    public void GameOver()
     {
         CurrentGameState.Value = GameState.GameOver;
-        //_currentGameTimer = 0;
+        AudioManager.Instance.PlayAudio(gameOverSfx, transform.position);
         Debug.Log("Game Over!");
-        gameOverText.text = fail ? "Failed!" : "Time's Up!";
+        gameOverText.text = "Failed!";
         gameOverPanel.SetActive(true);
         Tween.Scale(gameOverText.transform, 1, 0.5f, ease: Ease.OutBounce);
         GridManager.Instance.StopAllPreInfectFlash();
-        //retryButton.gameObject.SetActive(true);
     }
     #endregion
 
     #region Scene Change
     public void BackToMenu()
     {
+        _bgmReference.Stop();
         LoadSceneManager.Instance.LoadScene(SceneType.MainMenu, LoadSceneMode.Single, false);
     }
 
     public void Retry()
     {
+        _bgmReference.Stop();
         LoadSceneManager.Instance.ReloadScene(LoadSceneMode.Single, false);
     }
     #endregion
@@ -557,6 +510,9 @@ public class GameManager : MonoSingleton<GameManager>
 
     public void ToResultScreen()
     {
+        AudioManager.Instance.PlayAudio(giveUpSfx, transform.position);
+        _bgmReference.Stop();
+        _bgmReference = AudioManager.Instance.PlayAudio(resultBgm, transform.position);
         resultPanel.gameObject.SetActive(true);
         gameOverPanel.gameObject.SetActive(false);
     }

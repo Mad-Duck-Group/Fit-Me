@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using FMODUnity;
 using MadDuck.Scripts.Units;
 using MadDuck.Scripts.Utils;
 using ObservableCollections;
@@ -93,7 +94,7 @@ namespace MadDuck.Scripts.Managers
         [TitleGroup("Grid Settings")]
         [SerializeField]
         private int destroyThreshold = 3;
-
+        
         [Title("Grid Debug")] 
         [SerializeField, DisableInPlayMode] [OnValueChanged(nameof(OnPresetChanged))]
         [InlineEditor]
@@ -429,14 +430,14 @@ namespace MadDuck.Scripts.Managers
             ResetPreviousValidationCells();
             if (!UpdateBlockOnGrid(block))
             {
-                RandomBlockManager.Instance.FreeSpawnPoint(block.SpawnIndex);
-                RandomBlockManager.Instance.ResetSpawnPoint(); //NOTE: Old spawning system
-                RandomBlockManager.Instance.SpawnRandomBlock();
+                BlockManager.Instance.FreeSpawnPoint(block.SpawnIndex);
+                BlockManager.Instance.ResetSpawnPoint(); //NOTE: Old spawning system
+                BlockManager.Instance.SpawnRandomBlock();
             }
             else
             {
-                RandomBlockManager.Instance.ResetSpawnPoint();
-                RandomBlockManager.Instance.SpawnRandomBlock();
+                BlockManager.Instance.ResetSpawnPoint();
+                BlockManager.Instance.SpawnRandomBlock();
             }
             OnBlockPlaced?.Invoke(block);
             return true;

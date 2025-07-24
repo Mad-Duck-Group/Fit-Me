@@ -54,6 +54,20 @@ MonoBehaviour:
   pickUpSortingLayer: -1318158959
   originalAtomColor: {r: 1, g: 1, b: 1, a: 1}
   <AllowPickUpAfterPlacement>k__BackingField: 0
+  placeSucceedSfx:
+    Guid:
+      Data1: 724217357
+      Data2: 1334338036
+      Data3: 718497672
+      Data4: 801821144
+    Path: event:/SFX/Game Play/GP01_Confirm Place
+  placeFailSfx:
+    Guid:
+      Data1: -307433879
+      Data2: 1268295283
+      Data3: 156051903
+      Data4: -1858921210
+    Path: event:/SFX/Game Play/GP02_Cancel Place
   <BlockType>k__BackingField: 0
   <BlockFace>k__BackingField: 
   <Atoms>k__BackingField: []

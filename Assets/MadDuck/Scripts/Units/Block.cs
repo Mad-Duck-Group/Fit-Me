@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using FMODUnity;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Utils;
 using MadDuck.Scripts.Utils.Inspectors;
@@ -60,6 +61,10 @@ namespace MadDuck.Scripts.Units
         [SerializeField, SortingLayer] private int pickUpSortingLayer;
         [SerializeField] private Color originalAtomColor = Color.white;
         [field: SerializeField] public bool AllowPickUpAfterPlacement { get; private set; }
+        
+        [Title("Audios")] 
+        [SerializeField] private EventReference placeSucceedSfx;
+        [SerializeField] private EventReference placeFailSfx;
         
         [field: Title("Block Debug")]
         [field: SerializeField, DisplayAsString] public BlockTypes BlockType { get; private set; }
@@ -242,6 +247,7 @@ namespace MadDuck.Scripts.Units
             _mousePositionDifference = new Vector3(mousePosition.x - position.x,
                 mousePosition.y - position.y, 0);
             //ChangeSortingOrder(1);
+            AudioManager.Instance.PlayAudioOneShot(BlockPreset.PickupSfx, transform.position);
             SetSortingLayer(pickUpSortingLayer);
         }
 
@@ -273,14 +279,16 @@ namespace MadDuck.Scripts.Units
             if (GridManager.Instance.PlaceBlock(this))
             {
                 IsPlaced = true;
+                AudioManager.Instance.PlayAudioOneShot(placeSucceedSfx, transform.position);
                 _mousePositionDifference = Vector3.zero;
                 if (blockView) blockView.Place();
                 //ChangeSortingOrder(-1);
                 SetSortingLayer(originalSortingLayer);
-                RandomBlockManager.Instance.GameOverCheck().Forget();
+                BlockManager.Instance.GameOverCheck().Forget();
             }
             else
             {
+                AudioManager.Instance.PlayAudioOneShot(placeFailSfx, transform.position);
                 ReturnToOriginal();
                 IsPlaced = false;
             }
@@ -310,7 +318,7 @@ namespace MadDuck.Scripts.Units
             }
             else
             {
-                if (!RandomBlockManager.Instance.AtomColorDictionary.TryGetValue(type, out var color))
+                if (!BlockManager.Instance.AtomColorDictionary.TryGetValue(type, out var color))
                 {
                     Debug.LogError($"Color for block type {type} not found.");
                     return;
@@ -325,7 +333,7 @@ namespace MadDuck.Scripts.Units
         private bool GetBlockView(out BlockView blockView)
         {
             blockView = null;
-            if (!RandomBlockManager.Instance.BlockViewDatabase.TryGetValue(BlockType, out var blockViewDictionaryData))
+            if (!BlockManager.Instance.BlockViewDatabase.TryGetValue(BlockType, out var blockViewDictionaryData))
             {
                 Debug.LogWarning($"BlockView for block type {BlockType} not found in the database.");
                 return false;

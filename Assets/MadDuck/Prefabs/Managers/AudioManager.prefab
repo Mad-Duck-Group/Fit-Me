@@ -44,11 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6902ca1400f145649b963478ef5d1582, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  busDictionary:
-    keys: 000000000100000002000000
-    values:
-    - bus:/
-    - bus:/BGM
-    - bus:/SFX
+  audioSettings: {fileID: 11400000, guid: 9e0fed87ce747bb4889bf75e23424a81, type: 2}
   limitAudio: 1
   maxAudioCount: 50

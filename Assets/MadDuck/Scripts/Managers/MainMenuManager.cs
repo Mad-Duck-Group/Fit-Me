@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using FMODUnity;
 using MadDuck.Scripts.UIs.Panels;
 using MadDuck.Scripts.UIs.Transitions;
 using Redcode.Extensions;
@@ -33,31 +34,27 @@ namespace MadDuck.Scripts.Managers
 
         private void OnEnable()
         {
-            LoadSceneManager.OnFinishFadeIn += OnFinishFadeIn;
+            LoadSceneManager.OnFinishLoad += OnFinishLoad;
         }
 
         private void OnDisable()
         {
-            LoadSceneManager.OnFinishFadeIn -= OnFinishFadeIn;
+            LoadSceneManager.OnFinishLoad -= OnFinishLoad;
         }
 
-        private void OnFinishFadeIn()
+        private void OnFinishLoad()
         {
             if (LoadSceneManager.FirstSceneLoaded) initialPanelType = MainMenuPanelType.MainMenu;
             ShowFirstPanel();
         }
 
-        private void Start()
+        private void ShowFirstPanel()
         {
             PanelDictionary.Values.ForEach(p =>
             {
                 p.Initialize();
                 p.PanelController = PanelController;
             });
-        }
-
-        private void ShowFirstPanel()
-        {
             PanelController.ShowPanel(PanelDictionary[initialPanelType], cancellationToken: destroyCancellationToken).Forget();
         }
     }

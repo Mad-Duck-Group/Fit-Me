@@ -4,11 +4,14 @@ using System.Linq;
 using FMOD;
 using FMOD.Studio;
 using FMODUnity;
+using MadDuck.Scripts.Audios;
 using MessagePipe;
+using Redcode.Extensions;
 using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
+using AudioSettings = MadDuck.Scripts.Audios.AudioSettings;
 using Debug = UnityEngine.Debug;
 using STOP_MODE = FMOD.Studio.STOP_MODE;
 
@@ -97,16 +100,18 @@ namespace MadDuck.Scripts.Managers
         SFX,
     }
     
+    public enum VolumeUnit
+    {
+        Linear,
+        Linear01,
+        Decibel,
+        Decibel01
+    }
+    
     public class AudioManager : PersistentMonoSingleton<AudioManager>
     {
         [Title("References")] 
-        [SerializeField]
-        private SerializableDictionary<BusType, string> busDictionary = new()
-        {
-            { BusType.Master, "bus:/" },
-            { BusType.BGM, "bus:/BGM" },
-            { BusType.SFX, "bus:/SFX" }
-        };
+        [Required, SerializeField] private AudioSettings audioSettings;
 
         [Title("Settings")] 
         [SerializeField] private bool limitAudio = true;
@@ -138,6 +143,19 @@ namespace MadDuck.Scripts.Managers
             
         }
         #endregion
+        
+        #region Initialization
+
+        private void Start()
+        {
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+             audioSettings.BusData.Values.ForEach(busData => busData.Initialize());
+        }
+        #endregion
 
         #region Play
         public AudioReference PlayAudio(EventReference eventReference, Vector3 position, IAudioIdentifier id = null, Transform parent = null)
@@ -152,7 +170,7 @@ namespace MadDuck.Scripts.Managers
             eventInstance.set3DAttributes(position.To3DAttributes());
             eventInstance.start();
             if (parent)
-                RuntimeManager.AttachInstanceToGameObject(eventInstance, parent);
+                RuntimeManager.AttachInstanceToGameObject(eventInstance, parent.gameObject);
             var audioReference = new AudioReference(eventInstance, id);
             if (id != null)
             {
@@ -295,57 +313,50 @@ namespace MadDuck.Scripts.Managers
         #endregion
 
         #region Bus
-        public bool GetBus(BusType busType, out Bus bus)
+        public bool GetBusData(BusType busType, out BusData busData)
         {
-            if (!busDictionary.TryGetValue(busType, out var busPath))
+            if (!audioSettings.BusData.TryGetValue(busType, out busData))
             {
                 Debug.LogError($"Bus {busType} not found in bus dictionary.");
-                bus = default;
                 return false;
             }
-            bus = RuntimeManager.GetBus(busPath);
-            if (!bus.isValid())
-            {
-                Debug.LogError($"Bus {busType} not found.");
-                return false;
-            }
+            if (!busData.Bus.isValid()) return false;
             return true;
         }
         
-        public bool GetBusVolume(BusType busType, out float volume, bool decibel = true)
+        public bool GetBusVolume(BusType busType, out float volume, VolumeUnit outUnit)
         {
             volume = 0f;
-            if (!GetBus(busType, out var masterBus)) return false;
-            if (masterBus.getVolume(out var linear) is not RESULT.OK) return false;
-            volume = decibel ? AudioManagerUtils.LinearToDecibel(linear) : linear;
+            if (!GetBusData(busType, out var busData)) return false;
+            if (!busData.Bus.isValid()) return false;
+            if (busData.Bus.getVolume(out var linear) is not RESULT.OK) return false;
+            volume = linear.ConvertUnit(VolumeUnit.Linear, outUnit);
             return true;
         }
         
         public void SetMuteBus(BusType busType, bool mute)
         {
-            if (!GetBus(busType, out var bus)) return;
-            bus.setMute(mute);
+            if (!GetBusData(busType, out var busData)) return;
+            busData.SetMute(mute);
         }
         
         public void ToggleMuteBus(BusType busType)
         {
-            if (!GetBus(busType, out var bus)) return;
-            var result = bus.getMute(out var isMuted);
-            if (result is not RESULT.OK) return;
-            bus.setMute(!isMuted);
+            if (!GetBusData(busType, out var busData)) return;
+            busData.SetMute(!busData.IsMuted);
         }
         
-        public void SetVolumeBus(BusType busType, float value, bool decibel = true)
+        public void SetVolumeBus(BusType busType, float value, VolumeUnit inUnit)
         {
-            if (!GetBus(busType, out var bus)) return;
-            var finalValue = decibel ? AudioManagerUtils.DecibelToLinear(value) : value;
-            bus.setVolume(finalValue);
+            if (!GetBusData(busType, out var busData)) return;
+            busData.SetVolume(value, inUnit);
         }
         
         public void StopAllAudioInBus(BusType busType, STOP_MODE stopMode = STOP_MODE.ALLOWFADEOUT)
         {
-            if (!GetBus(busType, out var bus)) return;
-            bus.stopAllEvents(stopMode);
+            if (!GetBusData(busType, out var busData)) return;
+            if (!busData.Bus.isValid()) return;
+            busData.Bus.stopAllEvents(stopMode);
             _wildAudioReferenceData.RemoveAll(audioReference => !audioReference.IsPlaying());
             foreach (var (key, audioReferences) in _indexedAudioReferenceData.ToList())
             {
@@ -361,6 +372,11 @@ namespace MadDuck.Scripts.Managers
 
     public static class AudioManagerUtils
     {
+        public const float MinLinearVolume = 0f;
+        public const float MaxLinearVolume = 3.16227766f;
+        public const float MinDecibelVolume = -80f;
+        public const float MaxDecibelVolume = 10f;
+        
         /// <summary>
         /// Extension method to check if the audio reference is playing.
         /// </summary>
@@ -394,28 +410,60 @@ namespace MadDuck.Scripts.Managers
         {
             AudioManager.Instance.SetPauseAudio(audioReference, pause);
         }
-        
-        /// <summary>
-        /// Converts a linear volume value (0 to 1) to decibels (-80 to 10).
-        /// </summary>
-        /// <param name="percentage"></param>
-        /// <returns></returns>
-        public static float LinearToDecibel(float percentage)
+
+        private static float Linear01ToDb(float lin01)
         {
-            var unclampedVolume = Mathf.Log10(percentage) * 20f;
-            var clampedVolume = Mathf.Clamp(unclampedVolume, -80f, 10f);
-            return clampedVolume;
+            float linear = lin01 * MaxLinearVolume;
+            return Mathf.Clamp(Mathf.Log10(Mathf.Max(linear, 1e-10f)) * 20f, MinDecibelVolume, MaxDecibelVolume);
+        }
+        
+        private static float Db01ToLinear(float db01)
+        {
+            float db = Mathf.Lerp(MinDecibelVolume, MaxDecibelVolume, db01);
+            return Mathf.Clamp(Mathf.Pow(10f, db / 20f), MinLinearVolume, MaxLinearVolume);
         }
         
         /// <summary>
-        /// Converts a decibel value (-80 to 10) to a linear volume value (0 to 1).
+        /// Converts a volume value from one unit to another.
         /// </summary>
-        /// <param name="decibel"></param>
+        /// <param name="value"></param>
+        /// <param name="inUnit"></param>
+        /// <param name="outUnit"></param>
         /// <returns></returns>
-        public static float DecibelToLinear(float decibel)
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public static float ConvertUnit(this float value, VolumeUnit inUnit, VolumeUnit outUnit)
         {
-            var linear = Mathf.Pow(10f, decibel / 20f);
-            return linear;
+            if (inUnit == outUnit) return value;
+
+            bool linear = inUnit is VolumeUnit.Linear or VolumeUnit.Linear01;
+            float range01 = inUnit switch
+            {
+                VolumeUnit.Linear   => Mathf.InverseLerp(MinLinearVolume, MaxLinearVolume, value),
+                VolumeUnit.Linear01 => Mathf.Clamp01(value),
+                VolumeUnit.Decibel  => Mathf.InverseLerp(MinDecibelVolume, MaxDecibelVolume, value),
+                VolumeUnit.Decibel01=> Mathf.Clamp01(value),
+                _ => throw new ArgumentOutOfRangeException(nameof(inUnit))
+            };
+            
+            if (linear)
+            {
+                return outUnit switch
+                {
+                    VolumeUnit.Linear => Mathf.Lerp(MinLinearVolume, MaxLinearVolume, range01),
+                    VolumeUnit.Linear01 => range01,
+                    VolumeUnit.Decibel  => Linear01ToDb(range01),
+                    VolumeUnit.Decibel01=> Mathf.InverseLerp(MinDecibelVolume, MaxDecibelVolume, Linear01ToDb(range01)),
+                    _ => throw new ArgumentOutOfRangeException(nameof(outUnit))
+                };
+            }
+            return outUnit switch
+            {
+                VolumeUnit.Linear => Db01ToLinear(range01),
+                VolumeUnit.Linear01 => Mathf.InverseLerp(MinLinearVolume, MaxLinearVolume, Db01ToLinear(range01)),
+                VolumeUnit.Decibel  => Mathf.Lerp(MinDecibelVolume, MaxDecibelVolume, range01),
+                VolumeUnit.Decibel01=> range01,
+                _ => throw new ArgumentOutOfRangeException(nameof(outUnit))
+            };
         }
     }
 }
