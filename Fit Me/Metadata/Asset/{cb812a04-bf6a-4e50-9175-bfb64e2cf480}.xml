@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<objects serializationModel="Studio.02.02.00">
+<objects serializationModel="Studio.02.03.00">
 	<object class="EncodableAsset" id="{cb812a04-bf6a-4e50-9175-bfb64e2cf480}">
 		<property name="assetPath">
 			<value>BGM/</value>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<objects serializationModel="Studio.02.02.00">
+<objects serializationModel="Studio.02.03.00">
 	<object class="EventFolder" id="{d105e25e-db02-4fa3-883d-30ea15ead897}">
 		<property name="name">
 			<value>BGM</value>
