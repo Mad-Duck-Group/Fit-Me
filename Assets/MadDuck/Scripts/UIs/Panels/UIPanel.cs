@@ -163,6 +163,11 @@ namespace MadDuck.Scripts.UIs.Panels
             Debug.LogWarning($"Transition object with key '{key}' not found in panel '{PanelName}'. Ensure it is set up correctly.");
             return false;
         }
+
+        private void OnDestroy()
+        {
+            CancelTransition();
+        }
         #endregion
 
         #region Serialization

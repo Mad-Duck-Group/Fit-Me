@@ -29,6 +29,85 @@ namespace MadDuck.Scripts.Utils
             return seq;
         }
         
+        #region ToRelative
+        public static TweenSettings<Vector4> ToRelative(this TweenSettings<Vector4> settings, Vector4 start)
+        {
+            return new TweenSettings<Vector4>
+            {
+                startValue = start,
+                endValue = settings.endValue + start,
+                settings = settings.settings,
+                startFromCurrent = settings.startFromCurrent,
+            };
+        }
+        
+        public static TweenSettings<Vector3> ToRelative(this TweenSettings<Vector3> settings, Vector3 start)
+        {
+            return new TweenSettings<Vector3>
+            {
+                startValue = start,
+                endValue = settings.endValue + start,
+                settings = settings.settings,
+                startFromCurrent = settings.startFromCurrent,
+            };
+        }
+        
+        public static TweenSettings<Vector2> ToRelative(this TweenSettings<Vector2> settings, Vector2 start)
+        {
+            return new TweenSettings<Vector2>
+            {
+                startValue = start,
+                endValue = settings.endValue + start,
+                settings = settings.settings,
+                startFromCurrent = settings.startFromCurrent,
+            };
+        }
+        
+        public static TweenSettings<float> ToRelative(this TweenSettings<float> settings, float start)
+        {
+            return new TweenSettings<float>
+            {
+                startValue = start,
+                endValue = settings.endValue + start,
+                settings = settings.settings,
+                startFromCurrent = settings.startFromCurrent,
+            };
+        }
+        
+        public static TweenSettings<Quaternion> ToRelative(this TweenSettings<Quaternion> settings, Quaternion start)
+        {
+            return new TweenSettings<Quaternion>
+            {
+                startValue = start,
+                endValue = settings.endValue * start,
+                settings = settings.settings,
+                startFromCurrent = settings.startFromCurrent,
+            };
+        }
+        
+        public static TweenSettings<int> ToRelative(this TweenSettings<int> settings, int start)
+        {
+            return new TweenSettings<int>
+            {
+                startValue = start,
+                endValue = settings.endValue + start,
+                settings = settings.settings,
+                startFromCurrent = settings.startFromCurrent,
+            };
+        }
+        
+        public static TweenSettings<Color> ToRelative(this TweenSettings<Color> settings, Color start)
+        {
+            return new TweenSettings<Color>
+            {
+                startValue = start,
+                endValue = settings.endValue + start,
+                settings = settings.settings,
+                startFromCurrent = settings.startFromCurrent,
+            };
+        }
+        #endregion
+        
         public static TweenSettings<Vector2> ToVector2(this TweenSettings<Vector3> settings)
         {
             return new TweenSettings<Vector2>

@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using FMODUnity;
 using MadDuck.Scripts.Managers;
+using MadDuck.Scripts.UIs.Transitions;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using TMPro;
 using UnityEngine;
 
 namespace MadDuck.Scripts.UIs.Panels.Gameplay
 {
+    [ShowOdinSerializedPropertiesInInspector]
     public class CountOffScreen : UIPanel
     {
         [Title("References")]
@@ -22,15 +26,16 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
         [Title("Audios")] 
         [SerializeField] private EventReference readySfx;
         [SerializeField] private EventReference fitSfx;
-
-        public Action OnCountOffComplete { private get; set; } = null;
+        
+        [Title("Panels")]
+        [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule gameplayCrossFadeRule = new();
 
         public override void OnPanelReady()
         {
             base.OnPanelReady();
             if (!useCountOff)
             {
-                OnCountOffComplete?.Invoke();
+                CountOffComplete().Forget();
                 return;
             }
             StartCountOff().Forget();
@@ -45,7 +50,14 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
             await UniTask.WaitForSeconds(warmUp);
             countOffText.text = "FIT!";
             await UniTask.WaitForSeconds(exitDelay);
-            OnCountOffComplete?.Invoke();
+            CountOffComplete().Forget();
+        }
+
+        private async UniTaskVoid CountOffComplete()
+        {
+            transitionCts = new CancellationTokenSource();
+            await PanelController.ChangePanel(this, gameplayCrossFadeRule.nextPanel, gameplayCrossFadeRule.crossFadeSettings, transitionCts.Token);
+            GameManager.Instance.GameStart();
         }
     }
 }

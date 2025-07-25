@@ -103,12 +103,6 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     [SerializeField] private Button homeButton;
     [TabGroup("References/Box/Tab", "Result")]
     [SerializeField] private Button tryAgainButton;
-    
-    [TabGroup("References/Box/Tab", "Score")]
-    [SerializeField] private TMP_Text scoreText;
-    
-    [TabGroup("References/Box/Tab", "Other")]
-    [SerializeField] private TMP_Text versionText;
     #endregion
 
     #region Settings
@@ -181,7 +175,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     [field: Title("Game Manager Debug")]
     [field: SerializeField, DisplayAsString]
     public SerializableReactiveProperty<GameState> CurrentGameState { get; private set; } = new(GameState.CountOff);
-    [SerializeField, Sirenix.OdinInspector.ReadOnly] private int score;
+    [SerializeField, ReadOnly] public SerializableReactiveProperty<int> Score { get; private set; } = new(0);
     
     [field: Title("Infection Debug")]
     [SerializeField, DisplayAsString] private int difficultyIndex;
@@ -200,29 +194,25 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     private bool _countDownPlayed;
     private AudioReference _bgmReference;
     public static event Action OnSceneActivated;
+    public static event Action OnGameOver;
     private IDisposable _infectionDisposable;
     private IDisposable _blockOnGridCountDisposable;
     #endregion
     
     #region Initialization
-    void Start()
+    private void Start()
     {
-        versionText.text = $"{Application.version}";
-        CurrentGameState.Value = GameState.CountOff;
-        gameOverPanel.SetActive(false);
-        gameOverText.transform.localScale = Vector3.zero;
-        pausePanel.SetActive(false);
-        NextGameDifficulty();
-        UpdateScoreText(false);
         panelDictionary.Values.ForEach(p =>
         {
             p.Initialize();
             p.PanelController = panelController;
         });
+        pausePanel.SetActive(false);
+        NextGameDifficulty();
         ActivateScene();
     }
     
-    public void ActivateScene()
+    private void ActivateScene()
     {
         if (_sceneActivated) return;
         _sceneActivated = true;
@@ -236,41 +226,12 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     /// </summary>
     private void StartCountOff()
     {
-        if (!panelDictionary.TryGetValue(GameplayUIPanelType.CountOff, out var panel) || panel is not CountOffScreen countOffScreen)
-        {
-            Debug.LogError("Count off panel not found in panel dictionary or is not of type CountOffScreen.");
-            return;
-        }
-        countOffScreen.OnCountOffComplete = () => GameStart().Forget();
-        panelController.ShowPanel(panel).Forget();
-        /*if (countOffTime <= 0)
-        {
-            GameStart();
-            Debug.Log("Count off time is 0 or less, starting game immediately.");
-            return;
-        }
-        countOffPanel.SetActive(true);
-        Observable.Interval(TimeSpan.FromSeconds(1))
-            .Take(Mathf.CeilToInt(countOffTime) + 1) // Take 4 values (3, 2, 1, 0)
-            .Select((_, i) => Mathf.CeilToInt(countOffTime) - i) // Convert to countdown values
-            .Do(current =>  countOffText.text = current.ToString())
-            .Subscribe(
-                current =>
-                {
-                    // Update text based on current countdown value
-                    countOffText.text = current > 0 ? current.ToString() : "GO!";
-                },
-                _ =>
-                {
-                    // On completed (after countdown finishes)
-                    GameStart();
-                })
-            .AddTo(this);*/
+        CurrentGameState.Value = GameState.CountOff;
+        panelController.ShowPanel(panelDictionary[GameplayUIPanelType.CountOff]).Forget();
     }
 
-    private async UniTaskVoid GameStart()
+    public void GameStart()
     {
-        await panelController.ChangePanel(panelDictionary[GameplayUIPanelType.CountOff], panelDictionary[GameplayUIPanelType.Gameplay]);
         CurrentGameState.Value = GameState.PlaceBlock;
         _bgmReference = AudioManager.Instance.PlayAudio(gameplayBgm, transform.position);
         BlockManager.Instance.SpawnAtStart();
@@ -378,7 +339,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     {
         _aboutToInfectBlocks.Clear();
         if (gameDifficultySettings.Count == 0) return;
-        if (score >= CurrentGameDifficultySettings.MaxScorePerDifficulty)
+        if (Score.Value >= CurrentGameDifficultySettings.MaxScorePerDifficulty)
         {
             difficultyIndex++;
             if (difficultyIndex >= gameDifficultySettings.Count)
@@ -408,8 +369,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     /// <param name="value"></param>
     public void ChangeScore(int value)
     {
-        score += value;
-        UpdateScoreText();
+        Score.Value += value;
     }
 
     public void AddScore(ScoreTypes scoreType, int contactedAmount = 0)
@@ -436,20 +396,6 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
                 ChangeScore(scorePerFitMe);
                 break;
         }
-    }
-
-    /// <summary>
-    /// Update the score text
-    /// </summary>
-    private void UpdateScoreText(bool bump = true)
-    {
-        //Bump animation
-        if (bump)
-        {
-            Tween.Scale(scoreText.transform, 1.2f, 0.1f, cycleMode: CycleMode.Yoyo, cycles: 2);
-        }
-
-        scoreText.text = score.ToString("N0");
     }
 
     private void CalculateInfectTime()
@@ -500,10 +446,8 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
         CurrentGameState.Value = GameState.GameOver;
         AudioManager.Instance.PlayAudio(gameOverSfx, transform.position);
         Debug.Log("Game Over!");
-        gameOverText.text = "Failed!";
-        gameOverPanel.SetActive(true);
-        Tween.Scale(gameOverText.transform, 1, 0.5f, ease: Ease.OutBounce);
         GridManager.Instance.StopAllPreInfectFlash();
+        OnGameOver?.Invoke();
     }
     #endregion
 
@@ -550,23 +494,23 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     
     #endregion
     
-    #region Serialization
-    public void OnBeforeSerialize()
-    {
-        UnitySerializationUtility.SerializeUnityObject(this, ref serializationData);
-    }
+     #region Serialization
+        public void OnBeforeSerialize()
+        {
+            UnitySerializationUtility.SerializeUnityObject(this, ref serializationData);
+        }
 
-    public void OnAfterDeserialize()
-    {
-        UnitySerializationUtility.DeserializeUnityObject(this, ref serializationData);
-    }
+        public void OnAfterDeserialize()
+        {
+            UnitySerializationUtility.DeserializeUnityObject(this, ref serializationData);
+        }
 
-    [SerializeField, HideInInspector]
-    private SerializationData serializationData;
-    public SerializationData SerializationData 
-    { 
-        get => serializationData;
-        set => serializationData = value;
-    }
-    #endregion
+        [SerializeField, HideInInspector]
+        private SerializationData serializationData;
+        public SerializationData SerializationData 
+        { 
+            get => serializationData;
+            set => serializationData = value;
+        }
+        #endregion
 }

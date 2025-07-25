@@ -14,6 +14,7 @@ using Redcode.Extensions;
 using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using TMPro;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
 using UnityEngine.Events;
@@ -57,8 +58,14 @@ namespace MadDuck.Scripts.Managers
     public class LoadSceneManager : PersistentMonoSingleton<LoadSceneManager>, ISerializationCallbackReceiver, ISupportsPrefabSerialization
     {
         #region Inspectors
+        [Title("References")]
+        [SerializeField] private TMP_Text versionText;
+        
         [Title("Scenes")]
         [SerializeField] private SerializableDictionary<SceneType, SceneReference> scenes;
+        
+        [Title("Settings")]
+        [SerializeField, OnValueChanged(nameof(DisplayVersionChanged))] private bool displayVersion = true;
 
         [field: Title("Transition")] 
         [field: OdinSerialize] public SerializableDictionary<TransitionScreenType, ITransitionScreen> TransitionScreens 
@@ -72,7 +79,12 @@ namespace MadDuck.Scripts.Managers
         [Button("Debug Load Scene")]
         private void DebugLoadScene()
         {
-            LoadScene(debugSceneType, LoadSceneMode.Single, false);
+            LoadScene(debugSceneType, LoadSceneMode.Single, false).Forget();
+        }
+        
+        private void DisplayVersionChanged()
+        {
+            versionText.SetText(displayVersion ? $"{Application.version}" : string.Empty);
         }
         #endregion
         
@@ -96,6 +108,7 @@ namespace MadDuck.Scripts.Managers
         #region Initialization
         private void Start()
         {
+            DisplayVersionChanged();
             TransitionScreens.Values.ForEach(screen =>
             {
                 screen.Initialize();
@@ -122,7 +135,7 @@ namespace MadDuck.Scripts.Managers
         
         private void OnLoadSceneEvent(LoadSceneEvent loadSceneEvent)
         {
-            LoadScene(loadSceneEvent.sceneType, loadSceneEvent.loadSceneMode, loadSceneEvent.useLoadingScene);
+            LoadScene(loadSceneEvent.sceneType, loadSceneEvent.loadSceneMode, loadSceneEvent.useLoadingScene).Forget();
         }
         #endregion
         
