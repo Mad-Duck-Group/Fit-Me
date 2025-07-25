@@ -82,13 +82,14 @@ namespace MadDuck.Scripts.Managers
         [SerializeField] [OnValueChanged(nameof(UpdateGridOffset))]
         private GridOffsetType gridHorizontalOffsetType = GridOffsetType.Automatic;
         [TitleGroup("Grid Settings")]
-        [SerializeField, ShowIf(nameof(gridHorizontalOffsetType), GridOffsetType.Custom)]
+        [SerializeField]
         [OnValueChanged(nameof(UpdateGridOffset))]
         private int customOffsetX = 0;
         [TitleGroup("Grid Settings")]
         [SerializeField] [OnValueChanged(nameof(UpdateGridOffset))]
         private GridOffsetType gridVerticalOffsetType = GridOffsetType.Custom;
-        [SerializeField, ShowIf(nameof(gridVerticalOffsetType), GridOffsetType.Custom)]
+        [TitleGroup("Grid Settings")]
+        [SerializeField]
         [OnValueChanged(nameof(UpdateGridOffset))]
         private int customOffsetY = 0;
         [TitleGroup("Grid Settings")]
@@ -286,7 +287,7 @@ namespace MadDuck.Scripts.Managers
             switch (gridHorizontalOffsetType)
             {
                 case GridOffsetType.Automatic:
-                    currentOffset.x = -Mathf.FloorToInt(currentGridSize.x / 2f);
+                    currentOffset.x = -Mathf.FloorToInt(currentGridSize.x / 2f) + customOffsetX;
                     if (currentGridSize.x % 2 != 0)
                     {
                         if (!_grid) _grid = GetComponent<Grid>();
@@ -305,7 +306,7 @@ namespace MadDuck.Scripts.Managers
             switch (gridVerticalOffsetType)
             {
                 case GridOffsetType.Automatic:
-                    currentOffset.y = Mathf.FloorToInt(currentGridSize.y / 2f);
+                    currentOffset.y = Mathf.FloorToInt(currentGridSize.y / 2f) + customOffsetY;
                     break;
                 case GridOffsetType.Custom:
                     currentOffset.y = customOffsetY;

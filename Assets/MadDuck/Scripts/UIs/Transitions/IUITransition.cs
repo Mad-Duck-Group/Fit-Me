@@ -59,6 +59,14 @@ namespace MadDuck.Scripts.UIs.Transitions
         public IUIPanel nextPanel;
         public CrossFadeSettings crossFadeSettings = new();
     }
+    
+    [Serializable]
+    [ShowOdinSerializedPropertiesInInspector]
+    public record PageCrossFadeRule
+    {
+        public IUIPanel thisPanel;
+        public CrossFadeSettings crossFadeSettings;
+    }
 
     public enum TransitionGroupType
     {

@@ -1,14 +1,20 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using FMODUnity;
 using MadDuck.Scripts.Managers;
+using MadDuck.Scripts.UIs.Panels;
+using MadDuck.Scripts.UIs.Panels.Gameplay;
 using MadDuck.Scripts.Units;
 using MadDuck.Scripts.Utils.Inspectors;
 using ObservableCollections;
 using PrimeTween;
 using R3;
+using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
+using Sirenix.Utilities;
 using TMPro;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
@@ -35,6 +41,15 @@ public enum GameState
     GameOver,
     GameClear
 }
+
+public enum GameplayUIPanelType
+{
+    CountOff,
+    Gameplay,
+    Pause,
+    GameOver,
+    Result
+}
 #endregion
 
 [Serializable]
@@ -48,7 +63,8 @@ public struct GameDifficultySettings
     [ShowInInspector, ReadOnly] public bool CanInfect => InfectionCountRange.x >= 1;
 }
 
-public class GameManager : MonoSingleton<GameManager>
+[ShowOdinSerializedPropertiesInInspector]
+public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackReceiver, ISupportsPrefabSerialization
 {
     #region Inspectors
 
@@ -57,15 +73,8 @@ public class GameManager : MonoSingleton<GameManager>
     [BoxGroup("References/Box", LabelText = "References", CenterLabel = true)]
     [ShowInInspector, HideLabel] private InspectorVoid _referencesTitle;
     
-    [TabGroup("References/Box/Tab", "Count Off")]
-    [SerializeField] private GameObject countOffPanel;
-    [TabGroup("References/Box/Tab", "Count Off")]
-    [SerializeField] private TMP_Text countOffText;
-    
     [TabGroup("References/Box/Tab", "Pause")]
     [SerializeField] private GameObject pausePanel;
-    [TabGroup("References/Box/Tab", "Pause")]
-    [SerializeField] private Slider volumeSlider;
     [TabGroup("References/Box/Tab", "Pause")]
     [SerializeField] private Button resumeButton;
     [TabGroup("References/Box/Tab", "Pause")]
@@ -142,6 +151,16 @@ public class GameManager : MonoSingleton<GameManager>
     [TabGroup("Settings", "Infection")]
     public Color32 infectColor = new(255, 0, 0, 255);
     #endregion
+    
+    #region Panels
+    [Title("Panels")]
+    [ShowInInspector, HideLabel] private InspectorVoid _panelsTitle;
+    
+    [OdinSerialize] private SerializableDictionary<GameplayUIPanelType, IUIPanel> panelDictionary = new();
+    
+    [SerializeField, HideDuplicateReferenceBox, HideLabel]
+    private UIPanelController panelController = new();
+    #endregion
 
     #region Audios
     [Title("Audios")]
@@ -195,7 +214,11 @@ public class GameManager : MonoSingleton<GameManager>
         pausePanel.SetActive(false);
         NextGameDifficulty();
         UpdateScoreText(false);
-        volumeSlider.gameObject.SetActive(false);
+        panelDictionary.Values.ForEach(p =>
+        {
+            p.Initialize();
+            p.PanelController = panelController;
+        });
         ActivateScene();
     }
     
@@ -213,7 +236,14 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     private void StartCountOff()
     {
-        if (countOffTime <= 0)
+        if (!panelDictionary.TryGetValue(GameplayUIPanelType.CountOff, out var panel) || panel is not CountOffScreen countOffScreen)
+        {
+            Debug.LogError("Count off panel not found in panel dictionary or is not of type CountOffScreen.");
+            return;
+        }
+        countOffScreen.OnCountOffComplete = () => GameStart().Forget();
+        panelController.ShowPanel(panel).Forget();
+        /*if (countOffTime <= 0)
         {
             GameStart();
             Debug.Log("Count off time is 0 or less, starting game immediately.");
@@ -225,7 +255,7 @@ public class GameManager : MonoSingleton<GameManager>
             .Select((_, i) => Mathf.CeilToInt(countOffTime) - i) // Convert to countdown values
             .Do(current =>  countOffText.text = current.ToString())
             .Subscribe(
-                current => 
+                current =>
                 {
                     // Update text based on current countdown value
                     countOffText.text = current > 0 ? current.ToString() : "GO!";
@@ -235,13 +265,13 @@ public class GameManager : MonoSingleton<GameManager>
                     // On completed (after countdown finishes)
                     GameStart();
                 })
-            .AddTo(this);
+            .AddTo(this);*/
     }
 
-    private void GameStart()
+    private async UniTaskVoid GameStart()
     {
+        await panelController.ChangePanel(panelDictionary[GameplayUIPanelType.CountOff], panelDictionary[GameplayUIPanelType.Gameplay]);
         CurrentGameState.Value = GameState.PlaceBlock;
-        countOffPanel.SetActive(false);
         _bgmReference = AudioManager.Instance.PlayAudio(gameplayBgm, transform.position);
         BlockManager.Instance.SpawnAtStart();
     }
@@ -462,11 +492,6 @@ public class GameManager : MonoSingleton<GameManager>
         CurrentGameState.Value = _beforePauseState;
         pausePanel.SetActive(false);
     }
-    
-    public void ToggleVolumeSlider()
-    {
-        volumeSlider.gameObject.SetActive(!volumeSlider.gameObject.activeSelf);
-    }
     #endregion
     
     #region Game Over
@@ -523,5 +548,25 @@ public class GameManager : MonoSingleton<GameManager>
         gameOverPanel.gameObject.SetActive(false);
     }
     
+    #endregion
+    
+    #region Serialization
+    public void OnBeforeSerialize()
+    {
+        UnitySerializationUtility.SerializeUnityObject(this, ref serializationData);
+    }
+
+    public void OnAfterDeserialize()
+    {
+        UnitySerializationUtility.DeserializeUnityObject(this, ref serializationData);
+    }
+
+    [SerializeField, HideInInspector]
+    private SerializationData serializationData;
+    public SerializationData SerializationData 
+    { 
+        get => serializationData;
+        set => serializationData = value;
+    }
     #endregion
 }

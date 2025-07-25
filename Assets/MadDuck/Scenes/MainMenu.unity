@@ -9417,6 +9417,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1018374498}
   m_CullTransparentMesh: 1
+--- !u!1001 &1027123858
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184451890234563034, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1402617828738896277, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+      propertyPath: m_Name
+      value: AudioManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
 --- !u!1 &1031236909
 GameObject:
   m_ObjectHideFlags: 0
@@ -18429,118 +18486,27 @@ MonoBehaviour:
     - Name: <PanelDictionary>k__BackingField
       Entry: 7
       Data: 0|Sherbert.Framework.Generic.SerializableDictionary`2[[MadDuck.Scripts.UIs.Panels.MainMenu.StatScreen+StatPage,
-        Assembly-CSharp],[MadDuck.Scripts.UIs.Panels.MainMenu.StatScreen+PageCrossFadeRule,
-        Assembly-CSharp]], Assembly-CSharp
+        Assembly-CSharp],[MadDuck.Scripts.UIs.Transitions.PageCrossFadeRule, Assembly-CSharp]],
+        Assembly-CSharp
     - Name: 
       Entry: 12
       Data: 3
     - Name: 
       Entry: 7
       Data: System.Collections.Generic.KeyValuePair`2[[MadDuck.Scripts.UIs.Panels.MainMenu.StatScreen+StatPage,
-        Assembly-CSharp],[MadDuck.Scripts.UIs.Panels.MainMenu.StatScreen+PageCrossFadeRule,
-        Assembly-CSharp]], mscorlib
+        Assembly-CSharp],[MadDuck.Scripts.UIs.Transitions.PageCrossFadeRule, Assembly-CSharp]],
+        mscorlib
     - Name: 
       Entry: 3
       Data: 0
     - Name: 
       Entry: 7
-      Data: 1|MadDuck.Scripts.UIs.Panels.MainMenu.StatScreen+PageCrossFadeRule, Assembly-CSharp
+      Data: 1|MadDuck.Scripts.UIs.Transitions.PageCrossFadeRule, Assembly-CSharp
     - Name: thisPanel
       Entry: 10
       Data: 0
     - Name: crossFadeSettings
-      Entry: 7
-      Data: 2|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
-    - Name: crossFadeType
-      Entry: 3
-      Data: 1
-    - Name: customOffset
-      Entry: 4
-      Data: 0
-    - Name: transitionGroupCollection
-      Entry: 7
-      Data: 3|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
-    - Name: nextIn
-      Entry: 7
-      Data: 4|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 5|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: previousOut
-      Entry: 7
-      Data: 6|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 7|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: transitionIn
-      Entry: 7
-      Data: 8|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 9|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: transitionOut
-      Entry: 7
-      Data: 10|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 11|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
+      Entry: 6
       Data: 
     - Name: 
       Entry: 8
@@ -18551,111 +18517,19 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: System.Collections.Generic.KeyValuePair`2[[MadDuck.Scripts.UIs.Panels.MainMenu.StatScreen+StatPage,
-        Assembly-CSharp],[MadDuck.Scripts.UIs.Panels.MainMenu.StatScreen+PageCrossFadeRule,
-        Assembly-CSharp]], mscorlib
+        Assembly-CSharp],[MadDuck.Scripts.UIs.Transitions.PageCrossFadeRule, Assembly-CSharp]],
+        mscorlib
     - Name: 
       Entry: 3
       Data: 1
     - Name: 
       Entry: 7
-      Data: 12|MadDuck.Scripts.UIs.Panels.MainMenu.StatScreen+PageCrossFadeRule,
-        Assembly-CSharp
+      Data: 2|MadDuck.Scripts.UIs.Transitions.PageCrossFadeRule, Assembly-CSharp
     - Name: thisPanel
       Entry: 10
       Data: 1
     - Name: crossFadeSettings
-      Entry: 7
-      Data: 13|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
-    - Name: crossFadeType
-      Entry: 3
-      Data: 1
-    - Name: customOffset
-      Entry: 4
-      Data: 0
-    - Name: transitionGroupCollection
-      Entry: 7
-      Data: 14|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
-    - Name: nextIn
-      Entry: 7
-      Data: 15|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 16|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: previousOut
-      Entry: 7
-      Data: 17|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 18|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: transitionIn
-      Entry: 7
-      Data: 19|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 20|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: transitionOut
-      Entry: 7
-      Data: 21|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 22|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
+      Entry: 6
       Data: 
     - Name: 
       Entry: 8
@@ -18666,111 +18540,19 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: System.Collections.Generic.KeyValuePair`2[[MadDuck.Scripts.UIs.Panels.MainMenu.StatScreen+StatPage,
-        Assembly-CSharp],[MadDuck.Scripts.UIs.Panels.MainMenu.StatScreen+PageCrossFadeRule,
-        Assembly-CSharp]], mscorlib
+        Assembly-CSharp],[MadDuck.Scripts.UIs.Transitions.PageCrossFadeRule, Assembly-CSharp]],
+        mscorlib
     - Name: 
       Entry: 3
       Data: 2
     - Name: 
       Entry: 7
-      Data: 23|MadDuck.Scripts.UIs.Panels.MainMenu.StatScreen+PageCrossFadeRule,
-        Assembly-CSharp
+      Data: 3|MadDuck.Scripts.UIs.Transitions.PageCrossFadeRule, Assembly-CSharp
     - Name: thisPanel
       Entry: 10
       Data: 2
     - Name: crossFadeSettings
-      Entry: 7
-      Data: 24|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
-    - Name: crossFadeType
-      Entry: 3
-      Data: 1
-    - Name: customOffset
-      Entry: 4
-      Data: 0
-    - Name: transitionGroupCollection
-      Entry: 7
-      Data: 25|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
-    - Name: nextIn
-      Entry: 7
-      Data: 26|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 27|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: previousOut
-      Entry: 7
-      Data: 28|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 29|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: transitionIn
-      Entry: 7
-      Data: 30|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 31|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: transitionOut
-      Entry: 7
-      Data: 32|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 33|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
+      Entry: 6
       Data: 
     - Name: 
       Entry: 8
@@ -18786,13 +18568,13 @@ MonoBehaviour:
       Data: 
     - Name: mainMenuCrossFadeRule
       Entry: 7
-      Data: 34|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
+      Data: 4|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
     - Name: nextPanel
       Entry: 10
       Data: 3
     - Name: crossFadeSettings
       Entry: 7
-      Data: 35|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
+      Data: 5|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
     - Name: crossFadeType
       Entry: 3
       Data: 4
@@ -18801,13 +18583,13 @@ MonoBehaviour:
       Data: 0
     - Name: transitionGroupCollection
       Entry: 7
-      Data: 36|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
+      Data: 6|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
     - Name: nextIn
       Entry: 7
-      Data: 37|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+      Data: 7|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: transition
       Entry: 7
-      Data: 38|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+      Data: 8|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -18823,10 +18605,10 @@ MonoBehaviour:
       Data: 
     - Name: previousOut
       Entry: 7
-      Data: 39|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+      Data: 9|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: transition
       Entry: 7
-      Data: 40|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+      Data: 10|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -18842,10 +18624,10 @@ MonoBehaviour:
       Data: 
     - Name: transitionIn
       Entry: 7
-      Data: 41|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+      Data: 11|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: transition
       Entry: 7
-      Data: 42|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+      Data: 12|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -18861,10 +18643,10 @@ MonoBehaviour:
       Data: 
     - Name: transitionOut
       Entry: 7
-      Data: 43|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+      Data: 13|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: transition
       Entry: 7
-      Data: 44|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+      Data: 14|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -20183,6 +19965,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 551201782}
   - {fileID: 1031236912}
+  - {fileID: 1027123858}
   - {fileID: 1154085896}
   - {fileID: 68198077}
   - {fileID: 1866557479}

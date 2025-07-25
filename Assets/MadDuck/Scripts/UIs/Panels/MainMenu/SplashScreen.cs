@@ -31,9 +31,14 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
             madduckLogo.localScale = Vector3.zero; // Start with the logo scaled down
         }
 
-        public override async void OnPanelReady()
+        public override void OnPanelReady()
         {
             base.OnPanelReady();
+            TweenLogo().Forget();
+        }
+
+        private async UniTaskVoid TweenLogo()
+        {
             _logoSequence = Sequence.Create()
                 .Group(Tween.Scale(madduckLogo, logoScaleTweenSettings));
             await _logoSequence.ToUniTask();

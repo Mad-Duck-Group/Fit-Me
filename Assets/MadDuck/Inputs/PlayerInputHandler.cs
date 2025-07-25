@@ -95,7 +95,7 @@ namespace MadDuck.Scripts.Inputs
                 _playerInputAction.Player.SetCallbacks(this);
             }
             _playerInputAction.Player.Enable();
-            _anyButtonPressListener = InputSystem.onAnyButtonPress.Call(OnAnyButton);
+            _anyButtonPressListener = InputSystem.onAnyButtonPress.Call(i => OnAnyButton(i).Forget());
         }
     
         private void Unsubscribe()
@@ -107,7 +107,7 @@ namespace MadDuck.Scripts.Inputs
 
         #region Event Handlers
 
-        private async void OnAnyButton(InputControl inputControl)
+        private async UniTaskVoid OnAnyButton(InputControl inputControl)
         {
             AnyButtonPressed = true;
             await UniTask.WaitForEndOfFrame();

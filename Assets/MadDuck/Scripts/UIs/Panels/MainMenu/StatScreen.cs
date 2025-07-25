@@ -24,12 +24,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
             Achievement = 2,
         }
 
-        [Serializable]
-        private record PageCrossFadeRule
-        {
-            public IUIPanel thisPanel;
-            public CrossFadeSettings crossFadeSettings;
-        }
+        
         
         [Title("References")]
         [SerializeField] private Button backButton;
@@ -50,8 +45,8 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         {
             base.Initialize();
             backButton.onClick.AddListener(OnBackButtonClicked);
-            nextPageButton.onClick.AddListener(() => OnPagingButtonClicked(1));
-            previousPageButton.onClick.AddListener(() => OnPagingButtonClicked(-1));
+            nextPageButton.onClick.AddListener(() => OnPagingButtonClicked(1).Forget());
+            previousPageButton.onClick.AddListener(() => OnPagingButtonClicked(-1).Forget());
             PanelDictionary.Values.ForEach(p =>
             {
                 p.thisPanel.Initialize();
@@ -67,7 +62,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
                 mainMenuCrossFadeRule.crossFadeSettings, transitionCts.Token).Forget();
         }
 
-        private async void OnPagingButtonClicked(int change)
+        private async UniTaskVoid OnPagingButtonClicked(int change)
         {
             var next = (int)currentPage + change;
             if (next < 0 || next > Enum.GetNames(typeof(StatPage)).Length - 1) return;

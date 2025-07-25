@@ -137,10 +137,10 @@ namespace MadDuck.Scripts.Managers
                 Debug.LogError($"Current scene '{currentSceneName}' not found in the dictionary.");
                 return;
             }
-            LoadScene(sceneType, loadSceneMode, useLoadingScene);
+            LoadScene(sceneType, loadSceneMode, useLoadingScene).Forget();
         }
         
-        public async void LoadScene(SceneType sceneType, LoadSceneMode loadSceneMode, bool useLoadingScene)
+        public async UniTaskVoid LoadScene(SceneType sceneType, LoadSceneMode loadSceneMode, bool useLoadingScene)
         {
             if (_asyncOperation is { isDone: false } || _fadeTween.isAlive) return;
             string sceneName;
@@ -224,7 +224,13 @@ namespace MadDuck.Scripts.Managers
             _loadSceneCts?.Cancel();
         }
 
-        private async void UnloadScene(Scene lastScene, Scene current)
+        private void UnloadScene(Scene lastScene, Scene current)
+        {
+            SceneManager.activeSceneChanged -= UnloadScene;
+            UnloadSceneUniTask(lastScene, current).Forget();
+        }
+
+        private async UniTaskVoid UnloadSceneUniTask(Scene lastScene, Scene current)
         {
             Debug.Log("Unloading " + lastScene.name);
             if (LoadSceneMode == LoadSceneMode.Additive)
@@ -237,7 +243,6 @@ namespace MadDuck.Scripts.Managers
             _currentTransitionScreen.Progress = 0f;
             _currentTransitionScreen = null;
             OnFinishFadeIn?.Invoke();
-            SceneManager.activeSceneChanged -= UnloadScene;
         }
         #endregion
 

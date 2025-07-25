@@ -127,6 +127,7 @@ namespace MadDuck.Scripts.UIs.Panels
             if (crossFadeSettings == null)
             {
                 await ShowPanel(next, cancellationToken: cancellationToken);
+                previous.Hide();
                 return;
             }
             UniTask transitionOut;
