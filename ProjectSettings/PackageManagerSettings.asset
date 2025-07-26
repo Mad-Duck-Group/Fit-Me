@@ -27,6 +27,9 @@ MonoBehaviour:
     m_IsDefault: 1
     m_Capabilities: 7
     m_ConfigSource: 0
+    m_Compliance:
+      m_Status: 0
+      m_Violations: []
   - m_Id: scoped:project:OpenUPM
     m_Name: OpenUPM
     m_Url: https://package.openupm.com
@@ -44,14 +47,18 @@ MonoBehaviour:
     - com.cysharp.messagepipe
     - com.luca3317.tmpeffects
     - com.lgarczyn.animate-ui-material
+    - com.esotericsoftware.spine.urp-shaders
     m_IsDefault: 0
     m_Capabilities: 0
     m_ConfigSource: 4
+    m_Compliance:
+      m_Status: 0
+      m_Violations: []
   m_UserSelectedRegistryName: OpenUPM
   m_UserAddingNewScopedRegistry: 0
   m_RegistryInfoDraft:
     m_Modified: 0
     m_ErrorMessage: 
-    m_UserModificationsInstanceId: -866
-    m_OriginalInstanceId: -870
+    m_UserModificationsInstanceId: -870
+    m_OriginalInstanceId: -874
   m_LoadAssets: 0

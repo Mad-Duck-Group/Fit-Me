@@ -82,7 +82,7 @@
 			<value>2</value>
 		</property>
 		<property name="timelockedOffset">
-			<value>0.10999999999999988</value>
+			<value>0.10999999999999986</value>
 		</property>
 		<relationship name="audioFile">
 			<destination>{f82ed1d7-f455-4296-b052-b8c5b95d90c4}</destination>

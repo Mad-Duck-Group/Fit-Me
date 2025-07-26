@@ -77,9 +77,9 @@
         "jp.hadashikick.vcontainer",
         "com.cysharp.messagepipe",
         "com.luca3317.tmpeffects",
-        "com.lgarczyn.animate-ui-material"
-      ],
-      "overrideBuiltIns": false
+        "com.lgarczyn.animate-ui-material",
+        "com.esotericsoftware.spine.urp-shaders"
+      ]
     }
   ]
 }

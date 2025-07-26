@@ -43,7 +43,8 @@ namespace MadDuck.Scripts.Units
         Red,
         Yellow,
         Green,
-        Purple
+        Purple,
+        Blue
     }
     #endregion
 
@@ -315,6 +316,7 @@ namespace MadDuck.Scripts.Units
                     Destroy(blockView.gameObject);
                 }
                 blockView = Instantiate(blockViewPrefab, transform.position, Quaternion.identity, transform);
+                blockView.SetType(type);
             }
             else
             {
@@ -333,14 +335,9 @@ namespace MadDuck.Scripts.Units
         private bool GetBlockView(out BlockView blockView)
         {
             blockView = null;
-            if (!BlockManager.Instance.BlockViewDatabase.TryGetValue(BlockType, out var blockViewDictionaryData))
+            if (!BlockManager.Instance.BlockViewDictionary.TryGetValue(BlockFace, out blockView))
             {
                 Debug.LogWarning($"BlockView for block type {BlockType} not found in the database.");
-                return false;
-            }
-            if (!blockViewDictionaryData.BlockViewDictionary.TryGetValue(BlockFace, out blockView))
-            {
-                Debug.LogWarning($"BlockView for block type {BlockType} and face {BlockFace} not found in the database.");
                 return false;
             }
             if (!blockView)

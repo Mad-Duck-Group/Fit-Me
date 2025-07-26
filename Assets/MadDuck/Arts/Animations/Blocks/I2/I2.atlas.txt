@@ -1,0 +1,146 @@
+
+I2.png
+size: 404,260
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Blue/Body
+  rotate: false
+  xy: 2, 2
+  size: 128, 256
+  orig: 128, 256
+  offset: 0, 0
+  index: -1
+Blue/L_Arm
+  rotate: true
+  xy: 337, 225
+  size: 33, 65
+  orig: 33, 65
+  offset: 0, 0
+  index: -1
+Blue/L_Eye
+  rotate: false
+  xy: 364, 67
+  size: 38, 38
+  orig: 38, 38
+  offset: 0, 0
+  index: -1
+Blue/L_Eyeball
+  rotate: false
+  xy: 313, 121
+  size: 9, 8
+  orig: 9, 8
+  offset: 0, 0
+  index: -1
+Blue/L_Eyelid
+  rotate: false
+  xy: 313, 59
+  size: 49, 46
+  orig: 49, 46
+  offset: 0, 0
+  index: -1
+Blue/Mouth
+  rotate: false
+  xy: 262, 223
+  size: 73, 35
+  orig: 73, 35
+  offset: 0, 0
+  index: -1
+Blue/R_Arm
+  rotate: true
+  xy: 337, 191
+  size: 32, 65
+  orig: 32, 65
+  offset: 0, 0
+  index: -1
+Blue/R_Eye
+  rotate: false
+  xy: 364, 27
+  size: 38, 38
+  orig: 38, 38
+  offset: 0, 0
+  index: -1
+Blue/R_Eyeball
+  rotate: false
+  xy: 313, 111
+  size: 9, 8
+  orig: 9, 8
+  offset: 0, 0
+  index: -1
+Blue/R_Eyelid
+  rotate: false
+  xy: 262, 56
+  size: 49, 46
+  orig: 49, 46
+  offset: 0, 0
+  index: -1
+Red/Body
+  rotate: false
+  xy: 132, 2
+  size: 128, 256
+  orig: 130, 258
+  offset: 1, 1
+  index: -1
+Red/L_Arm
+  rotate: true
+  xy: 337, 156
+  size: 33, 64
+  orig: 35, 66
+  offset: 1, 1
+  index: -1
+Red/L_Eye
+  rotate: false
+  xy: 313, 19
+  size: 38, 38
+  orig: 40, 40
+  offset: 1, 1
+  index: -1
+Red/L_Eyeball
+  rotate: false
+  xy: 313, 142
+  size: 9, 9
+  orig: 11, 11
+  offset: 1, 1
+  index: -1
+Red/L_Eyelid
+  rotate: false
+  xy: 328, 107
+  size: 49, 47
+  orig: 51, 49
+  offset: 1, 1
+  index: -1
+Red/Mouth
+  rotate: false
+  xy: 262, 187
+  size: 73, 34
+  orig: 75, 36
+  offset: 1, 1
+  index: -1
+Red/R_Arm
+  rotate: true
+  xy: 262, 153
+  size: 32, 64
+  orig: 34, 66
+  offset: 1, 1
+  index: -1
+Red/R_Eye
+  rotate: false
+  xy: 262, 16
+  size: 38, 38
+  orig: 40, 40
+  offset: 1, 1
+  index: -1
+Red/R_Eyeball
+  rotate: false
+  xy: 313, 131
+  size: 9, 9
+  orig: 11, 11
+  offset: 1, 1
+  index: -1
+Red/R_Eyelid
+  rotate: false
+  xy: 262, 104
+  size: 49, 47
+  orig: 51, 49
+  offset: 1, 1
+  index: -1

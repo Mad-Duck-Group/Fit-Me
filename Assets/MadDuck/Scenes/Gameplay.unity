@@ -1921,30 +1921,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockPrefab: {fileID: 595384841925304144, guid: 2d37578e89800d44c8762f2cac9ce405, type: 3}
-  <BlockViewDatabase>k__BackingField:
-    keys: 00000000010000000200000003000000
+  <BlockViewDictionary>k__BackingField:
+    keys:
+    - I2
     values:
-    - <BlockViewDictionary>k__BackingField:
-        keys:
-        - I1
-        values:
-        - {fileID: 7188293649920210034, guid: 8faf308a7097b854aae2f0a647eb97c2, type: 3}
-    - <BlockViewDictionary>k__BackingField:
-        keys: []
-        values: []
-    - <BlockViewDictionary>k__BackingField:
-        keys: []
-        values: []
-    - <BlockViewDictionary>k__BackingField:
-        keys: []
-        values: []
+    - {fileID: 7188293649920210034, guid: 8faf308a7097b854aae2f0a647eb97c2, type: 3}
   <AtomColorDictionary>k__BackingField:
-    keys: 00000000010000000200000003000000
+    keys: 0000000001000000020000000300000004000000
     values:
     - {r: 0.7924528, g: 0.00000008187204, b: 0, a: 1}
     - {r: 1, g: 0.8644681, b: 0, a: 1}
     - {r: 0, g: 1, b: 0.04225135, a: 1}
     - {r: 0.86792135, g: 0, b: 1, a: 1}
+    - {r: 0, g: 0.18875837, b: 1, a: 1}
   blockPresetDictionary:
     keys:
     - I2
