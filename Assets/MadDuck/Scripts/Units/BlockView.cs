@@ -35,6 +35,7 @@ namespace MadDuck.Scripts.Units
         #region Inspectors
         [TitleGroup("References")]
         [SerializeField] private SkeletonAnimation skeletonAnimation;
+        [SerializeField] private SpriteRenderer infectedSpriteRenderer;
         
         [Title("Settings")]
         [SerializeField] private Color originalColor = Color.white;
@@ -101,6 +102,14 @@ namespace MadDuck.Scripts.Units
                 Debug.LogError("MeshRenderer is not found on SkeletonAnimation.");
                 return;
             }
+            if (!infectedSpriteRenderer)
+            {
+                Debug.LogWarning("InfectedSpriteRenderer is not assigned in BlockView. Infected state will not be visible.");
+            }
+            else
+            {
+                infectedSpriteRenderer.enabled = false;
+            }
             _originalScale = transform.localScale;
             skeletonAnimation.AnimationState.SetAnimation(0, idleAnimations.GetRandomElement(), true);
         }
@@ -154,6 +163,21 @@ namespace MadDuck.Scripts.Units
         public void SetColor(Color color)
         {
             skeletonAnimation.Skeleton.SetColor(color);
+        }
+
+        public void Infect()
+        {
+            if (infectedSpriteRenderer)
+            {
+                infectedSpriteRenderer.enabled = true;
+                _meshRenderer.enabled = false;
+                skeletonAnimation.AnimationState.ClearTrack(0);
+                skeletonAnimation.AnimationState.SetEmptyAnimation(0, 0);
+            }
+            else
+            {
+                Debug.LogWarning("InfectedSpriteRenderer is not assigned. Infected sprite will not be visible.");
+            }
         }
         #endregion
         

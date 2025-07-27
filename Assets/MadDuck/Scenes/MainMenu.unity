@@ -4263,6 +4263,9 @@ MonoBehaviour:
     - Name: objectKey
       Entry: 1
       Data: PanelCanvasGroup
+    - Name: relative
+      Entry: 5
+      Data: false
     - Name: transitionSettings
       Entry: 7
       Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
@@ -4359,6 +4362,9 @@ MonoBehaviour:
     - Name: positionType
       Entry: 3
       Data: 2
+    - Name: relative
+      Entry: 5
+      Data: false
     - Name: transitionSettings
       Entry: 7
       Data: PrimeTween.TweenSettings`1[[UnityEngine.Vector3, UnityEngine.CoreModule]],
@@ -12608,6 +12614,9 @@ MonoBehaviour:
     - Name: objectKey
       Entry: 1
       Data: PanelCanvasGroup
+    - Name: relative
+      Entry: 5
+      Data: false
     - Name: transitionSettings
       Entry: 7
       Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
@@ -16571,6 +16580,9 @@ MonoBehaviour:
     - Name: objectKey
       Entry: 1
       Data: Background
+    - Name: relative
+      Entry: 5
+      Data: false
     - Name: transitionSettings
       Entry: 7
       Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
@@ -16664,6 +16676,9 @@ MonoBehaviour:
     - Name: rectTransformKey
       Entry: 1
       Data: Window
+    - Name: relative
+      Entry: 5
+      Data: false
     - Name: transitionSettings
       Entry: 7
       Data: PrimeTween.TweenSettings`1[[UnityEngine.Vector3, UnityEngine.CoreModule]],
@@ -16876,6 +16891,9 @@ MonoBehaviour:
     - Name: objectKey
       Entry: 1
       Data: PanelCanvasGroup
+    - Name: relative
+      Entry: 5
+      Data: false
     - Name: transitionSettings
       Entry: 7
       Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
@@ -17063,6 +17081,9 @@ MonoBehaviour:
     - Name: objectKey
       Entry: 1
       Data: PanelCanvasGroup
+    - Name: relative
+      Entry: 5
+      Data: false
     - Name: transitionSettings
       Entry: 7
       Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime

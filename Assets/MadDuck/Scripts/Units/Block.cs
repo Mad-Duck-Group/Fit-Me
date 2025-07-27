@@ -213,6 +213,7 @@ namespace MadDuck.Scripts.Units
         public void Infect()
         {
             BlockState = BlockState.Infected;
+            if (blockView) blockView.Infect();
             StopFlashing();
             StartInfectTimer();
         }
