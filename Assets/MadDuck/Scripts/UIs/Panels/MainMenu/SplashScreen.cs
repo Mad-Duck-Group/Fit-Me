@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.UIs.Transitions;
 using PrimeTween;
+using Redcode.Extensions;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
 
         [Title("Panel")] 
         [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule termsAndConditionsCrossFadeRule = new();
+        [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule mainMenuCrossFadeRule = new();
         
         private Sequence _logoSequence;
 
@@ -44,8 +46,11 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
             await _logoSequence.ToUniTask();
             await UniTask.WaitForSeconds(splashScreenDuration);
             transitionCts = new CancellationTokenSource();
-            PanelController.ChangePanel(this, termsAndConditionsCrossFadeRule.nextPanel, termsAndConditionsCrossFadeRule.crossFadeSettings,
-                transitionCts.Token).Forget();
+            // PanelController.ChangePanel(this, termsAndConditionsCrossFadeRule.nextPanel, termsAndConditionsCrossFadeRule.crossFadeSettings,
+            //     transitionCts.Token).Forget();
+            var transitionScreen = LoadSceneManager.Instance.TransitionScreens.Values.GetRandomElement();
+            await PanelController.ChangePanelWithTransition(transitionScreen, this, mainMenuCrossFadeRule.nextPanel,
+                mainMenuCrossFadeRule.crossFadeSettings);
         }
 
     }

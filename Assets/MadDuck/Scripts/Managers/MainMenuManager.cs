@@ -35,13 +35,20 @@ namespace MadDuck.Scripts.Managers
         private void OnEnable()
         {
             LoadSceneManager.OnFinishLoad += OnFinishLoad;
+            LoadSceneManager.OnStartFadeOut += OnStartFadeOut;
         }
 
         private void OnDisable()
         {
             LoadSceneManager.OnFinishLoad -= OnFinishLoad;
+            LoadSceneManager.OnStartFadeOut -= OnStartFadeOut;
         }
-
+        
+        private void OnStartFadeOut()
+        {
+            PanelDictionary.Values.ForEach(x => x.DeactivateInput());
+        }
+        
         private void OnFinishLoad()
         {
             if (LoadSceneManager.FirstSceneLoaded) initialPanelType = MainMenuPanelType.MainMenu;

@@ -134,8 +134,10 @@ namespace MadDuck.Scripts.Managers
                     .Take(maxRandomAmount)
                     .ToList();
                 var remainingAmount = maxRandomAmount - bestFitSchemas.Count;
-                if (remainingAmount > 0) 
-                    bestFitSchemas.AddRange(shuffledSchemas.GetRandomElements(remainingAmount));
+                if (remainingAmount > 0)
+                {
+                    bestFitSchemas.AddRange(shuffledSchemas.Take(remainingAmount));
+                }
                 randomSchemas = bestFitSchemas.ToList();
             }
             else
@@ -144,7 +146,7 @@ namespace MadDuck.Scripts.Managers
                     .Take(maxRandomAmount)
                     .ToList();
             }
-
+            Debug.Log($"Spawning {randomSchemas.Count} random blocks");
             for (int i = 0; i < randomSchemas.Count; i++)
             {
                 if (!spawnPoints[i].IsFree)

@@ -341,20 +341,7 @@ namespace MadDuck.Scripts.Managers
                     _cellArray[x, y].name = $"Cell {x}_{y}";
                     _cellArray[x, y].ArrayIndex = new Vector2Int(x, y);
                     _cellArray[x, y].GridIndex = new Vector2Int(y + currentOffset.x, currentOffset.y - x);
-                
-                    //Chessboard Pattern
-                    if (x % 2 == 0)
-                    {
-                        _cellArray[x, y].SpriteRenderer.color =
-                            y % 2 == 0 ? blackColor : whiteColor;
-                        _cellArray[x, y].OriginalColor = _cellArray[x, y].SpriteRenderer.color;
-                    }
-                    else
-                    {
-                        _cellArray[x, y].SpriteRenderer.color =
-                            y % 2 == 0 ? whiteColor : blackColor;
-                        _cellArray[x, y].OriginalColor = _cellArray[x, y].SpriteRenderer.color;
-                    }
+                    _cellArray[x, y].SetPattern(x, y);
                 }
             }
         }

@@ -6,6 +6,11 @@ namespace MadDuck.Scripts.Units
     public class Cell : MonoBehaviour
     {
         #region Inspectors
+        [Title("References")]
+        [SerializeField] private Sprite[] whitePatterns;
+        [SerializeField] private Sprite[] blackPatterns;
+        
+        [field: Title("Debug")]
         [field: SerializeField, ReadOnly] public Atom CurrentAtom { get; private set; }
         #endregion
         
@@ -19,6 +24,7 @@ namespace MadDuck.Scripts.Units
         void Awake()
         {
             SpriteRenderer = GetComponent<SpriteRenderer>();
+            OriginalColor = SpriteRenderer.color;
         }
 
         /// <summary>
@@ -28,6 +34,24 @@ namespace MadDuck.Scripts.Units
         public void SetAtom(Atom atom)
         {
             CurrentAtom = atom;
+        }
+
+        public void SetPattern(int row, int column)
+        {
+            //white first
+            if (row % 2 == 0)
+            {
+                SpriteRenderer.sprite = column % 2 == 0
+                    ? whitePatterns[0]
+                    : blackPatterns[0];
+            }
+            //black first
+            else
+            {
+                SpriteRenderer.sprite = column % 2 == 0
+                    ? blackPatterns[1]
+                    : whitePatterns[1];
+            }
         }
     }
 }

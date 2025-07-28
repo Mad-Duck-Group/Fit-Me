@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: 47f99f7529c8b11498001e232985bfc2
+guid: 4190ee048a2eec445b99275189194d89
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8725702500742632526
-    second: IG_Stage_0
+      213: -3041322628011540456
+    second: MM_Play_Aura_0
+  - first:
+      213: 7129849469004164173
+    second: MM_Play_Aura_1
+  - first:
+      213: 4503113446475392265
+    second: MM_Play_Aura_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,12 +52,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 128
+  spritePixelsToUnits: 256
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -126,13 +132,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: IG_Stage_0
+      name: MM_Play_Aura_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 128
-        width: 128
-        height: 128
+        y: 0
+        width: 596
+        height: 757
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,74 +147,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e449084913ce71970800000000000000
-      internalID: 8725702500742632526
+      spriteID: 810c306fe2d0bc5d0800000000000000
+      internalID: -3041322628011540456
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IG_Stage_1
+      name: MM_Play_Aura_1
       rect:
         serializedVersion: 2
-        x: 128
-        y: 128
-        width: 128
-        height: 128
+        x: 2
+        y: 522
+        width: 6
+        height: 6
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: ebd31cfbf875ae940b3ce1d6df373578
-      internalID: 1588289180
+      spriteID: d4c2006015052f260800000000000000
+      internalID: 7129849469004164173
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IG_Stage_2
+      name: MM_Play_Aura_2
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 128
-        height: 128
+        x: 2
+        y: 450
+        width: 12
+        height: 17
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 3be63da987ddb5044a9682f3ad401198
-      internalID: 2126957313
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: IG_Stage_3
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 0
-        width: 128
-        height: 128
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: eb431f3bdeb372a4c8c3bdb19c6b15a0
-      internalID: 1475666350
+      spriteID: 905637032d54e7e30800000000000000
+      internalID: 4503113446475392265
       vertices: []
       indices: 
       edges: []
@@ -217,7 +201,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: b3050a2436f30f748995edad2641318d
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -227,10 +211,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      IG_Stage_0: 8725702500742632526
-      IG_Stage_1: 1588289180
-      IG_Stage_2: 2126957313
-      IG_Stage_3: 1475666350
+      MM_Play_Aura_0: -3041322628011540456
+      MM_Play_Aura_1: 7129849469004164173
+      MM_Play_Aura_2: 4503113446475392265
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

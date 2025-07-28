@@ -16,12 +16,16 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
     public class MainMenuScreen : UIPanel
     {
         [Title("References")]
-        [SerializeField] private Button playButton;
+        [SerializeField] private RectTransform logo;
         [SerializeField] private Button settingsButton;
         [SerializeField] private Button statsButton;
         [SerializeField] private Button achievementsButton;
         [SerializeField] private TMP_Text versionText;
+        [SerializeField] private Transform sceneObjectsParent;
 
+        [Title("Tween")]
+        [SerializeField] private TweenSettings<Vector3> logoScaleTweenSettings;
+        
         [Title("Panel")]
         [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule settingsCrossFadeRule = new();
         [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule statsCrossFadeRule = new();
@@ -31,22 +35,46 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         [SerializeField] private EventReference mainMenuBgm;
         
         private AudioReference _mainMenuBgmReference;
+        private Tween _logoTween;
+        
+        private void OnEnable()
+        {
+            LoadSceneManager.OnStartFadeOut += OnSwitchScene;
+        }
+        
+        private void OnDisable()
+        {
+            LoadSceneManager.OnStartFadeOut -= OnSwitchScene;
+        }
 
         public override void Initialize()
         {
             base.Initialize();
-            playButton.onClick.AddListener(ToGameplay);
             settingsButton.onClick.AddListener(() => OnButtonClicked(settingsCrossFadeRule));
             statsButton.onClick.AddListener(() => OnButtonClicked(statsCrossFadeRule));
             achievementsButton.onClick.AddListener(() => OnButtonClicked(achievementsCrossFadeRule));
             versionText.text = Application.version;
         }
 
+        public override void Show()
+        {
+            base.Show();
+            sceneObjectsParent.gameObject.SetActive(true);
+        }
+
+        public override void Hide()
+        {
+            base.Hide();
+            sceneObjectsParent.gameObject.SetActive(false);
+            _mainMenuBgmReference.Stop();
+        }
+        
         public override void OnPanelReady()
         {
             base.OnPanelReady();
             if (_mainMenuBgmReference.IsPlaying()) return;
             _mainMenuBgmReference = AudioManager.Instance.PlayAudio(mainMenuBgm, transform.position);
+            _logoTween = Tween.Scale(logo, logoScaleTweenSettings);
         }
 
         private void OnButtonClicked(CrossFadeRule rule)
@@ -56,11 +84,11 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
                 transitionCts.Token).Forget();
         }
 
-        private void ToGameplay()
+        private void OnSwitchScene()
         {
             _mainMenuBgmReference.Stop();
-            DeactivateInput();
-            LoadSceneManager.Instance.LoadScene(SceneType.Gameplay, LoadSceneMode.Single, false);
+            _logoTween.Stop();
+            logo.localScale = Vector3.one;
         }
     }
 }
