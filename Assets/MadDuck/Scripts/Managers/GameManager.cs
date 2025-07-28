@@ -200,7 +200,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     #endregion
     
     #region Initialization
-    private void Start()
+    private void Initialize()
     {
         panelDictionary.Values.ForEach(p =>
         {
@@ -241,6 +241,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     #region Events
     private void OnEnable()
     {
+        LoadSceneManager.OnFinishFadeIn += Initialize;
         GridManager.OnBlockDestroyed += OnPreInfectBlockDestroyed;
         GridManager.OnBlockStateChanged += OnBlockInfected;
         GridManager.OnBlockPlaced += OnBlockPlaced;
@@ -254,6 +255,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
 
     private void OnDisable()
     {
+        LoadSceneManager.OnFinishFadeIn -= Initialize;
         GridManager.OnBlockDestroyed -= OnPreInfectBlockDestroyed;
         GridManager.OnBlockStateChanged -= OnBlockInfected;
         GridManager.OnBlockPlaced -= OnBlockPlaced;

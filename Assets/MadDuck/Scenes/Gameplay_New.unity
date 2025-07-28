@@ -5886,7 +5886,6 @@ GameObject:
   - component: {fileID: 1417315171}
   - component: {fileID: 1417315170}
   - component: {fileID: 1417315169}
-  - component: {fileID: 1417315168}
   m_Layer: 5
   m_Name: Ads
   m_TagString: Untagged
@@ -5914,18 +5913,6 @@ RectTransform:
   m_AnchoredPosition: {x: 277, y: -221.79}
   m_SizeDelta: {x: 239.15, y: 169.781}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1417315168
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1417315166}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2354a5b6a3e3971418c47e80b71d514f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1417315169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6919,7 +6906,6 @@ GameObject:
   - component: {fileID: 1752724442}
   - component: {fileID: 1752724441}
   - component: {fileID: 1752724440}
-  - component: {fileID: 1752724439}
   m_Layer: 5
   m_Name: ContinueButton
   m_TagString: Untagged
@@ -6947,18 +6933,6 @@ RectTransform:
   m_AnchoredPosition: {x: -197, y: -221.79}
   m_SizeDelta: {x: 478.3, y: 169.781}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1752724439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1752724437}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2354a5b6a3e3971418c47e80b71d514f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1752724440
 MonoBehaviour:
   m_ObjectHideFlags: 0
