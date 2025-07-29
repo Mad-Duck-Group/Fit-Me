@@ -23,8 +23,6 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
             FitMe = 1,
             Achievement = 2,
         }
-
-        
         
         [Title("References")]
         [SerializeField] private Button backButton;

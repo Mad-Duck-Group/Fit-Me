@@ -1,57 +1,133 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Managers;
+using MadDuck.Scripts.UIs.Others;
 using MadDuck.Scripts.UIs.Transitions;
 using PrimeTween;
 using Redcode.Extensions;
+using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace MadDuck.Scripts.UIs.Panels.MainMenu
 {
+    public interface ISplashPage
+    {
+        public event Action<ISplashPage> OnSplashCompleted;
+        public void Skip();
+    }
+    
     [ShowOdinSerializedPropertiesInInspector]
     public class SplashScreen : UIPanel
     {
-        [Title("References")]
-        [SerializeField] private RectTransform madduckLogo;
-        [SerializeField] private float splashScreenDuration = 3f;
+        private enum SplashPage
+        {
+            Studio = 0,
+            Sponsors = 1,
+        }
 
-        [Title("Tween")]
-        [SerializeField] private TweenSettings<Vector3> logoScaleTweenSettings;
+        [Title("References")] 
+        [SerializeField] private ClickableArea skipArea;
+        [field: OdinSerialize, HideReferenceObjectPicker] private SerializableDictionary<SplashPage, PageCrossFadeRule> PanelDictionary { get; set; } = new();
+        [SerializeReference, HideReferenceObjectPicker, HideLabel]
+        private UIPanelController pageController = new();
 
         [Title("Panel")] 
         [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule termsAndConditionsCrossFadeRule = new();
         [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule mainMenuCrossFadeRule = new();
-        
-        private Sequence _logoSequence;
 
+        [Title("Settings")] 
+        [SerializeField] private bool skipAll = true;
+        [SerializeField] private SplashPage initialSplashPage = SplashPage.Studio;
+
+        [Title("Debug")] 
+        [SerializeField, DisplayAsString] private SplashPage currentPage = SplashPage.Studio;
+
+        private void OnEnable()
+        {
+            skipArea.OnClicked += SkipCurrentPage;
+        }
+        
+        private void OnDisable()
+        {
+            skipArea.OnClicked -= SkipCurrentPage;
+        }
+        
+        private void SkipCurrentPage()
+        {
+            if (PanelDictionary.TryGetValue(currentPage, out var pageRule) && pageRule.thisPanel is ISplashPage splashPage)
+            {
+                if (!skipAll)
+                    splashPage.Skip();
+                else
+                {
+                    splashPage.OnSplashCompleted -= OnPageCompleted;
+                    splashPage.Skip();
+                    ToMainMenu();
+                }
+            }
+            else
+            {
+                Debug.LogError($"The current splash page {currentPage} does not implement ISplashPage interface.");
+            }
+        }
+        
         public override void Initialize()
         {
             base.Initialize();
-            madduckLogo.localScale = Vector3.zero; // Start with the logo scaled down
+            PanelDictionary.Values.ForEach(p =>
+            {
+                p.thisPanel.Initialize();
+                p.thisPanel.PanelController = pageController;
+            });
+            var initialPage = PanelDictionary[initialSplashPage];
+            if (initialPage.thisPanel is not ISplashPage page)
+            {
+                Debug.LogError($"The splash page {initialSplashPage} does not implement ISplashPage interface.");
+                return;
+            }
+            currentPage = initialSplashPage;
+            pageController.ShowPanel(initialPage.thisPanel).Forget();
+            page.OnSplashCompleted += OnPageCompleted;
         }
 
-        public override void OnPanelReady()
+        private void OnPageCompleted(ISplashPage completedPage)
         {
-            base.OnPanelReady();
-            TweenLogo().Forget();
+            completedPage.OnSplashCompleted -= OnPageCompleted;
+            var nextPage = (int)currentPage + 1;
+            if (nextPage >= PanelDictionary.Count)
+            {
+                // All splash pages completed, transition to main menu
+               ToMainMenu();
+            }
+            else
+            {
+                // Show the next splash page
+                var previousPanel = PanelDictionary[currentPage];
+                currentPage = (SplashPage)nextPage;
+                var nextPanel = PanelDictionary[currentPage];
+                if (nextPanel.thisPanel is ISplashPage nextPageInstance)
+                {
+                    pageController.ChangePanel(completedPage as UIPanel, nextPanel.thisPanel, previousPanel.crossFadeSettings).Forget();
+                    nextPageInstance.OnSplashCompleted += OnPageCompleted;
+                }
+                else
+                {
+                    Debug.LogError($"The splash page {currentPage} does not implement ISplashPage interface.");
+                }
+            }
         }
 
-        private async UniTaskVoid TweenLogo()
+        private void ToMainMenu()
         {
-            _logoSequence = Sequence.Create()
-                .Group(Tween.Scale(madduckLogo, logoScaleTweenSettings));
-            await _logoSequence.ToUniTask();
-            await UniTask.WaitForSeconds(splashScreenDuration);
-            transitionCts = new CancellationTokenSource();
-            // PanelController.ChangePanel(this, termsAndConditionsCrossFadeRule.nextPanel, termsAndConditionsCrossFadeRule.crossFadeSettings,
-            //     transitionCts.Token).Forget();
             var transitionScreen = LoadSceneManager.Instance.TransitionScreens.Values.GetRandomElement();
-            await PanelController.ChangePanelWithTransition(transitionScreen, this, mainMenuCrossFadeRule.nextPanel,
-                mainMenuCrossFadeRule.crossFadeSettings);
+            transitionCts = new CancellationTokenSource();
+            PanelController.ChangePanelWithTransition(transitionScreen, this, mainMenuCrossFadeRule.nextPanel, 
+                mainMenuCrossFadeRule.crossFadeSettings, transitionCts.Token).Forget();
         }
-
     }
 }

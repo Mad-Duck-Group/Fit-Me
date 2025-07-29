@@ -713,7 +713,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2009859008197685763, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: 'serializationData.PrefabModifications.Array.data[0]'
-      value: '"path":"<TransitionScreens>k__BackingField.{1es}","value":$eref:0'
+      value: '"path":"<TransitionScreens>k__BackingField.{0es}","value":$eref:0'
       objectReference: {fileID: 0}
     - target: {fileID: 2009859008197685763, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.size
@@ -722,19 +722,7 @@ PrefabInstance:
     - target: {fileID: 2009859008197685763, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: 'serializationData.PrefabModificationsReferencedUnityObjects.Array.data[0]'
       value: 
-      objectReference: {fileID: 1590954419}
-    - target: {fileID: 5049769708564962544, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5051691570783138626, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 982858927940f424d8077f41e1a62e03, type: 3}
-    - target: {fileID: 5460118192776245864, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 916f042e75318b54786cb953593a5cdd, type: 3}
+      objectReference: {fileID: 1608976009}
     - target: {fileID: 5571629721456849991, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -819,14 +807,6 @@ PrefabInstance:
       propertyPath: serializationData.Prefab
       value: 
       objectReference: {fileID: 5597472984465097650, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-    - target: {fileID: 7554958452105838925, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 903b8c82d3a743440a7e60dedcc71626, type: 3}
-    - target: {fileID: 8739880206428587117, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 344c0dc13742366428a602e509914d88, type: 3}
     - target: {fileID: 8913299453084505499, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: serializationData.Prefab
       value: 
@@ -2043,6 +2023,57 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 147198321}
   m_CullTransparentMesh: 1
+--- !u!1 &147618707
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 147618708}
+  - component: {fileID: 147618709}
+  m_Layer: 5
+  m_Name: SponsorsLogo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &147618708
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147618707}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 221901551}
+  - {fileID: 1306135609}
+  - {fileID: 1423552883}
+  m_Father: {fileID: 629282431}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1080, y: 940.873}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &147618709
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147618707}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &176041453
 GameObject:
   m_ObjectHideFlags: 0
@@ -2831,6 +2862,81 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 220109244}
+  m_CullTransparentMesh: 1
+--- !u!1 &221901550
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 221901551}
+  - component: {fileID: 221901553}
+  - component: {fileID: 221901552}
+  m_Layer: 5
+  m_Name: FMODLogo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &221901551
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221901550}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 147618708}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -354}
+  m_SizeDelta: {x: 542.5447, y: 145.2716}
+  m_Pivot: {x: 0.5, y: 0}
+--- !u!114 &221901552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221901550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: f9693617aa10d794987edce9c6169ca9, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &221901553
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221901550}
   m_CullTransparentMesh: 1
 --- !u!1 &252867811
 GameObject:
@@ -4427,7 +4533,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &437537589
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4442,6 +4548,8 @@ RectTransform:
   m_Children:
   - {fileID: 99479506}
   - {fileID: 1284342989}
+  - {fileID: 629282431}
+  - {fileID: 1892995142}
   m_Father: {fileID: 955601932}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4506,6 +4614,8 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
+    - {fileID: 1284342990}
+    - {fileID: 629282432}
     - {fileID: 1764628308}
     - {fileID: 973191127}
     SerializedBytesString: 
@@ -4513,40 +4623,56 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: termsAndConditionsCrossFadeRule
+    - Name: <PanelDictionary>k__BackingField
       Entry: 7
-      Data: 0|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
-    - Name: nextPanel
-      Entry: 10
-      Data: 0
-    - Name: crossFadeSettings
-      Entry: 7
-      Data: 1|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
-    - Name: crossFadeType
-      Entry: 3
-      Data: 1
-    - Name: customOffset
-      Entry: 4
-      Data: 0
-    - Name: transitionGroupCollection
-      Entry: 7
-      Data: 2|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
-    - Name: nextIn
-      Entry: 7
-      Data: 3|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 4|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
+      Data: 0|Sherbert.Framework.Generic.SerializableDictionary`2[[MadDuck.Scripts.UIs.Panels.MainMenu.SplashScreen+SplashPage,
+        Assembly-CSharp],[MadDuck.Scripts.UIs.Transitions.PageCrossFadeRule, Assembly-CSharp]],
+        Assembly-CSharp
     - Name: 
       Entry: 12
       Data: 2
     - Name: 
       Entry: 7
-      Data: 5|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+      Data: System.Collections.Generic.KeyValuePair`2[[MadDuck.Scripts.UIs.Panels.MainMenu.SplashScreen+SplashPage,
+        Assembly-CSharp],[MadDuck.Scripts.UIs.Transitions.PageCrossFadeRule, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 7
+      Data: 1|MadDuck.Scripts.UIs.Transitions.PageCrossFadeRule, Assembly-CSharp
+    - Name: thisPanel
+      Entry: 10
+      Data: 0
+    - Name: crossFadeSettings
+      Entry: 7
+      Data: 2|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
+    - Name: crossFadeType
+      Entry: 3
+      Data: 0
+    - Name: customOffset
+      Entry: 4
+      Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 3|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
+    - Name: nextIn
+      Entry: 7
+      Data: 4|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: transition
       Entry: 7
-      Data: 6|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
+      Data: 5|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 6|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 7|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
     - Name: objectKey
       Entry: 1
       Data: PanelCanvasGroup
@@ -4573,13 +4699,13 @@ MonoBehaviour:
       Data: 1
     - Name: ease
       Entry: 3
-      Data: 13
+      Data: 0
     - Name: customEase
       Entry: 7
-      Data: 7|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 8|UnityEngine.AnimationCurve, UnityEngine.CoreModule
     - Name: 
       Entry: 7
-      Data: 8|UnityEngine.Keyframe[], UnityEngine.CoreModule
+      Data: 9|UnityEngine.Keyframe[], UnityEngine.CoreModule
     - Name: 
       Entry: 12
       Data: 0
@@ -4638,11 +4764,585 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: previousOut
       Entry: 7
-      Data: 9|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+      Data: 10|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: transition
       Entry: 7
-      Data: 10|MadDuck.Scripts.UIs.Transitions.PositionTransition, Assembly-CSharp
+      Data: 11|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 12|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 13|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
+    - Name: objectKey
+      Entry: 1
+      Data: PanelCanvasGroup
+    - Name: relative
+      Entry: 5
+      Data: false
+    - Name: transitionSettings
+      Entry: 7
+      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
+    - Name: startFromCurrent
+      Entry: 5
+      Data: false
+    - Name: startValue
+      Entry: 4
+      Data: 0
+    - Name: endValue
+      Entry: 4
+      Data: 1
+    - Name: settings
+      Entry: 7
+      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
+    - Name: duration
+      Entry: 4
+      Data: 1
+    - Name: ease
+      Entry: 3
+      Data: 0
+    - Name: customEase
+      Entry: 7
+      Data: 14|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+    - Name: 
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 3
+      Data: 8
+    - Name: 
+      Entry: 3
+      Data: 8
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: cycles
+      Entry: 3
+      Data: 1
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
+    - Name: startDelay
+      Entry: 4
+      Data: 0
+    - Name: endDelay
+      Entry: 4
+      Data: 0
+    - Name: useUnscaledTime
+      Entry: 5
+      Data: false
+    - Name: _useFixedUpdate
+      Entry: 5
+      Data: false
+    - Name: _updateType
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: transitionGroupType
+      Entry: 3
+      Data: 0
+    - Name: delay
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: transitionIn
+      Entry: 7
+      Data: 15|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 16|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: transitionOut
+      Entry: 7
+      Data: 17|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 18|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: System.Collections.Generic.KeyValuePair`2[[MadDuck.Scripts.UIs.Panels.MainMenu.SplashScreen+SplashPage,
+        Assembly-CSharp],[MadDuck.Scripts.UIs.Transitions.PageCrossFadeRule, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 19|MadDuck.Scripts.UIs.Transitions.PageCrossFadeRule, Assembly-CSharp
+    - Name: thisPanel
+      Entry: 10
+      Data: 1
+    - Name: crossFadeSettings
+      Entry: 7
+      Data: 20|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
+    - Name: crossFadeType
+      Entry: 3
+      Data: 0
+    - Name: customOffset
+      Entry: 4
+      Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 21|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
+    - Name: nextIn
+      Entry: 7
+      Data: 22|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 23|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 24|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 25|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
+    - Name: objectKey
+      Entry: 1
+      Data: PanelCanvasGroup
+    - Name: relative
+      Entry: 5
+      Data: false
+    - Name: transitionSettings
+      Entry: 7
+      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
+    - Name: startFromCurrent
+      Entry: 5
+      Data: false
+    - Name: startValue
+      Entry: 4
+      Data: 0
+    - Name: endValue
+      Entry: 4
+      Data: 1
+    - Name: settings
+      Entry: 7
+      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
+    - Name: duration
+      Entry: 4
+      Data: 1
+    - Name: ease
+      Entry: 3
+      Data: 0
+    - Name: customEase
+      Entry: 7
+      Data: 26|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+    - Name: 
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 3
+      Data: 8
+    - Name: 
+      Entry: 3
+      Data: 8
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: cycles
+      Entry: 3
+      Data: 1
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
+    - Name: startDelay
+      Entry: 4
+      Data: 0
+    - Name: endDelay
+      Entry: 4
+      Data: 0
+    - Name: useUnscaledTime
+      Entry: 5
+      Data: false
+    - Name: _useFixedUpdate
+      Entry: 5
+      Data: false
+    - Name: _updateType
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: transitionGroupType
+      Entry: 3
+      Data: 0
+    - Name: delay
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: previousOut
+      Entry: 7
+      Data: 27|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 28|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 29|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 30|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
+    - Name: objectKey
+      Entry: 1
+      Data: PanelCanvasGroup
+    - Name: relative
+      Entry: 5
+      Data: false
+    - Name: transitionSettings
+      Entry: 7
+      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
+    - Name: startFromCurrent
+      Entry: 5
+      Data: false
+    - Name: startValue
+      Entry: 4
+      Data: 0
+    - Name: endValue
+      Entry: 4
+      Data: 1
+    - Name: settings
+      Entry: 7
+      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
+    - Name: duration
+      Entry: 4
+      Data: 1
+    - Name: ease
+      Entry: 3
+      Data: 0
+    - Name: customEase
+      Entry: 7
+      Data: 31|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+    - Name: 
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 3
+      Data: 8
+    - Name: 
+      Entry: 3
+      Data: 8
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: cycles
+      Entry: 3
+      Data: 1
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
+    - Name: startDelay
+      Entry: 4
+      Data: 0
+    - Name: endDelay
+      Entry: 4
+      Data: 0
+    - Name: useUnscaledTime
+      Entry: 5
+      Data: false
+    - Name: _useFixedUpdate
+      Entry: 5
+      Data: false
+    - Name: _updateType
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: transitionGroupType
+      Entry: 3
+      Data: 0
+    - Name: delay
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: transitionIn
+      Entry: 7
+      Data: 32|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 33|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: transitionOut
+      Entry: 7
+      Data: 34|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 35|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: termsAndConditionsCrossFadeRule
+      Entry: 7
+      Data: 36|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
+    - Name: nextPanel
+      Entry: 10
+      Data: 2
+    - Name: crossFadeSettings
+      Entry: 7
+      Data: 37|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
+    - Name: crossFadeType
+      Entry: 3
+      Data: 1
+    - Name: customOffset
+      Entry: 4
+      Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 38|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
+    - Name: nextIn
+      Entry: 7
+      Data: 39|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 40|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 41|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 42|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
+    - Name: objectKey
+      Entry: 1
+      Data: PanelCanvasGroup
+    - Name: relative
+      Entry: 5
+      Data: false
+    - Name: transitionSettings
+      Entry: 7
+      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
+    - Name: startFromCurrent
+      Entry: 5
+      Data: false
+    - Name: startValue
+      Entry: 4
+      Data: 0
+    - Name: endValue
+      Entry: 4
+      Data: 1
+    - Name: settings
+      Entry: 7
+      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
+    - Name: duration
+      Entry: 4
+      Data: 1
+    - Name: ease
+      Entry: 3
+      Data: 13
+    - Name: customEase
+      Entry: 7
+      Data: 43|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+    - Name: 
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 3
+      Data: 8
+    - Name: 
+      Entry: 3
+      Data: 8
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: cycles
+      Entry: 3
+      Data: 1
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
+    - Name: startDelay
+      Entry: 4
+      Data: 0
+    - Name: endDelay
+      Entry: 4
+      Data: 0
+    - Name: useUnscaledTime
+      Entry: 5
+      Data: false
+    - Name: _useFixedUpdate
+      Entry: 5
+      Data: false
+    - Name: _updateType
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: transitionGroupType
+      Entry: 3
+      Data: 0
+    - Name: delay
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 44|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 45|MadDuck.Scripts.UIs.Transitions.PositionTransition, Assembly-CSharp
     - Name: rectTransformKey
       Entry: 1
       Data: PanelRectTransform
@@ -4700,10 +5400,10 @@ MonoBehaviour:
       Data: 13
     - Name: customEase
       Entry: 7
-      Data: 11|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+      Data: 46|UnityEngine.AnimationCurve, UnityEngine.CoreModule
     - Name: 
       Entry: 9
-      Data: 8
+      Data: 9
     - Name: 
       Entry: 3
       Data: 8
@@ -4763,10 +5463,10 @@ MonoBehaviour:
       Data: 
     - Name: previousOut
       Entry: 7
-      Data: 12|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+      Data: 47|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: transition
       Entry: 7
-      Data: 13|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+      Data: 48|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -4782,10 +5482,10 @@ MonoBehaviour:
       Data: 
     - Name: transitionIn
       Entry: 7
-      Data: 14|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+      Data: 49|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: transition
       Entry: 7
-      Data: 15|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+      Data: 50|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -4801,10 +5501,10 @@ MonoBehaviour:
       Data: 
     - Name: transitionOut
       Entry: 7
-      Data: 16|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+      Data: 51|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: transition
       Entry: 7
-      Data: 17|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+      Data: 52|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -4829,13 +5529,13 @@ MonoBehaviour:
       Data: 
     - Name: mainMenuCrossFadeRule
       Entry: 7
-      Data: 18|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
+      Data: 53|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
     - Name: nextPanel
       Entry: 10
-      Data: 1
+      Data: 3
     - Name: crossFadeSettings
       Entry: 7
-      Data: 19|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
+      Data: 54|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
     - Name: crossFadeType
       Entry: 3
       Data: 1
@@ -4844,13 +5544,13 @@ MonoBehaviour:
       Data: 0
     - Name: transitionGroupCollection
       Entry: 7
-      Data: 20|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
+      Data: 55|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
     - Name: nextIn
       Entry: 7
-      Data: 21|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+      Data: 56|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: transition
       Entry: 7
-      Data: 22|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+      Data: 57|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -4866,10 +5566,10 @@ MonoBehaviour:
       Data: 
     - Name: previousOut
       Entry: 7
-      Data: 23|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+      Data: 58|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: transition
       Entry: 7
-      Data: 24|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+      Data: 59|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -4885,10 +5585,10 @@ MonoBehaviour:
       Data: 
     - Name: transitionIn
       Entry: 7
-      Data: 25|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+      Data: 60|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: transition
       Entry: 7
-      Data: 26|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+      Data: 61|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -4904,10 +5604,10 @@ MonoBehaviour:
       Data: 
     - Name: transitionOut
       Entry: 7
-      Data: 27|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+      Data: 62|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: transition
       Entry: 7
-      Data: 28|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+      Data: 63|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -4930,28 +5630,19 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  madduckLogo: {fileID: 1672064502}
-  splashScreenDuration: 3
-  logoScaleTweenSettings:
-    startFromCurrent: 0
-    startValue: {x: 0, y: 0, z: 0}
-    endValue: {x: 1, y: 1, z: 1}
-    settings:
-      duration: 1
-      ease: 0
-      customEase:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      cycles: 1
-      cycleMode: 0
-      startDelay: 0
-      endDelay: 0
-      useUnscaledTime: 0
-      _useFixedUpdate: 0
-      _updateType: 0
+  skipArea: {fileID: 1892995145}
+  pageController:
+    rid: 2851746794670391393
+  skipAll: 1
+  initialSplashPage: 0
+  currentPage: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 2851746794670391393
+      type: {class: UIPanelController, ns: MadDuck.Scripts.UIs.Panels, asm: Assembly-CSharp}
+      data:
+        loadingScreenDuration: 1
 --- !u!225 &437537593
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -5585,81 +6276,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.1579477, y: 2.0677257}
   m_EdgeRadius: 0
---- !u!1 &479100560
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 479100561}
-  - component: {fileID: 479100563}
-  - component: {fileID: 479100562}
-  m_Layer: 5
-  m_Name: FMODLogo
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &479100561
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 479100560}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1284342989}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 108}
-  m_SizeDelta: {x: 326.8357, y: 87.51343}
-  m_Pivot: {x: 0.5, y: 0}
---- !u!114 &479100562
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 479100560}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f9693617aa10d794987edce9c6169ca9, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 1
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &479100563
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 479100560}
-  m_CullTransparentMesh: 1
 --- !u!1 &480913159
 GameObject:
   m_ObjectHideFlags: 0
@@ -7890,6 +8506,102 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 617119955}
   m_CullTransparentMesh: 1
+--- !u!1 &629282430
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 629282431}
+  - component: {fileID: 629282433}
+  - component: {fileID: 629282432}
+  m_Layer: 5
+  m_Name: SponsorsPage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &629282431
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 629282430}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 147618708}
+  m_Father: {fileID: 437537589}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &629282432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 629282430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbfc5e1176f243799fecda878bba6709, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <TransitionObjectProviders>k__BackingField:
+    keys: []
+    values: []
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  sponsorsLogo: {fileID: 147618709}
+  logoAlphaTweenSettings:
+    startFromCurrent: 0
+    startValue: 0
+    endValue: 1
+    settings:
+      duration: 0.5
+      ease: 0
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 0
+      _useFixedUpdate: 0
+      _updateType: 0
+  splashScreenDuration: 2
+--- !u!225 &629282433
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 629282430}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &629646208
 GameObject:
   m_ObjectHideFlags: 0
@@ -7899,6 +8611,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 629646209}
+  - component: {fileID: 629646210}
   m_Layer: 5
   m_Name: Madduck
   m_TagString: Untagged
@@ -7928,6 +8641,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0.000030517578, y: 32}
   m_SizeDelta: {x: 660.2, y: 667.4}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &629646210
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 629646208}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &630637728
 GameObject:
   m_ObjectHideFlags: 0
@@ -9982,7 +10707,7 @@ MonoBehaviour:
     - {fileID: 1997745645}
   <PanelController>k__BackingField:
     rid: 2851746639663595615
-  initialPanelType: 2
+  initialPanelType: 0
   references:
     version: 2
     RefIds:
@@ -13029,13 +13754,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1284342989}
+  - component: {fileID: 1284342991}
+  - component: {fileID: 1284342990}
   m_Layer: 5
-  m_Name: Logo
+  m_Name: StudioLogoPage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1284342989
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13049,7 +13776,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 629646209}
-  - {fileID: 479100561}
   m_Father: {fileID: 437537589}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -13057,6 +13783,139 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1284342990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284342988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80e8537ed840435f9942187cd546f0a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <TransitionObjectProviders>k__BackingField:
+    keys: []
+    values: []
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  madduckLogo: {fileID: 629646210}
+  logoAlphaTweenSettings:
+    startFromCurrent: 0
+    startValue: 0
+    endValue: 1
+    settings:
+      duration: 0.5
+      ease: 0
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 0
+      _useFixedUpdate: 0
+      _updateType: 0
+  splashScreenDuration: 2
+--- !u!225 &1284342991
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284342988}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!1 &1306135608
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1306135609}
+  - component: {fileID: 1306135611}
+  - component: {fileID: 1306135610}
+  m_Layer: 5
+  m_Name: UnityLogo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1306135609
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1306135608}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 147618708}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -102.00012}
+  m_SizeDelta: {x: 814.7473, y: 274.82983}
+  m_Pivot: {x: 0.5, y: 0}
+--- !u!114 &1306135610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1306135608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 2fb58098e334b234392d9c4095603441, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1306135611
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1306135608}
+  m_CullTransparentMesh: 1
 --- !u!1 &1306421729
 GameObject:
   m_ObjectHideFlags: 0
@@ -13642,6 +14501,142 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1417307177}
+  m_CullTransparentMesh: 1
+--- !u!1 &1423552882
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1423552883}
+  - component: {fileID: 1423552885}
+  - component: {fileID: 1423552884}
+  m_Layer: 5
+  m_Name: MadeWith
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1423552883
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1423552882}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 147618708}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0.000015259, y: 304.9699}
+  m_SizeDelta: {x: 452.5793, y: 115.4}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1423552884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1423552882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Made With
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 625306eb5d3ea0043a4eeb4619ebf831, type: 2}
+  m_sharedMaterial: {fileID: -2065754007991695277, guid: 625306eb5d3ea0043a4eeb4619ebf831, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 72
+  m_fontSizeBase: 72
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1423552885
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1423552882}
   m_CullTransparentMesh: 1
 --- !u!1 &1454306100
 GameObject:
@@ -15726,17 +16721,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1590797972}
   m_CullTransparentMesh: 1
---- !u!114 &1590954419 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5597472984465097650, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-  m_PrefabInstance: {fileID: 68198077}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c093e5ada8d146e3a3173f8f02f5afe2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1595685119
 GameObject:
   m_ObjectHideFlags: 0
@@ -15933,6 +16917,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1599807130}
   m_CullTransparentMesh: 1
+--- !u!114 &1608976009 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8913299453084505499, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
+  m_PrefabInstance: {fileID: 68198077}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3996b6a904845829ef8ba42a6ff469c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1609362009
 GameObject:
   m_ObjectHideFlags: 0
@@ -18088,6 +19083,94 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1891098196}
   m_CullTransparentMesh: 1
+--- !u!1 &1892995141
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1892995142}
+  - component: {fileID: 1892995144}
+  - component: {fileID: 1892995143}
+  - component: {fileID: 1892995145}
+  m_Layer: 5
+  m_Name: SkipArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1892995142
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1892995141}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 437537589}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1892995143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1892995141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1892995144
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1892995141}
+  m_CullTransparentMesh: 1
+--- !u!114 &1892995145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1892995141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8f2fcfce7874a5191e680c271d5738b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1912527260
 GameObject:
   m_ObjectHideFlags: 0
