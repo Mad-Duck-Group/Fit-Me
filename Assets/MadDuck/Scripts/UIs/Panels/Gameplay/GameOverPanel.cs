@@ -15,15 +15,17 @@ public class GameOverPanel : UIPanel
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private TMP_Text gameOverText;
     [SerializeField] private Button continueButton;
+    [SerializeField] private Button adsButton;
     
     [Title("Panels")]
     [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule resultCrossFadeRule = new();
-
+    [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule gameplayCrossFadeRule = new();
     
     public override void Initialize()
     {
         base.Initialize();
         continueButton.onClick.AddListener(OnContinueButtonClicked);
+        adsButton.onClick.AddListener(OnAdsButtonClicked);
     }
 
     private void OnContinueButtonClicked()
@@ -31,5 +33,13 @@ public class GameOverPanel : UIPanel
         GameManager.Instance.ToResultScreen();
         transitionCts = new CancellationTokenSource();
         PanelController.ChangePanel(this, resultCrossFadeRule.nextPanel, resultCrossFadeRule.crossFadeSettings, transitionCts.Token).Forget();
+    }
+    
+    private void OnAdsButtonClicked()
+    {
+        GameManager.Instance.Continue();
+        transitionCts = new CancellationTokenSource();
+        PanelController.ChangePanel(this, gameplayCrossFadeRule.nextPanel, gameplayCrossFadeRule.crossFadeSettings,
+            transitionCts.Token).Forget();
     }
 }

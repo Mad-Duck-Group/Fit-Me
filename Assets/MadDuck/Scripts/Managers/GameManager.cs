@@ -146,7 +146,9 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     [field: SerializeField, DisplayAsString]
     public SerializableReactiveProperty<GameState> CurrentGameState { get; private set; } = new(GameState.CountOff);
     [SerializeField, ReadOnly] public SerializableReactiveProperty<int> Score { get; private set; } = new(0);
+    [SerializeField, ReadOnly] public SerializableReactiveProperty<int> FitmeScore { get; private set; } = new(0);
     
+
     [field: Title("Infection Debug")]
     [SerializeField, DisplayAsString] private int difficultyIndex;
     [ShowInInspector, ReadOnly] private GameDifficultySettings CurrentGameDifficultySettings => 
@@ -340,7 +342,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     /// Change the score by the given value
     /// </summary>
     /// <param name="value"></param>
-    public void ChangeScore(int value)
+    private void ChangeScore(int value)
     {
         Score.Value += value;
     }
@@ -366,6 +368,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
                 ChangeScore(bombScore);
                 break;
             case ScoreTypes.FitMe:
+                FitmeScore.Value ++;
                 ChangeScore(scorePerFitMe);
                 break;
         }
