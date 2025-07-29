@@ -9102,6 +9102,8 @@ MonoBehaviour:
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
   gridPresets:
   - {fileID: 11400000, guid: 0c9addcad39fb2e47a6304f9760f97ab, type: 2}
+  - {fileID: 11400000, guid: 5e0c41445055fb0438787360a727e7fa, type: 2}
+  - {fileID: 11400000, guid: 00c82d2d85419804bb39dfadb62b5920, type: 2}
   endlessType: 1
   generatedGridType: 1
   randomGridXRange: {x: 6, y: 9}
@@ -9112,9 +9114,9 @@ MonoBehaviour:
   gridVerticalOffsetType: 0
   customOffsetY: 2
   destroyThreshold: 3
-  currentGridPreset: {fileID: 11400000, guid: 0c9addcad39fb2e47a6304f9760f97ab, type: 2}
-  currentGridSize: {x: 6, y: 4}
-  currentOffset: {x: -3, y: 4}
+  currentGridPreset: {fileID: 11400000, guid: 00c82d2d85419804bb39dfadb62b5920, type: 2}
+  currentGridSize: {x: 10, y: 8}
+  currentOffset: {x: -5, y: 6}
   drawAllCustomGridCells: 1
   <RandomInfectedTime>k__BackingField: 0
   preInfectBlocks: []

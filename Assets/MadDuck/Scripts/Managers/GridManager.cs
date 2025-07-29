@@ -30,6 +30,13 @@ namespace MadDuck.Scripts.Managers
         All = Rectangle | Custom
     }
     
+    public enum FitType
+    {
+        FitMe,
+        Combo,
+        None
+    }
+    
     [RequireComponent(typeof(Grid))]
     [ShowOdinSerializedPropertiesInInspector]
     public class GridManager : MonoSingleton<GridManager>, ISerializationCallbackReceiver, ISupportsPrefabSerialization
@@ -416,43 +423,63 @@ namespace MadDuck.Scripts.Managers
             BlocksOnGrid.Add(block);
             GameManager.Instance.AddScore(ScoreTypes.Placement);
             ResetPreviousValidationCells();
-            if (!UpdateBlockOnGrid(block))
+            var fit = UpdateBlockOnGrid(block);
+            if (fit is FitType.FitMe)
             {
                 BlockManager.Instance.FreeSpawnPoint(block.SpawnIndex);
-                BlockManager.Instance.ResetSpawnPoint(); //NOTE: Old spawning system
+                BlockManager.Instance.ResetSpawnPoint();
                 BlockManager.Instance.SpawnRandomBlock();
             }
             else
             {
+                BlockManager.Instance.FreeSpawnPoint(block.SpawnIndex);
                 BlockManager.Instance.ResetSpawnPoint();
                 BlockManager.Instance.SpawnRandomBlock();
+            }
+
+            if (fit is FitType.None)
+            {
+                BlockManager.Instance.GameOverCheck().Forget();
             }
             OnBlockPlaced?.Invoke(block);
             return true;
         }
-
         /// <summary>
         /// Update the block on the grid, check for contacts and validate placement
         /// </summary>
         /// <param name="block"></param>
-        /// <returns>true if Fit Me, false otherwise</returns>
-        public bool UpdateBlockOnGrid(Block block)
+        /// <returns>FitType indicating the result of the update</returns>
+        public FitType UpdateBlockOnGrid(Block block)
         {
             if (!CreateVacantSchema(out var vacantSchema, out _)) //Fit Me!
             {
                 _vacantSchema = vacantSchema;
-                GameManager.Instance.AddScore(ScoreTypes.FitMe);
-                RemoveAllBlocks(true);
-                RegenerateGrid();
-                GameManager.Instance.NextGameDifficulty();
-                return true;
+                FitMe().Forget();
+                return FitType.FitMe;
             }
             var contacts = new List<Block>();
-            if (!CheckForContact(block, contacts)) return false;
+            if (!CheckForContact(block, contacts))
+            {
+                return FitType.None;
+            }
+            Combo(contacts).Forget();
+            return FitType.Combo;
+        }
+
+        private async UniTask FitMe()
+        {
+            await RemoveAllBlocks(true);
+            GameManager.Instance.AddScore(ScoreTypes.FitMe);
+            RegenerateGrid();
+            GameManager.Instance.NextGameDifficulty();
+        }
+
+        private async UniTask Combo(List<Block> contacts)
+        {
+            await UniTask.WhenAll(contacts.Select(block => RemoveBlock(block, true)));
             GameManager.Instance.AddScore(ScoreTypes.Combo, contacts.Count);
             GameManager.Instance.AddScore(ScoreTypes.Bomb, contacts.Count);
-            contacts.ForEach(b => RemoveBlock(b, true));
-            return false;
+            BlockManager.Instance.GameOverCheck().Forget();
         }
 
         /// <summary>
@@ -460,25 +487,23 @@ namespace MadDuck.Scripts.Managers
         /// </summary>
         /// <param name="block">Block to remove</param>
         /// <param name="destroy">Destroy the block, false by default</param>
-        public void RemoveBlock(Block block, bool destroy = false)
+        public async UniTask RemoveBlock(Block block, bool destroy = false)
         {
-            foreach (var atom in block.Atoms)
-            {
-                Cell cell = GetCellByPosition(atom.transform.position);
-                if (!cell || cell.CurrentAtom != atom)
-                {
-                    continue;
-                }
-                cell.SetAtom(null);
-            }
             DisinfectBlock(block);
             BlocksOnGrid.Remove(block);
             infectedBlocks.Remove(block);
             preInfectBlocks.Remove(block);
             OnBlockDestroyed?.Invoke(block);
-            if (destroy)
+            var atoms = new List<Atom>(block.Atoms);
+            await block.Explode(destroy);
+            foreach (var atom in atoms)
             {
-                Destroy(block.gameObject);
+                var cell = GetCellByPosition(atom.transform.position);
+                if (!cell || cell.CurrentAtom != atom)
+                {
+                    continue;
+                }
+                cell.SetAtom(null);
             }
         }
     
@@ -486,13 +511,10 @@ namespace MadDuck.Scripts.Managers
         /// Remove all blocks from the grid
         /// </summary>
         /// <param name="destroy">Destroy the blocks, false by default</param>
-        public void RemoveAllBlocks(bool destroy = false)
+        public  async UniTask RemoveAllBlocks(bool destroy = false)
         {
             List<Block> blocksToRemove = new List<Block>(BlocksOnGrid);
-            foreach (var block in blocksToRemove)
-            {
-                RemoveBlock(block, destroy);
-            }
+            await UniTask.WhenAll(blocksToRemove.Select(block => RemoveBlock(block, destroy)));
         }
         
         /// <summary>
@@ -528,7 +550,7 @@ namespace MadDuck.Scripts.Managers
                 {
                     if (!adjacentCell || !adjacentCell.CurrentAtom) continue;
                     var adjacentBlock = adjacentCell.CurrentAtom.ParentBlock;
-                    if (adjacentBlock.BlockState == BlockState.Infected) continue;
+                    if (adjacentBlock.BlockState is BlockState.Infected or BlockState.Exploding) continue;
                     if (adjacentBlock.BlockType != currentType) continue;
                     if (contactedBlocks.Contains(adjacentBlock)) continue;
                     CheckForContact(adjacentBlock, contactedBlocks);

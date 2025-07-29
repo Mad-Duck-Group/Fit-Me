@@ -28,7 +28,8 @@ namespace MadDuck.Scripts.Units
         Normal,
         PreInfected,
         Infected,
-        Protected
+        Protected,
+        Exploding
     }
     
     public enum FlashState
@@ -66,6 +67,7 @@ namespace MadDuck.Scripts.Units
         [Title("Audios")] 
         [SerializeField] private EventReference placeSucceedSfx;
         [SerializeField] private EventReference placeFailSfx;
+        [SerializeField] private EventReference explodeSfx;
         
         [field: Title("Block Debug")]
         [field: SerializeField, DisplayAsString] public BlockTypes BlockType { get; private set; }
@@ -269,7 +271,7 @@ namespace MadDuck.Scripts.Units
             transform.position = mousePosition - _mousePositionDifference;
             if (_isDragging) return; //Prevent unnecessary calculations
             PickUpBlock();
-            GridManager.Instance.RemoveBlock(this);
+            //GridManager.Instance.RemoveBlock(this);
             _isDragging = true;
         }
 
@@ -278,15 +280,15 @@ namespace MadDuck.Scripts.Units
             if (eventData.button is not PointerEventData.InputButton.Left) return;
             if (GameManager.Instance.CurrentGameState.Value is GameState.CountOff or GameState.Pause) return;
             if (!_isDragging) return;
-            if (GridManager.Instance.PlaceBlock(this))
+            var placed = GridManager.Instance.PlaceBlock(this);
+            if (placed)
             {
                 IsPlaced = true;
                 AudioManager.Instance.PlayAudioOneShot(placeSucceedSfx, transform.position);
                 _mousePositionDifference = Vector3.zero;
                 if (blockView) blockView.Place();
-                //ChangeSortingOrder(-1);
                 SetSortingLayer(originalSortingLayer);
-                BlockManager.Instance.GameOverCheck().Forget();
+                SetSortingOrder(GridManager.Instance.BlocksOnGrid.Count);
             }
             else
             {
@@ -504,6 +506,19 @@ namespace MadDuck.Scripts.Units
                 return;
             }
             blockView.SetColor(color);
+        }
+
+        public async UniTask Explode(bool destroy = false)
+        {
+            BlockState = BlockState.Exploding;
+            AudioManager.Instance.PlayAudioOneShot(explodeSfx, transform.position);
+            StopPreInfectFlash();
+            if (blockView)
+            {
+                await blockView.Explode();
+            }
+            Debug.Log($"Block {BlockType} exploded at position {transform.position}");
+            if (destroy) Destroy(gameObject);
         }
         #endregion
         

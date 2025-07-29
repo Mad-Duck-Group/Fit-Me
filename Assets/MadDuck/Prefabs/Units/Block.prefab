@@ -68,6 +68,13 @@ MonoBehaviour:
       Data3: 156051903
       Data4: -1858921210
     Path: event:/SFX/Game Play/GP02_Cancel Place
+  explodeSfx:
+    Guid:
+      Data1: 685384001
+      Data2: 1300291788
+      Data3: 2005901239
+      Data4: 387108005
+    Path: event:/SFX/Game Play/GP07_Stack Explode
   <BlockType>k__BackingField: 0
   <BlockFace>k__BackingField: 
   <Atoms>k__BackingField: []

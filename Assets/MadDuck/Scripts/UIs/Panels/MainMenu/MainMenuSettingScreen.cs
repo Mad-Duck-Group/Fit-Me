@@ -14,6 +14,8 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
     {
         [Title("References")]
         [SerializeField] private Button backButton;
+        [SerializeField] private Button muteBgmButton;
+        [SerializeField] private Button muteSfxButton;
         
         [Title("Panel")]
         [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule mainMenuCrossFadeRule = new();
@@ -22,6 +24,8 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         {
             base.Initialize();
             backButton.onClick.AddListener(OnBackButtonClicked);
+            muteBgmButton.onClick.AddListener(OnMuteBgmButtonClicked);
+            muteSfxButton.onClick.AddListener(OnMuteSfxButtonClicked);
         }
         
         private void OnBackButtonClicked()
@@ -29,6 +33,16 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
             transitionCts = new CancellationTokenSource();
             PanelController.ChangePanel(this, mainMenuCrossFadeRule.nextPanel, mainMenuCrossFadeRule.crossFadeSettings, 
                 transitionCts.Token).Forget();
+        }
+        
+        private void OnMuteBgmButtonClicked()
+        {
+            AudioManager.Instance.ToggleMuteBus(BusType.BGM);
+        }
+        
+        private void OnMuteSfxButtonClicked()
+        {
+            AudioManager.Instance.ToggleMuteBus(BusType.SFX);
         }
     }
 }

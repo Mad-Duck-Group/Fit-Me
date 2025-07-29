@@ -294,7 +294,7 @@ namespace MadDuck.Scripts.Managers
         {
             if (_scaleTween.isAlive)
             {
-                await UniTask.WaitUntil(() => _scaleTween.GetAwaiter().IsCompleted);
+                await _scaleTween.ToUniTask();
             }
             List<Block> blockToCheck = spawnPoints.Where(x => !x.IsFree).Select(spawnPoint => spawnPoint.CurrentBlock).ToList();
             if (!GridManager.Instance.CheckAvailableBlock(blockToCheck, out _))

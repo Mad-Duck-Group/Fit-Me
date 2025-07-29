@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Utils.Inspectors;
 using PrimeTween;
@@ -46,6 +47,9 @@ namespace MadDuck.Scripts.Units
         [SerializeField, SpineAnimation] string pickUpAnimation;
         [SerializeField, SpineAnimation] string explodeAnimation;
         
+        [Title("VFX")]
+        [SerializeField] private SerializableDictionary<BlockTypes, ParticleSystem> explodeVfx = new();
+        
         [TitleGroup("Skins")]
         [ShowInInspector, HideLabel]
         [DetailedInfoBox("Read Me",
@@ -84,6 +88,7 @@ namespace MadDuck.Scripts.Units
         #endregion
 
         #region Fields and Properties
+        private BlockTypes _blockType;
         private MeshRenderer _meshRenderer;
         private Vector3 _originalScale;
         private Tween _pickUpTween;
@@ -129,9 +134,19 @@ namespace MadDuck.Scripts.Units
             skeletonAnimation.AnimationState.SetAnimation(0, idleAnimations.GetRandomElement(), true);
         }
         
-        public void Explode()
+        public async UniTask Explode()
         {
             skeletonAnimation.AnimationState.SetAnimation(0, explodeAnimation, false);
+            await UniTask.WaitUntil(() => skeletonAnimation.AnimationState.GetCurrent(0).IsComplete);
+            if (explodeVfx.TryGetValue(_blockType, out var vfx))
+            {
+                var vfxInstance = Instantiate(vfx, transform.position, Quaternion.identity);
+                vfxInstance.Play(true);
+            }
+            else
+            {
+                Debug.LogWarning($"No explosion VFX found for block type: {_blockType}");
+            }
         }
 
         public void SetType(BlockTypes type)
@@ -141,6 +156,7 @@ namespace MadDuck.Scripts.Units
                 Debug.LogWarning($"No skin found for block type: {type}");
                  return;
             }
+            _blockType = type;
             skeletonAnimation.Skeleton.SetSkin(skin);
             skeletonAnimation.Skeleton.SetSlotsToSetupPose();
         }
@@ -148,16 +164,40 @@ namespace MadDuck.Scripts.Units
         public void SetSortingLayer(int layer)
         {
             _meshRenderer.sortingLayerID = layer;
+            if (infectedSpriteRenderer)
+            {
+                infectedSpriteRenderer.sortingLayerID = layer;
+            }
+            else
+            {
+                Debug.LogWarning("InfectedSpriteRenderer is not assigned. Sorting layer will not be set for infected sprite.");
+            }
         }
         
         public void SetSortingOrder(int order)
         {
             _meshRenderer.sortingOrder = order;
+            if (infectedSpriteRenderer)
+            {
+                infectedSpriteRenderer.sortingOrder = order;
+            }
+            else
+            {
+                Debug.LogWarning("InfectedSpriteRenderer is not assigned. Sorting order will not be set for infected sprite.");
+            }
         }
 
         public void ChangeSortingOrder(int change)
         {
             _meshRenderer.sortingOrder += change;
+            if (infectedSpriteRenderer)
+            {
+                infectedSpriteRenderer.sortingOrder += change;
+            }
+            else
+            {
+                Debug.LogWarning("InfectedSpriteRenderer is not assigned. Sorting order will not be changed for infected sprite.");
+            }
         }
 
         public void SetColor(Color color)
