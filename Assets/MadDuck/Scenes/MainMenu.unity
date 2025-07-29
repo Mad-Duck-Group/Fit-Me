@@ -4664,7 +4664,6 @@ MonoBehaviour:
     ReferencedUnityObjects:
     - {fileID: 1284342990}
     - {fileID: 629282432}
-    - {fileID: 1764628308}
     - {fileID: 973191127}
     SerializedBytesString: 
     Prefab: {fileID: 0}
@@ -5274,8 +5273,8 @@ MonoBehaviour:
       Entry: 7
       Data: 36|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
     - Name: nextPanel
-      Entry: 10
-      Data: 2
+      Entry: 6
+      Data: 
     - Name: crossFadeSettings
       Entry: 7
       Data: 37|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
@@ -5580,7 +5579,7 @@ MonoBehaviour:
       Data: 53|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
     - Name: nextPanel
       Entry: 10
-      Data: 3
+      Data: 2
     - Name: crossFadeSettings
       Entry: 7
       Data: 54|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp

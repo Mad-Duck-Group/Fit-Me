@@ -84,6 +84,11 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
                 p.thisPanel.Initialize();
                 p.thisPanel.PanelController = pageController;
             });
+        }
+
+        public override void OnPanelReady()
+        {
+            base.OnPanelReady();
             var initialPage = PanelDictionary[initialSplashPage];
             if (initialPage.thisPanel is not ISplashPage page)
             {

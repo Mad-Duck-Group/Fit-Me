@@ -8,9 +8,9 @@ using PrimeTween;
 using Sirenix.OdinInspector;
 #if UNITY_EDITOR
 using Sirenix.OdinInspector.Editor;
+using Sirenix.Utilities.Editor;
 #endif
 using Sirenix.Serialization;
-using Sirenix.Utilities.Editor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
