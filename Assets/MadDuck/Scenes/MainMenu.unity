@@ -808,9 +808,13 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5597472984465097650, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
     - target: {fileID: 8913299453084505499, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
+      propertyPath: combinedTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8913299453084505499, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: serializationData.Prefab
       value: 
-      objectReference: {fileID: 8913299453084505499, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 9009637061283458569, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: m_Name
       value: LoadSceneManager
