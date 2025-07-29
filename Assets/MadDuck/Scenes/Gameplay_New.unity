@@ -3243,6 +3243,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LoadSceneManager
       objectReference: {fileID: 0}
+    - target: {fileID: 9009637061283458569, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4091,20 +4095,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f77e2926b91087945b118ceb457851c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pausePanel: {fileID: 94534296}
-  resumeButton: {fileID: 1372341659}
-  helpButton: {fileID: 484146212}
-  mainMenuButton: {fileID: 853951284}
-  closeSFXButton: {fileID: 1148954551}
-  closeMusicButton: {fileID: 1007654436}
-  gameOverPanel: {fileID: 1635131233}
-  gameOverText: {fileID: 0}
-  continueButton: {fileID: 1752724440}
-  resultPanel: {fileID: 16883433}
-  resultScoreText: {fileID: 302111781}
-  fitScoreText: {fileID: 413101247}
-  homeButton: {fileID: 686236533}
-  tryAgainButton: {fileID: 1516650629}
   countOffTime: 0
   scorePerPlacement: 20
   scorePerCombo: 100
