@@ -73,36 +73,6 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     [BoxGroup("References/Box", LabelText = "References", CenterLabel = true)]
     [ShowInInspector, HideLabel] private InspectorVoid _referencesTitle;
     
-    [TabGroup("References/Box/Tab", "Pause")]
-    [SerializeField] private GameObject pausePanel;
-    [TabGroup("References/Box/Tab", "Pause")]
-    [SerializeField] private Button resumeButton;
-    [TabGroup("References/Box/Tab", "Pause")]
-    [SerializeField] private Button helpButton;
-    [TabGroup("References/Box/Tab", "Pause")]
-    [SerializeField] private Button mainMenuButton;
-    [TabGroup("References/Box/Tab", "Pause")]
-    [SerializeField] private Button closeSFXButton;
-    [TabGroup("References/Box/Tab", "Pause")]
-    [SerializeField] private Button closeMusicButton;
-    
-    [TabGroup("References/Box/Tab", "Game Over")]
-    [SerializeField] private GameObject gameOverPanel;
-    [TabGroup("References/Box/Tab", "Game Over")]
-    [SerializeField] private TMP_Text gameOverText;
-    [TabGroup("References/Box/Tab", "Game Over")]
-    [SerializeField] private Button continueButton;
-    
-    [TabGroup("References/Box/Tab", "Result")]
-    [SerializeField] private GameObject resultPanel;
-    [TabGroup("References/Box/Tab", "Result")]
-    [SerializeField] private TMP_Text resultScoreText;
-    [TabGroup("References/Box/Tab", "Result")]
-    [SerializeField] private TMP_Text fitScoreText;
-    [TabGroup("References/Box/Tab", "Result")]
-    [SerializeField] private Button homeButton;
-    [TabGroup("References/Box/Tab", "Result")]
-    [SerializeField] private Button tryAgainButton;
     #endregion
 
     #region Settings
@@ -189,6 +159,8 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     private readonly List<float> _listInfectTime = new();
     private readonly List<Block> _aboutToInfectBlocks = new();
     private GameState _beforePauseState;
+    public GameState BeforePauseState { get => _beforePauseState; set => _beforePauseState = value; }
+
     private bool _sceneActivated;
     private int _previousReRollScore;
     private bool _countDownPlayed;
@@ -207,7 +179,6 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
             p.Initialize();
             p.PanelController = panelController;
         });
-        pausePanel.SetActive(false);
         NextGameDifficulty();
         ActivateScene();
     }
@@ -431,14 +402,13 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
         if (CurrentGameState.Value is GameState.CountOff or GameState.GameOver or GameState.GameClear) return;
         _beforePauseState = CurrentGameState.Value;
         CurrentGameState.Value = GameState.Pause;
-        pausePanel.SetActive(true);
     }
     
     public void ResumeGame()
     {
         if (CurrentGameState.Value is GameState.CountOff or GameState.GameOver or GameState.GameClear) return;
         CurrentGameState.Value = _beforePauseState;
-        pausePanel.SetActive(false);
+
     }
     #endregion
     
@@ -468,30 +438,16 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     #endregion
 
     #region Another Button
-
-    public void ToggleMuteSFX()
-    {
-        AudioManager.Instance.ToggleMuteBus(BusType.SFX);
-    }
-
-    public void ToggleMuteBGM()
-    {
-        AudioManager.Instance.ToggleMuteBus(BusType.BGM);
-    }
-
     public void ToResultScreen()
     {
         AudioManager.Instance.PlayAudio(giveUpSfx, transform.position);
         _bgmReference.Stop();
         _bgmReference = AudioManager.Instance.PlayAudio(resultBgm, transform.position);
-        resultPanel.gameObject.SetActive(true);
-        gameOverPanel.gameObject.SetActive(false);
     }
     
     public void Continue()
     {
         GridManager.Instance.RemoveAllBlocks();
-        gameOverPanel.gameObject.SetActive(false);
     }
     
     #endregion
@@ -514,5 +470,5 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
             get => serializationData;
             set => serializationData = value;
         }
-        #endregion
+    #endregion
 }
