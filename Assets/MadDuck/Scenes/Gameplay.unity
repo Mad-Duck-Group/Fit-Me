@@ -222,7 +222,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   resultPanel: {fileID: 16883433}
-  newHighScoreBlock: {fileID: 0}
+  newHighScoreBlock: {fileID: 1940998586}
   newFitMeBlock: {fileID: 0}
   resultScoreText: {fileID: 302111781}
   fitScoreText: {fileID: 413101247}
