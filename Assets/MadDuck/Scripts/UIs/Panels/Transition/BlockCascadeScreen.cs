@@ -67,7 +67,7 @@ namespace MadDuck.Scripts.UIs.Panels.Transition
                 {
                     settings = blockTween.positionTweenSettings;
                 }
-                _blockSequence.Chain(Tween.UIAnchoredPosition(blockTween.block, settings));
+                blockSequence.Chain(Tween.UIAnchoredPosition(blockTween.block, settings));
             }
             _blockSequence.Group(blockSequence);
             await _blockSequence.ToUniTask(cancellationToken: cancellationToken);
@@ -78,7 +78,7 @@ namespace MadDuck.Scripts.UIs.Panels.Transition
             var reverseTweens = new List<BlockTween>(blockTweens);
             reverseTweens.Reverse();
             _blockSequence = Sequence.Create();
-            _blockSequence.Group(Tween.Alpha(background, backgroundFadeInSettings));
+            _blockSequence.Group(Tween.Alpha(background, backgroundFadeOutSettings));
             var duration = combinedTime / reverseTweens.Count;
             Sequence blockSequence = Sequence.Create();
             foreach (var blockTween in reverseTweens)
@@ -94,7 +94,7 @@ namespace MadDuck.Scripts.UIs.Panels.Transition
                 {
                     settings = blockTween.positionTweenSettings;
                 }
-                _blockSequence.Chain(Tween.UIAnchoredPosition(blockTween.block, settings.WithDirection(false)));
+                blockSequence.Chain(Tween.UIAnchoredPosition(blockTween.block, settings.WithDirection(false)));
             }
             _blockSequence.Group(blockSequence);
             await _blockSequence.ToUniTask(cancellationToken: cancellationToken);

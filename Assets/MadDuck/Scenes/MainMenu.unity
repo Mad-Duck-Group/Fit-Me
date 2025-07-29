@@ -722,7 +722,7 @@ PrefabInstance:
     - target: {fileID: 2009859008197685763, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: 'serializationData.PrefabModificationsReferencedUnityObjects.Array.data[0]'
       value: 
-      objectReference: {fileID: 68198078}
+      objectReference: {fileID: 1219027112}
     - target: {fileID: 5571629721456849991, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -808,12 +808,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5597472984465097650, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
     - target: {fileID: 8913299453084505499, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-      propertyPath: combinedTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8913299453084505499, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: serializationData.Prefab
       value: 
+      objectReference: {fileID: 8913299453084505499, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
+    - target: {fileID: 8913299453084505499, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
+      propertyPath: backgroundFadeInSettings.settings.ease
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 9009637061283458569, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: m_Name
@@ -824,17 +824,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
---- !u!114 &68198078 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5597472984465097650, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-  m_PrefabInstance: {fileID: 68198077}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c093e5ada8d146e3a3173f8f02f5afe2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &83385678
 GameObject:
   m_ObjectHideFlags: 0
@@ -13161,6 +13150,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   propertyName: _Speed
   propertyValue: 0.1
+--- !u!114 &1219027112 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8913299453084505499, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
+  m_PrefabInstance: {fileID: 68198077}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3996b6a904845829ef8ba42a6ff469c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1232629542
 GameObject:
   m_ObjectHideFlags: 0
