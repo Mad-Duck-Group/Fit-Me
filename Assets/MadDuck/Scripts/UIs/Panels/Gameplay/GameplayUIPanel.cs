@@ -55,6 +55,8 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
             pauseButton.onClick.AddListener(OnPauseButtonClicked);
             scoreText.text = 0.ToString("N0");
             scoreChangeText.text = string.Empty;
+            scoreChangeText.alpha = 0f;
+            scoreChangeText.transform.localScale = Vector3.zero;
         }
         
         private void OnGameOver()

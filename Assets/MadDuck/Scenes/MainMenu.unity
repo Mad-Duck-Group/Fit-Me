@@ -811,10 +811,6 @@ PrefabInstance:
       propertyPath: serializationData.Prefab
       value: 
       objectReference: {fileID: 8913299453084505499, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-    - target: {fileID: 8913299453084505499, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-      propertyPath: backgroundFadeInSettings.settings.ease
-      value: 11
-      objectReference: {fileID: 0}
     - target: {fileID: 9009637061283458569, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: m_Name
       value: LoadSceneManager
@@ -10711,7 +10707,7 @@ MonoBehaviour:
     - {fileID: 1997745645}
   <PanelController>k__BackingField:
     rid: 2851746639663595615
-  initialPanelType: 0
+  initialPanelType: 2
   references:
     version: 2
     RefIds:

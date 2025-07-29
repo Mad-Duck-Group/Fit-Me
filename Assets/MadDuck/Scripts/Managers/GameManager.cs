@@ -6,6 +6,7 @@ using FMODUnity;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.UIs.Panels;
 using MadDuck.Scripts.UIs.Panels.Gameplay;
+using MadDuck.Scripts.UIs.Transitions;
 using MadDuck.Scripts.Units;
 using MadDuck.Scripts.Utils.Inspectors;
 using ObservableCollections;
@@ -124,6 +125,8 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     
     [SerializeField, HideDuplicateReferenceBox, HideLabel]
     private UIPanelController panelController = new();
+    
+    [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule countOffCrossFadeRule = new();
     #endregion
 
     #region Audios
@@ -172,6 +175,12 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     #endregion
     
     #region Initialization
+    private void Start()
+    {
+        
+       
+    }
+    
     private void Initialize()
     {
         panelDictionary.Values.ForEach(p =>
@@ -179,6 +188,9 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
             p.Initialize();
             p.PanelController = panelController;
         });
+        var gameplayPanel = panelDictionary[GameplayUIPanelType.Gameplay];
+        panelController.ShowPanel(gameplayPanel).Forget();
+        gameplayPanel.DeactivateInput();
         NextGameDifficulty();
         ActivateScene();
     }
@@ -198,7 +210,8 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     private void StartCountOff()
     {
         CurrentGameState.Value = GameState.CountOff;
-        panelController.ShowPanel(panelDictionary[GameplayUIPanelType.CountOff]).Forget();
+        var gameplayPanel = panelDictionary[GameplayUIPanelType.Gameplay];
+        panelController.ChangePanel(gameplayPanel, countOffCrossFadeRule.nextPanel, countOffCrossFadeRule.crossFadeSettings).Forget();
     }
 
     public void GameStart()
@@ -212,7 +225,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     #region Events
     private void OnEnable()
     {
-        LoadSceneManager.OnFinishFadeIn += Initialize;
+        LoadSceneManager.OnFinishLoad += Initialize;
         GridManager.OnBlockDestroyed += OnPreInfectBlockDestroyed;
         GridManager.OnBlockStateChanged += OnBlockInfected;
         GridManager.OnBlockPlaced += OnBlockPlaced;
@@ -226,7 +239,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
 
     private void OnDisable()
     {
-        LoadSceneManager.OnFinishFadeIn -= Initialize;
+        LoadSceneManager.OnFinishLoad -= Initialize;
         GridManager.OnBlockDestroyed -= OnPreInfectBlockDestroyed;
         GridManager.OnBlockStateChanged -= OnBlockInfected;
         GridManager.OnBlockPlaced -= OnBlockPlaced;
