@@ -220,113 +220,12 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: gameplayCrossFadeRule
-      Entry: 7
-      Data: 0|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
-    - Name: nextPanel
-      Entry: 6
-      Data: 
-    - Name: crossFadeSettings
-      Entry: 7
-      Data: 1|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
-    - Name: crossFadeType
-      Entry: 3
-      Data: 0
-    - Name: customOffset
-      Entry: 4
-      Data: 0
-    - Name: transitionGroupCollection
-      Entry: 7
-      Data: 2|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
-    - Name: nextIn
-      Entry: 7
-      Data: 3|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 4|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: previousOut
-      Entry: 7
-      Data: 5|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 6|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: transitionIn
-      Entry: 7
-      Data: 7|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 8|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: transitionOut
-      Entry: 7
-      Data: 9|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
-    - Name: transition
-      Entry: 7
-      Data: 10|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    SerializationNodes: []
   resultPanel: {fileID: 16883433}
+  newHighScoreBlock: {fileID: 1940998586}
+  newFitMeBlock: {fileID: 0}
   resultScoreText: {fileID: 302111781}
-  fitScoreText: {fileID: 1658591778}
+  fitScoreText: {fileID: 413101247}
   homeButton: {fileID: 686236533}
   tryAgainButton: {fileID: 1516650629}
 --- !u!225 &16883438
@@ -2327,10 +2226,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blockPrefab: {fileID: 595384841925304144, guid: 2d37578e89800d44c8762f2cac9ce405, type: 3}
   <BlockViewDictionary>k__BackingField:
-    keys:
-    - I2
-    values:
-    - {fileID: 7188293649920210034, guid: 8faf308a7097b854aae2f0a647eb97c2, type: 3}
+    keys: []
+    values: []
   <AtomColorDictionary>k__BackingField:
     keys: 0000000001000000020000000300000004000000
     values:
@@ -4303,9 +4200,18 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: FitmeScore
+      Entry: 7
+      Data: 1|R3.SerializableReactiveProperty`1[[System.Int32, mscorlib]], R3.Unity
+    - Name: value
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: panelDictionary
       Entry: 7
-      Data: 1|Sherbert.Framework.Generic.SerializableDictionary`2[[GameplayUIPanelType,
+      Data: 2|Sherbert.Framework.Generic.SerializableDictionary`2[[GameplayUIPanelType,
         Assembly-CSharp],[MadDuck.Scripts.UIs.Panels.IUIPanel, Assembly-CSharp]],
         Assembly-CSharp
     - Name: 
@@ -7275,7 +7181,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Score !!
+  m_text: New High Score !!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ec4454f36b9142549863fb2f0f525bcf, type: 2}
   m_sharedMaterial: {fileID: -2065754007991695277, guid: ec4454f36b9142549863fb2f0f525bcf, type: 2}
