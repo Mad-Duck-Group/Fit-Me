@@ -436,9 +436,10 @@ namespace MadDuck.Scripts.Managers
                 BlockManager.Instance.ResetSpawnPoint();
                 BlockManager.Instance.SpawnRandomBlock();
             }
-
             if (fit is FitType.None)
             {
+                var blockView = block.BlockView;
+                if (blockView) blockView.Place();
                 BlockManager.Instance.GameOverCheck().Forget();
             }
             OnBlockPlaced?.Invoke(block);
@@ -525,6 +526,18 @@ namespace MadDuck.Scripts.Managers
             if (_previousValidationCells.Count == 0) return;
             _previousValidationCells.ForEach(cell => cell.SpriteRenderer.color = cell.OriginalColor);
             _previousValidationCells.Clear();
+        }
+        
+        /// <summary>
+        /// Reorder the rendering order of the blocks on the grid
+        /// </summary>
+        public void ReorderRenderingOrder()
+        {
+            for (var i = 0; i < BlocksOnGrid.Count; i++)
+            {
+                var block = BlocksOnGrid[i];
+                block.SetSortingOrder(i);
+            }
         }
         #endregion
     

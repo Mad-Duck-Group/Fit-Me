@@ -32,6 +32,12 @@ namespace MadDuck.Scripts.Managers
         [Title("Settings")]
         [SerializeField] private MainMenuPanelType initialPanelType = MainMenuPanelType.SplashScreen;
 
+        private void Start()
+        {
+            QualitySettings.vSyncCount = 0;
+            Application.targetFrameRate = (int)Screen.currentResolution.refreshRateRatio.value;
+        }
+
         private void OnEnable()
         {
             LoadSceneManager.OnFinishLoad += OnFinishLoad;

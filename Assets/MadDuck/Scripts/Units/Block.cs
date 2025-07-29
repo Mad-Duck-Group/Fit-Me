@@ -78,7 +78,7 @@ namespace MadDuck.Scripts.Units
         [field: SerializeField, DisplayAsString] public BlockState BlockState { get; private set; } = BlockState.Normal;
         [field: SerializeField, DisplayAsString] public bool IsPlaced { get; private set; }
         [field: SerializeField, ReadOnly] public List<Cell> BlockCells { get; set; }
-        [field: SerializeField, ReadOnly] private BlockView blockView;
+        [field: SerializeField, ReadOnly] public BlockView BlockView { get; private set; }
         public int SpawnIndex { get; set; }
         #endregion
         
@@ -166,9 +166,9 @@ namespace MadDuck.Scripts.Units
             // var spritePositionX = -column / 2f + 0.5f;
             // var spritePositionY = row / 2f - 0.5f;
             // spriteRenderer.transform.localPosition = new Vector3(spritePositionX, spritePositionY, 0);
-            if (useAtomSprite && blockView)
+            if (useAtomSprite && BlockView)
             {
-                blockView.gameObject.SetActive(false);
+                BlockView.gameObject.SetActive(false);
             }
             else
             {
@@ -215,7 +215,7 @@ namespace MadDuck.Scripts.Units
         public void Infect()
         {
             BlockState = BlockState.Infected;
-            if (blockView) blockView.Infect();
+            if (BlockView) BlockView.Infect();
             StopFlashing();
             StartInfectTimer();
         }
@@ -286,9 +286,8 @@ namespace MadDuck.Scripts.Units
                 IsPlaced = true;
                 AudioManager.Instance.PlayAudioOneShot(placeSucceedSfx, transform.position);
                 _mousePositionDifference = Vector3.zero;
-                if (blockView) blockView.Place();
                 SetSortingLayer(originalSortingLayer);
-                SetSortingOrder(GridManager.Instance.BlocksOnGrid.Count);
+                GridManager.Instance.ReorderRenderingOrder();
             }
             else
             {
@@ -314,12 +313,12 @@ namespace MadDuck.Scripts.Units
                     ChangeType(type, updateGrid);
                     return;
                 }
-                if (blockView)
+                if (BlockView)
                 {
-                    Destroy(blockView.gameObject);
+                    Destroy(BlockView.gameObject);
                 }
-                blockView = Instantiate(blockViewPrefab, transform.position, Quaternion.identity, transform);
-                blockView.SetType(type);
+                BlockView = Instantiate(blockViewPrefab, transform.position, Quaternion.identity, transform);
+                BlockView.SetType(type);
             }
             else
             {
@@ -444,7 +443,7 @@ namespace MadDuck.Scripts.Units
             }
             var gridSize = GridManager.Instance.Grid.cellSize;
             Tween.Scale(transform, gridSize, 0.2f);
-            if (blockView) blockView.PickUp();
+            if (BlockView) BlockView.PickUp();
         }
 
         /// <summary>
@@ -460,7 +459,7 @@ namespace MadDuck.Scripts.Units
             _transformTween = Tween.Position(transform, _originalPosition, 0.2f);
             Tween.Rotation(transform, _originalRotation, 0.2f);
             Tween.Scale(transform, _originalScale, 0.2f);
-            if (blockView) blockView.Place();
+            if (BlockView) BlockView.Place();
             GridManager.Instance.ResetPreviousValidationCells();
         }
 
@@ -471,7 +470,7 @@ namespace MadDuck.Scripts.Units
                 Atoms.ForEach(atom => atom.SpriteRenderer.sortingLayerID = layer);
                 return;
             }
-            blockView.SetSortingLayer(layer);
+            BlockView.SetSortingLayer(layer);
         }
 
         /// <summary>
@@ -485,7 +484,7 @@ namespace MadDuck.Scripts.Units
                 Atoms.ForEach(atom => atom.SpriteRenderer.sortingOrder = order);
                 return;
             }
-            blockView.SetSortingOrder(order);
+            BlockView.SetSortingOrder(order);
         }
         
         public void ChangeSortingOrder(int change)
@@ -495,7 +494,7 @@ namespace MadDuck.Scripts.Units
                 Atoms.ForEach(atom => atom.SpriteRenderer.sortingOrder += change);
                 return;
             }
-            blockView.ChangeSortingOrder(change);
+            BlockView.ChangeSortingOrder(change);
         }
 
         public void SetColor(Color color)
@@ -505,7 +504,7 @@ namespace MadDuck.Scripts.Units
                 Atoms.ForEach(atom => atom.SpriteRenderer.color = color);
                 return;
             }
-            blockView.SetColor(color);
+            BlockView.SetColor(color);
         }
 
         public async UniTask Explode(bool destroy = false)
@@ -513,9 +512,9 @@ namespace MadDuck.Scripts.Units
             BlockState = BlockState.Exploding;
             AudioManager.Instance.PlayAudioOneShot(explodeSfx, transform.position);
             StopPreInfectFlash();
-            if (blockView)
+            if (BlockView)
             {
-                await blockView.Explode();
+                await BlockView.Explode();
             }
             Debug.Log($"Block {BlockType} exploded at position {transform.position}");
             if (destroy) Destroy(gameObject);

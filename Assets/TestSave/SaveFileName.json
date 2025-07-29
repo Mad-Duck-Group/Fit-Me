@@ -25,6 +25,11 @@
         "$values": [
           {
             "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "dateTime": "2025-07-29T21:58:24.2937132+07:00",
+            "score": 7580
+          },
+          {
+            "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
             "dateTime": "2025-07-29T21:31:07.3853699+07:00",
             "score": 100
           },
@@ -61,6 +66,11 @@
       "runData": {
         "$type": "System.Collections.Generic.List`1[[MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
         "$values": [
+          {
+            "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "dateTime": "2025-07-29T21:58:24.3023278+07:00",
+            "fitMe": 1
+          },
           {
             "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
             "dateTime": "2025-07-29T21:31:07.3853699+07:00",
