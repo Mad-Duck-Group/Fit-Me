@@ -447,9 +447,9 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     
     public void Continue()
     {
-        GridManager.Instance.RemoveAllBlocks();
+        CurrentGameState.Value = GameState.PlaceBlock;
+        GridManager.Instance.RemoveAllBlocks(true);
     }
-    
     #endregion
     
      #region Serialization

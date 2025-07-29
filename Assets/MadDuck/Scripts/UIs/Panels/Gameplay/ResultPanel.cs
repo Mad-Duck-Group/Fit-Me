@@ -1,11 +1,13 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.UIs.Panels;
 using MadDuck.Scripts.UIs.Transitions;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [ShowOdinSerializedPropertiesInInspector]
@@ -35,9 +37,6 @@ public class ResultPanel : UIPanel
     
     private void OnTryAgainButtonClicked()
     {
-        GameManager.Instance.Continue();
-        transitionCts = new CancellationTokenSource();
-        PanelController.ChangePanel(this, gameplayCrossFadeRule.nextPanel, gameplayCrossFadeRule.crossFadeSettings, transitionCts.Token).Forget();
-
+        GameManager.Instance.Retry();
     }
 }

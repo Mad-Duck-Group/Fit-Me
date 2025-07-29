@@ -559,19 +559,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 21612173}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ToResultScreen
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &21612173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -979,7 +967,7 @@ MonoBehaviour:
       Data: 1|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
     - Name: crossFadeType
       Entry: 3
-      Data: 0
+      Data: 4
     - Name: customOffset
       Entry: 4
       Data: 0
@@ -1184,19 +1172,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 103979547}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ToggleVolumeSlider
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &103979547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2509,19 +2485,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 484146213}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: Retry
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &484146213
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3073,7 +3037,6 @@ GameObject:
   - component: {fileID: 686236535}
   - component: {fileID: 686236534}
   - component: {fileID: 686236533}
-  - component: {fileID: 686236532}
   m_Layer: 5
   m_Name: HomeButton
   m_TagString: Untagged
@@ -3101,18 +3064,6 @@ RectTransform:
   m_AnchoredPosition: {x: -308, y: -820}
   m_SizeDelta: {x: 478.3, y: 169.781}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &686236532
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 686236530}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2354a5b6a3e3971418c47e80b71d514f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &686236533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3344,32 +3295,24 @@ PrefabInstance:
       objectReference: {fileID: 2009859008197685763, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
     - target: {fileID: 2009859008197685763, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: serializationData.PrefabModifications.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2009859008197685763, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: 'serializationData.PrefabModifications.Array.data[0]'
       value: '"path":"<TransitionScreens>k__BackingField.{0es}","value":$eref:0'
       objectReference: {fileID: 0}
     - target: {fileID: 2009859008197685763, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-      propertyPath: 'serializationData.PrefabModifications.Array.data[1]'
-      value: '"path":"<TransitionScreens>k__BackingField.{1es}","value":$eref:1'
-      objectReference: {fileID: 0}
+      propertyPath: 'serializationData.ReferencedUnityObjects.Array.data[0]'
+      value: 
+      objectReference: {fileID: 806927509}
     - target: {fileID: 2009859008197685763, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2009859008197685763, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: 'serializationData.PrefabModificationsReferencedUnityObjects.Array.data[0]'
       value: 
-      objectReference: {fileID: 806927509}
-    - target: {fileID: 2009859008197685763, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-      propertyPath: 'serializationData.PrefabModificationsReferencedUnityObjects.Array.data[1]'
-      value: 
       objectReference: {fileID: 806927508}
-    - target: {fileID: 2992982753768326356, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-      propertyPath: m_text
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 5571629721456849991, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -3584,19 +3527,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 853951285}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1077234519}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: BackToMenu
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &853951285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4077,19 +4008,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1007654437}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1077234519}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ToggleMuteBGM
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1007654437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4964,19 +4883,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1148954552}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1077234519}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ToggleMuteSFX
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1148954552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5799,19 +5706,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1372341660}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1077234519}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ResumeGame
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1372341660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5968,7 +5863,7 @@ MonoBehaviour:
       Data: 1|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
     - Name: crossFadeType
       Entry: 3
-      Data: 0
+      Data: 3
     - Name: customOffset
       Entry: 4
       Data: 0
@@ -6071,7 +5966,7 @@ MonoBehaviour:
       Data: 12|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
     - Name: crossFadeType
       Entry: 3
-      Data: 0
+      Data: 3
     - Name: customOffset
       Entry: 4
       Data: 0
@@ -6558,7 +6453,6 @@ GameObject:
   - component: {fileID: 1516650631}
   - component: {fileID: 1516650630}
   - component: {fileID: 1516650629}
-  - component: {fileID: 1516650628}
   m_Layer: 5
   m_Name: TryAgainButton
   m_TagString: Untagged
@@ -6586,18 +6480,6 @@ RectTransform:
   m_AnchoredPosition: {x: 312, y: -820}
   m_SizeDelta: {x: 478.3, y: 169.781}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1516650628
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1516650626}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2354a5b6a3e3971418c47e80b71d514f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1516650629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6914,6 +6796,7 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 16883437}
+    - {fileID: 1373273812}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -7022,9 +6905,113 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: gameplayUIPanelCrossFadeRule
+      Entry: 7
+      Data: 11|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
+    - Name: nextPanel
+      Entry: 10
+      Data: 1
+    - Name: crossFadeSettings
+      Entry: 7
+      Data: 12|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
+    - Name: crossFadeType
+      Entry: 3
+      Data: 4
+    - Name: customOffset
+      Entry: 4
+      Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 13|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
+    - Name: nextIn
+      Entry: 7
+      Data: 14|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 15|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: previousOut
+      Entry: 7
+      Data: 16|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 17|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: transitionIn
+      Entry: 7
+      Data: 18|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 19|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: transitionOut
+      Entry: 7
+      Data: 20|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 21|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   gameOverPanel: {fileID: 1635131233}
   gameOverText: {fileID: 268810862}
   continueButton: {fileID: 1752724440}
+  adsButton: {fileID: 21612172}
 --- !u!225 &1635131238
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -7497,19 +7484,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1752724441}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1077234519}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ToResultScreen
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1752724441
 MonoBehaviour:
   m_ObjectHideFlags: 0
