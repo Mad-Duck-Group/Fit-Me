@@ -61,10 +61,12 @@ public class ResultPanel : UIPanel
     
     private void ShowFitMeScore()
     {
-        fitScoreText.text = gameManager.FitmeScore.Value.ToString("N0");
+        newFitMeBlock.SetActive(true);
+        fitScoreText.text =   
+            gameManager.FitmeScore.Value.ToString("N0");
         if (gameManager.Score.Value > playerData.ScoreData.highScore)
         {
-            Debug.Log("New FitMe Score!");
+            newFitMeBlock.SetActive(true);
         }
     }
     
