@@ -57,7 +57,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
     
         private void ShowFitMeScore()
         {
-            newFitMeBlock.SetActive(true);
+            newFitMeBlock.SetActive(false);
             fitScoreText.text =   
                 gameManager.FitmeScore.Value.ToString("N0");
             if (gameManager.Score.Value > playerData.ScoreData.highScore)
