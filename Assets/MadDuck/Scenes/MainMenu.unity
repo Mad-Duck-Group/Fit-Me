@@ -2357,7 +2357,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 181955655}
   m_OnClick:
     m_PersistentCalls:
@@ -2375,7 +2375,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6698113, g: 0.6698113, b: 0.6698113, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -17472,7 +17472,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4260594938480111401, guid: 9a4e3ba483c70ca4982f6a3595ff8603, type: 3}
+  m_Sprite: {fileID: -3199863366085203446, guid: d7021efc210e9e54181af36563475caa, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -18902,7 +18902,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -3020728069810393182, guid: a8e6adb07b734cc4bbeb189c4492d03e, type: 3}
+  m_Sprite: {fileID: -3199863366085203446, guid: d7021efc210e9e54181af36563475caa, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
