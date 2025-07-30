@@ -35,6 +35,8 @@ namespace MadDuck.Scripts.Audios
         
         public Bus Bus { get; private set; }
 
+        private float _beforeMuteVolume;
+
         public void Initialize()
         {
             var bus = RuntimeManager.GetBus(Path);
@@ -44,6 +46,7 @@ namespace MadDuck.Scripts.Audios
                 return;
             }
             Bus = bus;
+            Bus.getVolume(out _beforeMuteVolume);
             SetVolume(LinearVolume);
             SetMute(IsMuted);
         }
@@ -54,7 +57,15 @@ namespace MadDuck.Scripts.Audios
             if (IsMaster)
                 RuntimeManager.MuteAllEvents(mute);
             else
+            {
+                #if UNITY_WEBGL
+                var webGLMute = mute ? 0f : _beforeMuteVolume;
+                Bus.setVolume(webGLMute);
+                #else
                 Bus.setMute(mute);
+                #endif
+            }
+                
             IsMuted = mute;
         }
 
@@ -88,6 +99,7 @@ namespace MadDuck.Scripts.Audios
         {
             if (!Bus.isValid()) return;
             Bus.setVolume(linear);
+            _beforeMuteVolume = linear;
         }
         private void LinearChanged()
         {

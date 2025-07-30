@@ -425,6 +425,8 @@ namespace MadDuck.Scripts.Managers
             ReorderRenderingOrder();
             GameManager.Instance.AddScore(ScoreTypes.Placement);
             ResetPreviousValidationCells();
+            var blockView = block.BlockView;
+            if (blockView) blockView.Place();
             var fit = UpdateBlockOnGrid(block);
             if (fit is FitType.FitMe)
             {
@@ -440,8 +442,6 @@ namespace MadDuck.Scripts.Managers
             }
             if (fit is FitType.None)
             {
-                var blockView = block.BlockView;
-                if (blockView) blockView.Place();
                 BlockManager.Instance.GameOverCheck().Forget();
             }
             OnBlockPlaced?.Invoke(block);
