@@ -19,39 +19,14 @@
     "$type": "Esper.ESave.SavableObjects.SavableData`1[[MadDuck.Scripts.Managers.ScoreData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
     "value": {
       "$type": "MadDuck.Scripts.Managers.ScoreData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-      "highScore": 36280,
+      "highScore": 23640,
       "runData": {
         "$type": "System.Collections.Generic.List`1[[MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
         "$values": [
           {
             "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-29T21:58:24.2937132+07:00",
-            "score": 7580
-          },
-          {
-            "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-29T21:31:07.3853699+07:00",
-            "score": 100
-          },
-          {
-            "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-29T21:30:42.9316014+07:00",
-            "score": 17620
-          },
-          {
-            "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-29T20:40:48.6307751+07:00",
-            "score": 36280
-          },
-          {
-            "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-29T20:37:20.6585554+07:00",
-            "score": 6180
-          },
-          {
-            "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-29T16:02:11.7854262+07:00",
-            "score": 16460
+            "dateTime": "2025-07-30T13:12:44.166343+07:00",
+            "score": 23640
           }
         ]
       }
@@ -62,39 +37,14 @@
     "$type": "Esper.ESave.SavableObjects.SavableData`1[[MadDuck.Scripts.Managers.FitMeData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
     "value": {
       "$type": "MadDuck.Scripts.Managers.FitMeData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-      "mostFitMe": 7,
+      "mostFitMe": 4,
       "runData": {
         "$type": "System.Collections.Generic.List`1[[MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
         "$values": [
           {
             "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-29T21:58:24.3023278+07:00",
-            "fitMe": 1
-          },
-          {
-            "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-29T21:31:07.3853699+07:00",
-            "fitMe": 0
-          },
-          {
-            "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-29T21:30:42.9331056+07:00",
-            "fitMe": 3
-          },
-          {
-            "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-29T20:40:48.6307751+07:00",
-            "fitMe": 7
-          },
-          {
-            "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-29T20:37:20.6634729+07:00",
-            "fitMe": 1
-          },
-          {
-            "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-29T16:02:11.7919724+07:00",
-            "fitMe": 3
+            "dateTime": "2025-07-30T13:12:44.1683482+07:00",
+            "fitMe": 4
           }
         ]
       }

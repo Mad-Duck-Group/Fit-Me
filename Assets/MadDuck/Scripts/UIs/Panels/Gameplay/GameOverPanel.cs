@@ -1,49 +1,82 @@
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using MadDuck.Scripts.UIs.Panels;
 using MadDuck.Scripts.UIs.Transitions;
+using R3;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-[ShowOdinSerializedPropertiesInInspector]
-public class GameOverPanel : UIPanel
+namespace MadDuck.Scripts.UIs.Panels.Gameplay
 {
-    [Title("References")] [SerializeField] private GameObject gameOverPanel;
-    [SerializeField] private TMP_Text gameOverText;
-    [SerializeField] private Button continueButton;
-    [SerializeField] private Button adsButton;
-
-    [Title("Panels")] 
-    [OdinSerialize, HideReferenceObjectPicker]
-    private CrossFadeRule resultCrossFadeRule = new();
-    [OdinSerialize, HideReferenceObjectPicker]
-    private CrossFadeRule gameplayUIPanelCrossFadeRule = new();
-
-
-    public override void Initialize()
+    [ShowOdinSerializedPropertiesInInspector]
+    public class GameOverPanel : UIPanel
     {
-        base.Initialize();
-        continueButton.onClick.AddListener(OnContinueButtonClicked);
-        adsButton.onClick.AddListener(OnAdsButtonClicked);
-    }
+        [Title("References")] 
+        [SerializeField] private Image adsTimer;
+        [SerializeField] private Button continueButton;
+        [SerializeField] private Button adsButton;
+        
+        [Title("Settings")]
+        [SerializeField] private float adsTimeout = 10f;
 
-    private void OnContinueButtonClicked()
-    {
-        GameManager.Instance.ToResultScreen();
-        transitionCts = new CancellationTokenSource();
-        PanelController.ChangePanel(this, resultCrossFadeRule.nextPanel, resultCrossFadeRule.crossFadeSettings,
-            transitionCts.Token).Forget();
-    }
+        [Title("Panels")] 
+        [OdinSerialize, HideReferenceObjectPicker]
+        private CrossFadeRule resultCrossFadeRule = new();
+        [OdinSerialize, HideReferenceObjectPicker]
+        private CrossFadeRule gameplayUIPanelCrossFadeRule = new();
+        
+        private float _adsTimerValue;
+        private IDisposable _adsTimerSubscription;
 
-    private void OnAdsButtonClicked()
-    {
-        GameManager.Instance.Continue();
-        transitionCts = new CancellationTokenSource();
-        PanelController.ChangePanel(this, gameplayUIPanelCrossFadeRule.nextPanel, gameplayUIPanelCrossFadeRule.crossFadeSettings,
-            transitionCts.Token).Forget();
-    }
 
+        public override void Initialize()
+        {
+            base.Initialize();
+            continueButton.onClick.AddListener(OnSkipButtonClicked);
+            adsButton.onClick.AddListener(OnAdsButtonClicked);
+            adsTimer.fillAmount = 1;
+        }
+
+        public override void OnPanelReady()
+        {
+            base.OnPanelReady();
+            _adsTimerValue = adsTimeout;
+            _adsTimerSubscription = Observable.EveryUpdate(UnityFrameProvider.Update).Subscribe(_ =>
+            {
+                UpdateAdsTimer();
+            });
+        }
+
+        private void UpdateAdsTimer()
+        {
+            _adsTimerValue -= Time.deltaTime;
+            _adsTimerValue = Mathf.Clamp(_adsTimerValue, 0, adsTimeout);
+            adsTimer.fillAmount = _adsTimerValue / adsTimeout;
+            if (_adsTimerValue > 0) return;
+            _adsTimerValue = adsTimeout;
+            OnSkipButtonClicked();
+        }
+
+        private void OnSkipButtonClicked()
+        {
+            _adsTimerSubscription?.Dispose();
+            GameManager.Instance.ToResultScreen();
+            transitionCts = new CancellationTokenSource();
+            PanelController.ChangePanel(this, resultCrossFadeRule.nextPanel, resultCrossFadeRule.crossFadeSettings,
+                transitionCts.Token).Forget();
+        }
+
+        private void OnAdsButtonClicked()
+        {
+            _adsTimerSubscription?.Dispose();
+            GameManager.Instance.Continue();
+            transitionCts = new CancellationTokenSource();
+            PanelController.ChangePanel(this, gameplayUIPanelCrossFadeRule.nextPanel, gameplayUIPanelCrossFadeRule.crossFadeSettings,
+                transitionCts.Token).Forget();
+        }
+
+    }
 }
