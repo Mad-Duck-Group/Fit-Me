@@ -324,6 +324,15 @@ namespace MadDuck.Scripts.Managers
             return true;
         }
         
+        public bool GetBusMuteState(BusType busType, out bool isMuted)
+        {
+            isMuted = false;
+            if (!GetBusData(busType, out var busData)) return false;
+            if (!busData.Bus.isValid()) return false;
+            if (busData.Bus.getMute(out isMuted) is not RESULT.OK) return false;
+            return true;
+        }
+        
         public bool GetBusVolume(BusType busType, out float volume, VolumeUnit outUnit)
         {
             volume = 0f;

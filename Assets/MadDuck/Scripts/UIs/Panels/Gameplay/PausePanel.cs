@@ -16,8 +16,8 @@ public class PausePanel : UIPanel
     [SerializeField] private Button resumeButton;
     [SerializeField] private Button helpButton;
     [SerializeField] private Button mainMenuButton;
-    [SerializeField] private Button closeSFXButton;
-    [SerializeField] private Button closeMusicButton;
+    [SerializeField] private ToggleButton muteSfxButton;
+    [SerializeField] private ToggleButton muteBgmButton;
     
     [Title("Panels")]
     [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule gameplayCrossFadeRule = new();
@@ -28,8 +28,12 @@ public class PausePanel : UIPanel
         resumeButton.onClick.AddListener(OnResumeButtonClicked);
         helpButton.onClick.AddListener(OnHelpButtonClicked);
         mainMenuButton.onClick.AddListener(OnMainMenuButton);
-        closeSFXButton.onClick.AddListener(OnToggleMuteSFX);
-        closeMusicButton.onClick.AddListener(OnToggleMuteBGM);
+        muteSfxButton.Button.onClick.AddListener(OnToggleMuteSFX);
+        muteBgmButton.Button.onClick.AddListener(OnToggleMuteBGM);
+        AudioManager.Instance.GetBusMuteState(BusType.BGM, out var muted);
+        muteBgmButton.IsActivated = muted;
+        AudioManager.Instance.GetBusMuteState(BusType.SFX, out muted);
+        muteSfxButton.IsActivated = muted;
     }
 
     private void OnResumeButtonClicked()
@@ -52,10 +56,12 @@ public class PausePanel : UIPanel
     public void OnToggleMuteSFX()
     {
         AudioManager.Instance.ToggleMuteBus(BusType.SFX);
+        muteSfxButton.Toggle();
     }
 
     public void OnToggleMuteBGM()
     {
         AudioManager.Instance.ToggleMuteBus(BusType.BGM);
+        muteBgmButton.Toggle();
     }
 }

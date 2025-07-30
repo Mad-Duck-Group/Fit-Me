@@ -4408,9 +4408,9 @@ MonoBehaviour:
   scenes:
     keys: 0300000000000000
     values:
-    - _sceneObject: {fileID: 102900000, guid: 68d961a871f0ce14598bb64c19e1564f, type: 3}
+    - _sceneObject: {fileID: 102900000, guid: 0b3f69c2516f52342a2fc1a2e6be9f3a, type: 3}
       _path: Assets/MadDuck/Scenes/Gameplay.unity
-    - _sceneObject: {fileID: 102900000, guid: b73b44a90ec0ab84b99fd0f33924ebd2, type: 3}
+    - _sceneObject: {fileID: 102900000, guid: ab736174ce282d44a9e719b6ac9d78fe, type: 3}
       _path: Assets/MadDuck/Scenes/MainMenu.unity
   displayVersion: 1
   minimumLoadingScreenDuration: 1
@@ -4419,7 +4419,8 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 8913299453084505499}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -4442,8 +4443,8 @@ MonoBehaviour:
       Entry: 3
       Data: 0
     - Name: 
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
