@@ -510,7 +510,7 @@ namespace MadDuck.Scripts.Units
             BlockState = BlockState.Exploding;
             AudioManager.Instance.PlayAudioOneShot(explodeSfx, transform.position);
             StopPreInfectFlash();
-            SetColor(Color.white);
+            SetColor(originalAtomColor);
             if (BlockView)
             {
                 await BlockView.Explode();
