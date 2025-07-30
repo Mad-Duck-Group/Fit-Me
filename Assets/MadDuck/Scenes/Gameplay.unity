@@ -9205,7 +9205,18 @@ MonoBehaviour:
   canBePlacedColor: {r: 0.07678461, g: 1, b: 0, a: 1}
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
   gridPresets:
-  - {fileID: 11400000, guid: 0c9addcad39fb2e47a6304f9760f97ab, type: 2}
+  - {fileID: 11400000, guid: 3c0de1220640875409d7ee56aa4db52d, type: 2}
+  - {fileID: 11400000, guid: e2efd1faf5182024baadc152896d32c5, type: 2}
+  - {fileID: 11400000, guid: 8e6023eb534aad04d9dce6a821e03abd, type: 2}
+  - {fileID: 11400000, guid: 633ee46917ae20d49bd51a8cf7def4dc, type: 2}
+  - {fileID: 11400000, guid: 531eaed777e2b7d41b60e3eb9e41ace1, type: 2}
+  - {fileID: 11400000, guid: 3f5172f5d777141499cf757cc4e77433, type: 2}
+  - {fileID: 11400000, guid: 00c82d2d85419804bb39dfadb62b5920, type: 2}
+  - {fileID: 11400000, guid: 448d67f0617d10647be6fd5fbc06cb4e, type: 2}
+  - {fileID: 11400000, guid: 42d4dd3d5edcc714f9f3d6d33ad7da26, type: 2}
+  - {fileID: 11400000, guid: 49ac1ac62efab9d44ba416909e663151, type: 2}
+  - {fileID: 11400000, guid: 73a8ec27c2ff78244ac1813a9be4acf7, type: 2}
+  - {fileID: 11400000, guid: 3546067d18e435c47abca150faf390b9, type: 2}
   endlessType: 1
   generatedGridType: 1
   randomGridXRange: {x: 6, y: 9}
@@ -9216,8 +9227,8 @@ MonoBehaviour:
   gridVerticalOffsetType: 0
   customOffsetY: 2
   destroyThreshold: 3
-  currentGridPreset: {fileID: 11400000, guid: 00c82d2d85419804bb39dfadb62b5920, type: 2}
-  currentGridSize: {x: 10, y: 8}
+  currentGridPreset: {fileID: 11400000, guid: 49ac1ac62efab9d44ba416909e663151, type: 2}
+  currentGridSize: {x: 6, y: 8}
   currentOffset: {x: -5, y: 6}
   drawAllCustomGridCells: 1
   <RandomInfectedTime>k__BackingField: 0
