@@ -203,12 +203,10 @@ namespace MadDuck.Scripts.Units
         public async UniTask PreInfect()
         {
             BlockState = BlockState.PreInfected;
-            if (BlockState == BlockState.PreInfected)
-                StartFlashing(FlashState.PreInfectFlash);
-            
-            if (BlockState != BlockState.PreInfected) return;
+            StartFlashing(FlashState.PreInfectFlash);
             await UniTask.WaitForSeconds(GameManager.Instance.PreInfectTime,
                 cancellationToken: destroyCancellationToken);
+            if (BlockState is BlockState.Exploding) return;
             GridManager.Instance.InfectBlock(this);
         }
         
@@ -512,6 +510,7 @@ namespace MadDuck.Scripts.Units
             BlockState = BlockState.Exploding;
             AudioManager.Instance.PlayAudioOneShot(explodeSfx, transform.position);
             StopPreInfectFlash();
+            SetColor(Color.white);
             if (BlockView)
             {
                 await BlockView.Explode();

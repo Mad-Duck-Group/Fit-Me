@@ -19,14 +19,14 @@
     "$type": "Esper.ESave.SavableObjects.SavableData`1[[MadDuck.Scripts.Managers.ScoreData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
     "value": {
       "$type": "MadDuck.Scripts.Managers.ScoreData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-      "highScore": 160,
+      "highScore": 37520,
       "runData": {
         "$type": "System.Collections.Generic.List`1[[MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
         "$values": [
           {
             "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-30T15:34:25.5218699+07:00",
-            "score": 160
+            "dateTime": "2025-07-30T16:11:48.597956+07:00",
+            "score": 37520
           }
         ]
       }
@@ -37,14 +37,14 @@
     "$type": "Esper.ESave.SavableObjects.SavableData`1[[MadDuck.Scripts.Managers.FitMeData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
     "value": {
       "$type": "MadDuck.Scripts.Managers.FitMeData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-      "mostFitMe": 0,
+      "mostFitMe": 6,
       "runData": {
         "$type": "System.Collections.Generic.List`1[[MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
         "$values": [
           {
             "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-30T15:34:25.5243775+07:00",
-            "fitMe": 0
+            "dateTime": "2025-07-30T16:11:48.60097+07:00",
+            "fitMe": 6
           }
         ]
       }
