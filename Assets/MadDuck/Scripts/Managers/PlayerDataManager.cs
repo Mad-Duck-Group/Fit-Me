@@ -65,6 +65,18 @@ namespace MadDuck.Scripts.Managers
             SaveAchievement(0, false);
             FinishSave();
         }
+
+        [Button("Delete All Data")]
+        private void DebugDeleteAllData()
+        {
+            ScoreData = new ScoreData();
+            FitMeData = new FitMeData();
+            AchievementData = new AchievementData();
+            CurrentSaveFile.DeleteData(ScoreDataKey);
+            CurrentSaveFile.DeleteData(FitMeDataKey);
+            CurrentSaveFile.DeleteData(AchievementDataKey);
+            FinishSave();
+        }
         
         private const string ScoreDataKey = "ScoreData";
         private const string FitMeDataKey = "RecentFitMe";

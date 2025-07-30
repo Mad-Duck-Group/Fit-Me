@@ -145,12 +145,17 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     #endregion
     
     #region Debug
-    [field: Title("Game Manager Debug")]
+    [field: TitleGroup("Game Manager Debug")]
     [field: SerializeField, DisplayAsString]
+    [field: TitleGroup("Game Manager Debug")]
     public SerializableReactiveProperty<GameState> CurrentGameState { get; private set; } = new(GameState.CountOff);
-    [SerializeField, ReadOnly] public SerializableReactiveProperty<int> Score { get; private set; } = new(0);
-    [SerializeField, ReadOnly] public SerializableReactiveProperty<int> FitmeScore { get; private set; } = new(0);
-    
+    [field: TitleGroup("Game Manager Debug")]
+    [field: SerializeField, ReadOnly] public SerializableReactiveProperty<int> Score { get; private set; } = new(0);
+    [field: TitleGroup("Game Manager Debug")]
+    [field: SerializeField, ReadOnly] public SerializableReactiveProperty<int> FitmeScore { get; private set; } = new(0);
+    [TitleGroup("Game Manager Debug")]
+    [Button("Test Game Over")]
+    private void TestGameOver() => GameOver();
 
     [field: Title("Infection Debug")]
     [SerializeField, DisplayAsString] private int difficultyIndex;
@@ -454,17 +459,26 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     #endregion
 
     #region Another Button
-    public void ToResultScreen()
+    public async UniTaskVoid ToResultScreen()
     {
-        AudioManager.Instance.PlayAudio(giveUpSfx, transform.position);
         _bgmReference.Stop();
+        var giveUpRef = AudioManager.Instance.PlayAudio(giveUpSfx, transform.position);
+        // await UniTask.WaitUntil(() =>
+        // {
+        //     if (giveUpRef.eventInstance.getPlaybackState(out var state) is not FMOD.RESULT.OK)
+        //     {
+        //         Debug.LogError("Failed to get playback state for give up SFX.");
+        //         return true;
+        //     }
+        //     return state == FMOD.Studio.PLAYBACK_STATE.STOPPED;
+        // });
         _bgmReference = AudioManager.Instance.PlayAudio(resultBgm, transform.position);
     }
     
     public void Continue()
     {
         CurrentGameState.Value = GameState.PlaceBlock;
-        GridManager.Instance.RemoveAllBlocks(true);
+        GridManager.Instance.RemoveAllBlocks(true).Forget();
     }
     #endregion
     

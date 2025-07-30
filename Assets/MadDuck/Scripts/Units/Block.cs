@@ -284,8 +284,6 @@ namespace MadDuck.Scripts.Units
                 IsPlaced = true;
                 AudioManager.Instance.PlayAudioOneShot(placeSucceedSfx, transform.position);
                 _mousePositionDifference = Vector3.zero;
-                SetSortingLayer(originalSortingLayer);
-                GridManager.Instance.ReorderRenderingOrder();
             }
             else
             {
@@ -459,6 +457,16 @@ namespace MadDuck.Scripts.Units
             Tween.Scale(transform, _originalScale, 0.2f);
             if (BlockView) BlockView.Place();
             GridManager.Instance.ResetPreviousValidationCells();
+        }
+        
+        public void ResetSortingLayer()
+        {
+            if (useAtomSprite)
+            {
+                Atoms.ForEach(atom => atom.SpriteRenderer.sortingLayerID = originalSortingLayer);
+                return;
+            }
+            BlockView.SetSortingLayer(originalSortingLayer);
         }
 
         public void SetSortingLayer(int layer)

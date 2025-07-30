@@ -19,14 +19,14 @@
     "$type": "Esper.ESave.SavableObjects.SavableData`1[[MadDuck.Scripts.Managers.ScoreData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
     "value": {
       "$type": "MadDuck.Scripts.Managers.ScoreData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-      "highScore": 45700,
+      "highScore": 20,
       "runData": {
         "$type": "System.Collections.Generic.List`1[[MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
         "$values": [
           {
             "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-30T17:32:02.6248394+07:00",
-            "score": 45700
+            "dateTime": "2025-07-30T19:30:33.9239367+07:00",
+            "score": 20
           }
         ]
       }
@@ -37,26 +37,18 @@
     "$type": "Esper.ESave.SavableObjects.SavableData`1[[MadDuck.Scripts.Managers.FitMeData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
     "value": {
       "$type": "MadDuck.Scripts.Managers.FitMeData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-      "mostFitMe": 8,
+      "mostFitMe": 0,
       "runData": {
         "$type": "System.Collections.Generic.List`1[[MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
         "$values": [
           {
             "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "dateTime": "2025-07-30T17:32:02.6268391+07:00",
-            "fitMe": 8
+            "dateTime": "2025-07-30T19:30:33.9254451+07:00",
+            "fitMe": 0
           }
         ]
       }
     },
     "id": "RecentFitMe"
-  },
-  "AchievementData": {
-    "$type": "Esper.ESave.SavableObjects.SavableData`1[[MadDuck.Scripts.Managers.AchievementData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-    "value": {
-      "$type": "MadDuck.Scripts.Managers.AchievementData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-      "completedCount": 0
-    },
-    "id": "AchievementData"
   }
 }

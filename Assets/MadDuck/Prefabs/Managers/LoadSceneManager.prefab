@@ -3991,7 +3991,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 0.3.2-devbuild.1-webgl
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 625306eb5d3ea0043a4eeb4619ebf831, type: 2}
   m_sharedMaterial: {fileID: -2065754007991695277, guid: 625306eb5d3ea0043a4eeb4619ebf831, type: 2}
@@ -4412,7 +4412,7 @@ MonoBehaviour:
       _path: Assets/MadDuck/Scenes/Gameplay.unity
     - _sceneObject: {fileID: 102900000, guid: ab736174ce282d44a9e719b6ac9d78fe, type: 3}
       _path: Assets/MadDuck/Scenes/MainMenu.unity
-  displayVersion: 1
+  displayVersion: 0
   minimumLoadingScreenDuration: 1
   loadingScreenDuration: 1
   debugSceneType: 0

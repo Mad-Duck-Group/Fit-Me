@@ -46,9 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   saveFileData:
-    fileName: SaveFileName
-    saveLocation: 1
-    filePath: TestSave/
+    fileName: playerData
+    saveLocation: 0
+    filePath: save/
     fileType: 0
     encryptionMethod: 0
     aesKey: KM5gowCwVB7hptCSB7QJ6KWFdSKONSr1umtR1mNTDcI=

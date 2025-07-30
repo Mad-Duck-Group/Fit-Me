@@ -17,10 +17,10 @@ MonoBehaviour:
     values:
     - <Path>k__BackingField: bus:/
       <IsMaster>k__BackingField: 1
-      <LinearVolume>k__BackingField: 0.14125372
-      <Linear01Volume>k__BackingField: 0.04466835
-      <DecibelVolume>k__BackingField: -17.000002
-      <Decibel01Volume>k__BackingField: 0.7
+      <LinearVolume>k__BackingField: 0.39810723
+      <Linear01Volume>k__BackingField: 0.12589256
+      <DecibelVolume>k__BackingField: -7.999999
+      <Decibel01Volume>k__BackingField: 0.8
       <IsMuted>k__BackingField: 0
     - <Path>k__BackingField: bus:/BGM
       <IsMaster>k__BackingField: 0

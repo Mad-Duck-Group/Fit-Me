@@ -421,6 +421,8 @@ namespace MadDuck.Scripts.Managers
             block.transform.SetParent(transform);
             block.BlockCells = cells;
             BlocksOnGrid.Add(block);
+            block.ResetSortingLayer();
+            ReorderRenderingOrder();
             GameManager.Instance.AddScore(ScoreTypes.Placement);
             ResetPreviousValidationCells();
             var fit = UpdateBlockOnGrid(block);

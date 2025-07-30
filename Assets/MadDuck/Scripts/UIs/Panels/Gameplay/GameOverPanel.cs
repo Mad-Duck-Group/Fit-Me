@@ -37,6 +37,17 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
             base.Initialize();
             continueButton.onClick.AddListener(OnSkipButtonClicked);
             adsButton.onClick.AddListener(OnAdsButtonClicked);
+            ResetPanel();
+        }
+
+        public override void Show()
+        {
+            base.Show();
+            ResetPanel();
+        }
+
+        private void ResetPanel()
+        {
             adsTimer.fillAmount = 1;
         }
 
