@@ -5,11 +5,13 @@ using Cysharp.Threading.Tasks;
 using FMODUnity;
 using MadDuck.Scripts.UIs.Panels;
 using MadDuck.Scripts.UIs.Transitions;
+using MessagePipe;
 using Redcode.Extensions;
 using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MadDuck.Scripts.Managers
 {
@@ -21,6 +23,15 @@ namespace MadDuck.Scripts.Managers
         Stats,
         Achievements,
         Settings,
+    }
+
+    public struct SceneActivateEvent
+    {
+        public readonly SceneType sceneType;
+        public SceneActivateEvent(SceneType sceneType)
+        {
+            this.sceneType = sceneType;
+        }
     }
     
     public class MainMenuManager : MonoSingleton<MainMenuManager>
@@ -42,12 +53,14 @@ namespace MadDuck.Scripts.Managers
         {
             LoadSceneManager.OnFinishLoad += OnFinishLoad;
             LoadSceneManager.OnStartFadeOut += OnStartFadeOut;
+            GridManager.OnFitCheck += OnFitCheck;
         }
 
         private void OnDisable()
         {
             LoadSceneManager.OnFinishLoad -= OnFinishLoad;
             LoadSceneManager.OnStartFadeOut -= OnStartFadeOut;
+            GridManager.OnFitCheck -= OnFitCheck;
         }
         
         private void OnStartFadeOut()
@@ -59,6 +72,12 @@ namespace MadDuck.Scripts.Managers
         {
             if (LoadSceneManager.FirstSceneLoaded) initialPanelType = MainMenuPanelType.MainMenu;
             ShowFirstPanel();
+        }
+        
+        private void OnFitCheck(FitType fitType)
+        {
+            if (fitType is not FitType.FitMe) return;
+            LoadSceneManager.Instance.LoadScene(SceneType.Gameplay, LoadSceneMode.Single, false).Forget();
         }
 
         private void ShowFirstPanel()

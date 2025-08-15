@@ -8,7 +8,7 @@ using MadDuck.Scripts.UIs.Panels;
 using MadDuck.Scripts.UIs.Panels.Gameplay;
 using MadDuck.Scripts.UIs.Transitions;
 using MadDuck.Scripts.Units;
-using MadDuck.Scripts.Utils.Inspectors;
+using MadDuck.Scripts.Utils.Inspectors;using MessagePipe;
 using ObservableCollections;
 using PrimeTween;
 using R3;
@@ -53,6 +53,20 @@ public enum GameplayUIPanelType
 }
 #endregion
 
+#region Requests
+public struct GameStateRequest{}
+public struct InfectionConfigRequest{}
+
+public struct InfectionConfig
+{
+    public int maxInfectionCount;
+    public Vector2 infectionTimeRange;
+    public Color infectionColor;
+    public float preInfectTime;
+}
+
+#endregion
+
 [Serializable]
 public struct GameDifficultySettings
 {
@@ -63,9 +77,10 @@ public struct GameDifficultySettings
     [field: SerializeField] public float PreInfectTime { get; private set; }
     [ShowInInspector, ReadOnly] public bool CanInfect => InfectionCountRange.x >= 1;
 }
-
 [ShowOdinSerializedPropertiesInInspector]
-public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackReceiver, ISupportsPrefabSerialization
+public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackReceiver, ISupportsPrefabSerialization,
+    IRequestHandler<GameStateRequest, GameState>,
+    IRequestHandler<InfectionConfigRequest, InfectionConfig>
 {
     #region Inspectors
 
@@ -175,18 +190,14 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     private int _previousReRollScore;
     private bool _countDownPlayed;
     private AudioReference _bgmReference;
-    public static event Action OnSceneActivated;
     public static event Action OnGameOver;
+    private IPublisher<StartSpawnEvent> _startSpawnPublisher;
+    private IPublisher<SceneActivateEvent> _sceneActivatePublisher;
     private IDisposable _infectionDisposable;
     private IDisposable _blockOnGridCountDisposable;
     #endregion
     
     #region Initialization
-    private void Start()
-    {
-        
-       
-    }
     
     private void Initialize()
     {
@@ -206,7 +217,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     {
         if (_sceneActivated) return;
         _sceneActivated = true;
-        OnSceneActivated?.Invoke();
+        _sceneActivatePublisher.Publish(new SceneActivateEvent(SceneType.Gameplay));
         LateSubscribe();
         StartCountOff();
     }
@@ -225,17 +236,22 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     {
         CurrentGameState.Value = GameState.PlaceBlock;
         _bgmReference = AudioManager.Instance.PlayAudio(gameplayBgm, transform.position);
-        BlockManager.Instance.SpawnAtStart();
+        _startSpawnPublisher.Publish(new StartSpawnEvent());
     }
     #endregion
 
     #region Events
     private void OnEnable()
     {
+        _startSpawnPublisher = GlobalMessagePipe.GetPublisher<StartSpawnEvent>();
+        _sceneActivatePublisher = GlobalMessagePipe.GetPublisher<SceneActivateEvent>();
         LoadSceneManager.OnFinishLoad += Initialize;
         GridManager.OnBlockDestroyed += OnPreInfectBlockDestroyed;
         GridManager.OnBlockStateChanged += OnBlockInfected;
         GridManager.OnBlockPlaced += OnBlockPlaced;
+        GridManager.OnScoreAdded += AddScore;
+        GridManager.OnNextGameDifficulty += NextGameDifficulty;
+        BlockManager.OnGameOver += GameOver;
     }
 
     private void LateSubscribe()
@@ -250,6 +266,9 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
         GridManager.OnBlockDestroyed -= OnPreInfectBlockDestroyed;
         GridManager.OnBlockStateChanged -= OnBlockInfected;
         GridManager.OnBlockPlaced -= OnBlockPlaced;
+        GridManager.OnScoreAdded -= AddScore;
+        GridManager.OnNextGameDifficulty -= NextGameDifficulty;
+        BlockManager.OnGameOver -= GameOver;
         _blockOnGridCountDisposable?.Dispose();
     }
 
@@ -448,12 +467,14 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     public void BackToMenu()
     {
         _bgmReference.Stop();
-        LoadSceneManager.Instance.LoadScene(SceneType.MainMenu, LoadSceneMode.Single, false);
+        panelDictionary.Values.ForEach(x => x.DeactivateInput());
+        LoadSceneManager.Instance.LoadScene(SceneType.MainMenu, LoadSceneMode.Single, false).Forget();
     }
 
     public void Retry()
     {
         _bgmReference.Stop();
+        panelDictionary.Values.ForEach(x => x.DeactivateInput());
         LoadSceneManager.Instance.ReloadScene(LoadSceneMode.Single, false);
     }
     #endregion
@@ -482,7 +503,21 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     }
     #endregion
     
-     #region Serialization
+    #region Requests
+    public GameState Invoke(GameStateRequest request) => CurrentGameState.Value;
+    public InfectionConfig Invoke(InfectionConfigRequest request)
+    {
+        return new InfectionConfig()
+        {
+            maxInfectionCount = MaxInfectionCount,
+            infectionTimeRange = InfectionTimeRange,
+            infectionColor = infectColor,
+            preInfectTime = PreInfectTime
+        };
+    }
+    #endregion
+    
+    #region Serialization
         public void OnBeforeSerialize()
         {
             UnitySerializationUtility.SerializeUnityObject(this, ref serializationData);
@@ -501,4 +536,6 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
             set => serializationData = value;
         }
     #endregion
+
+    
 }

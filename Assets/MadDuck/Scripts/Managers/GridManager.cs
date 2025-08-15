@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using FMODUnity;
 using MadDuck.Scripts.Units;
 using MadDuck.Scripts.Utils;
+using MessagePipe;
 using ObservableCollections;
 using R3;
 using Redcode.Extensions;
@@ -14,6 +15,8 @@ using Sirenix.Utilities;
 using UnityCommunity.UnitySingleton;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
+using VContainer;
 using Random = UnityEngine.Random;
 #if UNITY_EDITOR
 using Sirenix.OdinInspector.Editor;
@@ -140,8 +143,8 @@ namespace MadDuck.Scripts.Managers
         [Button("Test Fit-me")]
         private void TestFitMe()
         {
-            GameManager.Instance.AddScore(ScoreTypes.FitMe);
-            GameManager.Instance.NextGameDifficulty();
+            OnScoreAdded?.Invoke(ScoreTypes.FitMe);
+            OnNextGameDifficulty?.Invoke();
         }
         [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public float RandomInfectedTime { get; private set; }
         [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> preInfectBlocks = new();
@@ -154,23 +157,66 @@ namespace MadDuck.Scripts.Managers
         public static event Action<Block> OnBlockStateChanged;
         public static event Action<Block> OnBlockPlaced;
         public static event Action<Block> OnBlockDestroyed;
+        public delegate void ScoreAdded(ScoreTypes scoreTypes, int contactCount = 0);
+        public static event ScoreAdded OnScoreAdded;
+        public static event Action<FitType> OnFitCheck;
+        public static event Action OnNextGameDifficulty;
         public Grid Grid => _grid;
+        [Inject] private IObjectResolver _objectResolver;
+        private IRequestHandler<GameStateRequest, GameState> _gameStateRequestHandler;
+        private IRequestHandler<InfectionConfigRequest, InfectionConfig> _infectionConfigRequestHandler;
+        private IRequestHandler<BlockPresetRequest, List<BlockPreset>> _blockPresetRequestHandler;
+        private IPublisher<StartSpawnEvent> _startSpawnPublisher;
+        private IDisposable _sceneActiveSubscription;
+        private SceneType _currentSceneType = SceneType.Gameplay;
         #endregion
         
         #region Events
         private void OnEnable()
         {
-            GameManager.OnSceneActivated += OnSceneActivated;
+            _sceneActiveSubscription =
+                GlobalMessagePipe.GetSubscriber<SceneActivateEvent>().Subscribe(OnSceneActivated);
+            _startSpawnPublisher = GlobalMessagePipe.GetPublisher<StartSpawnEvent>();
+            _objectResolver.TryResolve(out _blockPresetRequestHandler);
+            _objectResolver.TryResolve(out _gameStateRequestHandler);
+            _objectResolver.TryResolve(out _infectionConfigRequestHandler);
         }
 
         private void OnDisable()
         {
-            GameManager.OnSceneActivated -= OnSceneActivated;
+            _sceneActiveSubscription?.Dispose();
+        }
+
+        private void OnSceneActivated(SceneActivateEvent eventData)
+        {
+            switch (eventData.sceneType)
+            {
+                case SceneType.MainMenu:
+                    _currentSceneType = SceneType.MainMenu;
+                    OnMainMenuSceneActivated();
+                    break;
+                case SceneType.Gameplay:
+                    _currentSceneType = SceneType.Gameplay;
+                    OnGameplaySceneActivated();
+                    break;
+            }
         }
         
-        void OnSceneActivated()
+        private void OnGameplaySceneActivated()
         {
+            SetUpGameplayGridPreset();
             CreateCells();
+        }
+
+        private void OnMainMenuSceneActivated()
+        {
+            if (_blockPresetRequestHandler == null) return;
+            var blockPresets = _blockPresetRequestHandler.Invoke(new BlockPresetRequest());
+            if (blockPresets.Count == 0) return;
+            var randomPreset = blockPresets.GetRandomElement();
+            SetupMainMenuGridPreset(randomPreset);
+            CreateCells();
+            _startSpawnPublisher.Publish(new StartSpawnEvent(randomPreset));
         }
         #endregion
         
@@ -183,12 +229,14 @@ namespace MadDuck.Scripts.Managers
             {
                 Debug.LogError("Grid cell size must be the same in both axes!");
             }
-            RandomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
+            if (_infectionConfigRequestHandler == null) return;
+            var infectionConfig = _infectionConfigRequestHandler.Invoke(new InfectionConfigRequest());
+            RandomInfectedTime = Random.Range(infectionConfig.infectionTimeRange.x, infectionConfig.infectionTimeRange.y);
         }
         #endregion
         
         #region Grid Generation
-        private void SetUpGridPreset()
+        private void SetUpGameplayGridPreset()
         {
             var currentEndlessType = endlessType;
             if (endlessType is EndlessType.All)
@@ -229,6 +277,21 @@ namespace MadDuck.Scripts.Managers
                     }
                 }
             }
+            currentGridPreset = newGridPreset;
+        }
+
+        private void SetupMainMenuGridPreset(BlockPreset blockPreset)
+        {
+            var newGridPreset = ScriptableObject.CreateInstance<GridPreset>();
+            newGridPreset.name = $"{blockPreset.name} Grid Preset";
+            newGridPreset.PresetGridType = GridType.Custom;
+            //var index = Random.Range(0, 4);
+            var index = 0;
+            var blockSchema = blockPreset.BlockSchemas[index].schema;
+            newGridPreset.customGrid = blockSchema;
+            var row = newGridPreset.customGrid.GetLength(0);
+            var column = newGridPreset.customGrid.GetLength(1);
+            newGridPreset.GridSize = new Vector2Int(column, row);
             currentGridPreset = newGridPreset;
         }
 
@@ -286,6 +349,7 @@ namespace MadDuck.Scripts.Managers
             }
             _cellArray = new Cell[0, 0];
             _vacantSchema = new int[0, 0];
+            SetUpGameplayGridPreset();
             CreateCells();
         }
         
@@ -326,7 +390,6 @@ namespace MadDuck.Scripts.Managers
         /// </summary>
         private void CreateCells()
         {
-            SetUpGridPreset();
             currentGridSize = currentGridPreset.GridSize;
             UpdateGridOffset();
             var row = currentGridSize.y;
@@ -423,26 +486,30 @@ namespace MadDuck.Scripts.Managers
             BlocksOnGrid.Add(block);
             block.ResetSortingLayer();
             ReorderRenderingOrder();
-            GameManager.Instance.AddScore(ScoreTypes.Placement);
+            OnScoreAdded?.Invoke(ScoreTypes.Placement);
             ResetPreviousValidationCells();
             var blockView = block.BlockView;
             if (blockView) blockView.Place();
             var fit = UpdateBlockOnGrid(block);
-            if (fit is FitType.FitMe)
+            OnFitCheck?.Invoke(fit);
+            if (_currentSceneType == SceneType.Gameplay)
             {
-                BlockManager.Instance.FreeSpawnPoint(block.SpawnIndex);
-                BlockManager.Instance.ResetSpawnPoint();
-                BlockManager.Instance.SpawnRandomBlock();
-            }
-            else
-            {
-                BlockManager.Instance.FreeSpawnPoint(block.SpawnIndex);
-                BlockManager.Instance.ResetSpawnPoint();
-                BlockManager.Instance.SpawnRandomBlock();
-            }
-            if (fit is FitType.None)
-            {
-                BlockManager.Instance.GameOverCheck().Forget();
+                if (fit is FitType.FitMe)
+                {
+                    BlockManager.Instance.FreeSpawnPoint(block.SpawnIndex);
+                    BlockManager.Instance.ResetSpawnPoint();
+                    BlockManager.Instance.SpawnRandomBlock();
+                }
+                else
+                {
+                    BlockManager.Instance.FreeSpawnPoint(block.SpawnIndex);
+                    BlockManager.Instance.ResetSpawnPoint();
+                    BlockManager.Instance.SpawnRandomBlock();
+                }
+                if (fit is FitType.None)
+                {
+                    BlockManager.Instance.GameOverCheck().Forget();
+                }
             }
             OnBlockPlaced?.Invoke(block);
             return true;
@@ -472,16 +539,17 @@ namespace MadDuck.Scripts.Managers
         private async UniTask FitMe()
         {
             await RemoveAllBlocks(true);
-            GameManager.Instance.AddScore(ScoreTypes.FitMe);
+            OnScoreAdded?.Invoke(ScoreTypes.FitMe);
+            if (_currentSceneType is not SceneType.Gameplay) return;
             RegenerateGrid();
-            GameManager.Instance.NextGameDifficulty();
+            OnNextGameDifficulty?.Invoke();
         }
 
         private async UniTask Combo(List<Block> contacts)
         {
             await UniTask.WhenAll(contacts.Select(block => RemoveBlock(block, true)));
-            GameManager.Instance.AddScore(ScoreTypes.Combo, contacts.Count);
-            GameManager.Instance.AddScore(ScoreTypes.Bomb, contacts.Count);
+            OnScoreAdded?.Invoke(ScoreTypes.Combo, contacts.Count);
+            OnScoreAdded?.Invoke(ScoreTypes.Bomb, contacts.Count);
             BlockManager.Instance.GameOverCheck().Forget();
         }
 
@@ -498,7 +566,8 @@ namespace MadDuck.Scripts.Managers
             preInfectBlocks.Remove(block);
             OnBlockDestroyed?.Invoke(block);
             var atoms = new List<Atom>(block.Atoms);
-            await block.Explode(destroy);
+            if (_currentSceneType is SceneType.Gameplay) 
+                await block.Explode(destroy);
             foreach (var atom in atoms)
             {
                 var cell = GetCellByPosition(atom.transform.position);
@@ -671,26 +740,32 @@ namespace MadDuck.Scripts.Managers
         /// <returns>>true if more blocks can be infected, false otherwise</returns>
         private bool CanInfectMore()
         {
-            return TotalInfected < GameManager.Instance.MaxInfectionCount;
+            if (_infectionConfigRequestHandler == null) return false;
+            var infectionConfig = _infectionConfigRequestHandler.Invoke(new InfectionConfigRequest());
+            return TotalInfected < infectionConfig.maxInfectionCount;
         }
 
         public void InfectBlock(Block block)
         {
-            if (GameManager.Instance.CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
+            if (_gameStateRequestHandler == null) return;
+            var currentGameState = _gameStateRequestHandler.Invoke(new GameStateRequest());
+            if (currentGameState is not (GameState.PlaceBlock or GameState.UseItem)) return;
             preInfectBlocks.Remove(block);
             infectedBlocks.Add(block);
             block.Infect();
             OnBlockStateChanged?.Invoke(block);
-            RandomInfectedTime = Random.Range(GameManager.Instance.InfectionTimeRange.x, GameManager.Instance.InfectionTimeRange.y);
+            var infectionConfig = _infectionConfigRequestHandler.Invoke(new InfectionConfigRequest());
+            RandomInfectedTime = Random.Range(infectionConfig.infectionTimeRange.x, infectionConfig.infectionTimeRange.y);
         }
 
         public void DisinfectBlock(Block block, bool updateGrid = false)
         {
-            if (GameManager.Instance.CurrentGameState.Value is not (GameState.PlaceBlock or GameState.UseItem)) return;
+            if (_gameStateRequestHandler == null) return;
+            var currentGameState = _gameStateRequestHandler.Invoke(new GameStateRequest());
+            if (currentGameState is not (GameState.PlaceBlock or GameState.UseItem)) return;
             block.Disinfect();
             OnBlockStateChanged?.Invoke(block);
             infectedBlocks.Remove(block);
-            //GameManager.Instance.ProtectedState();
             if (updateGrid) UpdateBlockOnGrid(block);
         }
         

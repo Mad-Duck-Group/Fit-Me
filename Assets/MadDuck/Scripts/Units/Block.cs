@@ -8,6 +8,7 @@ using FMODUnity;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Utils;
 using MadDuck.Scripts.Utils.Inspectors;
+using MessagePipe;
 using PrimeTween;
 using R3;
 using Sirenix.OdinInspector;
@@ -18,6 +19,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.U2D.Animation;
+using VContainer;
 using Random = UnityEngine.Random;
 
 namespace MadDuck.Scripts.Units
@@ -95,23 +97,25 @@ namespace MadDuck.Scripts.Units
         private bool _isDragging;
         private IDisposable _infectionSubscription;
         private float _protectedTime;
+        [Inject] private IObjectResolver _objectResolver;
+        private IRequestHandler<GameStateRequest, GameState> _gameStateRequest;
+        private IRequestHandler<InfectionConfigRequest, InfectionConfig> _infectionRequest;
+        public event Action OnBlockBeingDrag;
+        public event Action OnBlockEndDrag;
         #endregion
 
         #region Initialization
-        private void Start()
-        {
-            _infectColor = GameManager.Instance.infectColor;
-        }
-
         public void Initialize()
         {
+            _objectResolver.TryResolve(out _gameStateRequest);
+            _objectResolver.TryResolve(out _infectionRequest);
             _originalPosition = transform.position;
             _originalRotation = transform.eulerAngles;
             _originalScale = transform.localScale;
             Atoms.ForEach(a => a.ParentBlock = this);
-            //_originalColor = spriteRenderer.color;
-            //GridManager.OnBlockInfected += OnBlockInfected;
-            //GridManager.OnBlockDisinfected += OnBlockDisinfected;
+            if (_infectionRequest == null) return;
+            var infectionConfig = _infectionRequest.Invoke(new InfectionConfigRequest());
+            _infectColor = infectionConfig.infectionColor;
         }
 
         private void StartInfectTimer()
@@ -202,9 +206,11 @@ namespace MadDuck.Scripts.Units
         
         public async UniTask PreInfect()
         {
+            if (_infectionRequest == null) return;
+            var infectionConfig = _infectionRequest.Invoke(new InfectionConfigRequest());
             BlockState = BlockState.PreInfected;
             StartFlashing(FlashState.PreInfectFlash);
-            await UniTask.WaitForSeconds(GameManager.Instance.PreInfectTime,
+            await UniTask.WaitForSeconds(infectionConfig.preInfectTime,
                 cancellationToken: destroyCancellationToken);
             if (BlockState is BlockState.Exploding) return;
             GridManager.Instance.InfectBlock(this);
@@ -237,12 +243,16 @@ namespace MadDuck.Scripts.Units
         public void OnBeginDrag(PointerEventData eventData)
         {
             if (eventData.button is not PointerEventData.InputButton.Left) return;
-            if (GameManager.Instance.CurrentGameState.Value is GameState.GameOver or GameState.GameClear)
+            if (_gameStateRequest != null)
             {
-                OnEndDrag(eventData);
-                return;
+                var gameState = _gameStateRequest.Invoke(new GameStateRequest());
+                if (gameState is GameState.GameOver or GameState.GameClear)
+                {
+                    OnEndDrag(eventData);
+                    return;
+                }
+                if (gameState is not GameState.PlaceBlock) return;
             }
-            if (GameManager.Instance.CurrentGameState.Value is not GameState.PlaceBlock) return;
             if (IsPlaced && !AllowPickUpAfterPlacement) return;
             var position = transform.position;
             var mousePosition = PointerManager.Instance.MouseWorldPosition;
@@ -251,17 +261,22 @@ namespace MadDuck.Scripts.Units
             //ChangeSortingOrder(1);
             AudioManager.Instance.PlayAudioOneShot(BlockPreset.PickupSfx, transform.position);
             SetSortingLayer(pickUpSortingLayer);
+            OnBlockBeingDrag?.Invoke();
         }
 
         public void OnDrag(PointerEventData eventData)
         {
             if (eventData.button is not PointerEventData.InputButton.Left) return;
-            if (GameManager.Instance.CurrentGameState.Value is GameState.GameOver or GameState.GameClear)
+            if (_gameStateRequest != null)
             {
-                OnEndDrag(eventData);
-                return;
+                var gameState = _gameStateRequest.Invoke(new GameStateRequest());
+                if (gameState is GameState.GameOver or GameState.GameClear)
+                {
+                    OnEndDrag(eventData);
+                    return;
+                }
+                if (gameState is not GameState.PlaceBlock) return;
             }
-            if (GameManager.Instance.CurrentGameState.Value is not GameState.PlaceBlock) return;
             if (IsPlaced && !AllowPickUpAfterPlacement) return;
             HandleBlockManipulation();
             GridManager.Instance.ValidatePlacement(this);
@@ -276,7 +291,11 @@ namespace MadDuck.Scripts.Units
         public void OnEndDrag(PointerEventData eventData)
         {
             if (eventData.button is not PointerEventData.InputButton.Left) return;
-            if (GameManager.Instance.CurrentGameState.Value is GameState.CountOff or GameState.Pause) return;
+            if (_gameStateRequest != null)
+            {
+                var gameState = _gameStateRequest.Invoke(new GameStateRequest());
+                if (gameState is GameState.CountOff or GameState.Pause) return;
+            }
             if (!_isDragging) return;
             var placed = GridManager.Instance.PlaceBlock(this);
             if (placed)
@@ -292,6 +311,7 @@ namespace MadDuck.Scripts.Units
                 IsPlaced = false;
             }
             _isDragging = false;
+            OnBlockEndDrag?.Invoke();
         }
         #endregion
         

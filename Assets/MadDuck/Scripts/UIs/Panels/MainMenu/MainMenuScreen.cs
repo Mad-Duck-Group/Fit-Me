@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using FMODUnity;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.UIs.Transitions;
+using MessagePipe;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -36,9 +37,11 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         
         private AudioReference _mainMenuBgmReference;
         private Tween _logoTween;
+        private IPublisher<SceneActivateEvent> _sceneActivatePublisher;
         
         private void OnEnable()
         {
+            _sceneActivatePublisher = GlobalMessagePipe.GetPublisher<SceneActivateEvent>();
             LoadSceneManager.OnStartFadeOut += OnSwitchScene;
         }
         
@@ -60,6 +63,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         {
             base.Show();
             sceneObjectsParent.gameObject.SetActive(true);
+            _sceneActivatePublisher.Publish(new SceneActivateEvent(SceneType.MainMenu));
         }
 
         public override void Hide()
