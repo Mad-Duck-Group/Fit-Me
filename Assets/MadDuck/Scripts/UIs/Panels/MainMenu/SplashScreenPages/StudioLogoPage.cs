@@ -25,6 +25,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu.SplashScreenPages
         [SerializeField] private float splashScreenDuration = 2f;
         
         public event Action<ISplashPage> OnSplashCompleted;
+        public event Action<ISplashPage> OnSplashFinishedTransitionIn;
 
         private Sequence _logoSequence;
         
@@ -40,16 +41,16 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu.SplashScreenPages
             TweenLogo().Forget();
         }
         
-        public void Skip()
+        public void Skip(bool retain = false)
         {
-            _logoSequence.Complete();
+            if (!retain) _logoSequence.Complete();
             OnSplashCompleted?.Invoke(this);
         }
         
         private async UniTaskVoid TweenLogo()
         {
             _logoSequence = Sequence.Create()
-                .Group(Tween.Alpha(madduckLogo, logoAlphaTweenSettings))
+                .Group(Tween.Alpha(madduckLogo, logoAlphaTweenSettings).OnComplete(() => OnSplashFinishedTransitionIn?.Invoke(this)))
                 .ChainDelay(splashScreenDuration)
                 .Chain(Tween.Alpha(madduckLogo, logoAlphaTweenSettings.WithDirection(false))); // Fade out the logo after the duration
             await _logoSequence.ToUniTask();

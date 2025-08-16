@@ -18,7 +18,8 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
     public interface ISplashPage
     {
         public event Action<ISplashPage> OnSplashCompleted;
-        public void Skip();
+        public event Action<ISplashPage> OnSplashFinishedTransitionIn;
+        public void Skip(bool retain = false);
     }
     
     [ShowOdinSerializedPropertiesInInspector]
@@ -41,11 +42,15 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule mainMenuCrossFadeRule = new();
 
         [Title("Settings")] 
+        [SerializeField] private int skipAfterPage = 1;
         [SerializeField] private bool skipAll = true;
+        [SerializeField] private bool retainOnLastSkip = true;
         [SerializeField] private SplashPage initialSplashPage = SplashPage.Studio;
 
         [Title("Debug")] 
         [SerializeField, DisplayAsString] private SplashPage currentPage = SplashPage.Studio;
+        
+        private int _shownCount;
 
         private void OnEnable()
         {
@@ -59,14 +64,20 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         
         private void SkipCurrentPage()
         {
+            if (_shownCount < skipAfterPage) return;
             if (PanelDictionary.TryGetValue(currentPage, out var pageRule) && pageRule.thisPanel is ISplashPage splashPage)
             {
                 if (!skipAll)
-                    splashPage.Skip();
+                {
+                    var nextPage = (int)currentPage + 1;
+                    var lastPage = nextPage >= PanelDictionary.Count;
+                    splashPage.Skip(lastPage && retainOnLastSkip);
+                }
                 else
                 {
                     splashPage.OnSplashCompleted -= OnPageCompleted;
-                    splashPage.Skip();
+                    splashPage.OnSplashFinishedTransitionIn -= OnFinishedTransitionIn;
+                    splashPage.Skip(retainOnLastSkip);
                     ToMainMenu();
                 }
             }
@@ -89,6 +100,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         public override void OnPanelReady()
         {
             base.OnPanelReady();
+            _shownCount = 0;
             var initialPage = PanelDictionary[initialSplashPage];
             if (initialPage.thisPanel is not ISplashPage page)
             {
@@ -98,11 +110,18 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
             currentPage = initialSplashPage;
             pageController.ShowPanel(initialPage.thisPanel).Forget();
             page.OnSplashCompleted += OnPageCompleted;
+            page.OnSplashFinishedTransitionIn += OnFinishedTransitionIn;
+        }
+
+        private void OnFinishedTransitionIn(ISplashPage page)
+        {
+            _shownCount++;
         }
 
         private void OnPageCompleted(ISplashPage completedPage)
         {
             completedPage.OnSplashCompleted -= OnPageCompleted;
+            completedPage.OnSplashFinishedTransitionIn -= OnFinishedTransitionIn;
             var nextPage = (int)currentPage + 1;
             if (nextPage >= PanelDictionary.Count)
             {
@@ -119,6 +138,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
                 {
                     pageController.ChangePanel(completedPage as UIPanel, nextPanel.thisPanel, previousPanel.crossFadeSettings).Forget();
                     nextPageInstance.OnSplashCompleted += OnPageCompleted;
+                    nextPageInstance.OnSplashFinishedTransitionIn += OnFinishedTransitionIn;
                 }
                 else
                 {

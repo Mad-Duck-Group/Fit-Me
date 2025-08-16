@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
+using Redcode.Extensions;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
@@ -50,8 +51,8 @@ namespace MadDuck.Scripts.UIs.Panels.Transition
 
         public async UniTask TransitionBeforeLoad(CancellationToken cancellationToken = default)
         {
+            background.color = background.color.WithA(backgroundFadeInSettings.startValue);
             _blockSequence = Sequence.Create();
-            _blockSequence.Group(Tween.Alpha(background, backgroundFadeInSettings));
             var duration = combinedTime / blockTweens.Count;
             Sequence blockSequence = Sequence.Create();
             foreach (var blockTween in blockTweens)
@@ -70,6 +71,7 @@ namespace MadDuck.Scripts.UIs.Panels.Transition
                 blockSequence.Chain(Tween.UIAnchoredPosition(blockTween.block, settings));
             }
             _blockSequence.Group(blockSequence);
+            _blockSequence.Chain(Tween.Alpha(background, backgroundFadeInSettings));
             await _blockSequence.ToUniTask(cancellationToken: cancellationToken);
         }
 

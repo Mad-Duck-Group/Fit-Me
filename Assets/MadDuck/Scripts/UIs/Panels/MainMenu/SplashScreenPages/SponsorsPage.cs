@@ -19,6 +19,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu.SplashScreenPages
         
         private Sequence _logoSequence;
         public event Action<ISplashPage> OnSplashCompleted;
+        public event Action<ISplashPage> OnSplashFinishedTransitionIn;
         
         public override void Initialize()
         {
@@ -35,16 +36,16 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu.SplashScreenPages
         private async UniTaskVoid TweenLogo()
         {
             _logoSequence = Sequence.Create()
-                .Group(Tween.Alpha(sponsorsLogo, logoAlphaTweenSettings))
+                .Group(Tween.Alpha(sponsorsLogo, logoAlphaTweenSettings).OnComplete(() => OnSplashFinishedTransitionIn?.Invoke(this)))
                 .ChainDelay(splashScreenDuration)
                 .Chain(Tween.Alpha(sponsorsLogo, logoAlphaTweenSettings.WithDirection(false)));
             await _logoSequence.ToUniTask();
             OnSplashCompleted?.Invoke(this);
         }
         
-        public void Skip()
+        public void Skip(bool retain = false)
         {
-            _logoSequence.Complete();
+            if (!retain) _logoSequence.Complete();
             OnSplashCompleted?.Invoke(this);
         }
     }

@@ -769,10 +769,6 @@ PrefabInstance:
       propertyPath: 'serializationData.PrefabModificationsReferencedUnityObjects.Array.data[0]'
       value: 
       objectReference: {fileID: 1219027112}
-    - target: {fileID: 4016694705657513382, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5571629721456849991, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -864,14 +860,6 @@ PrefabInstance:
     - target: {fileID: 9009637061283458569, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
       propertyPath: m_Name
       value: LoadSceneManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 9009637061283458569, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9159060226304866488, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
-      propertyPath: m_Alpha
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6251,7 +6239,9 @@ MonoBehaviour:
   skipArea: {fileID: 1892995145}
   pageController:
     rid: 2851746794670391393
+  skipAfterPage: 1
   skipAll: 1
+  retainOnLastSkip: 1
   initialSplashPage: 0
   currentPage: 0
   references:
