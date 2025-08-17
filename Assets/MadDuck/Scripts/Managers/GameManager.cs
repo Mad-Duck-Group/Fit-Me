@@ -296,7 +296,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     private void OnPreInfectBlockDestroyed(Block block)
     {
         if (block.beforeExplodeState != BlockState.PreInfected) return;
-        AddScore(ScoreTypes.PreInfect);
+        AddScore(ScoreTypes.PreInfect, worldPosition: block.transform.position);
     }
 
     private void OnBlockInfected(Block block)
@@ -397,8 +397,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
                 finalScore = scorePerPlacement;
                 break;
             case ScoreTypes.PreInfect:
-                ChangeScore(scorePerPreInfect);
-                Debug.Log("Pre-Infect Score: " + scorePerPreInfect);
+                finalScore = scorePerPreInfect;
                 break;
             case ScoreTypes.Combo:
                 if (contactedAmount <= 1) return;
