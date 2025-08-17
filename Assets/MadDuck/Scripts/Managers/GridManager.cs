@@ -484,6 +484,8 @@ namespace MadDuck.Scripts.Managers
             GameManager.Instance.AddScore(ScoreTypes.Bomb, contacts.Count);
             BlockManager.Instance.GameOverCheck().Forget();
         }
+        
+        
 
         /// <summary>
         /// Remove the block from the grid

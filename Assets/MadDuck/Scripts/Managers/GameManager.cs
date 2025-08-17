@@ -28,6 +28,7 @@ using Random = UnityEngine.Random;
 public enum ScoreTypes
 {
     Placement,
+    PreInfect,
     Combo,
     Bomb,
     FitMe,
@@ -85,6 +86,8 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     
     [TabGroup("Settings", "Score")]
     [SerializeField] private int scorePerPlacement = 100;
+    [TabGroup("Settings", "Score")]
+    [SerializeField] private int scorePerPreInfect = 50;
     [TabGroup("Settings", "Score")]
     [SerializeField] private int scorePerCombo = 100;
     [TabGroup("Settings", "Score")]
@@ -270,14 +273,16 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
 
     private void OnPreInfectBlockDestroyed(Block block)
     {
-        if (block.BlockState != BlockState.PreInfected) return;
+        if (block.beenPreInfected != BlockState.PreInfected) return;
+        AddScore(ScoreTypes.PreInfect);
+        /*if (block.BlockState != BlockState.PreInfected) return;
         block.StopFlashing();
         if (!_aboutToInfectBlocks.Contains(block)) return;
         _aboutToInfectBlocks.Remove(block);
         CalculateInfectTime();
         if (GridManager.Instance.TotalInfected > CurrentGameDifficultySettings.InfectionCountRange.x)
             return;
-        RandomSpawnInfection();
+        RandomSpawnInfection();*/
     }
 
     private void OnBlockInfected(Block block)
@@ -372,6 +377,10 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
             case ScoreTypes.Placement:
                 ChangeScore(scorePerPlacement);
                 Debug.Log("Placement Score: " + scorePerPlacement);
+                break;
+            case ScoreTypes.PreInfect:
+                ChangeScore(scorePerPreInfect);
+                Debug.Log("Pre-Infect Score: " + scorePerPreInfect);
                 break;
             case ScoreTypes.Combo:
                 if (contactedAmount <= 1) return;
