@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Managers;
+using MadDuck.Scripts.Utils;
 using MadDuck.Scripts.Utils.Inspectors;
 using PrimeTween;
+using R3;
 using Redcode.Extensions;
 using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
@@ -41,6 +44,7 @@ namespace MadDuck.Scripts.Units
         [Title("Settings")]
         [SerializeField] private Color originalColor = Color.white;
         [SerializeField] private float pickUpScaleMultiplier = 1.2f;
+        [SerializeField] private Vector2 switchIdleTimeRange = new(30f, 60f);
         
         [Title("Animations")]
         [SerializeField, SpineAnimation] string[] idleAnimations;
@@ -92,6 +96,8 @@ namespace MadDuck.Scripts.Units
         private MeshRenderer _meshRenderer;
         private Vector3 _originalScale;
         private Tween _pickUpTween;
+        private IDisposable _switchIdleTimer;
+        private CancellationTokenSource _switchIdleCts;
         #endregion
         
         #region Initalization
@@ -116,13 +122,43 @@ namespace MadDuck.Scripts.Units
                 infectedSpriteRenderer.enabled = false;
             }
             _originalScale = transform.localScale;
-            skeletonAnimation.AnimationState.SetAnimation(0, idleAnimations.GetRandomElement(), true);
+            skeletonAnimation.AnimationState.SetAnimation(0, idleAnimations[0], true);
+            StartIdleTimer();
         }
         #endregion
 
         #region Utils
+        private void StartIdleTimer()
+        {
+            var randomSwitchTime = UnityEngine.Random.Range(switchIdleTimeRange.x, switchIdleTimeRange.y);
+            _switchIdleCts = new CancellationTokenSource();
+            _switchIdleTimer = Observable.Timer(TimeSpan.FromSeconds(randomSwitchTime), _switchIdleCts.Token)
+                .Subscribe(_ =>
+                {
+                    skeletonAnimation.AnimationState.SetAnimation(0, idleAnimations[1], true);
+                    skeletonAnimation.AnimationState.AddAnimation(0, idleAnimations[0], true, 0f);
+                    CancelIdleTimer();
+                    StartIdleTimer();
+                });
+        }
+        
+        private void CancelIdleTimer()
+        {
+            _switchIdleTimer?.Dispose();
+            _switchIdleCts?.Cancel();
+            _switchIdleCts?.Dispose();
+            _switchIdleTimer = null;
+            _switchIdleCts = null;
+        }
+
+        private void OnDestroy()
+        {
+            CancelIdleTimer();
+        }
+
         public void PickUp()
         {
+            CancelIdleTimer();
             _pickUpTween = Tween.Scale(transform, _originalScale * pickUpScaleMultiplier, 0.2f);
             skeletonAnimation.AnimationState.SetAnimation(0, pickUpAnimation, true);
         }
@@ -131,13 +167,15 @@ namespace MadDuck.Scripts.Units
         {
             _pickUpTween.Stop();
             _pickUpTween = Tween.Scale(transform, _originalScale, 0.2f);
-            skeletonAnimation.AnimationState.SetAnimation(0, idleAnimations.GetRandomElement(), true);
+            skeletonAnimation.AnimationState.SetAnimation(0, idleAnimations[0], true);
+            StartIdleTimer();
         }
         
         public async UniTask Explode()
         {
-            skeletonAnimation.AnimationState.SetAnimation(0, explodeAnimation, false);
-            await UniTask.WaitUntil(() => skeletonAnimation.AnimationState.GetCurrent(0).IsComplete);
+            CancelIdleTimer();
+            await skeletonAnimation.AnimationState.SetAnimation(0, explodeAnimation, false).ToUniTask();
+            //await UniTask.WaitUntil(() => skeletonAnimation.AnimationState.GetCurrent(0).IsComplete);
             if (explodeVfx.TryGetValue(_blockType, out var vfx))
             {
                 var vfxInstance = Instantiate(vfx, transform.position, Quaternion.identity);
@@ -207,6 +245,7 @@ namespace MadDuck.Scripts.Units
 
         public void Infect()
         {
+            CancelIdleTimer();
             if (infectedSpriteRenderer)
             {
                 infectedSpriteRenderer.enabled = true;

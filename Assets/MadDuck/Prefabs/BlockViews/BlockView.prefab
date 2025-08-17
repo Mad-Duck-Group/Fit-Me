@@ -50,6 +50,7 @@ MonoBehaviour:
   infectedSpriteRenderer: {fileID: 5619286251353317533}
   originalColor: {r: 1, g: 1, b: 1, a: 1}
   pickUpScaleMultiplier: 1.2
+  switchIdleTimeRange: {x: 5, y: 10}
   idleAnimations: []
   pickUpAnimation: 
   explodeAnimation: 
@@ -66,7 +67,7 @@ MonoBehaviour:
     values: []
   deconstructed: []
   serializationData:
-    SerializedFormat: 0
+    SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects: []
     SerializedBytesString: 

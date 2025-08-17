@@ -19,6 +19,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
 
         [Title("Settings")] 
         [SerializeField] private bool useCountOff = true;
+        [SerializeField] private float startDelay = 1f;
         [SerializeField] private float warmUp = 0.25f;
         [SerializeField] private float readyFitInterval = 2f;
         [SerializeField] private float exitDelay = 1f;
@@ -43,6 +44,8 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
 
         private async UniTaskVoid StartCountOff()
         {
+            countOffText.text = string.Empty;
+            await UniTask.WaitForSeconds(startDelay);
             AudioManager.Instance.PlayAudioOneShot(readySfx, transform.position);
             countOffText.text = "Ready?";
             await UniTask.WaitForSeconds(readyFitInterval - warmUp);

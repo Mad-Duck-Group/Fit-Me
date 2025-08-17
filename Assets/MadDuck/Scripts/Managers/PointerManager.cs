@@ -45,6 +45,27 @@ namespace MadDuck.Scripts.Managers
             base.Awake();
             gameCamera = Camera.main;
         }
+        
+        public Vector2 WorldToLocalCanvasPosition(Vector3 worldPosition)
+        {
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                gameCanvas.transform as RectTransform, 
+                gameCamera.WorldToScreenPoint(worldPosition), 
+                gameCanvas.worldCamera, 
+                out Vector2 localPoint);
+            return localPoint;
+        }
+
+        public Vector2 WorldToWorldCanvasPosition(Vector3 worldPosition)
+        {
+            RectTransformUtility.ScreenPointToWorldPointInRectangle(
+                gameCanvas.transform as RectTransform,
+                gameCamera.WorldToScreenPoint(worldPosition),
+                gameCanvas.worldCamera,
+                out Vector3 worldPoint);
+            return worldPoint;
+        }
+
         #endregion
     }
 }

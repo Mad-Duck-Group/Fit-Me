@@ -143,7 +143,7 @@ namespace MadDuck.Scripts.Managers
         [Button("Test Fit-me")]
         private void TestFitMe()
         {
-            OnScoreAdded?.Invoke(ScoreTypes.FitMe);
+            OnScoreAdded?.Invoke(ScoreTypes.FitMe, worldPosition: GetGridCenter());
             OnNextGameDifficulty?.Invoke();
         }
         [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public float RandomInfectedTime { get; private set; }
@@ -157,7 +157,7 @@ namespace MadDuck.Scripts.Managers
         public static event Action<Block> OnBlockStateChanged;
         public static event Action<Block> OnBlockPlaced;
         public static event Action<Block> OnBlockDestroyed;
-        public delegate void ScoreAdded(ScoreTypes scoreTypes, int contactCount = 0);
+        public delegate void ScoreAdded(ScoreTypes scoreTypes, int contactCount = 0, Vector3 worldPosition = default);
         public static event ScoreAdded OnScoreAdded;
         public static event Action<FitType> OnFitCheck;
         public static event Action OnNextGameDifficulty;
@@ -410,7 +410,7 @@ namespace MadDuck.Scripts.Managers
                     _cellArray[x, y].transform.localScale = Vector3.one * cellSize;
                     _cellArray[x, y].name = $"Cell {x}_{y}";
                     _cellArray[x, y].ArrayIndex = new Vector2Int(x, y);
-                    _cellArray[x, y].GridIndex = new Vector2Int(y + currentOffset.x, currentOffset.y - x);
+                    _cellArray[x, y].GridIndex = ArrayToGridIndex(new Vector2Int(x, y));
                     _cellArray[x, y].SetPattern(x, y);
                 }
             }
@@ -486,7 +486,7 @@ namespace MadDuck.Scripts.Managers
             BlocksOnGrid.Add(block);
             block.ResetSortingLayer();
             ReorderRenderingOrder();
-            OnScoreAdded?.Invoke(ScoreTypes.Placement);
+            OnScoreAdded?.Invoke(ScoreTypes.Placement, worldPosition: block.transform.position);
             ResetPreviousValidationCells();
             var blockView = block.BlockView;
             if (blockView) blockView.Place();
@@ -539,7 +539,7 @@ namespace MadDuck.Scripts.Managers
         private async UniTask FitMe()
         {
             await RemoveAllBlocks(true);
-            OnScoreAdded?.Invoke(ScoreTypes.FitMe);
+            OnScoreAdded?.Invoke(ScoreTypes.FitMe, worldPosition:GetGridCenter());
             if (_currentSceneType is not SceneType.Gameplay) return;
             RegenerateGrid();
             OnNextGameDifficulty?.Invoke();
@@ -547,9 +547,11 @@ namespace MadDuck.Scripts.Managers
 
         private async UniTask Combo(List<Block> contacts)
         {
+            var middleOfBlocks = contacts.Select(block => block.transform.position)
+                .Aggregate(Vector3.zero, (current, position) => current + position) / contacts.Count;
             await UniTask.WhenAll(contacts.Select(block => RemoveBlock(block, true)));
-            OnScoreAdded?.Invoke(ScoreTypes.Combo, contacts.Count);
-            OnScoreAdded?.Invoke(ScoreTypes.Bomb, contacts.Count);
+            OnScoreAdded?.Invoke(ScoreTypes.Combo, contacts.Count, middleOfBlocks);
+            OnScoreAdded?.Invoke(ScoreTypes.Bomb, contacts.Count, middleOfBlocks);
             BlockManager.Instance.GameOverCheck().Forget();
         }
 
@@ -855,12 +857,22 @@ namespace MadDuck.Scripts.Managers
         
         public Cell GetCellByGridIndex(int x, int y)
         {
-            return GetCellByArrayIndex(currentOffset.y - y, x - currentOffset.x);
+            return GetCellByGridIndex(new Vector2Int(x, y));
         }
         
         public Cell GetCellByGridIndex(Vector2Int gridIndex)
         {
-            return GetCellByGridIndex(gridIndex.x, gridIndex.y);
+            return GetCellByArrayIndex(GridToArrayIndex(gridIndex));
+        }
+        
+        public Vector2Int ArrayToGridIndex(Vector2Int arrayIndex)
+        {
+            return new Vector2Int(arrayIndex.y + currentOffset.x, currentOffset.y - arrayIndex.x);
+        }
+        
+        public Vector2Int GridToArrayIndex(Vector2Int gridIndex)
+        {
+            return new Vector2Int(currentOffset.y - gridIndex.y, gridIndex.x - currentOffset.x);
         }
     
         /// <summary>
@@ -888,6 +900,25 @@ namespace MadDuck.Scripts.Managers
             var centerWorld = _grid.GetCellCenterWorld((Vector3Int)gridIndex);
             cellBounds.center = centerWorld;
             return cellBounds;
+        }
+
+        public Vector2 GetGridCenter()
+        {
+            var column = currentGridSize.x;
+            var row = currentGridSize.y;
+            List<int> centerRows = column % 2 == 0
+                ? new List<int> { column / 2 - 1, column / 2 }
+                : new List<int> { Mathf.FloorToInt(column / 2f) };
+            List<int> centerColumn = row % 2 == 0
+                ? new List<int> { row / 2 - 1, row / 2 }
+                : new List<int> { Mathf.FloorToInt(row / 2f) };
+            List<Vector2Int> centerCells = (from x in centerRows from y in centerColumn 
+                select ArrayToGridIndex(new Vector2Int(y, x))).ToList();
+            Debug.Log("Center Cells: " + string.Join(", ", centerCells.Select(c => c.ToString())));
+            List<Bounds> centerCellBounds = centerCells.Select(GetCellBounds).ToList();
+            var center = centerCellBounds.Aggregate(Vector3.zero, (current, bounds) => current + bounds.center) 
+                         / centerCellBounds.Count;
+            return center;
         }
         #endregion
         
@@ -920,7 +951,7 @@ namespace MadDuck.Scripts.Managers
                     }
                     Handles.color = handleColor;
                     var arrayIndex = new Vector2Int(x, y);
-                    var gridIndex = new Vector2Int(y + currentOffset.x, currentOffset.y - x);
+                    var gridIndex = ArrayToGridIndex(arrayIndex);
                     var bounds = GetCellBounds(gridIndex);
                     Handles.DrawWireCube(bounds.center, bounds.size);
                     Handles.Label(bounds.center, arrayIndex.ToString(), style: new GUIStyle()

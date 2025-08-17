@@ -191,6 +191,9 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     private bool _countDownPlayed;
     private AudioReference _bgmReference;
     public static event Action OnGameOver;
+    public delegate void ScoreAddedDelegate(ScoreTypes scoreTypes, int previous, int current, Vector3 position);
+    public static event ScoreAddedDelegate OnScoreAdded;
+    public static event ScoreAddedDelegate OnFitMeAdded;
     private IPublisher<StartSpawnEvent> _startSpawnPublisher;
     private IPublisher<SceneActivateEvent> _sceneActivatePublisher;
     private IDisposable _infectionDisposable;
@@ -308,11 +311,6 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     #endregion
 
     #region Updates
-    void Update()
-    {
-        if (!_sceneActivated) return;
-    }
-
     private void RandomSpawnInfection()
     {
         if (!CurrentGameDifficultySettings.CanInfect) return;
@@ -383,32 +381,40 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     {
         Score.Value += value;
     }
-
-    public void AddScore(ScoreTypes scoreType, int contactedAmount = 0)
+    
+    private void ChangeFitMe(int value)
     {
+        FitmeScore.Value += value;
+    }
+
+    public void AddScore(ScoreTypes scoreType, int contactedAmount = 0, Vector3 worldPosition = default)
+    {
+        int finalScore = 0;
+        var previousScore = Score.Value;
+        var previousFitMe = FitmeScore.Value;
+        if (worldPosition == default)
+            worldPosition = GridManager.Instance.GetGridCenter();
         switch (scoreType)
         {
             case ScoreTypes.Placement:
-                ChangeScore(scorePerPlacement);
-                Debug.Log("Placement Score: " + scorePerPlacement);
+                finalScore = scorePerPlacement;
                 break;
             case ScoreTypes.Combo:
                 if (contactedAmount <= 1) return;
-                int score = scorePerCombo * (contactedAmount - 1);
-                Debug.Log("Combo Score: " + score);
-                ChangeScore(score);
+                finalScore = scorePerCombo * (contactedAmount - 1);
                 break;
             case ScoreTypes.Bomb:
                 if (contactedAmount <= 2) return;
-                int bombScore = scorePerBomb * contactedAmount;
-                Debug.Log("Bomb Score: " + bombScore);
-                ChangeScore(bombScore);
+                finalScore = scorePerBomb * contactedAmount;
                 break;
             case ScoreTypes.FitMe:
-                FitmeScore.Value ++;
-                ChangeScore(scorePerFitMe);
+                ChangeFitMe(1);
+                OnFitMeAdded?.Invoke(scoreType, previousFitMe, FitmeScore.Value, worldPosition);
+                finalScore = scorePerFitMe;
                 break;
         }
+        ChangeScore(finalScore);
+        OnScoreAdded?.Invoke(scoreType, previousScore,Score.Value, worldPosition);
     }
 
     private void CalculateInfectTime()
