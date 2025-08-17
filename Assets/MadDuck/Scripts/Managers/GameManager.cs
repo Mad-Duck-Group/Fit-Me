@@ -273,16 +273,8 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
 
     private void OnPreInfectBlockDestroyed(Block block)
     {
-        if (block.beenPreInfected != BlockState.PreInfected) return;
+        if (block.beforeExplodeState != BlockState.PreInfected) return;
         AddScore(ScoreTypes.PreInfect);
-        /*if (block.BlockState != BlockState.PreInfected) return;
-        block.StopFlashing();
-        if (!_aboutToInfectBlocks.Contains(block)) return;
-        _aboutToInfectBlocks.Remove(block);
-        CalculateInfectTime();
-        if (GridManager.Instance.TotalInfected > CurrentGameDifficultySettings.InfectionCountRange.x)
-            return;
-        RandomSpawnInfection();*/
     }
 
     private void OnBlockInfected(Block block)

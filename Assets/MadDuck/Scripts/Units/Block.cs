@@ -80,8 +80,7 @@ namespace MadDuck.Scripts.Units
         [field: SerializeField, ReadOnly] public List<Cell> BlockCells { get; set; }
         [field: SerializeField, ReadOnly] public BlockView BlockView { get; private set; }
         public int SpawnIndex { get; set; }
-        [ReadOnly] public bool beenInfect;
-        public BlockState beenPreInfected;
+        public BlockState beforeExplodeState;
         #endregion
         
         #region Fields and Properties
@@ -206,7 +205,7 @@ namespace MadDuck.Scripts.Units
         {
             BlockState = BlockState.PreInfected;
             StartFlashing(FlashState.PreInfectFlash);
-            beenPreInfected = BlockState.PreInfected;
+            beforeExplodeState = BlockState.PreInfected;
             await UniTask.WaitForSeconds(GameManager.Instance.PreInfectTime,
                 cancellationToken: destroyCancellationToken);
             if (BlockState is BlockState.Exploding) return;
@@ -216,8 +215,7 @@ namespace MadDuck.Scripts.Units
         public void Infect()
         {
             BlockState = BlockState.Infected;
-            beenPreInfected = BlockState.Infected;
-            beenInfect = false;
+            beforeExplodeState = BlockState.Infected;
             if (BlockView) BlockView.Infect();
             StopFlashing();
             StartInfectTimer();
