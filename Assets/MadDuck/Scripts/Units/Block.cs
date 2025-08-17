@@ -82,6 +82,7 @@ namespace MadDuck.Scripts.Units
         [field: SerializeField, ReadOnly] public List<Cell> BlockCells { get; set; }
         [field: SerializeField, ReadOnly] public BlockView BlockView { get; private set; }
         public int SpawnIndex { get; set; }
+        public BlockState beforeExplodeState;
         #endregion
         
         #region Fields and Properties
@@ -210,6 +211,7 @@ namespace MadDuck.Scripts.Units
             var infectionConfig = _infectionRequest.Invoke(new InfectionConfigRequest());
             BlockState = BlockState.PreInfected;
             StartFlashing(FlashState.PreInfectFlash);
+            beforeExplodeState = BlockState.PreInfected;
             await UniTask.WaitForSeconds(infectionConfig.preInfectTime,
                 cancellationToken: destroyCancellationToken);
             if (BlockState is BlockState.Exploding) return;
@@ -219,6 +221,7 @@ namespace MadDuck.Scripts.Units
         public void Infect()
         {
             BlockState = BlockState.Infected;
+            beforeExplodeState = BlockState.Infected;
             if (BlockView) BlockView.Infect();
             StopFlashing();
             StartInfectTimer();
