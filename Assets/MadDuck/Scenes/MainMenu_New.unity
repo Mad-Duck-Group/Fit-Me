@@ -2363,10 +2363,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 973191126}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 186, y: -2174.7}
-  m_SizeDelta: {x: 0.7, y: 0.7}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: -400.35, y: 260.60004}
+  m_SizeDelta: {x: 0.7000122, y: 0.6999512}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &181955654
 MonoBehaviour:
@@ -6819,7 +6819,9 @@ MonoBehaviour:
   skipArea: {fileID: 1892995145}
   pageController:
     rid: 2851746794670391393
+  skipAfterPage: 1
   skipAll: 1
+  retainOnLastSkip: 1
   initialSplashPage: 0
   currentPage: 0
   references:
@@ -7298,17 +7300,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4794424198421729792, guid: 47602101d1039b84283808eb84ab77a7, type: 3}
   m_PrefabInstance: {fileID: 459401843}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &459401845 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7188293649920210034, guid: 47602101d1039b84283808eb84ab77a7, type: 3}
-  m_PrefabInstance: {fileID: 459401843}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36e6e1091d26d2647a097063952365b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &461951591
 GameObject:
   m_ObjectHideFlags: 0
@@ -7628,14 +7619,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77c1f3a4505044a78d357dea1ac87350, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destination: {fileID: 197845749}
-  blockPreset: {fileID: 11400000, guid: 4e664ecc81b61674bb851301da8106c3, type: 2}
-  blockView: {fileID: 459401845}
   speechBubble: {fileID: 919157562}
   glow: {fileID: 746627577}
-  placementDistance: 0.5
-  originalSortingLayer: 1074494647
-  pickUpSortingLayer: -1318158959
   speechBubbleAlphaTweenSettings:
     startFromCurrent: 0
     startValue: 1
@@ -7656,20 +7641,6 @@ MonoBehaviour:
       useUnscaledTime: 0
       _useFixedUpdate: 0
       _updateType: 0
-  placeSuccessSfx:
-    Guid:
-      Data1: 724217357
-      Data2: 1334338036
-      Data3: 718497672
-      Data4: 801821144
-    Path: event:/SFX/Game Play/GP01_Confirm Place
-  placeFailSfx:
-    Guid:
-      Data1: -307433879
-      Data2: 1268295283
-      Data3: 156051903
-      Data4: -1858921210
-    Path: event:/SFX/Game Play/GP02_Cancel Place
 --- !u!61 &470604044
 BoxCollider2D:
   m_ObjectHideFlags: 0

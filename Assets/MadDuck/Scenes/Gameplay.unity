@@ -2398,7 +2398,7 @@ MonoBehaviour:
   smartRandom: 1
   smartRandomThreshold: 6
   smartRandomDepth: 1
-  objectScale: 0.3
+  objectScale: 0.4
 --- !u!4 &466326063
 Transform:
   m_ObjectHideFlags: 0

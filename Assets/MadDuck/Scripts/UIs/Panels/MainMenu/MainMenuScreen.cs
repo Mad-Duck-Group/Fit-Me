@@ -63,6 +63,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         {
             base.Show();
             sceneObjectsParent.gameObject.SetActive(true);
+            logo.transform.localScale = logoScaleTweenSettings.startValue;
             _sceneActivatePublisher.Publish(new SceneActivateEvent(SceneType.MainMenu));
         }
 
