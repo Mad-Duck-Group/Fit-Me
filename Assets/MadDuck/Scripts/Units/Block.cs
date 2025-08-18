@@ -102,7 +102,7 @@ namespace MadDuck.Scripts.Units
         private IRequestHandler<GameStateRequest, GameState> _gameStateRequest;
         private IRequestHandler<InfectionConfigRequest, InfectionConfig> _infectionRequest;
         public event Action OnBlockBeingDrag;
-        public event Action OnBlockEndDrag;
+        public event Action<bool> OnBlockEndDrag;
         #endregion
 
         #region Initialization
@@ -314,7 +314,7 @@ namespace MadDuck.Scripts.Units
                 IsPlaced = false;
             }
             _isDragging = false;
-            OnBlockEndDrag?.Invoke();
+            OnBlockEndDrag?.Invoke(placed);
         }
         #endregion
         

@@ -22,6 +22,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using VContainer;
 using Random = UnityEngine.Random;
 
 #region Enums
@@ -41,7 +42,7 @@ public enum GameState
     PlaceBlock,
     UseItem,
     GameOver,
-    GameClear
+    GameClear,
 }
 
 public enum GameplayUIPanelType
@@ -50,7 +51,8 @@ public enum GameplayUIPanelType
     Gameplay,
     Pause,
     GameOver,
-    Result
+    Result,
+    Tutorial,
 }
 #endregion
 
@@ -96,8 +98,8 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     [Title("Settings")]
     [ShowInInspector, HideLabel] private InspectorVoid _settingsTitle;
     
-    [TabGroup("Settings", "Count Off")]
-    [SerializeField] private float countOffTime = 3f;
+    [TabGroup("Settings", "General")]
+    [SerializeField] private bool tutorialMode;
     
     [TabGroup("Settings", "Score")]
     [SerializeField] private int scorePerPlacement = 100;
@@ -141,9 +143,6 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     
     [OdinSerialize] private SerializableDictionary<GameplayUIPanelType, IUIPanel> panelDictionary = new();
     
-    [SerializeField, HideDuplicateReferenceBox, HideLabel]
-    private UIPanelController panelController = new();
-    
     [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule countOffCrossFadeRule = new();
     #endregion
 
@@ -184,6 +183,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     #endregion
 
     #region Fields and Properties
+    [Inject] private UIPanelController _panelController;
     private readonly List<float> _listInfectTime = new();
     private readonly List<Block> _aboutToInfectBlocks = new();
     private GameState _beforePauseState;
@@ -193,6 +193,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     private int _previousReRollScore;
     private bool _countDownPlayed;
     private AudioReference _bgmReference;
+    public static event Action OnStartTutorial;
     public static event Action OnGameOver;
     public delegate void ScoreAddedDelegate(ScoreTypes scoreTypes, int previous, int current, Vector3 position);
     public static event ScoreAddedDelegate OnScoreAdded;
@@ -210,10 +211,10 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
         panelDictionary.Values.ForEach(p =>
         {
             p.Initialize();
-            p.PanelController = panelController;
+            p.PanelController = _panelController;
         });
         var gameplayPanel = panelDictionary[GameplayUIPanelType.Gameplay];
-        panelController.ShowPanel(gameplayPanel).Forget();
+        _panelController.ShowPanel(gameplayPanel).Forget();
         gameplayPanel.DeactivateInput();
         NextGameDifficulty();
         ActivateScene();
@@ -225,7 +226,16 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
         _sceneActivated = true;
         _sceneActivatePublisher.Publish(new SceneActivateEvent(SceneType.Gameplay));
         LateSubscribe();
-        StartCountOff();
+        if (!tutorialMode)
+            StartCountOff();
+        else
+            StartTutorial();
+    }
+    
+    private void StartTutorial()
+    {
+        _bgmReference = AudioManager.Instance.PlayAudio(gameplayBgm, transform.position);
+        OnStartTutorial?.Invoke();
     }
     
     /// <summary>
@@ -235,7 +245,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     {
         CurrentGameState.Value = GameState.CountOff;
         var gameplayPanel = panelDictionary[GameplayUIPanelType.Gameplay];
-        panelController.ChangePanel(gameplayPanel, countOffCrossFadeRule.nextPanel, countOffCrossFadeRule.crossFadeSettings).Forget();
+        _panelController.ChangePanel(gameplayPanel, countOffCrossFadeRule.nextPanel, countOffCrossFadeRule.crossFadeSettings).Forget();
     }
 
     public void GameStart()
@@ -252,6 +262,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
         _startSpawnPublisher = GlobalMessagePipe.GetPublisher<StartSpawnEvent>();
         _sceneActivatePublisher = GlobalMessagePipe.GetPublisher<SceneActivateEvent>();
         LoadSceneManager.OnFinishLoad += Initialize;
+        LoadSceneManager.OnStartFadeOut += OnSceneChanged;
         GridManager.OnBlockDestroyed += OnPreInfectBlockDestroyed;
         GridManager.OnBlockStateChanged += OnBlockInfected;
         GridManager.OnBlockPlaced += OnBlockPlaced;
@@ -269,6 +280,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     private void OnDisable()
     {
         LoadSceneManager.OnFinishLoad -= Initialize;
+        LoadSceneManager.OnStartFadeOut -= OnSceneChanged;
         GridManager.OnBlockDestroyed -= OnPreInfectBlockDestroyed;
         GridManager.OnBlockStateChanged -= OnBlockInfected;
         GridManager.OnBlockPlaced -= OnBlockPlaced;
@@ -276,6 +288,12 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
         GridManager.OnNextGameDifficulty -= NextGameDifficulty;
         BlockManager.OnGameOver -= GameOver;
         _blockOnGridCountDisposable?.Dispose();
+    }
+
+    private void OnSceneChanged()
+    {
+        _bgmReference.Stop();
+        panelDictionary.Values.ForEach(x => x.DeactivateInput());
     }
 
     private void OnBlockPlaced(Block block)
@@ -472,15 +490,11 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     #region Scene Change
     public void BackToMenu()
     {
-        _bgmReference.Stop();
-        panelDictionary.Values.ForEach(x => x.DeactivateInput());
         LoadSceneManager.Instance.LoadScene(SceneType.MainMenu, LoadSceneMode.Single, false).Forget();
     }
 
     public void Retry()
     {
-        _bgmReference.Stop();
-        panelDictionary.Values.ForEach(x => x.DeactivateInput());
         LoadSceneManager.Instance.ReloadScene(LoadSceneMode.Single, false);
     }
     #endregion

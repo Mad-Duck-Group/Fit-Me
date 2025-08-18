@@ -74,7 +74,7 @@ namespace MadDuck.Scripts.UIs.Others
                 });
         }
         
-        private void FadeInBubble()
+        private void FadeInBubble(bool placed)
         {
             if (_fit) return;
             _speechBubbleSequence.Stop();

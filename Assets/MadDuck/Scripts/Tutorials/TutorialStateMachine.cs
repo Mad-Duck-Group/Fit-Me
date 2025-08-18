@@ -4,6 +4,7 @@ using MadDuck.Scripts.Frameworks.StateMachine;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Tutorials.States;
 using MadDuck.Scripts.UIs.Panels;
+using MessagePipe;
 using Redcode.Extensions;
 using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
@@ -20,11 +21,13 @@ namespace MadDuck.Scripts.Tutorials
         AfterDragAndDrop1 = 2,
         AfterDragAndDrop2 = 3,
         AfterDragAndDrop3 = 4,
-        Fit = 5,
-        AfterFit1 = 6,
-        AfterFit2 = 7,
-        AfterFit3 = 8,
-        AfterFit4 = 9,
+        AfterDragAndDrop4 = 5,
+        Fit = 6,
+        AfterFit1 = 7,
+        AfterFit2 = 8,
+        AfterFit3 = 9,
+        AfterFit4 = 10,
+        Failure = 999
     }
     
     [Serializable]
@@ -34,21 +37,32 @@ namespace MadDuck.Scripts.Tutorials
         [SerializeField] private SerializableDictionary<TutorialState, TutorialBaseState> stateDictionary = new();
         [SerializeField] private TutorialState initialTutorialState = TutorialState.Intro;
         [TitleGroup("Tutorial")]
-        [field: SerializeField] public TutorialState CurrentTutorialState { get; private set; }
-        [TitleGroup("Tutorial")]
         [Button("Test Skip")]
         private void TestSkipTo(TutorialState tutorialState)
         {
             SkipTo(tutorialState);
         }
         
-        [Title("Panels")] 
-        [field: SerializeReference, HideReferenceObjectPicker] 
-        public UIPanelController PageController { get; private set; } = new();
-
+        [TitleGroup("Debug")]
+        [field: SerializeField, DisplayAsString] public TutorialState CurrentTutorialState { get; set; }
+        
         public void Initialize()
         {
             stateDictionary.Values.ForEach(x => x.Initialize(this));
+            GameManager.OnGameOver += OnGameOver;
+        }
+
+        private void OnGameOver()
+        {
+            CurrentTutorialState = TutorialState.Failure;
+            if (stateDictionary.TryGetValue(CurrentTutorialState, out var failureState))
+            {
+                ChangeState(failureState);
+            }
+            else
+            {
+                Debug.LogError($"Failure state not found in state dictionary.");
+            }
         }
 
         public void StartTutorial()
@@ -96,7 +110,7 @@ namespace MadDuck.Scripts.Tutorials
             skipStates.ForEach(x =>
             {
                 ChangeState(x);
-                x.Complete();
+                x.Skip();
             });
             CurrentTutorialState = beforeTarget;
             MoveNext();
