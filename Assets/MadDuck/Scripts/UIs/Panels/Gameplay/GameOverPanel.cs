@@ -74,7 +74,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
         private void OnSkipButtonClicked()
         {
             _adsTimerSubscription?.Dispose();
-            GameManager.Instance.ToResultScreen();
+            GameManager.Instance.ToResultScreen().Forget();
             transitionCts = new CancellationTokenSource();
             PanelController.ChangePanel(this, resultCrossFadeRule.nextPanel, resultCrossFadeRule.crossFadeSettings,
                 transitionCts.Token).Forget();

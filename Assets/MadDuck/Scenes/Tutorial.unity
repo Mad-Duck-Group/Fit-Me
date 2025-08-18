@@ -4950,7 +4950,7 @@ MonoBehaviour:
       Data: 999
     - Name: 
       Entry: 7
-      Data: 13|MadDuck.Scripts.Tutorials.States.TutorialGenericState, Assembly-CSharp
+      Data: 13|MadDuck.Scripts.Tutorials.States.TutorialFailureState, Assembly-CSharp
     - Name: tutorialData
       Entry: 7
       Data: MadDuck.Scripts.Tutorials.States.TutorialData, Assembly-CSharp
@@ -9494,7 +9494,27 @@ MonoBehaviour:
     startValue: 0
     endValue: 1
     settings:
-      duration: 0.5
+      duration: 0.25
+      ease: 22
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 0
+      _useFixedUpdate: 0
+      _updateType: 0
+  tutorialTextFadeTweenSettings:
+    startFromCurrent: 0
+    startValue: 0
+    endValue: 1
+    settings:
+      duration: 0.25
       ease: 22
       customEase:
         serializedVersion: 2

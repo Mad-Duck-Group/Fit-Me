@@ -194,7 +194,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     private bool _countDownPlayed;
     private AudioReference _bgmReference;
     public static event Action OnStartTutorial;
-    public static event Action OnGameOver;
+    public static event Action<bool> OnGameOver;
     public delegate void ScoreAddedDelegate(ScoreTypes scoreTypes, int previous, int current, Vector3 position);
     public static event ScoreAddedDelegate OnScoreAdded;
     public static event ScoreAddedDelegate OnFitMeAdded;
@@ -483,7 +483,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
         AudioManager.Instance.PlayAudio(gameOverSfx, transform.position);
         Debug.Log("Game Over!");
         GridManager.Instance.StopAllPreInfectFlash();
-        OnGameOver?.Invoke();
+        OnGameOver?.Invoke(!tutorialMode);
     }
     #endregion
 

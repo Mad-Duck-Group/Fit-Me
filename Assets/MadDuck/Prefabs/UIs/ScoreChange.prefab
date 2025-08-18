@@ -60,7 +60,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreChangeText: {fileID: 1382502852362635037}
   fitMe: 0
-  fitMeScoreOffset: {x: 0, y: 10}
+  fitMeScoreOffset: {x: 0, y: 20}
   scoreChangeScaleTweenSettings:
     startFromCurrent: 0
     startValue: {x: 0, y: 0, z: 0}

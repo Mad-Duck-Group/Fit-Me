@@ -52,7 +52,7 @@ namespace MadDuck.Scripts.Tutorials
             GameManager.OnGameOver += OnGameOver;
         }
 
-        private void OnGameOver()
+        private void OnGameOver(bool isGameplayMode)
         {
             CurrentTutorialState = TutorialState.Failure;
             if (stateDictionary.TryGetValue(CurrentTutorialState, out var failureState))

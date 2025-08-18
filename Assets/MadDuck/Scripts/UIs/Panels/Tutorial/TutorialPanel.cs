@@ -46,10 +46,12 @@ namespace MadDuck.Scripts.UIs.Panels.Tutorial
         [SerializeField] private TweenSettings<Vector3> nextButtonScaleTweenSettings;
         [SerializeField] private TweenSettings<float> backgroundFadeTweenSettings;
         [SerializeField] private TweenSettings<float> tutorialImageFadeTweenSettings;
+        [SerializeField] private TweenSettings<float> tutorialTextFadeTweenSettings;
         
         private IDisposable _tutorialDisplaySubscription;
         private IDisposable _fadeBackgroundSubscription;
         private Sequence _tutorialImageFadeSequence;
+        private Sequence _fadeTextSequence;
         private Sequence _changeTutorialSequence;
         private Sequence _nextButtonSequence;
         private Sequence _fadeBackgroundSequence;
@@ -123,6 +125,11 @@ namespace MadDuck.Scripts.UIs.Panels.Tutorial
             }
             tutorialImage.enabled = false;
             tutorialImage.color = tutorialImage.color.WithA(tutorialImageFadeTweenSettings.startValue);
+            
+            _fadeTextSequence = Sequence.Create()
+                .Group(Tween.Alpha(textWriter.TextComponent, tutorialTextFadeTweenSettings))
+                .Group(Tween.Alpha(headerWriter.TextComponent, tutorialTextFadeTweenSettings));
+            await _fadeTextSequence.ToUniTask();
 
             headerWriter.gameObject.SetActive(eventData.tutorialData.hasHeader);
             if (eventData.tutorialData.hasHeader)
@@ -177,6 +184,11 @@ namespace MadDuck.Scripts.UIs.Panels.Tutorial
         
         private void OnNextButtonClicked()
         {
+            Reset().Forget();
+        }
+
+        private async UniTaskVoid Reset()
+        {
             _fadeBackgroundSequence.Complete();
             _changeTutorialSequence.Complete();
             _nextButtonSequence.Complete();
@@ -194,11 +206,20 @@ namespace MadDuck.Scripts.UIs.Panels.Tutorial
                 {
                     tutorialImage.gameObject.SetActive(false);
                 });
+            _fadeTextSequence.Complete();
+            _fadeTextSequence = Sequence.Create()
+                .Group(Tween.Alpha(textWriter.TextComponent, tutorialTextFadeTweenSettings.WithDirection(false)))
+                .Group(Tween.Alpha(headerWriter.TextComponent, tutorialTextFadeTweenSettings.WithDirection(false)));
+            var sequence = Sequence.Create()
+                .Group(_nextButtonSequence)
+                .Group(_tutorialImageFadeSequence)
+                .Group(_fadeTextSequence);
             headerWriter.StopWriter();
             headerWriter.OnFinishWriter.RemoveAllListeners();
-            headerWriter.TextComponent.text = string.Empty;
             textWriter.StopWriter();
             textWriter.OnFinishWriter.RemoveAllListeners();
+            await sequence.ToUniTask();
+            headerWriter.TextComponent.text = string.Empty;
             textWriter.TextComponent.text = string.Empty;
             OnNext?.Invoke();
         }

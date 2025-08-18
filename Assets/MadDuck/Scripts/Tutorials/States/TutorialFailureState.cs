@@ -1,6 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Managers;
+using UnityEngine;
 
 namespace MadDuck.Scripts.Tutorials.States
 {
@@ -17,10 +18,9 @@ namespace MadDuck.Scripts.Tutorials.States
 
         protected override void OnNext()
         {
-            base.OnNext();
-            Complete();
             stateMachine.CurrentTutorialState = TutorialState.Fit - 1;
-            stateMachine.MoveNext();
+            base.OnNext();
+            GameManager.Instance.Continue();
         }
     }
 }

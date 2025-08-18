@@ -60,8 +60,9 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
             fitMeText.text = 0.ToString("N0");
         }
         
-        private void OnGameOver()
+        private void OnGameOver(bool showGameOverPanel)
         {
+            if (!showGameOverPanel) return;
             transitionCts = new CancellationTokenSource();
             PanelController.ChangePanel(this, gameOverCrossFadeRule.nextPanel, gameOverCrossFadeRule.crossFadeSettings, transitionCts.Token).Forget();
         }

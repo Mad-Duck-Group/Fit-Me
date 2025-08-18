@@ -38,6 +38,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         private AudioReference _mainMenuBgmReference;
         private Tween _logoTween;
         private IPublisher<SceneActivateEvent> _sceneActivatePublisher;
+        private bool _blockSpawned;
         
         private void OnEnable()
         {
@@ -57,6 +58,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
             statsButton.onClick.AddListener(() => OnButtonClicked(statsCrossFadeRule));
             achievementsButton.onClick.AddListener(() => OnButtonClicked(achievementsCrossFadeRule));
             versionText.text = Application.version;
+            _blockSpawned = false;
         }
 
         public override void Show()
@@ -64,7 +66,9 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
             base.Show();
             sceneObjectsParent.gameObject.SetActive(true);
             logo.transform.localScale = logoScaleTweenSettings.startValue;
+            if (_blockSpawned) return;
             _sceneActivatePublisher.Publish(new SceneActivateEvent(SceneType.MainMenu));
+            _blockSpawned = true;
         }
 
         public override void Hide()
