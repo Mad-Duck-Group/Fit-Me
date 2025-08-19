@@ -62,7 +62,7 @@ namespace MadDuck.Scripts.Managers
                 }
                 else
                 {
-                    CurrentSaveFile.
+                    CurrentSaveFile.DeleteFile();
                     Load();
                     _currentLoadRetryAttempts++;
                 }
