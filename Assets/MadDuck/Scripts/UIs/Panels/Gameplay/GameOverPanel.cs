@@ -82,12 +82,12 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
 
         private void OnAdsButtonClicked()
         {
+            Ads.Instance.ShowAd();
             _adsTimerSubscription?.Dispose();
-            GameManager.Instance.Continue();
+            
             transitionCts = new CancellationTokenSource();
             PanelController.ChangePanel(this, gameplayUIPanelCrossFadeRule.nextPanel, gameplayUIPanelCrossFadeRule.crossFadeSettings,
                 transitionCts.Token).Forget();
         }
-
     }
 }
