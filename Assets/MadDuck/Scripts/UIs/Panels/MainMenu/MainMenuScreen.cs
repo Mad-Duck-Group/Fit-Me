@@ -20,6 +20,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         [SerializeField] private RectTransform logo;
         [SerializeField] private Button settingsButton;
         [SerializeField] private Button statsButton;
+        [SerializeField] private Button helpButton;
         [SerializeField] private Button achievementsButton;
         [SerializeField] private TMP_Text versionText;
         [SerializeField] private Transform sceneObjectsParent;
@@ -28,6 +29,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         [SerializeField] private TweenSettings<Vector3> logoScaleTweenSettings;
         
         [Title("Panel")]
+        [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule helpCrossFadeRule = new();
         [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule settingsCrossFadeRule = new();
         [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule statsCrossFadeRule = new();
         [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule achievementsCrossFadeRule = new();
@@ -44,16 +46,24 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         {
             _sceneActivatePublisher = GlobalMessagePipe.GetPublisher<SceneActivateEvent>();
             LoadSceneManager.OnStartFadeOut += OnSwitchScene;
+            SaveManager.OnLoadCompleted += OnLoadCompleted;
         }
         
         private void OnDisable()
         {
             LoadSceneManager.OnStartFadeOut -= OnSwitchScene;
+            SaveManager.OnLoadCompleted += OnLoadCompleted;
+        }
+
+        private void OnLoadCompleted()
+        {
+            helpButton.gameObject.SetActive(PlayerDataManager.Instance.TutorialData.completedTutorial);
         }
 
         public override void Initialize()
         {
             base.Initialize();
+            helpButton.onClick.AddListener(() => OnButtonClicked(helpCrossFadeRule));
             settingsButton.onClick.AddListener(() => OnButtonClicked(settingsCrossFadeRule));
             statsButton.onClick.AddListener(() => OnButtonClicked(statsCrossFadeRule));
             achievementsButton.onClick.AddListener(() => OnButtonClicked(achievementsCrossFadeRule));

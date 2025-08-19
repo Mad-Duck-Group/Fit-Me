@@ -8,6 +8,12 @@ namespace MadDuck.Scripts.Tutorials.States
     [Serializable]
     public class TutorialFitState : TutorialBaseState
     {
+        public override void Shutdown()
+        {
+            base.Shutdown();
+            GameManager.OnFitMeAdded -= OnFitMe;
+        }
+
         public override void Enter()
         {
             base.Enter();
@@ -21,7 +27,7 @@ namespace MadDuck.Scripts.Tutorials.States
             base.Exit();
             GameManager.OnFitMeAdded -= OnFitMe;
             TutorialManager.Instance.ShowTutorial().Forget();
-            GameManager.Instance.CurrentGameState.Value = GameState.CountOff;
+            GameManager.Instance.CurrentGameState.Value = GameState.Tutorial;
         }
 
         private void OnFitMe(ScoreTypes scoreTypes, int previous, int current, Vector3 position)

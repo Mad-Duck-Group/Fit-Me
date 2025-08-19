@@ -20,7 +20,7 @@ namespace MadDuck.Scripts.Managers
             public uint score;
             [ShowInInspector, DisplayAsString] private string DebugDateTime => dateTime.ToString("yyyy-MM-dd HH:mm:ss");
         }
-        public uint highScore;
+        public RunData highScore;
         public List<RunData> runData = new();
     }
 
@@ -34,7 +34,7 @@ namespace MadDuck.Scripts.Managers
             public uint fitMe;
             [ShowInInspector, DisplayAsString] private string DebugDateTime => dateTime.ToString("yyyy-MM-dd HH:mm:ss");
         }
-        public uint mostFitMe;
+        public RunData mostFitMe;
         public List<RunData> runData = new();
     }
     
@@ -42,6 +42,12 @@ namespace MadDuck.Scripts.Managers
     public record AchievementData
     {
         public uint completedCount;
+    }
+    
+    [Serializable]
+    public record TutorialData
+    {
+        public bool completedTutorial;
     }
     #endregion
     
@@ -57,12 +63,14 @@ namespace MadDuck.Scripts.Managers
         [field: SerializeField] public ScoreData ScoreData { get; private set; } = new();
         [field: SerializeField] public FitMeData FitMeData { get; private set; } = new();
         [field: SerializeField] public AchievementData AchievementData { get; private set; } = new();
+        [field: SerializeField] public TutorialData TutorialData { get; private set; } = new();
         [Button("Debug Save All Data")]
         private void DebugSaveAllData()
         {
             SaveScore(0, false);
             SaveFitMe(0, false);
             SaveAchievement(0, false);
+            SaveTutorialCompletion(false, false);
             FinishSave();
         }
 
@@ -75,12 +83,20 @@ namespace MadDuck.Scripts.Managers
             CurrentSaveFile.DeleteData(ScoreDataKey);
             CurrentSaveFile.DeleteData(FitMeDataKey);
             CurrentSaveFile.DeleteData(AchievementDataKey);
+            CurrentSaveFile.DeleteData(TutorialDataKey);
             FinishSave();
+        }
+        
+        [Button("Delete Save File")]
+        private void DebugDeleteSaveFile()
+        {
+            CurrentSaveFile.DeleteFile();
         }
         
         private const string ScoreDataKey = "ScoreData";
         private const string FitMeDataKey = "RecentFitMe";
         private const string AchievementDataKey = "AchievementData";
+        private const string TutorialDataKey = "TutorialData";
         #endregion
 
         #region Fields and Properties
@@ -105,15 +121,12 @@ namespace MadDuck.Scripts.Managers
             ScoreData = CurrentSaveFile.GetData<ScoreData>(ScoreDataKey) ?? new ScoreData();
             FitMeData = CurrentSaveFile.GetData<FitMeData>(FitMeDataKey) ?? new FitMeData();
             AchievementData = CurrentSaveFile.GetData<AchievementData>(AchievementDataKey) ?? new AchievementData();
+            TutorialData = CurrentSaveFile.GetData<TutorialData>(TutorialDataKey) ?? new TutorialData();
         }
         
         public void SaveScore(uint score, bool saveImmediately = true)
         {
-            if (score > ScoreData.highScore)
-            {
-                ScoreData.highScore = score;
-            }
-
+            var newHighScore = score > ScoreData.highScore.score;
             var newEntry = new ScoreData.RunData
             {
                 dateTime = DateTime.Now,
@@ -122,6 +135,10 @@ namespace MadDuck.Scripts.Managers
 
             ScoreData.runData.Add(newEntry);
             ScoreData.runData = ScoreData.runData.OrderByDescending(s => s.dateTime).Take((int)maxHighScoresEntries).ToList();
+            if (newHighScore)
+            {
+                ScoreData.highScore = newEntry;
+            }
             CurrentSaveFile.AddOrUpdateData(ScoreDataKey, ScoreData);
             if (saveImmediately)
             {
@@ -131,11 +148,7 @@ namespace MadDuck.Scripts.Managers
         
         public void SaveFitMe(uint fitMe, bool saveImmediately = true)
         {
-            if (fitMe > FitMeData.mostFitMe)
-            {
-                FitMeData.mostFitMe = fitMe;
-            }
-
+            var newMostFitMe = fitMe > FitMeData.mostFitMe.fitMe;
             var newEntry = new FitMeData.RunData
             {
                 dateTime = DateTime.Now,
@@ -144,6 +157,10 @@ namespace MadDuck.Scripts.Managers
 
             FitMeData.runData.Add(newEntry);
             FitMeData.runData = FitMeData.runData.OrderByDescending(f => f.dateTime).Take((int)maxFitMeEntries).ToList();
+            if (newMostFitMe)
+            {
+                FitMeData.mostFitMe = newEntry;
+            }
             CurrentSaveFile.AddOrUpdateData(FitMeDataKey, FitMeData);
             if (saveImmediately)
             {
@@ -155,6 +172,16 @@ namespace MadDuck.Scripts.Managers
         {
             AchievementData.completedCount = completedCount;
             CurrentSaveFile.AddOrUpdateData(AchievementDataKey, AchievementData);
+            if (saveImmediately)
+            {
+                SaveManager.Instance.Save();
+            }
+        }
+        
+        public void SaveTutorialCompletion(bool completed, bool saveImmediately = true)
+        {
+            TutorialData.completedTutorial = completed;
+            CurrentSaveFile.AddOrUpdateData(TutorialDataKey, TutorialData);
             if (saveImmediately)
             {
                 SaveManager.Instance.Save();

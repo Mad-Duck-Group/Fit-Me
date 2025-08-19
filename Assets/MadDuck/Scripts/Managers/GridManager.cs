@@ -60,6 +60,12 @@ namespace MadDuck.Scripts.Managers
             Generated = 1 << 1,
             All = Preset | Generated
         }
+
+        private enum PresetRandomType
+        {
+            Random,
+            Ordinal
+        }
         
         [Title("Grid References")]
         [SerializeField] private Cell cellPrefab;
@@ -78,6 +84,10 @@ namespace MadDuck.Scripts.Managers
         [SerializeField] [ValidateInput("@generatedGridType != GridType.None", "Grid type cannot be None")]
         [ShowIf("@endlessType.HasFlag(EndlessType.Generated)")]
         private GridType generatedGridType = GridType.Rectangle;
+        [TitleGroup("Grid Settings")]
+        [SerializeField]
+        [ShowIf(nameof(endlessType), EndlessType.Preset)]
+        private PresetRandomType presetRandomType = PresetRandomType.Random;
         [TitleGroup("Grid Settings")]
         [SerializeField] [MinMaxSlider(1, 20, ShowFields = true)]
         private Vector2Int randomGridXRange = new(1, 10);
@@ -169,6 +179,7 @@ namespace MadDuck.Scripts.Managers
         private IPublisher<StartSpawnEvent> _startSpawnPublisher;
         private IDisposable _sceneActiveSubscription;
         private SceneType _currentSceneType = SceneType.Gameplay;
+        private int _currentPresetIndex;
         #endregion
         
         #region Events
@@ -214,7 +225,7 @@ namespace MadDuck.Scripts.Managers
             var blockPresets = _blockPresetRequestHandler.Invoke(new BlockPresetRequest());
             if (blockPresets.Count == 0) return;
             var randomPreset = blockPresets.GetRandomElement();
-            SetupMainMenuGridPreset(randomPreset);
+            SetUpMainMenuGridPreset(randomPreset);
             CreateCells();
             _startSpawnPublisher.Publish(new StartSpawnEvent(randomPreset));
         }
@@ -245,7 +256,17 @@ namespace MadDuck.Scripts.Managers
             }
             if (currentEndlessType is EndlessType.Preset && gridPresets.Count > 0)
             {
-                currentGridPreset = gridPresets.GetRandomElement();
+                if (presetRandomType is PresetRandomType.Random)
+                    currentGridPreset = gridPresets.GetRandomElement();
+                else
+                {
+                    currentGridPreset = gridPresets[_currentPresetIndex];
+                    _currentPresetIndex++;
+                    if (_currentPresetIndex >= gridPresets.Count)
+                    {
+                        _currentPresetIndex = 0;
+                    }
+                }
                 return;
             }
 
@@ -280,14 +301,12 @@ namespace MadDuck.Scripts.Managers
             currentGridPreset = newGridPreset;
         }
 
-        private void SetupMainMenuGridPreset(BlockPreset blockPreset)
+        private void SetUpMainMenuGridPreset(BlockPreset blockPreset)
         {
             var newGridPreset = ScriptableObject.CreateInstance<GridPreset>();
             newGridPreset.name = $"{blockPreset.name} Grid Preset";
             newGridPreset.PresetGridType = GridType.Custom;
-            //var index = Random.Range(0, 4);
-            var index = 0;
-            var blockSchema = blockPreset.BlockSchemas[index].schema;
+            var blockSchema = blockPreset.BlockSchemas[0].schema;
             newGridPreset.customGrid = blockSchema;
             var row = newGridPreset.customGrid.GetLength(0);
             var column = newGridPreset.customGrid.GetLength(1);

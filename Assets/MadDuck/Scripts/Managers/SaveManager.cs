@@ -7,12 +7,25 @@ using UnityEngine;
 
 namespace MadDuck.Scripts.Managers
 {
-    [RequireComponent(typeof(SaveFileSetup))]
     public class SaveManager : PersistentMonoSingleton<SaveManager>
     {
+        [field: SerializeField] private SaveFileSetup debugSaveFileSetup;
+        [field: SerializeField] private SaveFileSetup releaseSaveFileSetup;
+        [field: SerializeField] private bool testRelease;
+        
         #region Fields and Properties
-        public SaveFileSetup SaveFileSetup { get; private set; }
-        public SaveFile CurrentSaveFile => SaveFileSetup.GetSaveFile();
+
+        public SaveFile CurrentSaveFile
+        {
+            get
+            {
+                #if UNITY_EDITOR
+                return testRelease ? releaseSaveFileSetup.GetSaveFile() : debugSaveFileSetup.GetSaveFile();
+                #else
+                return releaseSaveFileSetup.GetSaveFile();
+                #endif
+            }
+        }
         public static event Action OnSaveCompleted;
         public static event Action OnLoadCompleted;
 
@@ -21,11 +34,6 @@ namespace MadDuck.Scripts.Managers
         #endregion
 
         #region Initialization
-        protected override void Awake()
-        {
-            base.Awake();
-            SaveFileSetup = GetComponent<SaveFileSetup>();
-        }
 
         private void Start()
         {
@@ -36,7 +44,6 @@ namespace MadDuck.Scripts.Managers
         #region Save/Load
         public void Load()
         {
-            if (!SaveFileSetup) SaveFileSetup = GetComponent<SaveFileSetup>();
             var operation = CurrentSaveFile.Load(true);
             operation.onOperationEnded.AddListener(() =>
             {
@@ -53,7 +60,6 @@ namespace MadDuck.Scripts.Managers
         
         public void Save()
         {
-            if (!SaveFileSetup) SaveFileSetup = GetComponent<SaveFileSetup>();
             if (!_saveReady)
             {
                 Debug.LogWarning("Save operation is already in progress.");

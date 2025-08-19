@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7697908087059126216}
-  - component: {fileID: 3069575076830133759}
   - component: {fileID: 2950921929539452765}
   m_Layer: 0
   m_Name: SaveManager
@@ -30,16 +29,64 @@ Transform:
   m_LocalPosition: {x: -588.7106, y: 757.09717, z: -10.247279}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8870139953750895153}
+  - {fileID: 2692207216925124957}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3069575076830133759
+--- !u!114 &2950921929539452765
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 32377055536259738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90bcbb11ce0d49c7965ef206da320907, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugSaveFileSetup: {fileID: 4589670035933358909}
+  releaseSaveFileSetup: {fileID: 6286625725936284959}
+--- !u!1 &3276479799552969081
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2692207216925124957}
+  - component: {fileID: 6286625725936284959}
+  m_Layer: 0
+  m_Name: ReleaseSetup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2692207216925124957
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3276479799552969081}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7697908087059126216}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6286625725936284959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3276479799552969081}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99b4b220e9db2634389147b7a07bb0ac, type: 3}
@@ -55,15 +102,70 @@ MonoBehaviour:
     aesIV: LNC5W0YCCG7h3ehcQ4CR1A==
     addToStorage: 0
     backgroundTask: 1
---- !u!114 &2950921929539452765
+--- !u!1 &8312595883625112482
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8870139953750895153}
+  - component: {fileID: 4589670035933358909}
+  - component: {fileID: 4021179977906403513}
+  m_Layer: 0
+  m_Name: DebugSetup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8870139953750895153
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8312595883625112482}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7697908087059126216}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4589670035933358909
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 32377055536259738}
+  m_GameObject: {fileID: 8312595883625112482}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90bcbb11ce0d49c7965ef206da320907, type: 3}
+  m_Script: {fileID: 11500000, guid: 99b4b220e9db2634389147b7a07bb0ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveFileData:
+    fileName: playerData
+    saveLocation: 1
+    filePath: TestSave/
+    fileType: 0
+    encryptionMethod: 0
+    aesKey: KM5gowCwVB7hptCSB7QJ6KWFdSKONSr1umtR1mNTDcI=
+    aesIV: LNC5W0YCCG7h3ehcQ4CR1A==
+    addToStorage: 0
+    backgroundTask: 1
+--- !u!114 &4021179977906403513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8312595883625112482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58b6357478f7f774c91932e0fcb4dcc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

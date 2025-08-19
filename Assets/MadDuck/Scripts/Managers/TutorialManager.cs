@@ -18,6 +18,9 @@ namespace MadDuck.Scripts.Managers
         [OdinSerialize, HideReferenceObjectPicker, HideLabel]
         private TutorialStateMachine tutorialStateMachine = new();
         
+        [Title("Settings")]
+        [SerializeField] private float tutorialStartDelay = 1.5f;
+        
         [Title("Panel")] 
         [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule tutorialCrossFadeRule = new();
         [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule gameplayCrossFadeRule = new();
@@ -50,6 +53,7 @@ namespace MadDuck.Scripts.Managers
         private async UniTaskVoid StartTutorial()
         {
             tutorialCrossFadeRule.nextPanel.Initialize();
+            await UniTask.WaitForSeconds(tutorialStartDelay);
             await ShowTutorial();
             tutorialStateMachine.Initialize();
             tutorialStateMachine.StartTutorial();

@@ -22,6 +22,20 @@ namespace MadDuck.Scripts.Tutorials.States
             _fadeTutorialBackgroundPublisher = GlobalMessagePipe.GetPublisher<FadeTutorialBackgroundEvent>();
         }
         
+        public override void Shutdown()
+        {
+            base.Shutdown();
+            _startSpawnPublisher = null;
+            _fadeTutorialBackgroundPublisher = null;
+            BlockManager.OnBlockSpawned -= OnBlockSpawned;
+            _spawnedBlocks.ForEach(b =>
+            {
+                b.OnBlockBeingDrag -= OnBlockBeingDrag;
+                b.OnBlockEndDrag -= OnBlockEndDrag;
+            });
+            _spawnedBlocks.Clear();
+        }
+        
         public override void Enter()
         {
             base.Enter();
@@ -35,7 +49,7 @@ namespace MadDuck.Scripts.Tutorials.States
         {
             base.Exit();
             _fadeTutorialBackgroundPublisher.Publish(new FadeTutorialBackgroundEvent(true));
-            GameManager.Instance.CurrentGameState.Value = GameState.CountOff;
+            GameManager.Instance.CurrentGameState.Value = GameState.Tutorial;
             BlockManager.OnBlockSpawned -= OnBlockSpawned;
             _spawnedBlocks.ForEach(b =>
             {

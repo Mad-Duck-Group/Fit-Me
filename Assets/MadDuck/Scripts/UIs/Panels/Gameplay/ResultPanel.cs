@@ -67,8 +67,8 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
         public override void OnPanelReady()
         {
             base.OnPanelReady();
-            _beforeSaveHighScore = PlayerData.ScoreData.highScore;
-            _beforeSaveMostFitMe = PlayerData.FitMeData.mostFitMe;
+            _beforeSaveHighScore = PlayerData.ScoreData.highScore.score;
+            _beforeSaveMostFitMe = PlayerData.FitMeData.mostFitMe.fitMe;
             SaveScoreData();
             _showDataCts = new CancellationTokenSource();
             ShowData(_showDataCts.Token).Forget();

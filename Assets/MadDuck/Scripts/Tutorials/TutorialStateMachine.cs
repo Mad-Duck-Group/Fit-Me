@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Frameworks.StateMachine;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Tutorials.States;
@@ -51,6 +52,12 @@ namespace MadDuck.Scripts.Tutorials
             stateDictionary.Values.ForEach(x => x.Initialize(this));
             GameManager.OnGameOver += OnGameOver;
         }
+        
+        public void Shutdown()
+        {
+            GameManager.OnGameOver -= OnGameOver;
+            stateDictionary.Values.ForEach(x => x.Shutdown());
+        }
 
         private void OnGameOver(bool isGameplayMode)
         {
@@ -80,6 +87,7 @@ namespace MadDuck.Scripts.Tutorials
         
         public void MoveNext()
         {
+            Debug.Log("Moving to next tutorial state");
             var nextTutorialState = CurrentTutorialState + 1;
             if (stateDictionary.TryGetValue(nextTutorialState, out var nextState))
             {
@@ -89,7 +97,10 @@ namespace MadDuck.Scripts.Tutorials
             else
             {
                 Debug.Log("End of tutorial");
+                TutorialManager.Instance.HideTutorial().Forget();
+                PlayerDataManager.Instance.SaveTutorialCompletion(true);
                 LoadSceneManager.Instance.LoadScene(SceneType.Gameplay, LoadSceneMode.Single, false).Forget();
+                Shutdown();
             }
         }
 

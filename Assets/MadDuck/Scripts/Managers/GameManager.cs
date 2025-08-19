@@ -43,6 +43,7 @@ public enum GameState
     UseItem,
     GameOver,
     GameClear,
+    Tutorial,
 }
 
 public enum GameplayUIPanelType
@@ -52,7 +53,6 @@ public enum GameplayUIPanelType
     Pause,
     GameOver,
     Result,
-    Tutorial,
 }
 #endregion
 
@@ -234,6 +234,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     
     private void StartTutorial()
     {
+        CurrentGameState.Value = GameState.Tutorial;
         _bgmReference = AudioManager.Instance.PlayAudio(gameplayBgm, transform.position);
         OnStartTutorial?.Invoke();
     }

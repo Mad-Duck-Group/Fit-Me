@@ -1471,10 +1471,10 @@ RectTransform:
   - {fileID: 743673487}
   m_Father: {fileID: 1430782929}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 39.19626, y: 246.7185}
-  m_SizeDelta: {x: 1289.6074, y: 769.505}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &297509465
 CanvasGroup:
@@ -4004,7 +4004,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 446.04767, y: -315.73544}
+  m_AnchoredPosition: {x: 456, y: -315.73544}
   m_SizeDelta: {x: 397.512, y: 138.034}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &743673488
@@ -4455,6 +4455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b72b6dab0a214f8f985875743424a7b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tutorialStartDelay: 1.5
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
@@ -4968,10 +4969,11 @@ MonoBehaviour:
       Data: true
     - Name: headerText
       Entry: 1
-      Data: Bruh...
+      Data: Oh well...
     - Name: tutorialText
       Entry: 1
-      Data: You sucks lol. Try again lmao
+      Data: That's the game over for you. But no big deal, let's give it another
+        try!
     - Name: 
       Entry: 8
       Data: 
@@ -7221,8 +7223,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 200, y: 21.893005}
-  m_SizeDelta: {x: -600, y: -125.34}
+  m_AnchoredPosition: {x: 265, y: 42.500244}
+  m_SizeDelta: {x: -830, y: -2435.0005}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1124909911
 MonoBehaviour:
@@ -9413,11 +9415,19 @@ MonoBehaviour:
   nextButton: {fileID: 743673488}
   backgroundImage: {fileID: 427948656}
   tutorialImage: {fileID: 675198079}
-  textBoxLeftNoImage: 500
-  textBoxLeftWithImage: 100
-  textBoxLeftTweenSettings:
+  textBoxSizeNoImage:
+    left: 680
+    top: 1175
+    right: 150
+    bottom: 1260
+  textBoxSizeWithImage:
+    left: 150
+    top: 700
+    right: 150
+    bottom: 1260
+  textBoxSizeTweenSettings:
     duration: 0.5
-    ease: 18
+    ease: 19
     customEase:
       serializedVersion: 2
       m_Curve: []
@@ -9435,7 +9445,7 @@ MonoBehaviour:
   loopieWhoopiePositionWithImage: {x: -424.1961, y: -705}
   loopieWhoopiePositionTweenSettings:
     duration: 0.5
-    ease: 18
+    ease: 19
     customEase:
       serializedVersion: 2
       m_Curve: []
@@ -12368,20 +12378,11 @@ MonoBehaviour:
   canBePlacedColor: {r: 0.07678461, g: 1, b: 0, a: 1}
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
   gridPresets:
-  - {fileID: 11400000, guid: 3c0de1220640875409d7ee56aa4db52d, type: 2}
-  - {fileID: 11400000, guid: e2efd1faf5182024baadc152896d32c5, type: 2}
-  - {fileID: 11400000, guid: 8e6023eb534aad04d9dce6a821e03abd, type: 2}
-  - {fileID: 11400000, guid: 633ee46917ae20d49bd51a8cf7def4dc, type: 2}
-  - {fileID: 11400000, guid: 531eaed777e2b7d41b60e3eb9e41ace1, type: 2}
-  - {fileID: 11400000, guid: 3f5172f5d777141499cf757cc4e77433, type: 2}
-  - {fileID: 11400000, guid: 00c82d2d85419804bb39dfadb62b5920, type: 2}
-  - {fileID: 11400000, guid: 448d67f0617d10647be6fd5fbc06cb4e, type: 2}
-  - {fileID: 11400000, guid: 42d4dd3d5edcc714f9f3d6d33ad7da26, type: 2}
   - {fileID: 11400000, guid: 49ac1ac62efab9d44ba416909e663151, type: 2}
   - {fileID: 11400000, guid: 73a8ec27c2ff78244ac1813a9be4acf7, type: 2}
-  - {fileID: 11400000, guid: 3546067d18e435c47abca150faf390b9, type: 2}
   endlessType: 1
   generatedGridType: 1
+  presetRandomType: 1
   randomGridXRange: {x: 6, y: 9}
   randomGridYRange: {x: 10, y: 10}
   bridgeWidthRange: {x: 2, y: 3}

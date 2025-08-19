@@ -12,7 +12,7 @@ namespace MadDuck.Scripts.Tutorials.States
         {
             tutorialData.hasNextButton = true; //force next button to be true
             base.Enter();
-            GameManager.Instance.CurrentGameState.Value = GameState.CountOff;
+            GameManager.Instance.CurrentGameState.Value = GameState.Tutorial;
             TutorialManager.Instance.ShowTutorial().Forget();
         }
 

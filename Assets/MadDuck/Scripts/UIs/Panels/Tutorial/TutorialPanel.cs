@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Tutorials;
 using MadDuck.Scripts.Tutorials.States;
 using MadDuck.Scripts.UIs.Transitions;
+using MadDuck.Scripts.Utils.Inspectors;
 using MessagePipe;
 using PrimeTween;
 using Redcode.Extensions;
@@ -37,9 +38,9 @@ namespace MadDuck.Scripts.UIs.Panels.Tutorial
         [SerializeField] private Image tutorialImage;
 
         [Title("Tween")] 
-        [SerializeField] private float textBoxLeftNoImage;
-        [SerializeField] private float textBoxLeftWithImage;
-        [SerializeField] private TweenSettings textBoxLeftTweenSettings;
+        [SerializeField] private RectTransformInset textBoxSizeNoImage;
+        [SerializeField] private RectTransformInset textBoxSizeWithImage;
+        [SerializeField] private TweenSettings textBoxSizeTweenSettings;
         [SerializeField] private Vector2 loopieWhoopiePositionNoImage;
         [SerializeField] private Vector2 loopieWhoopiePositionWithImage;
         [SerializeField] private TweenSettings loopieWhoopiePositionTweenSettings;
@@ -71,7 +72,8 @@ namespace MadDuck.Scripts.UIs.Panels.Tutorial
             nextButton.gameObject.SetActive(false);
             tutorialImage.gameObject.SetActive(false);
             loopieWhoopie.anchoredPosition = loopieWhoopiePositionNoImage;
-            textBox.offsetMin = textBox.offsetMin.WithX(textBoxLeftNoImage);
+            textBox.offsetMin = textBoxSizeNoImage.OffsetMin;
+            textBox.offsetMax = textBoxSizeNoImage.OffsetMax;
             backgroundImage.color = backgroundImage.color.WithA(backgroundFadeTweenSettings.startValue);
         }
 
@@ -105,16 +107,23 @@ namespace MadDuck.Scripts.UIs.Panels.Tutorial
                 settings = loopieWhoopiePositionTweenSettings,
             };
             var textBoxLeftFinalValue = eventData.tutorialData.hasImage
-                ? textBoxLeftWithImage
-                : textBoxLeftNoImage;
-            var textBoxLeftTweenSettings = new TweenSettings<float>
+                ? textBoxSizeWithImage
+                : textBoxSizeNoImage;
+            var textBoxOffsetMinSettings = new TweenSettings<Vector2>
             {
-                startValue = textBox.offsetMin.x,
-                endValue = textBoxLeftFinalValue,
-                settings = this.textBoxLeftTweenSettings,
+                startValue = textBox.offsetMin,
+                endValue = textBoxLeftFinalValue.OffsetMin,
+                settings = textBoxSizeTweenSettings,
+            };
+            var textBoxOffsetMaxSettings = new TweenSettings<Vector2>
+            {
+                startValue = textBox.offsetMax,
+                endValue = textBoxLeftFinalValue.OffsetMax,
+                settings = textBoxSizeTweenSettings,
             };
             _changeTutorialSequence = Sequence.Create()
-                .Group(Tween.UIOffsetMinX(textBox, textBoxLeftTweenSettings))
+                .Group(Tween.UIOffsetMin(textBox, textBoxOffsetMinSettings))
+                .Group(Tween.UIOffsetMax(textBox, textBoxOffsetMaxSettings))
                 .Group(Tween.UIAnchoredPosition(loopieWhoopie, positionTweenSettings));
             await _changeTutorialSequence.ToUniTask();
             
@@ -210,7 +219,7 @@ namespace MadDuck.Scripts.UIs.Panels.Tutorial
             _fadeTextSequence = Sequence.Create()
                 .Group(Tween.Alpha(textWriter.TextComponent, tutorialTextFadeTweenSettings.WithDirection(false)))
                 .Group(Tween.Alpha(headerWriter.TextComponent, tutorialTextFadeTweenSettings.WithDirection(false)));
-            var sequence = Sequence.Create()
+            var allSequence = Sequence.Create()
                 .Group(_nextButtonSequence)
                 .Group(_tutorialImageFadeSequence)
                 .Group(_fadeTextSequence);
@@ -218,7 +227,7 @@ namespace MadDuck.Scripts.UIs.Panels.Tutorial
             headerWriter.OnFinishWriter.RemoveAllListeners();
             textWriter.StopWriter();
             textWriter.OnFinishWriter.RemoveAllListeners();
-            await sequence.ToUniTask();
+            await allSequence.ToUniTask();
             headerWriter.TextComponent.text = string.Empty;
             textWriter.TextComponent.text = string.Empty;
             OnNext?.Invoke();
@@ -227,16 +236,8 @@ namespace MadDuck.Scripts.UIs.Panels.Tutorial
         private void OnFadeBackground(FadeTutorialBackgroundEvent fadeTutorialBackgroundEvent)
         {
             _fadeBackgroundSequence.Stop();
-            if (!fadeTutorialBackgroundEvent.fadeIn)
-            {
-                _fadeBackgroundSequence = Sequence.Create()
-                    .Group(Tween.Alpha(backgroundImage, backgroundFadeTweenSettings));
-            }
-            else
-            {
-                _fadeBackgroundSequence = Sequence.Create()
-                    .Group(Tween.Alpha(backgroundImage, backgroundFadeTweenSettings.WithDirection(false)));
-            }
+            _fadeBackgroundSequence = Sequence.Create()
+                .Group(Tween.Alpha(backgroundImage, backgroundFadeTweenSettings.WithDirection(!fadeTutorialBackgroundEvent.fadeIn)));
         }
     }
 }

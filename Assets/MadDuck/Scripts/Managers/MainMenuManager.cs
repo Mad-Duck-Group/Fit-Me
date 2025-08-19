@@ -23,6 +23,7 @@ namespace MadDuck.Scripts.Managers
         Stats,
         Achievements,
         Settings,
+        Help
     }
 
     public struct SceneActivateEvent
@@ -62,7 +63,7 @@ namespace MadDuck.Scripts.Managers
             LoadSceneManager.OnStartFadeOut -= OnStartFadeOut;
             GridManager.OnFitCheck -= OnFitCheck;
         }
-        
+
         private void OnStartFadeOut()
         {
             PanelDictionary.Values.ForEach(x => x.DeactivateInput());
@@ -77,7 +78,8 @@ namespace MadDuck.Scripts.Managers
         private void OnFitCheck(FitType fitType)
         {
             if (fitType is not FitType.FitMe) return;
-            LoadSceneManager.Instance.LoadScene(SceneType.Gameplay, LoadSceneMode.Single, false).Forget();
+            var nextScene = PlayerDataManager.Instance.TutorialData.completedTutorial ? SceneType.Gameplay : SceneType.Tutorial;
+            LoadSceneManager.Instance.LoadScene(nextScene, LoadSceneMode.Single, false).Forget();
         }
 
         private void ShowFirstPanel()

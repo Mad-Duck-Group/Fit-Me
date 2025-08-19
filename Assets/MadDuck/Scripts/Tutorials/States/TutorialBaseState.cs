@@ -44,6 +44,12 @@ namespace MadDuck.Scripts.Tutorials.States
             this.stateMachine = stateMachine;
             tutorialDisplayPublisher = GlobalMessagePipe.GetPublisher<TutorialDisplayEvent>();
         }
+        
+        public virtual void Shutdown()
+        {
+            TutorialPanel.OnNext -= OnNext;
+            tutorialDisplayPublisher = null;
+        }
 
         public override void Enter()
         {
