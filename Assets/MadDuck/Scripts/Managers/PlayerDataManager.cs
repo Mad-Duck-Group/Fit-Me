@@ -20,7 +20,7 @@ namespace MadDuck.Scripts.Managers
             public uint score;
             [ShowInInspector, DisplayAsString] private string DebugDateTime => dateTime.ToString("yyyy-MM-dd HH:mm:ss");
         }
-        public RunData highScore;
+        public RunData highScore = new();
         public List<RunData> runData = new();
     }
 
@@ -34,7 +34,7 @@ namespace MadDuck.Scripts.Managers
             public uint fitMe;
             [ShowInInspector, DisplayAsString] private string DebugDateTime => dateTime.ToString("yyyy-MM-dd HH:mm:ss");
         }
-        public RunData mostFitMe;
+        public RunData mostFitMe = new();
         public List<RunData> runData = new();
     }
     
