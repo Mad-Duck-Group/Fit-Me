@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugSaveFileSetup: {fileID: 4589670035933358909}
   releaseSaveFileSetup: {fileID: 6286625725936284959}
+  testRelease: 0
 --- !u!1 &3276479799552969081
 GameObject:
   m_ObjectHideFlags: 0

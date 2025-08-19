@@ -12,6 +12,7 @@ namespace MadDuck.Scripts.Managers
         [field: SerializeField] private SaveFileSetup debugSaveFileSetup;
         [field: SerializeField] private SaveFileSetup releaseSaveFileSetup;
         [field: SerializeField] private bool testRelease;
+        [field: SerializeField, Range(1, 10)] private int retryAttempts = 3;
         
         #region Fields and Properties
 
@@ -31,6 +32,7 @@ namespace MadDuck.Scripts.Managers
 
         private bool _saveReady = true;
         private bool _saveInQueue;
+        private int _currentLoadRetryAttempts = 0;
         #endregion
 
         #region Initialization
@@ -44,16 +46,25 @@ namespace MadDuck.Scripts.Managers
         #region Save/Load
         public void Load()
         {
+            if (_currentLoadRetryAttempts >= retryAttempts)
+            {
+                Debug.LogError($"Failed to load save file after {retryAttempts} attempts.");
+                _currentLoadRetryAttempts = 0;
+                return;
+            }
             var operation = CurrentSaveFile.Load(true);
             operation.onOperationEnded.AddListener(() =>
             {
                 if (operation.state == SaveFileOperation.OperationState.Completed)
                 {
                     OnLoadCompleted?.Invoke();
+                    _currentLoadRetryAttempts = 0;
                 }
                 else
                 {
-                    Debug.LogError($"Failed to load save file");
+                    CurrentSaveFile.
+                    Load();
+                    _currentLoadRetryAttempts++;
                 }
             });
         }

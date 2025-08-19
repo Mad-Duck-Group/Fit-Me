@@ -10077,6 +10077,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3546067d18e435c47abca150faf390b9, type: 2}
   endlessType: 1
   generatedGridType: 1
+  presetRandomType: 0
   randomGridXRange: {x: 6, y: 9}
   randomGridYRange: {x: 10, y: 10}
   bridgeWidthRange: {x: 2, y: 3}
