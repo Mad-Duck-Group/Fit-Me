@@ -27,12 +27,15 @@ namespace MadDuck.Scripts.Managers
                 #endif
             }
         }
+
         public static event Action OnSaveCompleted;
+        public static event Action OnSaveReady;
         public static event Action OnLoadCompleted;
 
-        private bool _saveReady = true;
+        public bool Saving { get; private set; }
         private bool _saveInQueue;
         private int _currentLoadRetryAttempts = 0;
+        private int _currentSaveRetryAttempts = 0;
         #endregion
 
         #region Initialization
@@ -58,40 +61,53 @@ namespace MadDuck.Scripts.Managers
                 if (operation.state == SaveFileOperation.OperationState.Completed)
                 {
                     OnLoadCompleted?.Invoke();
+                    OnSaveReady?.Invoke();
                     _currentLoadRetryAttempts = 0;
                 }
                 else
                 {
                     CurrentSaveFile.DeleteFile();
-                    Load();
                     _currentLoadRetryAttempts++;
+                    Load();
                 }
             });
         }
         
         public void Save()
         {
-            if (!_saveReady)
+            if (_currentSaveRetryAttempts >= retryAttempts)
+            {
+                Debug.LogError($"Failed to save file after {retryAttempts} attempts.");
+                _currentSaveRetryAttempts = 0;
+                OnSaveReady?.Invoke();
+                return;
+            }
+            if (Saving)
             {
                 Debug.LogWarning("Save operation is already in progress.");
                 _saveInQueue = true;
                 return;
             }
-            var operation = CurrentSaveFile.Save();
-            _saveReady = false;
+            var operation = CurrentSaveFile.Save(true);
+            Saving = true;
             operation.onOperationEnded.AddListener(() =>
             {
                 if (operation.state == SaveFileOperation.OperationState.Completed)
                 {
+                    _currentSaveRetryAttempts = 0;
                     OnSaveCompleted?.Invoke();
-                    _saveReady = true;
+                    Saving = false;
+                    OnSaveReady?.Invoke();
                     if (!_saveInQueue) return;
                     _saveInQueue = false;
                     Save(); // Retry saving if there was a save in queue
                 }
                 else
                 {
-                    Debug.LogError($"Failed to save file");
+                    _currentSaveRetryAttempts++;
+                    Saving = false;
+                    _saveInQueue = false;
+                    Save();
                 }
             });
         }

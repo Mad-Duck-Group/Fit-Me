@@ -1,11 +1,107 @@
 {
   "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[Esper.ESave.SavableObjects.SavableObject, ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
-  "TutorialData": {
-    "$type": "Esper.ESave.SavableObjects.SavableData`1[[MadDuck.Scripts.Managers.TutorialData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "ChallengeData": {
+    "$type": "Esper.ESave.SavableObjects.SavableData`1[[MadDuck.Scripts.Managers.ChallengeData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
     "value": {
-      "$type": "MadDuck.Scripts.Managers.TutorialData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-      "completedTutorial": true
+      "$type": "MadDuck.Scripts.Managers.ChallengeData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "challenges": {
+        "$type": "Sherbert.Framework.Generic.SerializableDictionary`2[[System.Guid, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[MadDuck.Scripts.Challenges.ISavable, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "9082d551-673d-48eb-9cbb-b3a158b3a09a": {
+          "$type": "MadDuck.Scripts.Challenges.SavableChallengeData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "completed": true
+        },
+        "4c776a22-3d3c-46c6-97d6-1d3f542d3fae": {
+          "$type": "MadDuck.Scripts.Challenges.SavableChallengeData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "completed": true
+        },
+        "a1296689-8056-4780-b359-81541b07fc22": {
+          "$type": "MadDuck.Scripts.Challenges.SavableChallengeData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "completed": true
+        }
+      }
     },
-    "id": "TutorialData"
+    "id": "ChallengeData"
+  },
+  "ScoreData": {
+    "$type": "Esper.ESave.SavableObjects.SavableData`1[[MadDuck.Scripts.Managers.ScoreData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "value": {
+      "$type": "MadDuck.Scripts.Managers.ScoreData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "highScore": {
+        "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "dateTime": "2025-08-21T21:58:04.8111363+07:00",
+        "score": 7200
+      },
+      "runData": {
+        "$type": "System.Collections.Generic.List`1[[MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+        "$values": [
+          {
+            "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "dateTime": "2025-08-21T22:23:15.0687366+07:00",
+            "score": 5280
+          },
+          {
+            "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "dateTime": "2025-08-21T22:19:59.04261+07:00",
+            "score": 5540
+          },
+          {
+            "$type": "MadDuck.Scripts.Managers.ScoreData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "dateTime": "2025-08-21T22:14:39.4493652+07:00",
+            "score": 180
+          }
+        ]
+      },
+      "cumulativeScore": 24860
+    },
+    "id": "ScoreData"
+  },
+  "FitMeData": {
+    "$type": "Esper.ESave.SavableObjects.SavableData`1[[MadDuck.Scripts.Managers.FitMeData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "value": {
+      "$type": "MadDuck.Scripts.Managers.FitMeData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "mostFitMe": {
+        "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "dateTime": "2025-08-21T21:58:04.8131362+07:00",
+        "fitMe": 1
+      },
+      "runData": {
+        "$type": "System.Collections.Generic.List`1[[MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+        "$values": [
+          {
+            "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "dateTime": "2025-08-21T22:23:15.0722492+07:00",
+            "fitMe": 1
+          },
+          {
+            "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "dateTime": "2025-08-21T22:19:59.045171+07:00",
+            "fitMe": 1
+          },
+          {
+            "$type": "MadDuck.Scripts.Managers.FitMeData+RunData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "dateTime": "2025-08-21T22:14:39.4524134+07:00",
+            "fitMe": 0
+          }
+        ]
+      },
+      "cumulativeFitMe": 3
+    },
+    "id": "FitMeData"
+  },
+  "GameData": {
+    "$type": "Esper.ESave.SavableObjects.SavableData`1[[MadDuck.Scripts.Managers.GameData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], ESave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "value": {
+      "$type": "MadDuck.Scripts.Managers.GameData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "cumulativePreInfectBlockDestroyed": 0,
+      "cumulativeBlockDestroyed": 62,
+      "cumulativeColorBlastDictionary": {
+        "$type": "Sherbert.Framework.Generic.SerializableDictionary`2[[MadDuck.Scripts.Units.BlockTypes, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[System.UInt32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Purple": 3,
+        "Blue": 2,
+        "Green": 1,
+        "Yellow": 3
+      }
+    },
+    "id": "GameData"
   }
 }

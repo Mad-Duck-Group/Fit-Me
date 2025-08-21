@@ -44,12 +44,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cf3718fe9f045f1915d848d5d0a88d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHighScoresEntries: 10
-  maxFitMeEntries: 10
-  maxAchievementEntries: 10
-  recentScores: []
-  highScore: 0
-  recentFitMe: []
-  mostFitMe: 0
-  achievementData:
-    completedCount: 0
+  maxHighScoresEntries: 3
+  maxFitMeEntries: 3
+  challengePresets:
+  - {fileID: 11400000, guid: ce5a9f1da32ad1e45b6ce0713343f8a5, type: 2}
+  <ScoreData>k__BackingField:
+    highScore:
+      score: 0
+    runData: []
+    cumulativeScore: 0
+  <FitMeData>k__BackingField:
+    mostFitMe:
+      fitMe: 0
+    runData: []
+    cumulativeFitMe: 0
+  <GameData>k__BackingField:
+    cumulativePreInfectBlockDestroyed: 0
+    cumulativeBlockDestroyed: 0
+    cumulativeColorBlastDictionary:
+      keys: 
+      values: 
+  <TutorialData>k__BackingField:
+    completedTutorial: 0
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: 0|MadDuck.Scripts.Managers.ChallengeData, Assembly-CSharp
+    - Name: challenges
+      Entry: 7
+      Data: 1|Sherbert.Framework.Generic.SerializableDictionary`2[[System.Guid, mscorlib],[MadDuck.Scripts.Challenges.ISavable,
+        Assembly-CSharp]], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 

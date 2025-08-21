@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 704d9cf2876b486d9ca598786825480c, type: 3}
+  m_Name: GameBootstrapper
+  m_EditorClassIdentifier: 
+  persistentMonoSingletons:
+  - {fileID: 9009637061283458569, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
+  - {fileID: 1402617828738896277, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
+  - {fileID: 32377055536259738, guid: 4bc46b793d9bea14c99bd2b40344e637, type: 3}
+  - {fileID: 6669441725348077618, guid: 39ca27fdcd037c44f93673e4b4315190, type: 3}
+  - {fileID: 732036787222603176, guid: f4d52bb2097c71444972bb7781aac13f, type: 3}

@@ -115,3 +115,91 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   notificationStayDuration: 2
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 8828460536040382675, guid: c457e4c29289f1141bb7d1276f8f1fc4, type: 3}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: notificationPrefabDictionary
+      Entry: 7
+      Data: 0|Sherbert.Framework.Generic.SerializableDictionary`2[[MadDuck.Scripts.Managers.NotificationType,
+        Assembly-CSharp],[MadDuck.Scripts.Managers.NotificationPrefabData, Assembly-CSharp]],
+        Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: System.Collections.Generic.KeyValuePair`2[[MadDuck.Scripts.Managers.NotificationType,
+        Assembly-CSharp],[MadDuck.Scripts.Managers.NotificationPrefabData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 7
+      Data: MadDuck.Scripts.Managers.NotificationPrefabData, Assembly-CSharp
+    - Name: notificationViewPrefab
+      Entry: 10
+      Data: 0
+    - Name: initialPosition
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 200
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: System.Collections.Generic.KeyValuePair`2[[MadDuck.Scripts.Managers.NotificationType,
+        Assembly-CSharp],[MadDuck.Scripts.Managers.NotificationPrefabData, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: MadDuck.Scripts.Managers.NotificationPrefabData, Assembly-CSharp
+    - Name: notificationViewPrefab
+      Entry: 10
+      Data: 0
+    - Name: initialPosition
+      Entry: 7
+      Data: UnityEngine.Vector2, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 200
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 

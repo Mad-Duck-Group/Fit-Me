@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using FMODUnity;
+using MadDuck.Scripts.Challenges;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.UIs.Panels;
 using MadDuck.Scripts.UIs.Panels.Gameplay;
@@ -200,6 +201,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     public static event ScoreAddedDelegate OnFitMeAdded;
     private IPublisher<StartSpawnEvent> _startSpawnPublisher;
     private IPublisher<SceneActivateEvent> _sceneActivatePublisher;
+    private IPublisher<ChallengeUpdateEvent<FailChallengeData>> _failChallengeUpdatePublisher;
     private IDisposable _infectionDisposable;
     private IDisposable _blockOnGridCountDisposable;
     #endregion
@@ -262,6 +264,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     {
         _startSpawnPublisher = GlobalMessagePipe.GetPublisher<StartSpawnEvent>();
         _sceneActivatePublisher = GlobalMessagePipe.GetPublisher<SceneActivateEvent>();
+        _failChallengeUpdatePublisher = GlobalMessagePipe.GetPublisher<ChallengeUpdateEvent<FailChallengeData>>();
         LoadSceneManager.OnFinishLoad += Initialize;
         LoadSceneManager.OnStartFadeOut += OnSceneChanged;
         GridManager.OnBlockDestroyed += OnPreInfectBlockDestroyed;
@@ -485,6 +488,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
         Debug.Log("Game Over!");
         GridManager.Instance.StopAllPreInfectFlash();
         OnGameOver?.Invoke(!tutorialMode);
+        _failChallengeUpdatePublisher.Publish(new ChallengeUpdateEvent<FailChallengeData>(new FailChallengeData()));
     }
     #endregion
 

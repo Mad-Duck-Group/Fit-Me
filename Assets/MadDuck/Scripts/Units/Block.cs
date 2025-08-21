@@ -82,7 +82,7 @@ namespace MadDuck.Scripts.Units
         [field: SerializeField, ReadOnly] public List<Cell> BlockCells { get; set; }
         [field: SerializeField, ReadOnly] public BlockView BlockView { get; private set; }
         public int SpawnIndex { get; set; }
-        public BlockState beforeExplodeState;
+        public BlockState beforeExplodeState = BlockState.Normal;
         #endregion
         
         #region Fields and Properties

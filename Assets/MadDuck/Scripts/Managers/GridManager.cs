@@ -557,7 +557,10 @@ namespace MadDuck.Scripts.Managers
 
         private async UniTask FitMe()
         {
+            List<(BlockState beforeExplodeState, BlockTypes blockType)> blocksToSave = 
+                BlocksOnGrid.Select(block => (block.BlockState, block.BlockType)).ToList();
             await RemoveAllBlocks(true);
+            PlayerDataManager.Instance.SaveBlockDestroyed(FitType.FitMe, blocksToSave);
             OnScoreAdded?.Invoke(ScoreTypes.FitMe, worldPosition:GetGridCenter());
             if (_currentSceneType is not SceneType.Gameplay) return;
             RegenerateGrid();
@@ -568,14 +571,15 @@ namespace MadDuck.Scripts.Managers
         {
             var middleOfBlocks = contacts.Select(block => block.transform.position)
                 .Aggregate(Vector3.zero, (current, position) => current + position) / contacts.Count;
+            List<(BlockState beforeExplodeState, BlockTypes blockType)> blocksToSave = 
+                contacts.Select(block => (block.BlockState, block.BlockType)).ToList();
             await UniTask.WhenAll(contacts.Select(block => RemoveBlock(block, true)));
+            PlayerDataManager.Instance.SaveBlockDestroyed(FitType.Combo, blocksToSave);
             OnScoreAdded?.Invoke(ScoreTypes.Combo, contacts.Count, middleOfBlocks);
             OnScoreAdded?.Invoke(ScoreTypes.Bomb, contacts.Count, middleOfBlocks);
             BlockManager.Instance.GameOverCheck().Forget();
         }
         
-        
-
         /// <summary>
         /// Remove the block from the grid
         /// </summary>

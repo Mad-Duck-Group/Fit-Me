@@ -2,7 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Esper.ESave;
+using MadDuck.Scripts.Challenges;
+using MadDuck.Scripts.Units;
+using MessagePipe;
+using Redcode.Extensions;
+using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -22,6 +28,7 @@ namespace MadDuck.Scripts.Managers
         }
         public RunData highScore = new();
         public List<RunData> runData = new();
+        public uint cumulativeScore;
     }
 
     [Serializable]
@@ -36,12 +43,21 @@ namespace MadDuck.Scripts.Managers
         }
         public RunData mostFitMe = new();
         public List<RunData> runData = new();
+        public uint cumulativeFitMe;
+    }
+
+    [Serializable]
+    public record GameData
+    {
+        public uint cumulativePreInfectBlockDestroyed;
+        public uint cumulativeBlockDestroyed;
+        [SerializeField] public SerializableDictionary<BlockTypes, uint> cumulativeColorBlastDictionary = new();
     }
     
     [Serializable]
-    public record AchievementData
+    public record ChallengeData
     {
-        public uint completedCount;
+        [SerializeField] public SerializableDictionary<Guid, ISavable> challenges = new();
     }
     
     [Serializable]
@@ -51,27 +67,31 @@ namespace MadDuck.Scripts.Managers
     }
     #endregion
     
-    public class PlayerDataManager : PersistentMonoSingleton<PlayerDataManager>
+    [ShowOdinSerializedPropertiesInInspector]
+    public class PlayerDataManager : PersistentMonoSingleton<PlayerDataManager>, ISerializationCallbackReceiver, ISupportsPrefabSerialization
     {
         #region Inspectors
         [Title("Settings")]
         [SerializeField] private uint maxHighScoresEntries = 10;
         [SerializeField] private uint maxFitMeEntries = 10;
-        [SerializeField] private uint maxAchievementEntries = 10;
+        
+        [Title("Challenges")]
+        [SerializeField, InlineEditor] private List<ChallengePreset> challengePresets = new();
         
         [field: Title("Debug")]
         [field: SerializeField] public ScoreData ScoreData { get; private set; } = new();
         [field: SerializeField] public FitMeData FitMeData { get; private set; } = new();
-        [field: SerializeField] public AchievementData AchievementData { get; private set; } = new();
+        [field: SerializeField] public GameData GameData { get; private set; } = new();
+        [field: OdinSerialize] public ChallengeData ChallengeData { get; private set; } = new();
         [field: SerializeField] public TutorialData TutorialData { get; private set; } = new();
         [Button("Debug Save All Data")]
         private void DebugSaveAllData()
         {
-            SaveScore(0, false);
-            SaveFitMe(0, false);
-            SaveAchievement(0, false);
-            SaveTutorialCompletion(false, false);
-            FinishSave();
+            SaveScore(0);
+            SaveFitMe(0);
+            SaveBlockDestroyed(FitType.Combo, null);
+            SaveChallenges(Guid.Empty, null);
+            SaveTutorialCompletion();
         }
 
         [Button("Delete All Data")]
@@ -79,12 +99,26 @@ namespace MadDuck.Scripts.Managers
         {
             ScoreData = new ScoreData();
             FitMeData = new FitMeData();
-            AchievementData = new AchievementData();
-            CurrentSaveFile.DeleteData(ScoreDataKey);
-            CurrentSaveFile.DeleteData(FitMeDataKey);
-            CurrentSaveFile.DeleteData(AchievementDataKey);
-            CurrentSaveFile.DeleteData(TutorialDataKey);
-            FinishSave();
+            ChallengeData = new ChallengeData();
+            GameData = new GameData();
+            TutorialData = new TutorialData();
+            Action updateDataAction = () =>
+            {
+                CurrentSaveFile.DeleteData(ScoreDataKey);
+                CurrentSaveFile.DeleteData(FitMeDataKey);
+                CurrentSaveFile.DeleteData(ChallengeDataKey);
+                CurrentSaveFile.DeleteData(TutorialDataKey);
+                CurrentSaveFile.DeleteData(GameDataKey);
+            };
+            if (SaveManager.Instance.Saving)
+            {
+                _saveDataQueue.Enqueue(updateDataAction);
+            }
+            else
+            {
+                updateDataAction.Invoke();
+                SaveManager.Instance.Save();
+            }
         }
         
         [Button("Delete Save File")]
@@ -94,37 +128,77 @@ namespace MadDuck.Scripts.Managers
         }
         
         private const string ScoreDataKey = "ScoreData";
-        private const string FitMeDataKey = "RecentFitMe";
-        private const string AchievementDataKey = "AchievementData";
+        private const string FitMeDataKey = "FitMeData";
+        private const string GameDataKey = "GameData";
+        private const string ChallengeDataKey = "ChallengeData";
         private const string TutorialDataKey = "TutorialData";
         #endregion
 
         #region Fields and Properties
         private SaveFile CurrentSaveFile => SaveManager.Instance.CurrentSaveFile;
+        private IPublisher<ChallengeUpdateEvent<CumulativeScoreChallengeData>> _cumulativeScorePublisher;
+        private IPublisher<ChallengeUpdateEvent<CumulativeFitMeChallengeData>> _cumulativeFitMePublisher;
+        private IPublisher<ChallengeUpdateEvent<CumulativeBlastChallengeData>> _cumulativeBlastPublisher;
+        private IPublisher<ChallengeUpdateEvent<CumulativeBlastColorChallengeData>> _cumulativeBlastColorPublisher;
+        private IPublisher<ChallengeUpdateEvent<CumulativeBlastSickChallengeData>> _cumulativeBlastSickPublisher;
+        private IPublisher<ChallengeUpdateEvent<TutorialChallengeData>> _tutorialChallengePublisher;
+        private IPublisher<ChallengeUpdateEvent<FitMasterChallengeData>> _fitMasterChallengePublisher;
+        private Dictionary<Guid, IChallenge> _challengeDictionary = new();
+        private readonly Queue<Action> _saveDataQueue = new();
         #endregion
         
         #region Events
         private void OnEnable()
         {
+            //clone the challenge presets to avoid modifying the original data
+            challengePresets = challengePresets.Select(x => x.Clone()).ToList();
+            _challengeDictionary = challengePresets
+                .SelectMany(x => x.Challenges)
+                .ToDictionary(k => k.ChallengeGuid, v => v);
             SaveManager.OnLoadCompleted += LoadPlayerData;
+            SaveManager.OnSaveReady += OnSaveReady;
+            _cumulativeScorePublisher = GlobalMessagePipe.GetPublisher<ChallengeUpdateEvent<CumulativeScoreChallengeData>>();
+            _tutorialChallengePublisher = GlobalMessagePipe.GetPublisher<ChallengeUpdateEvent<TutorialChallengeData>>();
+            _cumulativeFitMePublisher = GlobalMessagePipe.GetPublisher<ChallengeUpdateEvent<CumulativeFitMeChallengeData>>();
+            _cumulativeBlastPublisher = GlobalMessagePipe.GetPublisher<ChallengeUpdateEvent<CumulativeBlastChallengeData>>();
+            _cumulativeBlastColorPublisher = GlobalMessagePipe.GetPublisher<ChallengeUpdateEvent<CumulativeBlastColorChallengeData>>();
+            _cumulativeBlastSickPublisher = GlobalMessagePipe.GetPublisher<ChallengeUpdateEvent<CumulativeBlastSickChallengeData>>();
+            _fitMasterChallengePublisher = GlobalMessagePipe.GetPublisher<ChallengeUpdateEvent<FitMasterChallengeData>>();
         }
 
         private void OnDisable()
         {
             SaveManager.OnLoadCompleted -= LoadPlayerData;
+            SaveManager.OnSaveReady -= OnSaveReady;
+        }
+
+        private void OnDestroy()
+        {
+            _challengeDictionary.Values.ForEach(c => c.Dispose());
+        }
+
+        private void OnSaveReady()
+        {
+            if (_saveDataQueue.Count == 0) return;
+            var action = _saveDataQueue.Dequeue();
+            action.Invoke();
+            SaveManager.Instance.Save();
         }
         #endregion
 
         #region Save/Load
         private void LoadPlayerData()
         {
+            _challengeDictionary.Values.ForEach(c => c.Initialize());
             ScoreData = CurrentSaveFile.GetData<ScoreData>(ScoreDataKey) ?? new ScoreData();
             FitMeData = CurrentSaveFile.GetData<FitMeData>(FitMeDataKey) ?? new FitMeData();
-            AchievementData = CurrentSaveFile.GetData<AchievementData>(AchievementDataKey) ?? new AchievementData();
+            GameData = CurrentSaveFile.GetData<GameData>(GameDataKey) ?? new GameData();
+            ChallengeData = CurrentSaveFile.GetData<ChallengeData>(ChallengeDataKey) ?? new ChallengeData();
             TutorialData = CurrentSaveFile.GetData<TutorialData>(TutorialDataKey) ?? new TutorialData();
+            ValidateChallengeLoad();
         }
         
-        public void SaveScore(uint score, bool saveImmediately = true)
+        public void SaveScore(uint score)
         {
             var newHighScore = score > ScoreData.highScore.score;
             var newEntry = new ScoreData.RunData
@@ -139,14 +213,13 @@ namespace MadDuck.Scripts.Managers
             {
                 ScoreData.highScore = newEntry;
             }
-            CurrentSaveFile.AddOrUpdateData(ScoreDataKey, ScoreData);
-            if (saveImmediately)
-            {
-                SaveManager.Instance.Save();
-            }
+            ScoreData.cumulativeScore += score;
+            UpdateSaveData(ScoreDataKey, ScoreData);
+            _cumulativeScorePublisher.Publish(new ChallengeUpdateEvent<CumulativeScoreChallengeData>(
+                new CumulativeScoreChallengeData(ScoreData.cumulativeScore)));
         }
         
-        public void SaveFitMe(uint fitMe, bool saveImmediately = true)
+        public void SaveFitMe(uint fitMe)
         {
             var newMostFitMe = fitMe > FitMeData.mostFitMe.fitMe;
             var newEntry = new FitMeData.RunData
@@ -161,36 +234,121 @@ namespace MadDuck.Scripts.Managers
             {
                 FitMeData.mostFitMe = newEntry;
             }
-            CurrentSaveFile.AddOrUpdateData(FitMeDataKey, FitMeData);
-            if (saveImmediately)
+            FitMeData.cumulativeFitMe += fitMe;
+            UpdateSaveData(FitMeDataKey, FitMeData);
+            _cumulativeFitMePublisher.Publish(new ChallengeUpdateEvent<CumulativeFitMeChallengeData>(
+                new CumulativeFitMeChallengeData(FitMeData.cumulativeFitMe)));
+        }
+
+        public void SaveTutorialCompletion()
+        {
+            TutorialData.completedTutorial = true;
+            UpdateSaveData(TutorialDataKey, TutorialData);
+            _tutorialChallengePublisher.Publish(new ChallengeUpdateEvent<TutorialChallengeData>(
+                new TutorialChallengeData()));
+        }
+
+        public void SaveBlockDestroyed(FitType fitType, List<(BlockState beforeExplodeState, BlockTypes blockType)> destroyedBlocks)
+        {
+            if (destroyedBlocks.Count == 0) return;
+            foreach (var block in destroyedBlocks)
             {
-                SaveManager.Instance.Save();
+                if (block.beforeExplodeState is BlockState.PreInfected)
+                    GameData.cumulativePreInfectBlockDestroyed++;
+                GameData.cumulativeBlockDestroyed++;
+            }
+            if (fitType is FitType.Combo)
+            {
+                var blockType = destroyedBlocks[0].blockType;
+                if (GameData.cumulativeColorBlastDictionary.ContainsKey(blockType))
+                {
+                    GameData.cumulativeColorBlastDictionary[blockType]++;
+                }
+                else
+                {
+                    GameData.cumulativeColorBlastDictionary[blockType] = 1;
+                }
+            }
+            UpdateSaveData(GameDataKey, GameData);
+            _cumulativeBlastPublisher?.Publish(new ChallengeUpdateEvent<CumulativeBlastChallengeData>(
+                new CumulativeBlastChallengeData(GameData.cumulativeBlockDestroyed)));
+            foreach (var kvp in GameData.cumulativeColorBlastDictionary)
+            {
+                _cumulativeBlastColorPublisher?.Publish(new ChallengeUpdateEvent<CumulativeBlastColorChallengeData>(
+                    new CumulativeBlastColorChallengeData(kvp.Key, kvp.Value)));
+            }
+            _cumulativeBlastSickPublisher?.Publish(new ChallengeUpdateEvent<CumulativeBlastSickChallengeData>(
+                new CumulativeBlastSickChallengeData(GameData.cumulativePreInfectBlockDestroyed)));
+        }
+
+        private void ValidateChallengeLoad()
+        {
+            foreach (var guid in ChallengeData.challenges.Keys.ToList())
+            {
+                if (_challengeDictionary.TryGetValue(guid, out var challenge))
+                {
+                    challenge.SetChallengeData(ChallengeData.challenges[guid]);
+                    continue;
+                }
+                ChallengeData.challenges.Remove(guid);
+                Debug.LogWarning($"Challenge with GUID {guid} not found in current challenges. Removing from save data.");
+            }
+            foreach (var guid in _challengeDictionary.Keys.ToList())
+            {
+                ChallengeData.challenges.TryAdd(guid, null);
             }
         }
         
-        public void SaveAchievement(uint completedCount, bool saveImmediately = true)
+        public void SaveChallenges(Guid challengeGuid, ISavable savable)
         {
-            AchievementData.completedCount = completedCount;
-            CurrentSaveFile.AddOrUpdateData(AchievementDataKey, AchievementData);
-            if (saveImmediately)
+            if (!_challengeDictionary.ContainsKey(challengeGuid))
             {
-                SaveManager.Instance.Save();
+                Debug.LogError($"Challenge with GUID {challengeGuid} not found in current challenges.");
+                return;
             }
-        }
-        
-        public void SaveTutorialCompletion(bool completed, bool saveImmediately = true)
-        {
-            TutorialData.completedTutorial = completed;
-            CurrentSaveFile.AddOrUpdateData(TutorialDataKey, TutorialData);
-            if (saveImmediately)
+            ChallengeData.challenges[challengeGuid] = savable;
+            UpdateSaveData(ChallengeDataKey, ChallengeData);
+            var thisChallenge = _challengeDictionary[challengeGuid];
+            if (thisChallenge is FitMasterChallenge) return;
+            if (_challengeDictionary.Values.Where(x => x is not FitMasterChallenge).All(x => x.Completed))
             {
-                SaveManager.Instance.Save();
+                _fitMasterChallengePublisher?.Publish(new ChallengeUpdateEvent<FitMasterChallengeData>(
+                    new FitMasterChallengeData()));
             }
         }
 
-        public void FinishSave()
+        private void UpdateSaveData<T>(string id, T data)
         {
-            SaveManager.Instance.Save();
+            Action updateDataAction = () => CurrentSaveFile.AddOrUpdateData(id, data);
+            if (SaveManager.Instance.Saving)
+            {
+                _saveDataQueue.Enqueue(updateDataAction);
+            }
+            else
+            {
+                updateDataAction.Invoke();
+                SaveManager.Instance.Save();
+            }
+        }
+        #endregion
+        
+        #region Serialization
+        public void OnBeforeSerialize()
+        {
+            UnitySerializationUtility.SerializeUnityObject(this, ref serializationData);
+        }
+
+        public void OnAfterDeserialize()
+        {
+            UnitySerializationUtility.DeserializeUnityObject(this, ref serializationData);
+        }
+
+        [SerializeField, HideInInspector]
+        private SerializationData serializationData;
+        public SerializationData SerializationData 
+        { 
+            get => serializationData;
+            set => serializationData = value;
         }
         #endregion
     }
