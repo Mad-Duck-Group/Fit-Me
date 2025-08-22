@@ -34,7 +34,7 @@ MonoBehaviour:
       Data: 1|MadDuck.Scripts.Challenges.CumulativeScoreChallenge, Assembly-CSharp
     - Name: ChallengeGuid
       Entry: 2
-      Data: 9afc8d51492d45c9b645c9e84a4cfe82
+      Data: a129668980564780b35981541b07fc22
     - Name: <Completed>k__BackingField
       Entry: 5
       Data: false
@@ -55,7 +55,7 @@ MonoBehaviour:
       Data: MadDuck.Scripts.Challenges.CumulativeScoreChallengeData, Assembly-CSharp
     - Name: cumulativeScore
       Entry: 3
-      Data: 13860
+      Data: 14040
     - Name: 
       Entry: 8
       Data: 
@@ -70,7 +70,7 @@ MonoBehaviour:
       Data: 2|MadDuck.Scripts.Challenges.FailChallenge, Assembly-CSharp
     - Name: ChallengeGuid
       Entry: 2
-      Data: 0a3d7a3c62b9450f870a3724d5dd7691
+      Data: 4c776a223d3c46c697d61d3f542d3fae
     - Name: <Completed>k__BackingField
       Entry: 5
       Data: false
@@ -100,7 +100,7 @@ MonoBehaviour:
       Data: 3|MadDuck.Scripts.Challenges.FitMasterChallenge, Assembly-CSharp
     - Name: ChallengeGuid
       Entry: 2
-      Data: d368ad7e3034469d807bd41db8abac0e
+      Data: 9082d551673d48eb9cbbb3a158b3a09a
     - Name: <Completed>k__BackingField
       Entry: 5
       Data: false

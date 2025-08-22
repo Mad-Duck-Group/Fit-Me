@@ -146,6 +146,9 @@ PlayerSettings:
   - {fileID: 11400000, guid: 6a788f2f051c4994ca9d95ac98ab75d9, type: 2}
   - {fileID: 11400000, guid: 86cca8f55a34a744f9101900d53ab395, type: 2}
   - {fileID: -944628639613478452, guid: 31be9a5608cc2b649872e096a954cd05, type: 3}
+  - {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  - {fileID: 11400000, guid: 79cc5fe124f148941a802916bb7cf437, type: 2}
+  - {fileID: 11400000, guid: 42e935c84a42a2245a20dc83cf730a65, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -401,10 +404,14 @@ PlayerSettings:
     iPhone: 1
     tvOS: 1
   m_BuildTargetGroupLightmapEncodingQuality: []
+  m_BuildTargetGroupHDRCubemapEncodingQuality: []
   m_BuildTargetGroupLightmapSettings: []
   m_BuildTargetGroupLoadStoreDebugModeSettings: []
   m_BuildTargetNormalMapEncoding: []
-  m_BuildTargetDefaultTextureCompressionFormat: []
+  m_BuildTargetDefaultTextureCompressionFormat:
+  - serializedVersion: 3
+    m_BuildTarget: Android
+    m_Formats: 01000000
   playModeTestRunnerEnabled: 0
   runPlayModeTestAsEditModeTest: 0
   actionOnDotNetUnhandledException: 1
