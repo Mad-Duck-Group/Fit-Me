@@ -1691,7 +1691,37 @@ MonoBehaviour:
   blackColor: {r: 0, g: 0, b: 0, a: 1}
   canBePlacedColor: {r: 0.07678461, g: 1, b: 0, a: 1}
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
-  gridPresets: []
+  gridPresets:
+  - {fileID: 11400000, guid: 3c0de1220640875409d7ee56aa4db52d, type: 2}
+  - {fileID: 11400000, guid: 633ee46917ae20d49bd51a8cf7def4dc, type: 2}
+  - {fileID: 11400000, guid: e2efd1faf5182024baadc152896d32c5, type: 2}
+  - {fileID: 11400000, guid: 8e6023eb534aad04d9dce6a821e03abd, type: 2}
+  - {fileID: 11400000, guid: 5f042f5472050fa42929991a02396429, type: 2}
+  - {fileID: 11400000, guid: 531eaed777e2b7d41b60e3eb9e41ace1, type: 2}
+  - {fileID: 11400000, guid: bd7a351ef97323040bc2d883edf0e21e, type: 2}
+  - {fileID: 11400000, guid: db2fed03be4ec684ab45bf2a4cff1c04, type: 2}
+  - {fileID: 11400000, guid: 2850327eebe4f254887b2de0f0fb5654, type: 2}
+  - {fileID: 11400000, guid: 3f5172f5d777141499cf757cc4e77433, type: 2}
+  - {fileID: 11400000, guid: 94a5915b7ac9b1246bf6992062086abc, type: 2}
+  - {fileID: 11400000, guid: eb33e92ccccd72c47949d193f2cd32c6, type: 2}
+  - {fileID: 11400000, guid: 00c82d2d85419804bb39dfadb62b5920, type: 2}
+  - {fileID: 11400000, guid: 448d67f0617d10647be6fd5fbc06cb4e, type: 2}
+  - {fileID: 11400000, guid: dad480a0a89839b41810fc99f4d5defb, type: 2}
+  - {fileID: 11400000, guid: ce449c6bb2b99ee498f5fb97e223d0c3, type: 2}
+  - {fileID: 11400000, guid: e7912a65ef42eec4ead1e2d4af1d6497, type: 2}
+  - {fileID: 11400000, guid: 60daa0f641841ae4e8be56910f5f18a5, type: 2}
+  - {fileID: 11400000, guid: 281214482c2acc54baac223033cae309, type: 2}
+  - {fileID: 11400000, guid: b1d9e9e358e2c98489599c2a003cbbed, type: 2}
+  - {fileID: 11400000, guid: 5ff0ac5409c126e4f8055efd389a0c19, type: 2}
+  - {fileID: 11400000, guid: 6954aa4a129456146b643c94a5ac93e6, type: 2}
+  - {fileID: 11400000, guid: 42d4dd3d5edcc714f9f3d6d33ad7da26, type: 2}
+  - {fileID: 11400000, guid: 49ac1ac62efab9d44ba416909e663151, type: 2}
+  - {fileID: 11400000, guid: e059b89801440c847a78a72b6c724122, type: 2}
+  - {fileID: 11400000, guid: 8a01e7478c673fa4e92ea27bac77ce03, type: 2}
+  - {fileID: 11400000, guid: 6f202132af4aa4746b6fe968246cacbf, type: 2}
+  - {fileID: 11400000, guid: 1a939645afc5d1144941d8c5a7f7b02b, type: 2}
+  - {fileID: 11400000, guid: 3bdd23f0aad13c849808bb6b3ac5b8e8, type: 2}
+  - {fileID: 11400000, guid: 7798235347fb9134c95af548925dfc4c, type: 2}
   endlessType: 1
   generatedGridType: 1
   presetRandomType: 0
