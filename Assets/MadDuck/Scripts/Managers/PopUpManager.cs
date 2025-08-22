@@ -49,10 +49,21 @@ namespace MadDuck.Scripts.Managers
         #endregion
 
         #region Initialization
-        protected override void Awake()
+
+        private void OnEnable()
         {
-            base.Awake();
+            MessagePipeLifetimeScope.OnGlobalMessagePipeSet += OnGlobalMessagePipeSet;
             _popUpResultPublisher = GlobalMessagePipe.GetPublisher<PopUpResultEvent>();
+        }
+
+        private void OnGlobalMessagePipeSet()
+        {
+            
+        }
+        
+        private void OnDisable()
+        {
+            MessagePipeLifetimeScope.OnGlobalMessagePipeSet -= OnGlobalMessagePipeSet;
         }
         #endregion
 

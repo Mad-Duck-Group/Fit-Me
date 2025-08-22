@@ -2,6 +2,7 @@
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Utils.Inspectors;
 using MessagePipe;
+using Newtonsoft.Json.Linq;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -31,15 +32,22 @@ namespace MadDuck.Scripts.Challenges
         public IChallenge Clone();
     }
 
-    public interface ISavable{}
+    public interface ISavable : IJTokenDeserializer{}
 
     public record SavableChallengeData : ISavable
     {
         public bool completed;
         
+        public SavableChallengeData() { } // Parameterless constructor for deserialization
+        
         public SavableChallengeData(bool completed)
         {
             this.completed = completed;
+        }
+
+        public virtual void DeserializeJToken(JToken jToken)
+        {
+            jToken.TryGetAndConvertToValue(nameof(completed), out completed);
         }
     }
     public record SavableChallengeData<T> : SavableChallengeData
@@ -49,6 +57,12 @@ namespace MadDuck.Scripts.Challenges
         {
             this.completed = completed;
             this.challengeData = challengeData;
+        }
+        
+        public override void DeserializeJToken(JToken jToken)
+        {
+            base.DeserializeJToken(jToken);
+            jToken.TryGetAndConvertToValue(nameof(challengeData), out challengeData);
         }
     }
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using MadDuck.Scripts.Frameworks.MessagePipe;
 using MadDuck.Scripts.UIs.Panels.MainMenu;
 using MadDuck.Scripts.UIs.Panels.Transition;
 using MadDuck.Scripts.UIs.Transitions;
@@ -124,13 +125,20 @@ namespace MadDuck.Scripts.Managers
         #region Events
         private void OnEnable()
         {
+            MessagePipeLifetimeScope.OnGlobalMessagePipeSet += OnGlobalMessagePipeSet;
             _loadSceneEventListener = GlobalMessagePipe.GetSubscriber<LoadSceneEvent>()
                 .Subscribe(OnLoadSceneEvent);
         }
-        
+
         private void OnDisable()
         {
+            MessagePipeLifetimeScope.OnGlobalMessagePipeSet -= OnGlobalMessagePipeSet;
             _loadSceneEventListener?.Dispose();
+        }
+        
+        private void OnGlobalMessagePipeSet()
+        {
+            
         }
         
         private void OnLoadSceneEvent(LoadSceneEvent loadSceneEvent)

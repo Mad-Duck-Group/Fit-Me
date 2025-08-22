@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using MadDuck.Scripts.Frameworks.MessagePipe;
 using MadDuck.Scripts.UIs.Notifications;
 using MessagePipe;
 using Sherbert.Framework.Generic;
@@ -60,11 +61,18 @@ namespace MadDuck.Scripts.Managers
 
         private void OnEnable()
         {
+            MessagePipeLifetimeScope.OnGlobalMessagePipeSet += OnGlobalMessagePipeSet;
             _notificationSubscription = GlobalMessagePipe.GetSubscriber<NotificationDisplayEvent>().Subscribe(EnqueueNotification);
         }
-        
+
+        private void OnGlobalMessagePipeSet()
+        {
+         
+        }
+
         private void OnDisable()
         {
+            MessagePipeLifetimeScope.OnGlobalMessagePipeSet -= OnGlobalMessagePipeSet;
             _notificationSubscription?.Dispose();
         }
         

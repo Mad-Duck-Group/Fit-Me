@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MadDuck.Scripts.Frameworks.MessagePipe;
 using MadDuck.Scripts.Utils.Inspectors;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -31,19 +32,36 @@ namespace MadDuck.Scripts.Utils
         private void OnEnable()
         {
             if (!Application.isPlaying) return;
-            var activeScene = SceneManager.GetActiveScene();
-            if (activeScene.isLoaded)
-            {
-                OnFirstSceneLoaded(activeScene, default);
-            }
-            else
-            {
-                SceneManager.sceneLoaded -= OnFirstSceneLoaded;
-                SceneManager.sceneLoaded += OnFirstSceneLoaded;
-            }
+            // var activeScene = SceneManager.GetActiveScene();
+            // if (activeScene.isLoaded)
+            // {
+            //     OnFirstSceneLoaded(activeScene, default);
+            // }
+            // else
+            // {
+            //     SceneManager.sceneLoaded -= OnFirstSceneLoaded;
+            //     SceneManager.sceneLoaded += OnFirstSceneLoaded;
+            // }
+            MessagePipeLifetimeScope.OnGlobalMessagePipeSet += OnGlobalMessagePipeSet;
             
         }
-        
+
+        private void OnGlobalMessagePipeSet()
+        {
+            MessagePipeLifetimeScope.OnGlobalMessagePipeSet -= OnGlobalMessagePipeSet;
+            foreach (var persistentObject in persistentMonoSingletons)
+            {
+                if (persistentObject)
+                {
+                    Instantiate(persistentObject);
+                }
+                else
+                {
+                    Debug.LogWarning("A persistent object is null and will not be instantiated.");
+                }
+            }
+        }
+
         private void OnFirstSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             Debug.Log("Instantiating persistent objects...");

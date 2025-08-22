@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 6669441725348077618}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -196.57047, y: 1514.1556, z: 5.1236115}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -47,7 +47,7 @@ MonoBehaviour:
   maxHighScoresEntries: 3
   maxFitMeEntries: 3
   challengePresets:
-  - {fileID: 11400000, guid: ce5a9f1da32ad1e45b6ce0713343f8a5, type: 2}
+  - {fileID: 11400000, guid: bd12afcdd3eb58f4497b886843f8a771, type: 2}
   <ScoreData>k__BackingField:
     highScore:
       score: 0
@@ -80,7 +80,7 @@ MonoBehaviour:
       Data: 0|MadDuck.Scripts.Managers.ChallengeData, Assembly-CSharp
     - Name: challenges
       Entry: 7
-      Data: 1|Sherbert.Framework.Generic.SerializableDictionary`2[[System.Guid, mscorlib],[MadDuck.Scripts.Challenges.ISavable,
+      Data: 1|Sherbert.Framework.Generic.SerializableDictionary`2[[System.Guid, mscorlib],[MadDuck.Scripts.Challenges.SavableChallengeData,
         Assembly-CSharp]], Assembly-CSharp
     - Name: 
       Entry: 12

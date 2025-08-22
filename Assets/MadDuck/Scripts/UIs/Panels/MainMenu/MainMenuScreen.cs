@@ -46,13 +46,13 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         {
             _sceneActivatePublisher = GlobalMessagePipe.GetPublisher<SceneActivateEvent>();
             LoadSceneManager.OnStartFadeOut += OnSwitchScene;
-            SaveManager.OnLoadCompleted += OnLoadCompleted;
+            JsonSaveManager.OnLoadCompleted += OnLoadCompleted;
         }
         
         private void OnDisable()
         {
             LoadSceneManager.OnStartFadeOut -= OnSwitchScene;
-            SaveManager.OnLoadCompleted += OnLoadCompleted;
+            JsonSaveManager.OnLoadCompleted += OnLoadCompleted;
         }
 
         private void OnLoadCompleted()

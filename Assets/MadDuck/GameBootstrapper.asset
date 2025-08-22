@@ -15,6 +15,6 @@ MonoBehaviour:
   persistentMonoSingletons:
   - {fileID: 9009637061283458569, guid: d57cc7c1f4670e14baf3b8bef219708a, type: 3}
   - {fileID: 1402617828738896277, guid: cf917c20041872c4ab77036963aee1e3, type: 3}
-  - {fileID: 32377055536259738, guid: 4bc46b793d9bea14c99bd2b40344e637, type: 3}
+  - {fileID: 5034964176135143599, guid: 01ea698cc60e3204a8ea2bf0a69e9fcc, type: 3}
   - {fileID: 6669441725348077618, guid: 39ca27fdcd037c44f93673e4b4315190, type: 3}
   - {fileID: 732036787222603176, guid: f4d52bb2097c71444972bb7781aac13f, type: 3}

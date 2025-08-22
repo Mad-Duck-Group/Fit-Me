@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Esper.ESave;
 using MadDuck.Scripts.Challenges;
+using MadDuck.Scripts.Frameworks.MessagePipe;
 using MadDuck.Scripts.Units;
 using MessagePipe;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using Redcode.Extensions;
 using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
@@ -17,56 +22,111 @@ namespace MadDuck.Scripts.Managers
 {
     #region Data Structures
     [Serializable]
-    public record ScoreData
+    public record ScoreData : IJTokenDeserializer
     {
         [Serializable]
-        public record RunData
+        public record RunData : IJTokenDeserializer
         {
             public DateTime dateTime;
             public uint score;
             [ShowInInspector, DisplayAsString] private string DebugDateTime => dateTime.ToString("yyyy-MM-dd HH:mm:ss");
+            public void DeserializeJToken(JToken jToken)
+            {
+                jToken.TryGetAndConvertToValue(nameof(dateTime), out dateTime);
+                jToken.TryGetAndConvertToValue(nameof(score), out score);
+            }
         }
         public RunData highScore = new();
         public List<RunData> runData = new();
         public uint cumulativeScore;
+        public void DeserializeJToken(JToken jToken)
+        {
+            jToken.TryGetAndConvertToValue(nameof(highScore), out highScore);
+            jToken.TryGetAndConvertToList(nameof(runData), out IEnumerable<RunData> runDataEnumerable);
+            runData = runDataEnumerable?.ToList() ?? new List<RunData>();
+            jToken.TryGetAndConvertToValue(nameof(cumulativeScore), out cumulativeScore);
+        }
     }
 
     [Serializable]
-    public record FitMeData
+    public record FitMeData : IJTokenDeserializer
     {
         [Serializable]
-        public record RunData
+        public record RunData : IJTokenDeserializer
         {
             public DateTime dateTime;
             public uint fitMe;
             [ShowInInspector, DisplayAsString] private string DebugDateTime => dateTime.ToString("yyyy-MM-dd HH:mm:ss");
+            public void DeserializeJToken(JToken jToken)
+            {
+                jToken.TryGetAndConvertToValue(nameof(dateTime), out dateTime);
+                jToken.TryGetAndConvertToValue(nameof(fitMe), out fitMe);
+            }
         }
         public RunData mostFitMe = new();
         public List<RunData> runData = new();
         public uint cumulativeFitMe;
+        
+        public void DeserializeJToken(JToken jToken)
+        {
+            jToken.TryGetAndConvertToValue(nameof(mostFitMe), out mostFitMe);
+            jToken.TryGetAndConvertToList(nameof(runData), out IEnumerable<RunData> runDataEnumerable);
+            runData = runDataEnumerable?.ToList() ?? new List<RunData>();
+            jToken.TryGetAndConvertToValue(nameof(cumulativeFitMe), out cumulativeFitMe);
+        }
     }
 
     [Serializable]
-    public record GameData
+    public record GameData : IJTokenDeserializer
     {
         public uint cumulativePreInfectBlockDestroyed;
         public uint cumulativeBlockDestroyed;
         [SerializeField] public SerializableDictionary<BlockTypes, uint> cumulativeColorBlastDictionary = new();
+        
+        public void DeserializeJToken(JToken jToken)
+        {
+            jToken.TryGetAndConvertToValue(nameof(cumulativePreInfectBlockDestroyed), out cumulativePreInfectBlockDestroyed);
+            jToken.TryGetAndConvertToValue(nameof(cumulativeBlockDestroyed), out cumulativeBlockDestroyed);
+            jToken.TryGetAndConvertToValue(nameof(cumulativeColorBlastDictionary), out cumulativeColorBlastDictionary);
+        }
     }
     
     [Serializable]
-    public record ChallengeData
+    public record ChallengeData : IJTokenDeserializer
     {
-        [SerializeField] public SerializableDictionary<Guid, ISavable> challenges = new();
+        [SerializeField] public SerializableDictionary<Guid, SavableChallengeData> challenges = new();
+        
+        public void DeserializeJToken(JToken jToken)
+        {
+            jToken.TryGetAndConvertToDictionary(nameof(challenges), out IDictionary<string, SavableChallengeData> challengeData);
+            if (challengeData != null)
+            {
+                challenges = new SerializableDictionary<Guid, SavableChallengeData>(challengeData.ToDictionary(
+                    kvp => Guid.TryParse(kvp.Key, out var guid) ? guid : Guid.Empty,
+                    kvp => kvp.Value));
+            }
+            else
+            {
+                challenges = new SerializableDictionary<Guid, SavableChallengeData>();
+            }
+            
+        }
     }
     
     [Serializable]
-    public record TutorialData
+    public record TutorialData : IJTokenDeserializer
     {
         public bool completedTutorial;
+        
+        public void DeserializeJToken(JToken jToken)
+        {
+            jToken.TryGetAndConvertToValue(nameof(completedTutorial), out completedTutorial);
+        }
     }
     #endregion
-    
+}
+namespace MadDuck.Scripts.Managers
+{
     [ShowOdinSerializedPropertiesInInspector]
     public class PlayerDataManager : PersistentMonoSingleton<PlayerDataManager>, ISerializationCallbackReceiver, ISupportsPrefabSerialization
     {
@@ -77,7 +137,7 @@ namespace MadDuck.Scripts.Managers
         
         [Title("Challenges")]
         [SerializeField, InlineEditor] private List<ChallengePreset> challengePresets = new();
-        
+
         [field: Title("Debug")]
         [field: SerializeField] public ScoreData ScoreData { get; private set; } = new();
         [field: SerializeField] public FitMeData FitMeData { get; private set; } = new();
@@ -104,28 +164,37 @@ namespace MadDuck.Scripts.Managers
             TutorialData = new TutorialData();
             Action updateDataAction = () =>
             {
-                CurrentSaveFile.DeleteData(ScoreDataKey);
-                CurrentSaveFile.DeleteData(FitMeDataKey);
-                CurrentSaveFile.DeleteData(ChallengeDataKey);
-                CurrentSaveFile.DeleteData(TutorialDataKey);
-                CurrentSaveFile.DeleteData(GameDataKey);
+                JsonSaveManager.Instance.RemoveData(ScoreDataKey, false).Forget();
+                JsonSaveManager.Instance.RemoveData(FitMeDataKey, false).Forget();
+                JsonSaveManager.Instance.RemoveData(GameDataKey, false).Forget();
+                JsonSaveManager.Instance.RemoveData(ChallengeDataKey, false).Forget();
+                JsonSaveManager.Instance.RemoveData(TutorialDataKey, false).Forget();
+                JsonSaveManager.Instance.Save().Forget();
             };
-            if (SaveManager.Instance.Saving)
+            if (JsonSaveManager.Instance.Saving)
             {
                 _saveDataQueue.Enqueue(updateDataAction);
             }
             else
             {
                 updateDataAction.Invoke();
-                SaveManager.Instance.Save();
             }
+            // if (SaveManager.Instance.Saving)
+            // {
+            //     _saveDataQueue.Enqueue(updateDataAction);
+            // }
+            // else
+            // {
+            //     updateDataAction.Invoke();
+            //     SaveManager.Instance.Save();
+            // }
         }
         
-        [Button("Delete Save File")]
-        private void DebugDeleteSaveFile()
-        {
-            CurrentSaveFile.DeleteFile();
-        }
+        // [Button("Delete Save File")]
+        // private void DebugDeleteSaveFile()
+        // {
+        //     CurrentSaveFile.DeleteFile();
+        // }
         
         private const string ScoreDataKey = "ScoreData";
         private const string FitMeDataKey = "FitMeData";
@@ -135,7 +204,7 @@ namespace MadDuck.Scripts.Managers
         #endregion
 
         #region Fields and Properties
-        private SaveFile CurrentSaveFile => SaveManager.Instance.CurrentSaveFile;
+        //private SaveFile CurrentSaveFile => SaveManager.Instance.CurrentSaveFile;
         private IPublisher<ChallengeUpdateEvent<CumulativeScoreChallengeData>> _cumulativeScorePublisher;
         private IPublisher<ChallengeUpdateEvent<CumulativeFitMeChallengeData>> _cumulativeFitMePublisher;
         private IPublisher<ChallengeUpdateEvent<CumulativeBlastChallengeData>> _cumulativeBlastPublisher;
@@ -155,8 +224,8 @@ namespace MadDuck.Scripts.Managers
             _challengeDictionary = challengePresets
                 .SelectMany(x => x.Challenges)
                 .ToDictionary(k => k.ChallengeGuid, v => v);
-            SaveManager.OnLoadCompleted += LoadPlayerData;
-            SaveManager.OnSaveReady += OnSaveReady;
+            JsonSaveManager.OnLoadCompleted += LoadPlayerData;
+            JsonSaveManager.OnSaveReady += OnSaveReady;
             _cumulativeScorePublisher = GlobalMessagePipe.GetPublisher<ChallengeUpdateEvent<CumulativeScoreChallengeData>>();
             _tutorialChallengePublisher = GlobalMessagePipe.GetPublisher<ChallengeUpdateEvent<TutorialChallengeData>>();
             _cumulativeFitMePublisher = GlobalMessagePipe.GetPublisher<ChallengeUpdateEvent<CumulativeFitMeChallengeData>>();
@@ -166,10 +235,16 @@ namespace MadDuck.Scripts.Managers
             _fitMasterChallengePublisher = GlobalMessagePipe.GetPublisher<ChallengeUpdateEvent<FitMasterChallengeData>>();
         }
 
+        private void OnGlobalMessagePipeSet()
+        {
+            
+        }
+
         private void OnDisable()
         {
-            SaveManager.OnLoadCompleted -= LoadPlayerData;
-            SaveManager.OnSaveReady -= OnSaveReady;
+            MessagePipeLifetimeScope.OnGlobalMessagePipeSet -= OnGlobalMessagePipeSet;
+            JsonSaveManager.OnLoadCompleted -= LoadPlayerData;
+            JsonSaveManager.OnSaveReady -= OnSaveReady;
         }
 
         private void OnDestroy()
@@ -182,7 +257,6 @@ namespace MadDuck.Scripts.Managers
             if (_saveDataQueue.Count == 0) return;
             var action = _saveDataQueue.Dequeue();
             action.Invoke();
-            SaveManager.Instance.Save();
         }
         #endregion
 
@@ -190,11 +264,16 @@ namespace MadDuck.Scripts.Managers
         private void LoadPlayerData()
         {
             _challengeDictionary.Values.ForEach(c => c.Initialize());
-            ScoreData = CurrentSaveFile.GetData<ScoreData>(ScoreDataKey) ?? new ScoreData();
-            FitMeData = CurrentSaveFile.GetData<FitMeData>(FitMeDataKey) ?? new FitMeData();
-            GameData = CurrentSaveFile.GetData<GameData>(GameDataKey) ?? new GameData();
-            ChallengeData = CurrentSaveFile.GetData<ChallengeData>(ChallengeDataKey) ?? new ChallengeData();
-            TutorialData = CurrentSaveFile.GetData<TutorialData>(TutorialDataKey) ?? new TutorialData();
+            JsonSaveManager.Instance.TryGetData(GameDataKey, GameData);
+            JsonSaveManager.Instance.TryGetData(ScoreDataKey, ScoreData);
+            JsonSaveManager.Instance.TryGetData(FitMeDataKey, FitMeData);
+            JsonSaveManager.Instance.TryGetData(ChallengeDataKey, ChallengeData);
+            JsonSaveManager.Instance.TryGetData(TutorialDataKey, TutorialData);
+            // ScoreData = CurrentSaveFile.GetData<ScoreData>(ScoreDataKey) ?? new ScoreData();
+            // FitMeData = CurrentSaveFile.GetData<FitMeData>(FitMeDataKey) ?? new FitMeData();
+            // GameData = CurrentSaveFile.GetData<GameData>(GameDataKey) ?? new GameData();
+            // ChallengeData = CurrentSaveFile.GetData<ChallengeData>(ChallengeDataKey) ?? new ChallengeData();
+            // TutorialData = CurrentSaveFile.GetData<TutorialData>(TutorialDataKey) ?? new TutorialData();
             ValidateChallengeLoad();
         }
         
@@ -299,7 +378,7 @@ namespace MadDuck.Scripts.Managers
             }
         }
         
-        public void SaveChallenges(Guid challengeGuid, ISavable savable)
+        public void SaveChallenges(Guid challengeGuid, SavableChallengeData savable)
         {
             if (!_challengeDictionary.ContainsKey(challengeGuid))
             {
@@ -319,15 +398,19 @@ namespace MadDuck.Scripts.Managers
 
         private void UpdateSaveData<T>(string id, T data)
         {
-            Action updateDataAction = () => CurrentSaveFile.AddOrUpdateData(id, data);
-            if (SaveManager.Instance.Saving)
+            Action updateDataAction = () =>
+            {
+                //CurrentSaveFile.AddOrUpdateData(id, data);
+                JsonSaveManager.Instance.AddOrUpdateData(id, data, false).Forget();
+                JsonSaveManager.Instance.Save().Forget();
+            };
+            if (JsonSaveManager.Instance.Saving)
             {
                 _saveDataQueue.Enqueue(updateDataAction);
             }
             else
             {
                 updateDataAction.Invoke();
-                SaveManager.Instance.Save();
             }
         }
         #endregion
