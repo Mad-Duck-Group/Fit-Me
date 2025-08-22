@@ -84,7 +84,10 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
         {
             Ads.Instance.ShowAd();
             _adsTimerSubscription?.Dispose();
-            
+        }
+
+        public void OnAdsClosed()
+        {
             transitionCts = new CancellationTokenSource();
             PanelController.ChangePanel(this, gameplayUIPanelCrossFadeRule.nextPanel, gameplayUIPanelCrossFadeRule.crossFadeSettings,
                 transitionCts.Token).Forget();

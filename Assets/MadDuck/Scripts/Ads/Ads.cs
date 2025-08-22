@@ -10,6 +10,7 @@ using UnityEngine;
 public class Ads : MonoSingleton<Ads>
 {
     private RewardedAd _rewardedAd;
+    public GameOverPanel _gameOverPanel;
 
     void Start()
     {
@@ -23,7 +24,7 @@ public class Ads : MonoSingleton<Ads>
     {
         string adUnitId;
 #if UNITY_ANDROID
-            adUnitId = "ca-app-pub-3940256099942544/6300978111";
+            adUnitId = "ca-app-pub-3940256099942544/5224354917";
 #elif UNITY_IPHONE
             adUnitId = "ca-app-pub-3940256099942544/2934735716";
 #else
@@ -61,6 +62,7 @@ public class Ads : MonoSingleton<Ads>
             _rewardedAd.Show(reward =>
             {
                 GameManager.Instance.Continue();
+                _gameOverPanel.OnAdsClosed();
                 if (_rewardedAd != null)
                 {
                     _rewardedAd.Destroy();
