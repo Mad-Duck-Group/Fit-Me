@@ -1,4 +1,5 @@
-﻿using MadDuck.Scripts.Challenges;
+﻿using System.Globalization;
+using MadDuck.Scripts.Challenges;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -20,7 +21,10 @@ namespace MadDuck.Scripts.UIs.Others
             challengeNameText.text = challenge.ChallengeName;
             challengeDescriptionText.text = challenge.ChallengeDescription;
             var progress = challenge.GetProgress();
-            progressText.text = $"{(int)progress.x} / {(int)progress.y}";
+            progress.x = Mathf.Clamp(progress.x, progress.x, progress.y);
+            var isInt = progress.x % 1 == 0 && progress.y % 1 == 0;
+            var format = isInt ? "N0" : "N2";
+            progressText.text = $"{progress.x.ToString(format)} / {progress.y.ToString(format)}";
             progressSlider.maxValue = progress.y;
             progressSlider.value = progress.x;
             challengeIcon.sprite = challenge.ChallengeIcon;

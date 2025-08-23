@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using MadDuck.Scripts.Managers;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace MadDuck.Scripts.UIs.Others
 {
-    public class ScoreBlock : MonoBehaviour
+    public class RecordBlock : MonoBehaviour
     {
         [Title("References")]
         [SerializeField] private TMP_Text dateText;
@@ -15,7 +16,8 @@ namespace MadDuck.Scripts.UIs.Others
         
         public void SetData(PlayerRecordData.RunData runData)
         {
-            dateText.text = runData.dateTime.ToString("yyyy-MM-dd HH:mm:ss");
+            //var currentUICulture = CultureInfo.CurrentUICulture;
+            dateText.text = runData.dateTime.ToString("G", CultureInfo.InvariantCulture);
             scoreText.text = runData.score.ToString("N0");
             fitMeText.text = runData.fitMe.ToString("N0");
         }

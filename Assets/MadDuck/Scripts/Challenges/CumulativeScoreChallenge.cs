@@ -1,4 +1,5 @@
 ﻿using System;
+using MadDuck.Scripts.Managers;
 using UnityEngine;
 
 namespace MadDuck.Scripts.Challenges
@@ -21,7 +22,7 @@ namespace MadDuck.Scripts.Challenges
         
         public override Vector2 GetProgress()
         {
-            return new Vector2((int)ChallengeData.cumulativeScore, (int)targetScore);
+            return new Vector2((int)PlayerDataManager.Instance.PlayerRecordData.cumulativeScore, (int)targetScore);
         }
 
         public override void OnChallengeUpdate(ChallengeUpdateEvent<CumulativeScoreChallengeData> challengeUpdateEvent)

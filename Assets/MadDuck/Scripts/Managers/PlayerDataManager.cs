@@ -116,9 +116,11 @@ namespace MadDuck.Scripts.Managers
         [Title("Settings")]
         [SerializeField] private uint maxHighScoresEntries = 10;
         [SerializeField] private uint maxFitMeEntries = 10;
-        
-        [Title("Challenges")]
-        [SerializeField, InlineEditor] private List<ChallengePreset> challengePresets = new();
+
+        [field: FormerlySerializedAs("challengePresets")]
+        [field: Title("Challenges")]
+        [field: SerializeField, InlineEditor]
+        public List<ChallengePreset> ChallengePresets { get; private set; } = new();
 
         [field: Title("Debug")]
         [field: SerializeField] public PlayerRecordData PlayerRecordData { get; private set; } = new();
@@ -166,7 +168,6 @@ namespace MadDuck.Scripts.Managers
         #endregion
 
         #region Fields and Properties
-        //private SaveFile CurrentSaveFile => SaveManager.Instance.CurrentSaveFile;
         private IPublisher<ChallengeUpdateEvent<CumulativeScoreChallengeData>> _cumulativeScorePublisher;
         private IPublisher<ChallengeUpdateEvent<CumulativeFitMeChallengeData>> _cumulativeFitMePublisher;
         private IPublisher<ChallengeUpdateEvent<CumulativeBlastChallengeData>> _cumulativeBlastPublisher;
@@ -174,7 +175,7 @@ namespace MadDuck.Scripts.Managers
         private IPublisher<ChallengeUpdateEvent<CumulativeBlastSickChallengeData>> _cumulativeBlastSickPublisher;
         private IPublisher<ChallengeUpdateEvent<TutorialChallengeData>> _tutorialChallengePublisher;
         private IPublisher<ChallengeUpdateEvent<FitMasterChallengeData>> _fitMasterChallengePublisher;
-        private Dictionary<Guid, IChallenge> _challengeDictionary = new();
+        public Dictionary<Guid, IChallenge> ChallengeDictionary { get; private set; }= new();
         private readonly Queue<Action> _saveDataQueue = new();
         #endregion
         
@@ -182,8 +183,8 @@ namespace MadDuck.Scripts.Managers
         private void OnEnable()
         {
             //clone the challenge presets to avoid modifying the original data
-            challengePresets = challengePresets.Select(x => x.Clone()).ToList();
-            _challengeDictionary = challengePresets
+            ChallengePresets = ChallengePresets.Select(x => x.Clone()).ToList();
+            ChallengeDictionary = ChallengePresets
                 .SelectMany(x => x.Challenges)
                 .ToDictionary(k => k.ChallengeGuid, v => v);
             JsonSaveManager.OnLoadCompleted += LoadPlayerData;
@@ -211,7 +212,7 @@ namespace MadDuck.Scripts.Managers
 
         private void OnDestroy()
         {
-            _challengeDictionary.Values.ForEach(c => c.Dispose());
+            ChallengeDictionary.Values.ForEach(c => c.Dispose());
         }
 
         private void OnSaveReady()
@@ -225,7 +226,7 @@ namespace MadDuck.Scripts.Managers
         #region Save/Load
         private void LoadPlayerData()
         {
-            _challengeDictionary.Values.ForEach(c => c.Initialize());
+            ChallengeDictionary.Values.ForEach(c => c.Initialize());
             JsonSaveManager.Instance.TryGetData(GameDataKey, GameData);
             JsonSaveManager.Instance.TryGetData(PlayerRecordKey, PlayerRecordData);
             JsonSaveManager.Instance.TryGetData(ChallengeDataKey, ChallengeData);
@@ -308,7 +309,7 @@ namespace MadDuck.Scripts.Managers
         {
             foreach (var guid in ChallengeData.challenges.Keys.ToList())
             {
-                if (_challengeDictionary.TryGetValue(guid, out var challenge))
+                if (ChallengeDictionary.TryGetValue(guid, out var challenge))
                 {
                     challenge.SetChallengeData(ChallengeData.challenges[guid]);
                     continue;
@@ -316,7 +317,7 @@ namespace MadDuck.Scripts.Managers
                 ChallengeData.challenges.Remove(guid);
                 Debug.LogWarning($"Challenge with GUID {guid} not found in current challenges. Removing from save data.");
             }
-            foreach (var guid in _challengeDictionary.Keys.ToList())
+            foreach (var guid in ChallengeDictionary.Keys.ToList())
             {
                 ChallengeData.challenges.TryAdd(guid, null);
             }
@@ -324,16 +325,16 @@ namespace MadDuck.Scripts.Managers
         
         public void SaveChallenges(Guid challengeGuid, SavableChallengeData savable)
         {
-            if (!_challengeDictionary.ContainsKey(challengeGuid))
+            if (!ChallengeDictionary.ContainsKey(challengeGuid))
             {
                 Debug.LogError($"Challenge with GUID {challengeGuid} not found in current challenges.");
                 return;
             }
             ChallengeData.challenges[challengeGuid] = savable;
             UpdateSaveData(ChallengeDataKey, ChallengeData);
-            var thisChallenge = _challengeDictionary[challengeGuid];
+            var thisChallenge = ChallengeDictionary[challengeGuid];
             if (thisChallenge is FitMasterChallenge) return;
-            if (_challengeDictionary.Values.Where(x => x is not FitMasterChallenge).All(x => x.Completed))
+            if (ChallengeDictionary.Values.Where(x => x is not FitMasterChallenge).All(x => x.Completed))
             {
                 _fitMasterChallengePublisher?.Publish(new ChallengeUpdateEvent<FitMasterChallengeData>(
                     new FitMasterChallengeData()));

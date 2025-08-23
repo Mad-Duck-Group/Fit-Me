@@ -687,7 +687,9 @@ namespace MadDuck.Scripts.Managers
                 {
                     var cell = _cellArray[x, y];
                     if (!cell) continue;
-                    if (cell.CurrentAtom) continue;
+                    if (cell.CurrentAtom 
+                        && cell.CurrentAtom.ParentBlock 
+                        && cell.CurrentAtom.ParentBlock.BlockState is not BlockState.Exploding) continue;
                     vacantSchema[x, y] = 1;
                     vacantCount++;
                     isVacant = true;

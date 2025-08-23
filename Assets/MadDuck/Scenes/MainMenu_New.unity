@@ -5750,6 +5750,12 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+  profileImage: {fileID: 0}
+  usernameText: {fileID: 0}
+  highscoreText: {fileID: 0}
+  mostFitText: {fileID: 0}
+  scoreBlockPrefab: {fileID: 0}
+  challengeBlockPrefab: {fileID: 0}
   backButton: {fileID: 1991976532}
 --- !u!225 &388156684
 CanvasGroup:
@@ -12507,8 +12513,8 @@ GameObject:
   - component: {fileID: 859073894}
   - component: {fileID: 859073896}
   - component: {fileID: 859073895}
-  - component: {fileID: 859073898}
   - component: {fileID: 859073897}
+  - component: {fileID: 859073898}
   m_Layer: 5
   m_Name: HistoryPanal
   m_TagString: Untagged
