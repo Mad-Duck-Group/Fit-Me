@@ -4,12 +4,13 @@
   },
   "GameData": {
     "cumulativePreInfectBlockDestroyed": 19,
-    "cumulativeBlockDestroyed": 132,
+    "cumulativeBlockDestroyed": 166,
     "cumulativeColorBlastDictionary": {
-      "Green": 4,
+      "Green": 5,
       "Blue": 3,
       "Red": 2,
-      "Yellow": 1
+      "Yellow": 1,
+      "Purple": 1
     }
   },
   "ChallengeData": {
@@ -47,6 +48,11 @@
     },
     "runData": [
       {
+        "dateTime": "2025-08-23T19:24:09.1330766+07:00",
+        "score": 7200,
+        "fitMe": 1
+      },
+      {
         "dateTime": "2025-08-23T19:05:52.4063145+07:00",
         "score": 31030,
         "fitMe": 5
@@ -55,14 +61,9 @@
         "dateTime": "2025-08-23T16:51:05.5627274+07:00",
         "score": 5300,
         "fitMe": 1
-      },
-      {
-        "dateTime": "2025-08-23T16:42:05.9824624+07:00",
-        "score": 180,
-        "fitMe": 0
       }
     ],
-    "cumulativeScore": 36510,
-    "cumulativeFitMe": 6
+    "cumulativeScore": 43710,
+    "cumulativeFitMe": 7
   }
 }
