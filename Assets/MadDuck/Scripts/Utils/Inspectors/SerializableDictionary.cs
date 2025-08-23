@@ -369,6 +369,11 @@ namespace Sherbert.Framework.Generic
         {
             values[i] = value;
         }
+        
+        public static implicit operator System.Collections.Generic.Dictionary<TKey, TValue>(SerializableDictionary<TKey, TValue> serializableDictionary)
+        {
+            return new Dictionary<TKey, TValue>(serializableDictionary);
+        }
 
         // ---------------------------------------------------------------- //
     }

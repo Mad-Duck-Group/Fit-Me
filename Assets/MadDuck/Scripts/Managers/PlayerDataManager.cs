@@ -32,8 +32,8 @@ namespace MadDuck.Scripts.Managers
             [ShowInInspector, DisplayAsString] private string DebugDateTime => dateTime.ToString("yyyy-MM-dd HH:mm:ss");
             public void DeserializeJToken(JToken jToken)
             {
-                jToken.TryGetAndConvertToValue(nameof(dateTime), out dateTime);
-                jToken.TryGetAndConvertToValue(nameof(score), out score);
+                jToken.TryGetAndConvertTo(nameof(dateTime), out dateTime);
+                jToken.TryGetAndConvertTo(nameof(score), out score);
             }
         }
         public RunData highScore = new();
@@ -41,10 +41,9 @@ namespace MadDuck.Scripts.Managers
         public uint cumulativeScore;
         public void DeserializeJToken(JToken jToken)
         {
-            jToken.TryGetAndConvertToValue(nameof(highScore), out highScore);
-            jToken.TryGetAndConvertToList(nameof(runData), out IEnumerable<RunData> runDataEnumerable);
-            runData = runDataEnumerable?.ToList() ?? new List<RunData>();
-            jToken.TryGetAndConvertToValue(nameof(cumulativeScore), out cumulativeScore);
+            jToken.TryGetAndConvertTo(nameof(highScore), out highScore);
+            jToken.TryGetAndConvertTo(nameof(runData), out runData);
+            jToken.TryGetAndConvertTo(nameof(cumulativeScore), out cumulativeScore);
         }
     }
 
@@ -59,8 +58,8 @@ namespace MadDuck.Scripts.Managers
             [ShowInInspector, DisplayAsString] private string DebugDateTime => dateTime.ToString("yyyy-MM-dd HH:mm:ss");
             public void DeserializeJToken(JToken jToken)
             {
-                jToken.TryGetAndConvertToValue(nameof(dateTime), out dateTime);
-                jToken.TryGetAndConvertToValue(nameof(fitMe), out fitMe);
+                jToken.TryGetAndConvertTo(nameof(dateTime), out dateTime);
+                jToken.TryGetAndConvertTo(nameof(fitMe), out fitMe);
             }
         }
         public RunData mostFitMe = new();
@@ -69,10 +68,9 @@ namespace MadDuck.Scripts.Managers
         
         public void DeserializeJToken(JToken jToken)
         {
-            jToken.TryGetAndConvertToValue(nameof(mostFitMe), out mostFitMe);
-            jToken.TryGetAndConvertToList(nameof(runData), out IEnumerable<RunData> runDataEnumerable);
-            runData = runDataEnumerable?.ToList() ?? new List<RunData>();
-            jToken.TryGetAndConvertToValue(nameof(cumulativeFitMe), out cumulativeFitMe);
+            jToken.TryGetAndConvertTo(nameof(mostFitMe), out mostFitMe);
+            jToken.TryGetAndConvertTo(nameof(runData), out runData);
+            jToken.TryGetAndConvertTo(nameof(cumulativeFitMe), out cumulativeFitMe);
         }
     }
 
@@ -85,9 +83,14 @@ namespace MadDuck.Scripts.Managers
         
         public void DeserializeJToken(JToken jToken)
         {
-            jToken.TryGetAndConvertToValue(nameof(cumulativePreInfectBlockDestroyed), out cumulativePreInfectBlockDestroyed);
-            jToken.TryGetAndConvertToValue(nameof(cumulativeBlockDestroyed), out cumulativeBlockDestroyed);
-            jToken.TryGetAndConvertToValue(nameof(cumulativeColorBlastDictionary), out cumulativeColorBlastDictionary);
+            jToken.TryGetAndConvertTo(nameof(cumulativePreInfectBlockDestroyed), out cumulativePreInfectBlockDestroyed);
+            jToken.TryGetAndConvertTo(nameof(cumulativeBlockDestroyed), out cumulativeBlockDestroyed);
+            jToken.TryGetAndConvertTo(nameof(cumulativeColorBlastDictionary), out IDictionary<string, uint> colorBlastDict);
+            cumulativeColorBlastDictionary = colorBlastDict != null
+                ? new SerializableDictionary<BlockTypes, uint>(colorBlastDict.ToDictionary(
+                    kvp => Enum.TryParse(kvp.Key, out BlockTypes blockType) ? blockType : BlockTypes.Red,
+                    kvp => kvp.Value))
+                : new SerializableDictionary<BlockTypes, uint>();
         }
     }
     
@@ -98,7 +101,7 @@ namespace MadDuck.Scripts.Managers
         
         public void DeserializeJToken(JToken jToken)
         {
-            jToken.TryGetAndConvertToDictionary(nameof(challenges), out IDictionary<string, SavableChallengeData> challengeData);
+            jToken.TryGetAndConvertTo(nameof(challenges), out IDictionary<string, SavableChallengeData> challengeData);
             if (challengeData != null)
             {
                 challenges = new SerializableDictionary<Guid, SavableChallengeData>(challengeData.ToDictionary(
@@ -120,7 +123,7 @@ namespace MadDuck.Scripts.Managers
         
         public void DeserializeJToken(JToken jToken)
         {
-            jToken.TryGetAndConvertToValue(nameof(completedTutorial), out completedTutorial);
+            jToken.TryGetAndConvertTo(nameof(completedTutorial), out completedTutorial);
         }
     }
     #endregion

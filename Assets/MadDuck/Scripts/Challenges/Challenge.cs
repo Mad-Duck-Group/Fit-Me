@@ -47,7 +47,7 @@ namespace MadDuck.Scripts.Challenges
 
         public virtual void DeserializeJToken(JToken jToken)
         {
-            jToken.TryGetAndConvertToValue(nameof(completed), out completed);
+            jToken.TryGetAndConvertTo(nameof(completed), out completed);
         }
     }
     public record SavableChallengeData<T> : SavableChallengeData
@@ -61,8 +61,7 @@ namespace MadDuck.Scripts.Challenges
         
         public override void DeserializeJToken(JToken jToken)
         {
-            base.DeserializeJToken(jToken);
-            jToken.TryGetAndConvertToValue(nameof(challengeData), out challengeData);
+            jToken.TryGetAndConvertTo(nameof(challengeData), out challengeData);
         }
     }
 

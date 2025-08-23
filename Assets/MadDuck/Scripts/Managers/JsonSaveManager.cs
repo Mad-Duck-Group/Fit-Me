@@ -49,8 +49,8 @@ namespace MadDuck.Scripts.Managers
             }
             public void DeserializeJToken(JToken jToken)
             {
-                jToken.TryGetAndConvertToValue(nameof(message), out message);
-                jToken.TryGetAndConvertToValue(nameof(date), out date);
+                jToken.TryGetAndConvertTo(nameof(message), out message);
+                jToken.TryGetAndConvertTo(nameof(date), out date);
             }
         }
         public string message;
@@ -66,12 +66,13 @@ namespace MadDuck.Scripts.Managers
 
         public void DeserializeJToken(JToken jToken)
         {
-            jToken.TryGetAndConvertToList(nameof(children), out IEnumerable<TestSaveDataChild> childrenList);
-            children = childrenList?.ToList() ?? new List<TestSaveDataChild>();
-            jToken.TryGetAndConvertToDictionary(nameof(childrenDictionary), out IDictionary<string, TestSaveDataChild> d);
-            childrenDictionary = d != null ? new SerializableDictionary<string, TestSaveDataChild>(d) : new SerializableDictionary<string, TestSaveDataChild>();
-            jToken.TryGetAndConvertToValue(nameof(message), out message);
-            jToken.TryGetAndConvertToValue(nameof(date), out date);
+            jToken.TryGetAndConvertTo(nameof(children), out children);
+            jToken.TryGetAndConvertTo(nameof(childrenDictionary), out IDictionary<string, TestSaveDataChild> tempDict);
+            childrenDictionary = tempDict != null 
+                ? new SerializableDictionary<string, TestSaveDataChild>(tempDict) 
+                : new SerializableDictionary<string, TestSaveDataChild>();
+            jToken.TryGetAndConvertTo(nameof(message), out message);
+            jToken.TryGetAndConvertTo(nameof(date), out date);
         }
     }
     
@@ -82,7 +83,7 @@ namespace MadDuck.Scripts.Managers
 
         public void DeserializeJToken(JToken jToken)
         {
-            jToken.TryGetAndConvertToValue(nameof(version), out version);
+            jToken.TryGetAndConvertTo(nameof(version), out version);
         }
     }
     
@@ -345,6 +346,65 @@ namespace MadDuck.Scripts.Managers
 
     public static class JsonSaveManagerExtensions
     {
+        /// <summary>
+        /// Wrapper method to handle both value types and collections (IList, IDictionary).
+        /// </summary>
+        /// <param name="jToken"></param>
+        /// <param name="key"></param>
+        /// <param name="result"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static bool TryGetAndConvertTo<T>(this JToken jToken, string key, out T result)
+        {
+            result = default;
+            var type = typeof(T);
+            //Debug.Log($"Type of result: {type}");
+            
+            if (!type.IsGenericType || type == typeof(string))
+            {
+                return jToken.TryGetAndConvertToValue(key, out result);
+            }
+            var isGenericType = type.IsGenericType;
+            var genericTypeDefinition = isGenericType ? type.GetGenericTypeDefinition() : null;
+            switch (isGenericType)
+            {
+                case true when genericTypeDefinition == typeof(IList<>):
+                {
+                    var elementType = type.GetGenericArguments()[0];
+                    if (elementType.GetConstructor(Type.EmptyTypes) != null)
+                        if (jToken.TryGetAndConvertToList(key, elementType, out var list))
+                        {
+                            result = (T)list;
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    goto case true;
+                }
+                case true when genericTypeDefinition == typeof(IDictionary<,>) && type.GetGenericArguments()[0] == typeof(string):
+                {
+                    var valueType = type.GetGenericArguments()[1];
+                    if (valueType.GetConstructor(Type.EmptyTypes) != null)
+                        if (jToken.TryGetAndConvertToDictionary(key, valueType, out var dict))
+                        {
+                            result = (T)dict;
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    goto case true;
+                }
+                case true:
+                    return jToken.TryGetAndConvertToValue(key, out result);
+                default:
+                    Debug.LogError($"Type '{type}' is not supported for this method.");
+                    return false;
+            }
+        }
         public static bool TryGetAndConvertToValue<T>(this JToken jToken, string key, out T result)
         {
             result = default;
@@ -357,7 +417,7 @@ namespace MadDuck.Scripts.Managers
             return false;
         }
         
-        public static bool TryGetAndConvertToList<T>(this JToken jToken, string key, out IEnumerable<T> result) where T : IJTokenDeserializer, new()
+        public static bool TryGetAndConvertToList<T>(this JToken jToken, string key, out IList<T> result) where T : new()
         {
             result = null;
             if (jToken is not JObject jObject) return false;
@@ -365,18 +425,41 @@ namespace MadDuck.Scripts.Managers
             {
                 return false;
             }
+            if (token.Type is not JTokenType.Array) return false;
             var temp = new List<T>();
             foreach (var t in (JArray)token)
             {
                 var tempChild = new T();
-                tempChild.DeserializeJToken(t);
+                if (tempChild is IJTokenDeserializer deserializer)
+                    deserializer.DeserializeJToken(t);
+                temp.Add(tempChild);
+            }
+            result = temp;
+            return true;
+        }
+
+        private static bool TryGetAndConvertToList(this JToken jToken, string key, Type elementType, out IList result)
+        {
+            result = null;
+            if (jToken is not JObject jObject) return false;
+            if (!jObject.TryGetValue(key, out var token))
+            {
+                return false;
+            }
+            if (token.Type is not JTokenType.Array) return false;
+            var temp = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(elementType));
+            foreach (var t in (JArray)token)
+            {
+                var tempChild = Activator.CreateInstance(elementType);
+                if (tempChild is IJTokenDeserializer deserializer)
+                    deserializer.DeserializeJToken(t);
                 temp.Add(tempChild);
             }
             result = temp;
             return true;
         }
         
-        public static bool TryGetAndConvertToDictionary<T>(this JToken jToken, string key, out IDictionary<string, T> result) where T : IJTokenDeserializer, new()
+        public static bool TryGetAndConvertToDictionary<T>(this JToken jToken, string key, out IDictionary<string, T> result) where T : new()
         {
             result = null;
             if (jToken is not JObject jObject) return false;
@@ -389,7 +472,29 @@ namespace MadDuck.Scripts.Managers
             foreach (var property in ((JObject)token).Properties())
             {
                 var tempChild = new T();
-                tempChild.DeserializeJToken(property.Value);
+                if (tempChild is IJTokenDeserializer deserializer)
+                    deserializer.DeserializeJToken(property.Value);
+                temp.Add(property.Name, tempChild);
+            }
+            result = temp;
+            return true;
+        }
+        
+        private static bool TryGetAndConvertToDictionary(this JToken jToken, string key, Type valueType, out IDictionary result)
+        {
+            result = null;
+            if (jToken is not JObject jObject) return false;
+            if (!jObject.TryGetValue(key, out var token))
+            {
+                return false;
+            }
+            if (token.Type is not JTokenType.Object) return false;
+            var temp = (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(typeof(string), valueType));
+            foreach (var property in ((JObject)token).Properties())
+            {
+                var tempChild = Activator.CreateInstance(valueType);
+                if (tempChild is IJTokenDeserializer deserializer)
+                    deserializer.DeserializeJToken(property.Value);
                 temp.Add(property.Name, tempChild);
             }
             result = temp;

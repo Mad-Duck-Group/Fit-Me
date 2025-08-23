@@ -175,7 +175,9 @@ namespace MadDuck.Scripts.Units
         public async UniTask Explode()
         {
             CancelIdleTimer();
-            await skeletonAnimation.AnimationState.SetAnimation(0, explodeAnimation, false).ToUniTask();
+            var explodeAnim = skeletonAnimation.AnimationState.SetAnimation(0, explodeAnimation, false);
+            explodeAnim.TimeScale *= 2f;
+            await explodeAnim.ToUniTask();
             //await UniTask.WaitUntil(() => skeletonAnimation.AnimationState.GetCurrent(0).IsComplete);
             if (explodeVfx.TryGetValue(_blockType, out var vfx))
             {

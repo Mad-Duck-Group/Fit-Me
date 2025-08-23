@@ -3,27 +3,19 @@
     "version": "1.1.1-devbuild.1-android"
   },
   "GameData": {
-    "cumulativePreInfectBlockDestroyed": 1,
-    "cumulativeBlockDestroyed": 22,
+    "cumulativePreInfectBlockDestroyed": 0,
+    "cumulativeBlockDestroyed": 21,
     "cumulativeColorBlastDictionary": {
-      "Blue": 1,
-      "Purple": 1
+      "Green": 1,
+      "Blue": 2,
+      "Red": 1
     }
-  },
-  "TutorialData": {
-    "completedTutorial": true
   },
   "ChallengeData": {
     "challenges": {
-      "8e785e1c-6b0f-443b-817a-2e3d9d6150ab": {
-        "completed": true
-      },
-      "b639b047-6696-4930-9676-6e911ed80251": {
-        "completed": true
-      },
-      "afce5401-6d6d-4328-ade8-655fa08c036d": {
-        "completed": true
-      },
+      "8e785e1c-6b0f-443b-817a-2e3d9d6150ab": null,
+      "b639b047-6696-4930-9676-6e911ed80251": null,
+      "afce5401-6d6d-4328-ade8-655fa08c036d": null,
       "f9eb45a3-c844-42ef-858b-f1fb9de9cd15": {
         "completed": true
       },
@@ -32,30 +24,7 @@
       }
     }
   },
-  "ScoreData": {
-    "highScore": {
-      "dateTime": "2025-08-23T10:39:26.4483479+07:00",
-      "score": 7470
-    },
-    "runData": [
-      {
-        "dateTime": "2025-08-23T10:39:26.4483479+07:00",
-        "score": 7470
-      }
-    ],
-    "cumulativeScore": 7470
-  },
-  "FitMeData": {
-    "mostFitMe": {
-      "dateTime": "2025-08-23T10:39:26.4617032+07:00",
-      "fitMe": 1
-    },
-    "runData": [
-      {
-        "dateTime": "2025-08-23T10:39:26.4617032+07:00",
-        "fitMe": 1
-      }
-    ],
-    "cumulativeFitMe": 1
+  "TutorialData": {
+    "completedTutorial": true
   }
 }
