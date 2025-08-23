@@ -835,6 +835,20 @@ MonoBehaviour:
   canBePlacedColor: {r: 0.07678461, g: 1, b: 0, a: 1}
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
   gridPresets: []
+  stackExplodeSfx:
+    Guid:
+      Data1: 685384001
+      Data2: 1300291788
+      Data3: 2005901239
+      Data4: 387108005
+    Path: event:/SFX/Game Play/GP06_Stack Explode
+  fitMeExplodeSfx:
+    Guid:
+      Data1: 845146018
+      Data2: 1179994146
+      Data3: 1596898966
+      Data4: -257840896
+    Path: event:/SFX/Game Play/GP07_Fit Explode
   endlessType: 1
   generatedGridType: 1
   presetRandomType: 0

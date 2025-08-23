@@ -1,16 +1,16 @@
 {
   "SaveVersion": {
-    "version": "1.0"
+    "version": "1.1.1-devbuild.1-android"
   },
   "GameData": {
-    "cumulativePreInfectBlockDestroyed": 19,
-    "cumulativeBlockDestroyed": 166,
+    "cumulativePreInfectBlockDestroyed": 20,
+    "cumulativeBlockDestroyed": 235,
     "cumulativeColorBlastDictionary": {
-      "Green": 5,
-      "Blue": 3,
-      "Red": 2,
-      "Yellow": 1,
-      "Purple": 1
+      "Green": 6,
+      "Blue": 6,
+      "Red": 4,
+      "Yellow": 2,
+      "Purple": 3
     }
   },
   "ChallengeData": {
@@ -48,22 +48,22 @@
     },
     "runData": [
       {
+        "dateTime": "2025-08-23T20:53:05.7827794+07:00",
+        "score": 18940,
+        "fitMe": 2
+      },
+      {
+        "dateTime": "2025-08-23T20:43:11.9695037+07:00",
+        "score": 300,
+        "fitMe": 0
+      },
+      {
         "dateTime": "2025-08-23T19:24:09.1330766+07:00",
         "score": 7200,
         "fitMe": 1
-      },
-      {
-        "dateTime": "2025-08-23T19:05:52.4063145+07:00",
-        "score": 31030,
-        "fitMe": 5
-      },
-      {
-        "dateTime": "2025-08-23T16:51:05.5627274+07:00",
-        "score": 5300,
-        "fitMe": 1
       }
     ],
-    "cumulativeScore": 43710,
-    "cumulativeFitMe": 7
+    "cumulativeScore": 62950,
+    "cumulativeFitMe": 9
   }
 }

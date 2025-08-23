@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using FMODUnity;
 using MadDuck.Scripts.Frameworks.MessagePipe;
 using MadDuck.Scripts.UIs.Notifications;
 using MessagePipe;
@@ -37,6 +38,7 @@ namespace MadDuck.Scripts.Managers
     {
         public NotificationView notificationViewPrefab;
         public Vector2 initialPosition;
+        [SerializeField] public EventReference soundEffect;
     }
     
     [ShowOdinSerializedPropertiesInInspector]
@@ -100,6 +102,7 @@ namespace MadDuck.Scripts.Managers
             view.Initialize();
             view.SetMessage(notificationEvent.message);
             view.SetIcon(notificationEvent.icon);
+            AudioManager.Instance.PlayAudioOneShot(prefabData.soundEffect, view.transform.position);
             await view.Show();
             await UniTask.WhenAll(UniTask.WaitForSeconds(notificationStayDuration),
                 view.PlayAnimation());

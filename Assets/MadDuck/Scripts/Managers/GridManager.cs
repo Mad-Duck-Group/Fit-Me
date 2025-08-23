@@ -76,6 +76,10 @@ namespace MadDuck.Scripts.Managers
         [SerializeField] private Color cannotBePlacedColor;
         [SerializeField] private List<GridPreset> gridPresets = new();
         
+        [Title("Audios")]
+        [SerializeField] private EventReference stackExplodeSfx;
+        [SerializeField] private EventReference fitMeExplodeSfx;
+        
         [TitleGroup("Grid Settings")]
         [SerializeField]
         [ValidateInput("@endlessType != EndlessType.None", "Endless type cannot be None")]
@@ -557,12 +561,12 @@ namespace MadDuck.Scripts.Managers
 
         private async UniTask FitMe()
         {
+            if (_currentSceneType is not SceneType.Gameplay) return;
             List<(BlockState beforeExplodeState, BlockTypes blockType)> blocksToSave = 
                 BlocksOnGrid.Select(block => (block.BlockState, block.BlockType)).ToList();
-            await RemoveAllBlocks(true);
+            await ClearGrid();
             PlayerDataManager.Instance.SaveBlockDestroyed(FitType.FitMe, blocksToSave);
             OnScoreAdded?.Invoke(ScoreTypes.FitMe, worldPosition:GetGridCenter());
-            if (_currentSceneType is not SceneType.Gameplay) return;
             RegenerateGrid();
             OnNextGameDifficulty?.Invoke();
         }
@@ -573,6 +577,7 @@ namespace MadDuck.Scripts.Managers
                 .Aggregate(Vector3.zero, (current, position) => current + position) / contacts.Count;
             List<(BlockState beforeExplodeState, BlockTypes blockType)> blocksToSave = 
                 contacts.Select(block => (block.BlockState, block.BlockType)).ToList();
+            AudioManager.Instance.PlayAudioOneShot(stackExplodeSfx, transform.position);
             await UniTask.WhenAll(contacts.Select(block => RemoveBlock(block, true)));
             PlayerDataManager.Instance.SaveBlockDestroyed(FitType.Combo, blocksToSave);
             OnScoreAdded?.Invoke(ScoreTypes.Combo, contacts.Count, middleOfBlocks);
@@ -605,12 +610,18 @@ namespace MadDuck.Scripts.Managers
                 cell.SetAtom(null);
             }
         }
+
+        public async UniTask ClearGrid()
+        {
+            AudioManager.Instance.PlayAudioOneShot(fitMeExplodeSfx, transform.position);
+            await RemoveAllBlocks(true);
+        }
     
         /// <summary>
         /// Remove all blocks from the grid
         /// </summary>
         /// <param name="destroy">Destroy the blocks, false by default</param>
-        public  async UniTask RemoveAllBlocks(bool destroy = false)
+        public async UniTask RemoveAllBlocks(bool destroy = false)
         {
             List<Block> blocksToRemove = new List<Block>(BlocksOnGrid);
             await UniTask.WhenAll(blocksToRemove.Select(block => RemoveBlock(block, destroy)));

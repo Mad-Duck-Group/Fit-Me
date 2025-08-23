@@ -4694,13 +4694,6 @@ MonoBehaviour:
       Data3: 2058765481
       Data4: -1473537089
     Path: event:/SFX/Game Play/GP03_Game Over
-  giveUpSfx:
-    Guid:
-      Data1: 2079650638
-      Data2: 1139855666
-      Data3: -186385515
-      Data4: 1959068079
-    Path: event:/SFX/Game Play/GP04_10s Continue
   <CurrentGameState>k__BackingField:
     value: 0
   <Score>k__BackingField:
@@ -5240,14 +5233,14 @@ MonoBehaviour:
       Data2: 1143868672
       Data3: 2115131297
       Data4: 1918103405
-    Path: event:/SFX/Game Play/GP05_Ready
+    Path: event:/SFX/Game Play/GP04_Ready
   fitSfx:
     Guid:
       Data1: -668213261
       Data2: 1249784284
       Data3: -1134613369
       Data4: -789644582
-    Path: event:/SFX/Game Play/GP06_Fit
+    Path: event:/SFX/Game Play/GP05_Fit
 --- !u!225 &1094725375
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -9796,6 +9789,20 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1a939645afc5d1144941d8c5a7f7b02b, type: 2}
   - {fileID: 11400000, guid: 3bdd23f0aad13c849808bb6b3ac5b8e8, type: 2}
   - {fileID: 11400000, guid: 7798235347fb9134c95af548925dfc4c, type: 2}
+  stackExplodeSfx:
+    Guid:
+      Data1: 685384001
+      Data2: 1300291788
+      Data3: 2005901239
+      Data4: 387108005
+    Path: event:/SFX/Game Play/GP06_Stack Explode
+  fitMeExplodeSfx:
+    Guid:
+      Data1: 845146018
+      Data2: 1179994146
+      Data3: 1596898966
+      Data4: -257840896
+    Path: event:/SFX/Game Play/GP07_Fit Explode
   endlessType: 1
   generatedGridType: 1
   presetRandomType: 0

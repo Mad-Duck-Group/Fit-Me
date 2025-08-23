@@ -158,8 +158,6 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     
     [TabGroup("Audios", "SFX")]
     [SerializeField] private EventReference gameOverSfx;
-    [TabGroup("Audios", "SFX")]
-    [SerializeField] private EventReference giveUpSfx;
     #endregion
     
     #region Debug
@@ -508,23 +506,13 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     public async UniTaskVoid ToResultScreen()
     {
         _bgmReference.Stop();
-        var giveUpRef = AudioManager.Instance.PlayAudio(giveUpSfx, transform.position);
-        // await UniTask.WaitUntil(() =>
-        // {
-        //     if (giveUpRef.eventInstance.getPlaybackState(out var state) is not FMOD.RESULT.OK)
-        //     {
-        //         Debug.LogError("Failed to get playback state for give up SFX.");
-        //         return true;
-        //     }
-        //     return state == FMOD.Studio.PLAYBACK_STATE.STOPPED;
-        // });
         _bgmReference = AudioManager.Instance.PlayAudio(resultBgm, transform.position);
     }
     
     public void Continue()
     {
         CurrentGameState.Value = GameState.PlaceBlock;
-        GridManager.Instance.RemoveAllBlocks(true).Forget();
+        GridManager.Instance.ClearGrid().Forget();
     }
     #endregion
     

@@ -4795,6 +4795,33 @@ MonoBehaviour:
     - Name: initialTutorialState
       Entry: 3
       Data: 0
+    - Name: soundEffect
+      Entry: 7
+      Data: FMODUnity.EventReference, FMODUnity
+    - Name: Guid
+      Entry: 7
+      Data: FMOD.GUID, FMODUnity
+    - Name: Data1
+      Entry: 3
+      Data: -1252727724
+    - Name: Data2
+      Entry: 3
+      Data: 1140158978
+    - Name: Data3
+      Entry: 3
+      Data: -663423081
+    - Name: Data4
+      Entry: 3
+      Data: -732228926
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Path
+      Entry: 1
+      Data: event:/SFX/Game Play/Loopie Woopie/Lmirr
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: <CurrentTutorialState>k__BackingField
       Entry: 3
       Data: 0
@@ -6177,13 +6204,6 @@ MonoBehaviour:
       Data3: 2058765481
       Data4: -1473537089
     Path: event:/SFX/Game Play/GP03_Game Over
-  giveUpSfx:
-    Guid:
-      Data1: 2079650638
-      Data2: 1139855666
-      Data3: -186385515
-      Data4: 1959068079
-    Path: event:/SFX/Game Play/GP04_10s Continue
   <CurrentGameState>k__BackingField:
     value: 0
   <Score>k__BackingField:
@@ -6911,14 +6931,14 @@ MonoBehaviour:
       Data2: 1143868672
       Data3: 2115131297
       Data4: 1918103405
-    Path: event:/SFX/Game Play/GP05_Ready
+    Path: event:/SFX/Game Play/GP04_Ready
   fitSfx:
     Guid:
       Data1: -668213261
       Data2: 1249784284
       Data3: -1134613369
       Data4: -789644582
-    Path: event:/SFX/Game Play/GP06_Fit
+    Path: event:/SFX/Game Play/GP05_Fit
 --- !u!225 &1094725375
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -12069,6 +12089,20 @@ MonoBehaviour:
   gridPresets:
   - {fileID: 11400000, guid: 8a01e7478c673fa4e92ea27bac77ce03, type: 2}
   - {fileID: 11400000, guid: 00c82d2d85419804bb39dfadb62b5920, type: 2}
+  stackExplodeSfx:
+    Guid:
+      Data1: 685384001
+      Data2: 1300291788
+      Data3: 2005901239
+      Data4: 387108005
+    Path: event:/SFX/Game Play/GP06_Stack Explode
+  fitMeExplodeSfx:
+    Guid:
+      Data1: 845146018
+      Data2: 1179994146
+      Data3: 1596898966
+      Data4: -257840896
+    Path: event:/SFX/Game Play/GP07_Fit Explode
   endlessType: 1
   generatedGridType: 1
   presetRandomType: 1

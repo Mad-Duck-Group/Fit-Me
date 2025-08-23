@@ -68,13 +68,20 @@ MonoBehaviour:
       Data3: 156051903
       Data4: -1858921210
     Path: event:/SFX/Game Play/GP02_Cancel Place
-  explodeSfx:
+  preInfectSfx:
     Guid:
-      Data1: 685384001
-      Data2: 1300291788
-      Data3: 2005901239
-      Data4: 387108005
-    Path: event:/SFX/Game Play/GP07_Stack Explode
+      Data1: 648842851
+      Data2: 1177421182
+      Data3: 2022225816
+      Data4: -747466283
+    Path: event:/SFX/Game Play/GP10_Turn Sick
+  infectSfx:
+    Guid:
+      Data1: -1998188885
+      Data2: 1275586517
+      Data3: 117579918
+      Data4: -721219862
+    Path: event:/SFX/Game Play/GP09_Turn Stone
   <BlockType>k__BackingField: 0
   <BlockFace>k__BackingField: 
   <Atoms>k__BackingField: []
@@ -83,7 +90,8 @@ MonoBehaviour:
   <BlockState>k__BackingField: 0
   <IsPlaced>k__BackingField: 0
   <BlockCells>k__BackingField: []
-  blockView: {fileID: 0}
+  <BlockView>k__BackingField: {fileID: 0}
+  beforeExplodeState: 0
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 

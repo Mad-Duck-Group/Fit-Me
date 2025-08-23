@@ -5754,7 +5754,10 @@ MonoBehaviour:
   usernameText: {fileID: 0}
   highscoreText: {fileID: 0}
   mostFitText: {fileID: 0}
-  scoreBlockPrefab: {fileID: 0}
+  recordParent: {fileID: 0}
+  recordBlockPrefab: {fileID: 0}
+  recordDivider: {fileID: 0}
+  challengeParent: {fileID: 0}
   challengeBlockPrefab: {fileID: 0}
   backButton: {fileID: 1991976532}
 --- !u!225 &388156684

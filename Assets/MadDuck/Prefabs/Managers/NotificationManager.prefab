@@ -159,6 +159,33 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: soundEffect
+      Entry: 7
+      Data: FMODUnity.EventReference, FMODUnity
+    - Name: Guid
+      Entry: 7
+      Data: FMOD.GUID, FMODUnity
+    - Name: Data1
+      Entry: 3
+      Data: 1425667396
+    - Name: Data2
+      Entry: 3
+      Data: 1136489605
+    - Name: Data3
+      Entry: 3
+      Data: -214587489
+    - Name: Data4
+      Entry: 3
+      Data: 163782095
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Path
+      Entry: 1
+      Data: event:/SFX/Game Play/GP08_Achievement
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 8
       Data: 
@@ -188,6 +215,33 @@ MonoBehaviour:
     - Name: 
       Entry: 4
       Data: 200
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: soundEffect
+      Entry: 7
+      Data: FMODUnity.EventReference, FMODUnity
+    - Name: Guid
+      Entry: 7
+      Data: FMOD.GUID, FMODUnity
+    - Name: Data1
+      Entry: 3
+      Data: 1425667396
+    - Name: Data2
+      Entry: 3
+      Data: 1136489605
+    - Name: Data3
+      Entry: 3
+      Data: -214587489
+    - Name: Data4
+      Entry: 3
+      Data: 163782095
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Path
+      Entry: 1
+      Data: event:/SFX/Game Play/GP08_Achievement
     - Name: 
       Entry: 8
       Data: 

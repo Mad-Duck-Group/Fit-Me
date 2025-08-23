@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using FMODUnity;
 using MadDuck.Scripts.Frameworks.StateMachine;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Tutorials.States;
@@ -44,6 +45,9 @@ namespace MadDuck.Scripts.Tutorials
             SkipTo(tutorialState);
         }
         
+        [TitleGroup("Audios")]
+        [SerializeField] private EventReference soundEffect;
+        
         [TitleGroup("Debug")]
         [field: SerializeField, DisplayAsString] public TutorialState CurrentTutorialState { get; set; }
         
@@ -77,6 +81,7 @@ namespace MadDuck.Scripts.Tutorials
             CurrentTutorialState = initialTutorialState;
             if (stateDictionary.TryGetValue(CurrentTutorialState, out var initialState))
             {
+                AudioManager.Instance.PlayAudioOneShot(soundEffect, Vector3.zero);
                 ChangeState(initialState);
             }
             else
@@ -92,6 +97,7 @@ namespace MadDuck.Scripts.Tutorials
             if (stateDictionary.TryGetValue(nextTutorialState, out var nextState))
             {
                 CurrentTutorialState = nextTutorialState;
+                AudioManager.Instance.PlayAudioOneShot(soundEffect, Vector3.zero);
                 ChangeState(nextState);
             }
             else

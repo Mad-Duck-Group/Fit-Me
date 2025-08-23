@@ -69,7 +69,8 @@ namespace MadDuck.Scripts.Units
         [Title("Audios")] 
         [SerializeField] private EventReference placeSucceedSfx;
         [SerializeField] private EventReference placeFailSfx;
-        [SerializeField] private EventReference explodeSfx;
+        [SerializeField] private EventReference preInfectSfx;
+        [SerializeField] private EventReference infectSfx;
         
         [field: Title("Block Debug")]
         [field: SerializeField, DisplayAsString] public BlockTypes BlockType { get; private set; }
@@ -213,6 +214,7 @@ namespace MadDuck.Scripts.Units
             if (BlockView) BlockView.PreInfect();
             StartFlashing(FlashState.PreInfectFlash);
             beforeExplodeState = BlockState.PreInfected;
+            AudioManager.Instance.PlayAudioOneShot(preInfectSfx, transform.position);
             await UniTask.WaitForSeconds(infectionConfig.preInfectTime,
                 cancellationToken: destroyCancellationToken);
             if (BlockState is BlockState.Exploding) return;
@@ -226,6 +228,7 @@ namespace MadDuck.Scripts.Units
             if (BlockView) BlockView.Infect();
             StopFlashing();
             StartInfectTimer();
+            AudioManager.Instance.PlayAudioOneShot(infectSfx, transform.position);
         }
         
         public void Disinfect()
@@ -540,7 +543,6 @@ namespace MadDuck.Scripts.Units
         public async UniTask Explode(bool destroy = false)
         {
             BlockState = BlockState.Exploding;
-            AudioManager.Instance.PlayAudioOneShot(explodeSfx, transform.position);
             StopPreInfectFlash();
             SetColor(originalAtomColor);
             if (BlockView)
