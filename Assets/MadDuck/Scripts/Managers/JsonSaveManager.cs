@@ -371,7 +371,7 @@ namespace MadDuck.Scripts.Managers
                 case true when genericTypeDefinition == typeof(IList<>):
                 {
                     var elementType = type.GetGenericArguments()[0];
-                    if (elementType.GetConstructor(Type.EmptyTypes) != null)
+                    //if (elementType.GetConstructor(Type.EmptyTypes) != null)
                         if (jToken.TryGetAndConvertToList(key, elementType, out var list))
                         {
                             result = (T)list;
@@ -386,7 +386,7 @@ namespace MadDuck.Scripts.Managers
                 case true when genericTypeDefinition == typeof(IDictionary<,>) && type.GetGenericArguments()[0] == typeof(string):
                 {
                     var valueType = type.GetGenericArguments()[1];
-                    if (valueType.GetConstructor(Type.EmptyTypes) != null)
+                    //if (valueType.GetConstructor(Type.EmptyTypes) != null)
                         if (jToken.TryGetAndConvertToDictionary(key, valueType, out var dict))
                         {
                             result = (T)dict;
@@ -427,12 +427,17 @@ namespace MadDuck.Scripts.Managers
             }
             if (token.Type is not JTokenType.Array) return false;
             var temp = new List<T>();
-            foreach (var t in (JArray)token)
+            foreach (var item in (JArray)token)
             {
                 var tempChild = new T();
                 if (tempChild is IJTokenDeserializer deserializer)
-                    deserializer.DeserializeJToken(t);
-                temp.Add(tempChild);
+                    deserializer.DeserializeJToken(item);
+                else
+                {
+                    item.TryConvertTo(out tempChild);
+                }
+                if (tempChild != null && tempChild.GetType().IsAssignableFrom(tempChild.GetType()))
+                    temp.Add(tempChild);
             }
             result = temp;
             return true;
@@ -448,12 +453,17 @@ namespace MadDuck.Scripts.Managers
             }
             if (token.Type is not JTokenType.Array) return false;
             var temp = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(elementType));
-            foreach (var t in (JArray)token)
+            foreach (var item in (JArray)token)
             {
                 var tempChild = Activator.CreateInstance(elementType);
                 if (tempChild is IJTokenDeserializer deserializer)
-                    deserializer.DeserializeJToken(t);
-                temp.Add(tempChild);
+                    deserializer.DeserializeJToken(item);
+                else
+                {
+                    item.TryConvertTo(elementType, out tempChild);
+                }
+                if (tempChild != null && elementType.IsAssignableFrom(tempChild.GetType()))
+                    temp.Add(tempChild);
             }
             result = temp;
             return true;
@@ -474,7 +484,12 @@ namespace MadDuck.Scripts.Managers
                 var tempChild = new T();
                 if (tempChild is IJTokenDeserializer deserializer)
                     deserializer.DeserializeJToken(property.Value);
-                temp.Add(property.Name, tempChild);
+                else
+                {
+                    property.TryConvertTo(out tempChild);
+                }
+                if (tempChild != null && tempChild.GetType().IsAssignableFrom(tempChild.GetType()))
+                    temp.Add(property.Name, tempChild);
             }
             result = temp;
             return true;
@@ -495,9 +510,29 @@ namespace MadDuck.Scripts.Managers
                 var tempChild = Activator.CreateInstance(valueType);
                 if (tempChild is IJTokenDeserializer deserializer)
                     deserializer.DeserializeJToken(property.Value);
-                temp.Add(property.Name, tempChild);
+                else
+                {
+                    property.TryConvertTo(valueType, out tempChild);
+                }
+                if (tempChild != null && valueType.IsAssignableFrom(tempChild.GetType()))
+                    temp.Add(property.Name, tempChild);
             }
             result = temp;
+            return true;
+        }
+        
+        public static bool TryConvertTo(this JToken jToken, Type targetType, out object result)
+        {
+            result = null;
+            try
+            {
+                result = jToken.ToObject(targetType);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to convert JToken to {targetType}: {ex.Message}");
+                return false;
+            }
             return true;
         }
         
