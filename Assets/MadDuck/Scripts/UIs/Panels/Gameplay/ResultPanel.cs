@@ -67,8 +67,8 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
         public override void OnPanelReady()
         {
             base.OnPanelReady();
-            _beforeSaveHighScore = PlayerData.ScoreData.highScore.score;
-            _beforeSaveMostFitMe = PlayerData.FitMeData.mostFitMe.fitMe;
+            _beforeSaveHighScore = PlayerData.PlayerRecordData.highScore.score;
+            _beforeSaveMostFitMe = PlayerData.PlayerRecordData.mostFitMe.fitMe;
             SaveScoreData();
             _showDataCts = new CancellationTokenSource();
             ShowData(_showDataCts.Token).Forget();
@@ -127,8 +127,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
     
         private void SaveScoreData()
         {
-            PlayerData.SaveScore((uint)GameManager.Score.Value);
-            PlayerData.SaveFitMe((uint)GameManager.FitmeScore.Value);
+            PlayerData.SaveRecord((uint)GameManager.Score.Value, (uint)GameManager.FitmeScore.Value);
         }
     }
 }

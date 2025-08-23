@@ -22,58 +22,37 @@ namespace MadDuck.Scripts.Managers
 {
     #region Data Structures
     [Serializable]
-    public record ScoreData : IJTokenDeserializer
+    public record PlayerRecordData : IJTokenDeserializer
     {
         [Serializable]
         public record RunData : IJTokenDeserializer
         {
             public DateTime dateTime;
             public uint score;
-            [ShowInInspector, DisplayAsString] private string DebugDateTime => dateTime.ToString("yyyy-MM-dd HH:mm:ss");
-            public void DeserializeJToken(JToken jToken)
-            {
-                jToken.TryGetAndConvertTo(nameof(dateTime), out dateTime);
-                jToken.TryGetAndConvertTo(nameof(score), out score);
-            }
-        }
-        public RunData highScore = new();
-        public List<RunData> runData = new();
-        public uint cumulativeScore;
-        public void DeserializeJToken(JToken jToken)
-        {
-            jToken.TryGetAndConvertTo(nameof(highScore), out highScore);
-            jToken.TryGetAndConvertTo(nameof(runData), out runData);
-            jToken.TryGetAndConvertTo(nameof(cumulativeScore), out cumulativeScore);
-        }
-    }
-
-    [Serializable]
-    public record FitMeData : IJTokenDeserializer
-    {
-        [Serializable]
-        public record RunData : IJTokenDeserializer
-        {
-            public DateTime dateTime;
             public uint fitMe;
             [ShowInInspector, DisplayAsString] private string DebugDateTime => dateTime.ToString("yyyy-MM-dd HH:mm:ss");
             public void DeserializeJToken(JToken jToken)
             {
                 jToken.TryGetAndConvertTo(nameof(dateTime), out dateTime);
+                jToken.TryGetAndConvertTo(nameof(score), out score);
                 jToken.TryGetAndConvertTo(nameof(fitMe), out fitMe);
             }
         }
+        public RunData highScore = new();
         public RunData mostFitMe = new();
         public List<RunData> runData = new();
+        public uint cumulativeScore;
         public uint cumulativeFitMe;
-        
         public void DeserializeJToken(JToken jToken)
         {
-            jToken.TryGetAndConvertTo(nameof(mostFitMe), out mostFitMe);
+            jToken.TryGetAndConvertTo(nameof(highScore), out highScore);
             jToken.TryGetAndConvertTo(nameof(runData), out runData);
+            jToken.TryGetAndConvertTo(nameof(cumulativeScore), out cumulativeScore);
+            jToken.TryGetAndConvertTo(nameof(mostFitMe), out mostFitMe);
             jToken.TryGetAndConvertTo(nameof(cumulativeFitMe), out cumulativeFitMe);
         }
     }
-
+    
     [Serializable]
     public record GameData : IJTokenDeserializer
     {
@@ -142,17 +121,15 @@ namespace MadDuck.Scripts.Managers
         [SerializeField, InlineEditor] private List<ChallengePreset> challengePresets = new();
 
         [field: Title("Debug")]
-        [field: SerializeField] public ScoreData ScoreData { get; private set; } = new();
-        [field: SerializeField] public FitMeData FitMeData { get; private set; } = new();
+        [field: SerializeField] public PlayerRecordData PlayerRecordData { get; private set; } = new();
         [field: SerializeField] public GameData GameData { get; private set; } = new();
         [field: OdinSerialize] public ChallengeData ChallengeData { get; private set; } = new();
         [field: SerializeField] public TutorialData TutorialData { get; private set; } = new();
         [Button("Debug Save All Data")]
         private void DebugSaveAllData()
         {
-            SaveScore(0);
-            SaveFitMe(0);
-            SaveBlockDestroyed(FitType.Combo, null);
+            SaveRecord(0, 0);
+            //SaveBlockDestroyed(FitType.Combo, null);
             SaveChallenges(Guid.Empty, null);
             SaveTutorialCompletion();
         }
@@ -160,15 +137,13 @@ namespace MadDuck.Scripts.Managers
         [Button("Delete All Data")]
         private void DebugDeleteAllData()
         {
-            ScoreData = new ScoreData();
-            FitMeData = new FitMeData();
+            PlayerRecordData = new PlayerRecordData();
             ChallengeData = new ChallengeData();
             GameData = new GameData();
             TutorialData = new TutorialData();
             Action updateDataAction = () =>
             {
-                JsonSaveManager.Instance.RemoveData(ScoreDataKey, false).Forget();
-                JsonSaveManager.Instance.RemoveData(FitMeDataKey, false).Forget();
+                JsonSaveManager.Instance.RemoveData(PlayerRecordKey, false).Forget();
                 JsonSaveManager.Instance.RemoveData(GameDataKey, false).Forget();
                 JsonSaveManager.Instance.RemoveData(ChallengeDataKey, false).Forget();
                 JsonSaveManager.Instance.RemoveData(TutorialDataKey, false).Forget();
@@ -182,25 +157,9 @@ namespace MadDuck.Scripts.Managers
             {
                 updateDataAction.Invoke();
             }
-            // if (SaveManager.Instance.Saving)
-            // {
-            //     _saveDataQueue.Enqueue(updateDataAction);
-            // }
-            // else
-            // {
-            //     updateDataAction.Invoke();
-            //     SaveManager.Instance.Save();
-            // }
         }
         
-        // [Button("Delete Save File")]
-        // private void DebugDeleteSaveFile()
-        // {
-        //     CurrentSaveFile.DeleteFile();
-        // }
-        
-        private const string ScoreDataKey = "ScoreData";
-        private const string FitMeDataKey = "FitMeData";
+        private const string PlayerRecordKey = "PlayerRecordData";
         private const string GameDataKey = "GameData";
         private const string ChallengeDataKey = "ChallengeData";
         private const string TutorialDataKey = "TutorialData";
@@ -268,58 +227,40 @@ namespace MadDuck.Scripts.Managers
         {
             _challengeDictionary.Values.ForEach(c => c.Initialize());
             JsonSaveManager.Instance.TryGetData(GameDataKey, GameData);
-            JsonSaveManager.Instance.TryGetData(ScoreDataKey, ScoreData);
-            JsonSaveManager.Instance.TryGetData(FitMeDataKey, FitMeData);
+            JsonSaveManager.Instance.TryGetData(PlayerRecordKey, PlayerRecordData);
             JsonSaveManager.Instance.TryGetData(ChallengeDataKey, ChallengeData);
             JsonSaveManager.Instance.TryGetData(TutorialDataKey, TutorialData);
-            // ScoreData = CurrentSaveFile.GetData<ScoreData>(ScoreDataKey) ?? new ScoreData();
-            // FitMeData = CurrentSaveFile.GetData<FitMeData>(FitMeDataKey) ?? new FitMeData();
-            // GameData = CurrentSaveFile.GetData<GameData>(GameDataKey) ?? new GameData();
-            // ChallengeData = CurrentSaveFile.GetData<ChallengeData>(ChallengeDataKey) ?? new ChallengeData();
-            // TutorialData = CurrentSaveFile.GetData<TutorialData>(TutorialDataKey) ?? new TutorialData();
             ValidateChallengeLoad();
         }
         
-        public void SaveScore(uint score)
+        public void SaveRecord(uint score, uint fitMe)
         {
-            var newHighScore = score > ScoreData.highScore.score;
-            var newEntry = new ScoreData.RunData
+            var newHighScore = score > PlayerRecordData.highScore.score;
+            var newMostFitMe = fitMe > PlayerRecordData.mostFitMe.fitMe;
+            var newEntry = new PlayerRecordData.RunData
             {
                 dateTime = DateTime.Now,
-                score = score
-            };
-
-            ScoreData.runData.Add(newEntry);
-            ScoreData.runData = ScoreData.runData.OrderByDescending(s => s.dateTime).Take((int)maxHighScoresEntries).ToList();
-            if (newHighScore)
-            {
-                ScoreData.highScore = newEntry;
-            }
-            ScoreData.cumulativeScore += score;
-            UpdateSaveData(ScoreDataKey, ScoreData);
-            _cumulativeScorePublisher.Publish(new ChallengeUpdateEvent<CumulativeScoreChallengeData>(
-                new CumulativeScoreChallengeData(ScoreData.cumulativeScore)));
-        }
-        
-        public void SaveFitMe(uint fitMe)
-        {
-            var newMostFitMe = fitMe > FitMeData.mostFitMe.fitMe;
-            var newEntry = new FitMeData.RunData
-            {
-                dateTime = DateTime.Now,
+                score = score,
                 fitMe = fitMe
             };
 
-            FitMeData.runData.Add(newEntry);
-            FitMeData.runData = FitMeData.runData.OrderByDescending(f => f.dateTime).Take((int)maxFitMeEntries).ToList();
+            PlayerRecordData.runData.Add(newEntry);
+            PlayerRecordData.runData = PlayerRecordData.runData.OrderByDescending(s => s.dateTime).Take((int)maxHighScoresEntries).ToList();
+            if (newHighScore)
+            {
+                PlayerRecordData.highScore = newEntry;
+            }
             if (newMostFitMe)
             {
-                FitMeData.mostFitMe = newEntry;
+                PlayerRecordData.mostFitMe = newEntry;
             }
-            FitMeData.cumulativeFitMe += fitMe;
-            UpdateSaveData(FitMeDataKey, FitMeData);
+            PlayerRecordData.cumulativeScore += score;
+            PlayerRecordData.cumulativeFitMe += fitMe;
+            UpdateSaveData(PlayerRecordKey, PlayerRecordData);
+            _cumulativeScorePublisher.Publish(new ChallengeUpdateEvent<CumulativeScoreChallengeData>(
+                new CumulativeScoreChallengeData(PlayerRecordData.cumulativeScore)));
             _cumulativeFitMePublisher.Publish(new ChallengeUpdateEvent<CumulativeFitMeChallengeData>(
-                new CumulativeFitMeChallengeData(FitMeData.cumulativeFitMe)));
+                new CumulativeFitMeChallengeData(PlayerRecordData.cumulativeFitMe)));
         }
 
         public void SaveTutorialCompletion()

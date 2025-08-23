@@ -26,6 +26,7 @@ namespace MadDuck.Scripts.Challenges
         public string ChallengeName { get; }
         public string ChallengeDescription { get; }
         public Sprite ChallengeIcon { get; }
+        public Vector2 GetProgress();
         public void Initialize();
         public void Complete();
         public void SetChallengeData(ISavable savable);
@@ -92,6 +93,8 @@ namespace MadDuck.Scripts.Challenges
         [OdinSerialize] public Guid ChallengeGuid { get; set; } = Guid.NewGuid();
         protected IDisposable challengeUpdateSubscription;
         protected IPublisher<NotificationDisplayEvent> notificationPublisher;
+
+        public abstract Vector2 GetProgress();
 
         public virtual void Initialize()
         {

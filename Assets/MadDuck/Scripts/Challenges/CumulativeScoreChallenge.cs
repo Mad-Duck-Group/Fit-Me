@@ -18,6 +18,11 @@ namespace MadDuck.Scripts.Challenges
     public class CumulativeScoreChallenge : Challenge<CumulativeScoreChallengeData>
     {
         [field: SerializeField] private uint targetScore = 1000;
+        
+        public override Vector2 GetProgress()
+        {
+            return new Vector2((int)ChallengeData.cumulativeScore, (int)targetScore);
+        }
 
         public override void OnChallengeUpdate(ChallengeUpdateEvent<CumulativeScoreChallengeData> challengeUpdateEvent)
         {

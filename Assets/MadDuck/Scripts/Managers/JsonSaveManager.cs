@@ -358,8 +358,6 @@ namespace MadDuck.Scripts.Managers
         {
             result = default;
             var type = typeof(T);
-            //Debug.Log($"Type of result: {type}");
-            
             if (!type.IsGenericType || type == typeof(string))
             {
                 return jToken.TryGetAndConvertToValue(key, out result);
@@ -371,32 +369,16 @@ namespace MadDuck.Scripts.Managers
                 case true when genericTypeDefinition == typeof(IList<>):
                 {
                     var elementType = type.GetGenericArguments()[0];
-                    //if (elementType.GetConstructor(Type.EmptyTypes) != null)
-                        if (jToken.TryGetAndConvertToList(key, elementType, out var list))
-                        {
-                            result = (T)list;
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    goto case true;
+                    if (!jToken.TryGetAndConvertToList(key, elementType, out var list)) return false;
+                    result = (T)list;
+                        return true;
                 }
                 case true when genericTypeDefinition == typeof(IDictionary<,>) && type.GetGenericArguments()[0] == typeof(string):
                 {
                     var valueType = type.GetGenericArguments()[1];
-                    //if (valueType.GetConstructor(Type.EmptyTypes) != null)
-                        if (jToken.TryGetAndConvertToDictionary(key, valueType, out var dict))
-                        {
-                            result = (T)dict;
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    goto case true;
+                    if (!jToken.TryGetAndConvertToDictionary(key, valueType, out var dict)) return false;
+                    result = (T)dict;
+                        return true;
                 }
                 case true:
                     return jToken.TryGetAndConvertToValue(key, out result);
