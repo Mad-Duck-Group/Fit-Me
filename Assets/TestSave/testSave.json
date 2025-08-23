@@ -3,11 +3,11 @@
     "version": "1.1.1-devbuild.1-android"
   },
   "GameData": {
-    "cumulativePreInfectBlockDestroyed": 0,
-    "cumulativeBlockDestroyed": 15,
+    "cumulativePreInfectBlockDestroyed": 1,
+    "cumulativeBlockDestroyed": 22,
     "cumulativeColorBlastDictionary": {
-      "Red": 1,
-      "Yellow": 1
+      "Blue": 1,
+      "Purple": 1
     }
   },
   "TutorialData": {
@@ -34,28 +34,28 @@
   },
   "ScoreData": {
     "highScore": {
-      "dateTime": "2025-08-23T00:42:45.770862+07:00",
-      "score": 1000
+      "dateTime": "2025-08-23T10:39:26.4483479+07:00",
+      "score": 7470
     },
     "runData": [
       {
-        "dateTime": "2025-08-23T00:42:45.770862+07:00",
-        "score": 1000
+        "dateTime": "2025-08-23T10:39:26.4483479+07:00",
+        "score": 7470
       }
     ],
-    "cumulativeScore": 1000
+    "cumulativeScore": 7470
   },
   "FitMeData": {
     "mostFitMe": {
-      "dateTime": "0001-01-01T00:00:00",
-      "fitMe": 0
+      "dateTime": "2025-08-23T10:39:26.4617032+07:00",
+      "fitMe": 1
     },
     "runData": [
       {
-        "dateTime": "2025-08-23T00:42:45.7812984+07:00",
-        "fitMe": 0
+        "dateTime": "2025-08-23T10:39:26.4617032+07:00",
+        "fitMe": 1
       }
     ],
-    "cumulativeFitMe": 0
+    "cumulativeFitMe": 1
   }
 }

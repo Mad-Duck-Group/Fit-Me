@@ -100,7 +100,7 @@ namespace MadDuck.Scripts.Managers
         [SerializeField] private SaveSettings debugSaveSettings = new();
         [SerializeField] private SaveSettings releaseSaveSettings = new();
         [SerializeField] private bool testReleaseMode = false;
-        
+        [SerializeField] private SaveVersionData saveVersionData = new();
         [SerializeField] private TestSaveData testSaveData;
         
         private Dictionary<string, JObject> _saveDataDictionary = new();
@@ -146,6 +146,7 @@ namespace MadDuck.Scripts.Managers
         {
             await Load();
             await AddOrUpdateData(SaveVersionKey, new SaveVersionData { version = Application.version });
+            TryGetData(SaveVersionKey, saveVersionData);
             OnSaveReady?.Invoke();
         }
         #endregion

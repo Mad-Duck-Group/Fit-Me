@@ -50,6 +50,7 @@ namespace MadDuck.Scripts.Units
         [SerializeField, SpineAnimation] string[] idleAnimations;
         [SerializeField, SpineAnimation] string pickUpAnimation;
         [SerializeField, SpineAnimation] string explodeAnimation;
+        [SerializeField, SpineAnimation] string preInfectedAnimation;
         
         [Title("VFX")]
         [SerializeField] private SerializableDictionary<BlockTypes, ParticleSystem> explodeVfx = new();
@@ -241,6 +242,12 @@ namespace MadDuck.Scripts.Units
         public void SetColor(Color color)
         {
             skeletonAnimation.Skeleton.SetColor(color);
+        }
+
+        public void PreInfect()
+        {
+            CancelIdleTimer();
+            skeletonAnimation.AnimationState.SetAnimation(0, preInfectedAnimation, true);
         }
 
         public void Infect()

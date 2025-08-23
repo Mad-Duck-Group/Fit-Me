@@ -210,6 +210,7 @@ namespace MadDuck.Scripts.Units
             if (_infectionRequest == null) return;
             var infectionConfig = _infectionRequest.Invoke(new InfectionConfigRequest());
             BlockState = BlockState.PreInfected;
+            if (BlockView) BlockView.PreInfect();
             StartFlashing(FlashState.PreInfectFlash);
             beforeExplodeState = BlockState.PreInfected;
             await UniTask.WaitForSeconds(infectionConfig.preInfectTime,

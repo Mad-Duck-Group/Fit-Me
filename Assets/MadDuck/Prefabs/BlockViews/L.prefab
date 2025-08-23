@@ -217,6 +217,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5241863674899334033}
     - target: {fileID: 7334463432806019827, guid: 738887ce3fb8f2641b3f54419e1ffab3, type: 3}
+      propertyPath: preInfectedAnimation
+      value: Infection
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334463432806019827, guid: 738887ce3fb8f2641b3f54419e1ffab3, type: 3}
       propertyPath: deconstructed.Array.size
       value: 0
       objectReference: {fileID: 0}
