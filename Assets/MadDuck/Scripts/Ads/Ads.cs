@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using GoogleMobileAds.Api;
 using MadDuck.Scripts.UIs.Panels.Gameplay;
+using R3;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
 
@@ -11,17 +12,23 @@ public class Ads : MonoSingleton<Ads>
 {
     private RewardedAd _rewardedAd;
     public GameOverPanel _gameOverPanel;
+    private IDisposable _adsRefreshTimer;
+    private CancellationTokenSource _timerCts;
 
     void Start()
     {
-        MobileAds.Initialize(initStatus => {
-            LoadRewardedAd();
-        });
-        _ = CountdownAdSession();
+        MobileAds.Initialize(LoadRewardedAd);
     }
 
-    void LoadRewardedAd()
+    private void OnDestroy()
     {
+        CancelAdsSessionTimer();
+        DisposeAds();
+    }
+
+    void LoadRewardedAd(InitializationStatus status = null)
+    {
+        _rewardedAd = null;
         string adUnitId;
 #if UNITY_ANDROID
             adUnitId = "ca-app-pub-3940256099942544/5224354917";
@@ -32,7 +39,7 @@ public class Ads : MonoSingleton<Ads>
 #endif
         AdRequest request = new AdRequest();
 
-        RewardedAd.Load(adUnitId, request, (RewardedAd ad, LoadAdError error) =>
+        RewardedAd.Load(adUnitId, request, (ad, error) =>
         {
             if (error != null)
             {
@@ -42,6 +49,7 @@ public class Ads : MonoSingleton<Ads>
 
             _rewardedAd = ad;
             RegisterAdEvents();
+            CountdownAdSession();
         });
     }
 
@@ -49,52 +57,57 @@ public class Ads : MonoSingleton<Ads>
     {
         _rewardedAd.OnAdFullScreenContentClosed += HandleAdClosed;
 
-        _rewardedAd.OnAdPaid += (AdValue adValue) =>
+        _rewardedAd.OnAdPaid += adValue =>
         {
             Debug.Log($"ได้รับรายได้จากโฆษณา: {adValue.Value} {adValue.CurrencyCode}");
         };
     }
     
-    public void ShowAd()
+    public bool TryShowAd()
     {
         if (_rewardedAd != null && _rewardedAd.CanShowAd())
         {
             _rewardedAd.Show(reward =>
             {
-                if (GameManager.Instance != null)
-                    GameManager.Instance.Continue();
-                else
-                    Debug.LogWarning("GameManager.Instance is null");
-
-                if (_gameOverPanel != null)
-                    _gameOverPanel.OnAdsClosed();
-                else
-                    Debug.LogWarning("_gameOverPanel is null");
+                GameManager.Instance.Continue();
+                _gameOverPanel.OnAdsClosed();
             });
+            return true;
         }
-        else
-        {
-            Debug.Log("โฆษณายังไม่พร้อมแสดง");
-        }
+        Debug.Log("โฆษณายังไม่พร้อมแสดง");
+        return false;
     }
     
-    private async void HandleAdClosed()
+    private void HandleAdClosed()
     {
-        if (_rewardedAd != null)
-        {
-            _rewardedAd.OnAdFullScreenContentClosed -= HandleAdClosed;
-            _rewardedAd.Destroy();
-        }
-        await UniTask.Delay(TimeSpan.FromSeconds(1));
+        DisposeAds();
         LoadRewardedAd();
     }
 
 
-    private async UniTask CountdownAdSession()
+    private void CountdownAdSession()
     {
-        var token = this.GetCancellationTokenOnDestroy();
-        await UniTask.Delay(TimeSpan.FromHours(1), cancellationToken: token);
-        LoadRewardedAd();
+        CancelAdsSessionTimer();
+        _timerCts = new CancellationTokenSource();
+        _adsRefreshTimer = Observable.Timer(TimeSpan.FromHours(1), _timerCts.Token)
+            .Subscribe(_ => 
+            {
+                LoadRewardedAd();
+                CountdownAdSession(); 
+            });
+    }
+
+    private void CancelAdsSessionTimer()
+    {
+        _timerCts?.Cancel();
+        _adsRefreshTimer?.Dispose();
+    }
+
+    private void DisposeAds()
+    {
+        if (_rewardedAd == null) return;
+        _rewardedAd.OnAdFullScreenContentClosed -= HandleAdClosed;
+        _rewardedAd.Destroy();
     }
 
 }

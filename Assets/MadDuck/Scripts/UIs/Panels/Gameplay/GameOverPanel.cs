@@ -82,8 +82,8 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
 
         private void OnAdsButtonClicked()
         {
-            Ads.Instance.ShowAd();
-            _adsTimerSubscription?.Dispose();
+            if (Ads.Instance.TryShowAd())
+                _adsTimerSubscription?.Dispose();
         }
 
         public void OnAdsClosed()
