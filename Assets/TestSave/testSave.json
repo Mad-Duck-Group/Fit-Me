@@ -1,10 +1,10 @@
 {
   "SaveVersion": {
-    "version": "1.1.1-devbuild.1-android"
+    "version": "1.0"
   },
   "GameData": {
     "cumulativePreInfectBlockDestroyed": 20,
-    "cumulativeBlockDestroyed": 235,
+    "cumulativeBlockDestroyed": 246,
     "cumulativeColorBlastDictionary": {
       "Green": 6,
       "Blue": 6,
@@ -48,6 +48,11 @@
     },
     "runData": [
       {
+        "dateTime": "2025-08-24T19:07:50.3964796+07:00",
+        "score": 0,
+        "fitMe": 0
+      },
+      {
         "dateTime": "2025-08-23T20:53:05.7827794+07:00",
         "score": 18940,
         "fitMe": 2
@@ -56,11 +61,6 @@
         "dateTime": "2025-08-23T20:43:11.9695037+07:00",
         "score": 300,
         "fitMe": 0
-      },
-      {
-        "dateTime": "2025-08-23T19:24:09.1330766+07:00",
-        "score": 7200,
-        "fitMe": 1
       }
     ],
     "cumulativeScore": 62950,
