@@ -149,7 +149,7 @@ namespace MadDuck.Scripts.Managers
                 JsonSaveManager.Instance.RemoveData(GameDataKey, false).Forget();
                 JsonSaveManager.Instance.RemoveData(ChallengeDataKey, false).Forget();
                 JsonSaveManager.Instance.RemoveData(TutorialDataKey, false).Forget();
-                JsonSaveManager.Instance.Save().Forget();
+                JsonSaveManager.Instance.Save(true).Forget();
             };
             if (JsonSaveManager.Instance.Saving)
             {
@@ -233,8 +233,24 @@ namespace MadDuck.Scripts.Managers
             JsonSaveManager.Instance.TryGetData(TutorialDataKey, TutorialData);
             ValidateChallengeLoad();
         }
+
+        public void SaveScoreChange(uint scoreChange, bool saveToService = false)
+        {
+            PlayerRecordData.cumulativeScore += scoreChange;
+            UpdateSaveData(PlayerRecordKey, PlayerRecordData, saveToService);
+            _cumulativeScorePublisher.Publish(new ChallengeUpdateEvent<CumulativeScoreChallengeData>(
+                new CumulativeScoreChallengeData(PlayerRecordData.cumulativeScore)));
+        }
         
-        public void SaveRecord(uint score, uint fitMe)
+        public void SaveFitMeChange(uint fitMe, bool saveToService = false)
+        {
+            PlayerRecordData.cumulativeFitMe += fitMe;
+            UpdateSaveData(PlayerRecordKey, PlayerRecordData, saveToService);
+            _cumulativeFitMePublisher.Publish(new ChallengeUpdateEvent<CumulativeFitMeChallengeData>(
+                new CumulativeFitMeChallengeData(PlayerRecordData.cumulativeFitMe)));
+        }
+        
+        public void SaveRecord(uint score, uint fitMe, bool saveToService = false)
         {
             var newHighScore = score > PlayerRecordData.highScore.score;
             var newMostFitMe = fitMe > PlayerRecordData.mostFitMe.fitMe;
@@ -255,24 +271,18 @@ namespace MadDuck.Scripts.Managers
             {
                 PlayerRecordData.mostFitMe = newEntry;
             }
-            PlayerRecordData.cumulativeScore += score;
-            PlayerRecordData.cumulativeFitMe += fitMe;
-            UpdateSaveData(PlayerRecordKey, PlayerRecordData);
-            _cumulativeScorePublisher.Publish(new ChallengeUpdateEvent<CumulativeScoreChallengeData>(
-                new CumulativeScoreChallengeData(PlayerRecordData.cumulativeScore)));
-            _cumulativeFitMePublisher.Publish(new ChallengeUpdateEvent<CumulativeFitMeChallengeData>(
-                new CumulativeFitMeChallengeData(PlayerRecordData.cumulativeFitMe)));
+            UpdateSaveData(PlayerRecordKey, PlayerRecordData, saveToService);
         }
 
-        public void SaveTutorialCompletion()
+        public void SaveTutorialCompletion(bool saveToService = false)
         {
             TutorialData.completedTutorial = true;
-            UpdateSaveData(TutorialDataKey, TutorialData);
+            UpdateSaveData(TutorialDataKey, TutorialData, saveToService);
             _tutorialChallengePublisher.Publish(new ChallengeUpdateEvent<TutorialChallengeData>(
                 new TutorialChallengeData()));
         }
 
-        public void SaveBlockDestroyed(FitType fitType, List<(BlockState beforeExplodeState, BlockTypes blockType)> destroyedBlocks)
+        public void SaveBlockDestroyed(FitType fitType, List<(BlockState beforeExplodeState, BlockTypes blockType)> destroyedBlocks, bool saveToService = false)
         {
             if (destroyedBlocks.Count == 0) return;
             foreach (var block in destroyedBlocks)
@@ -293,7 +303,7 @@ namespace MadDuck.Scripts.Managers
                     GameData.cumulativeColorBlastDictionary[blockType] = 1;
                 }
             }
-            UpdateSaveData(GameDataKey, GameData);
+            UpdateSaveData(GameDataKey, GameData, saveToService);
             _cumulativeBlastPublisher?.Publish(new ChallengeUpdateEvent<CumulativeBlastChallengeData>(
                 new CumulativeBlastChallengeData(GameData.cumulativeBlockDestroyed)));
             foreach (var kvp in GameData.cumulativeColorBlastDictionary)
@@ -323,7 +333,7 @@ namespace MadDuck.Scripts.Managers
             }
         }
         
-        public void SaveChallenges(Guid challengeGuid, SavableChallengeData savable)
+        public void SaveChallenges(Guid challengeGuid, SavableChallengeData savable, bool saveToService = false)
         {
             if (!ChallengeDictionary.ContainsKey(challengeGuid))
             {
@@ -331,7 +341,7 @@ namespace MadDuck.Scripts.Managers
                 return;
             }
             ChallengeData.challenges[challengeGuid] = savable;
-            UpdateSaveData(ChallengeDataKey, ChallengeData);
+            UpdateSaveData(ChallengeDataKey, ChallengeData, saveToService);
             var thisChallenge = ChallengeDictionary[challengeGuid];
             if (thisChallenge is FitMasterChallenge) return;
             if (ChallengeDictionary.Values.Where(x => x is not FitMasterChallenge).All(x => x.Completed))
@@ -341,13 +351,13 @@ namespace MadDuck.Scripts.Managers
             }
         }
 
-        private void UpdateSaveData<T>(string id, T data)
+        private void UpdateSaveData<T>(string id, T data, bool saveToService = false)
         {
             Action updateDataAction = () =>
             {
                 //CurrentSaveFile.AddOrUpdateData(id, data);
                 JsonSaveManager.Instance.AddOrUpdateData(id, data, false).Forget();
-                JsonSaveManager.Instance.Save().Forget();
+                JsonSaveManager.Instance.Save(saveToService).Forget();
             };
             if (JsonSaveManager.Instance.Saving)
             {

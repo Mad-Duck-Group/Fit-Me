@@ -104,7 +104,7 @@ namespace MadDuck.Scripts.Tutorials
             {
                 Debug.Log("End of tutorial");
                 TutorialManager.Instance.HideTutorial().Forget();
-                PlayerDataManager.Instance.SaveTutorialCompletion();
+                PlayerDataManager.Instance.SaveTutorialCompletion(true);
                 LoadSceneManager.Instance.LoadScene(SceneType.Gameplay, LoadSceneMode.Single, false).Forget();
                 Shutdown();
             }

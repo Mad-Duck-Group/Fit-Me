@@ -127,7 +127,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
     
         private void SaveScoreData()
         {
-            PlayerData.SaveRecord((uint)GameManager.Score.Value, (uint)GameManager.FitmeScore.Value);
+            PlayerData.SaveRecord((uint)GameManager.Score.Value, (uint)GameManager.FitmeScore.Value, true);
         }
     }
 }

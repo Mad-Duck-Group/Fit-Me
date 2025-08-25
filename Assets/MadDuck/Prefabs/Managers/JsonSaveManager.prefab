@@ -53,9 +53,16 @@ MonoBehaviour:
     saveDirectory: save
     saveFileName: playerData
   testReleaseMode: 0
-  conflictPriority: 1
-  versionConflictResolution: 0
-  playerIdConflictResolution: 3
+  saveToServiceCooldown: 1
+  conflictSettings:
+    keys: 000000000100000002000000
+    values:
+    - resolution: 4
+      priority: 0
+    - resolution: 0
+      priority: 1
+    - resolution: 3
+      priority: 2
   saveMetadata:
     versionInfo:
       major: 0

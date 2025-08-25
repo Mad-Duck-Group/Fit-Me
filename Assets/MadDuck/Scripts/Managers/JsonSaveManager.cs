@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 #if UNITY_ANDROID
 using GooglePlayGames;
@@ -13,11 +15,14 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
+using Spine.Collections;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
 
 namespace MadDuck.Scripts.Managers
 {
+    #region Enums
     public enum SaveLocation
     {
         PersistentDataPath,
@@ -35,17 +40,20 @@ namespace MadDuck.Scripts.Managers
         Merge
     }
     
-    public enum ConflictPriority
+    public enum ConflictType
     {
-        Version,
-        PlayerId
+        None, // If no conflicts detected
+        Version, // Conflict in VersionInfo
+        PlayerId // Conflict in PlayerId
     }
+    #endregion
 
     public interface IJTokenDeserializer
     {
         public void DeserializeJToken(JToken jToken);
     }
 
+    #region Data Structures
     [Serializable]
     public record TestSaveData : IJTokenDeserializer
     {
@@ -195,7 +203,8 @@ namespace MadDuck.Scripts.Managers
             jToken.TryGetAndConvertTo(nameof(playtime), out playtime);
         }
     }
-
+    #endregion
+    
     [Serializable]
     public record SaveSettings
     {
@@ -218,21 +227,34 @@ namespace MadDuck.Scripts.Managers
         }
     }
 
+    [Serializable]
+    public struct ConflictSettings
+    {
+        public SaveConflictResolution resolution;
+        public int priority;
+        
+        public static ConflictSettings Default => new()
+        {
+            resolution = SaveConflictResolution.UseLongerPlaytime,
+            priority = int.MinValue
+        };
+    }
+
 
     public class JsonSaveManager : PersistentMonoSingleton<JsonSaveManager>
     {
         [SerializeField] private SaveSettings debugSaveSettings = new();
         [SerializeField] private SaveSettings releaseSaveSettings = new();
         [SerializeField] private bool testReleaseMode = false;
-        [SerializeField] private ConflictPriority conflictPriority = ConflictPriority.Version;
-        [SerializeField] private SaveConflictResolution versionConflictResolution = SaveConflictResolution.UseNewer;
-        [SerializeField] private SaveConflictResolution playerIdConflictResolution = SaveConflictResolution.UseRemote;
+        [SerializeField] private float saveToServiceCooldown = 1f;
+        [SerializeField] private SerializableDictionary<ConflictType, ConflictSettings> conflictSettings = new();
         [SerializeField] private SaveMetadata saveMetadata = new();
         [SerializeField] private TestSaveData testSaveData;
 
         private Dictionary<string, JToken> _saveDataDictionary = new();
         private IPublisher<SaveToServiceEvent> _saveToServicePublisher;
         private IDisposable _loadFromServiceSubscription;
+        private CancellationTokenSource _saveCts;
         public bool Saving { get; private set; }
         private float _timeStampSinceLastSave;
 
@@ -330,6 +352,7 @@ namespace MadDuck.Scripts.Managers
             }
             remoteSaveSettings.saveFileName += "_remote.json";
             var remoteFilePath = GetSaveFilePath(remoteSaveSettings);
+            TryValidate(remoteSaveSettings);
             await File.WriteAllBytesAsync(remoteFilePath, eventData.data);
             await ResolveSave(CurrentSaveSettings, remoteSaveSettings);
             Load().Forget();
@@ -339,14 +362,14 @@ namespace MadDuck.Scripts.Managers
 
         #region Save/Load Validation
 
-        private bool TryValidate()
+        private bool TryValidate(SaveSettings saveSettings)
         {
-            var directoryPath = CurrentSaveSettings.saveLocation == SaveLocation.PersistentDataPath
+            var directoryPath = saveSettings.saveLocation == SaveLocation.PersistentDataPath
                 ? Application.persistentDataPath
                 : Application.dataPath;
             try
             {
-                string fullPath = Path.Combine(directoryPath, CurrentSaveSettings.saveDirectory);
+                string fullPath = Path.Combine(directoryPath, saveSettings.saveDirectory);
                 if (!Directory.Exists(fullPath))
                 {
                     Directory.CreateDirectory(fullPath);
@@ -361,10 +384,10 @@ namespace MadDuck.Scripts.Managers
 
             try
             {
-                var fileName = CurrentSaveSettings.saveFileName.EndsWith(".json")
-                    ? CurrentSaveSettings.saveFileName
-                    : CurrentSaveSettings.saveFileName + ".json";
-                string fullPath = Path.Combine(directoryPath, CurrentSaveSettings.saveDirectory, fileName);
+                var fileName = saveSettings.saveFileName.EndsWith(".json")
+                    ? saveSettings.saveFileName
+                    : saveSettings.saveFileName + ".json";
+                string fullPath = Path.Combine(directoryPath, saveSettings.saveDirectory, fileName);
                 if (!File.Exists(fullPath))
                 {
                     File.WriteAllText(fullPath, "{}"); // Create an empty JSON file
@@ -403,38 +426,59 @@ namespace MadDuck.Scripts.Managers
             var shouldOverwrite = true;
             var newer = metadata1.lastModified >= metadata2.lastModified ? existing : incoming;
             var longerPlaytime = metadata1.playtime >= metadata2.playtime ? existing : incoming;
-            var conflictResolution = conflictPriority == ConflictPriority.Version
-                ? versionConflictResolution
-                : playerIdConflictResolution;
-            if (versionInfo1.CompareTo(versionInfo2) != 0 || !playerId1.Equals(playerId2))
+            var versionConflict = !versionInfo1.Equals(versionInfo2);
+            var playerIdConflict = !playerId1.Equals(playerId2);
+            var finalConflictSettings = ConflictSettings.Default;
+            if (versionConflict)
             {
-                switch (conflictResolution)
+                if (conflictSettings.TryGetValue(ConflictType.Version, out var versionConflictSettings))
                 {
-                    case SaveConflictResolution.UseNewer:
-                        shouldOverwrite = newer == incoming;
-                        break;
-                    case SaveConflictResolution.UseOlder:
-                        shouldOverwrite = newer == existing;
-                        break;
-                    case SaveConflictResolution.UseLocal:
-                        shouldOverwrite = false;
-                        break;
-                    case SaveConflictResolution.UseRemote:
-                        shouldOverwrite = true;
-                        break;
-                    case SaveConflictResolution.UseLongerPlaytime:
-                        shouldOverwrite = longerPlaytime == incoming;
-                        break;
-                    case SaveConflictResolution.UseShorterPlaytime:
-                        shouldOverwrite = longerPlaytime == existing;
-                        break;
-                    case SaveConflictResolution.Merge:
-                        // Merging not implemented
-                        Debug.LogWarning("Merge conflict resolution is not implemented. No action taken.");
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    finalConflictSettings = versionConflictSettings.priority > finalConflictSettings.priority
+                        ? versionConflictSettings
+                        : finalConflictSettings;
                 }
+            }
+            if (playerIdConflict)
+            {
+                if (conflictSettings.TryGetValue(ConflictType.PlayerId, out var playerIdConflictSettings))
+                {
+                    finalConflictSettings = playerIdConflictSettings.priority > finalConflictSettings.priority
+                        ? playerIdConflictSettings
+                        : finalConflictSettings;
+                }
+            }
+            if (conflictSettings.TryGetValue(ConflictType.None, out var noConflictSettings))
+            {
+                finalConflictSettings = noConflictSettings.priority > finalConflictSettings.priority
+                    ? noConflictSettings
+                    : finalConflictSettings;
+            }
+            switch (finalConflictSettings.resolution)
+            {
+                case SaveConflictResolution.UseNewer:
+                    shouldOverwrite = newer == incoming;
+                    break;
+                case SaveConflictResolution.UseOlder:
+                    shouldOverwrite = newer == existing;
+                    break;
+                case SaveConflictResolution.UseLocal:
+                    shouldOverwrite = false;
+                    break;
+                case SaveConflictResolution.UseRemote:
+                    shouldOverwrite = true;
+                    break;
+                case SaveConflictResolution.UseLongerPlaytime:
+                    shouldOverwrite = longerPlaytime == incoming;
+                    break;
+                case SaveConflictResolution.UseShorterPlaytime:
+                    shouldOverwrite = longerPlaytime == existing;
+                    break;
+                case SaveConflictResolution.Merge:
+                    // Merging not implemented
+                    Debug.LogWarning("Merge conflict resolution is not implemented. No action taken.");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
             if (shouldOverwrite)
             {
@@ -474,8 +518,6 @@ namespace MadDuck.Scripts.Managers
             stream.Close();
             await stream.DisposeAsync();
             Debug.Log($"Saved data to: {fullPath}");
-            var dataBytes = await ConvertToBytes(CurrentSaveSettings);
-            _saveToServicePublisher.Publish(new SaveToServiceEvent(dataBytes, saveMetadata.playtime));
         }
 
         private async UniTask<Tuple<bool, Dictionary<string, JToken>>> TryLoadFromFile(SaveSettings saveSettings)
@@ -578,9 +620,9 @@ namespace MadDuck.Scripts.Managers
 
         #region Save
 
-        public async UniTask Save()
+        public async UniTask Save(bool saveToService = false)
         {
-            if (!TryValidate())
+            if (!TryValidate(CurrentSaveSettings))
             {
                 Saving = false;
                 return;
@@ -604,6 +646,7 @@ namespace MadDuck.Scripts.Managers
             Saving = false;
             OnSaveCompleted?.Invoke();
             OnSaveReady?.Invoke();
+            if (saveToService) await SaveToService();
         }
 
         #endregion
@@ -612,7 +655,7 @@ namespace MadDuck.Scripts.Managers
 
         public async UniTask Load()
         {
-            if (!TryValidate()) return;
+            if (!TryValidate(CurrentSaveSettings)) return;
             var result =  await TryLoadFromFile(CurrentSaveSettings);
             if (!result.Item1)
             {
@@ -623,6 +666,19 @@ namespace MadDuck.Scripts.Managers
             OnLoadCompleted?.Invoke();
         }
 
+        #endregion
+        
+        #region Service Operations
+        public async UniTask SaveToService()
+        {
+            if (_saveCts is { IsCancellationRequested: false }) _saveCts?.Cancel();
+            _saveCts = new CancellationTokenSource();
+            await UniTask.WaitForSeconds(saveToServiceCooldown, cancellationToken: _saveCts.Token);
+            _saveCts = null;
+            var dataBytes = await ConvertToBytes(CurrentSaveSettings);
+            _saveToServicePublisher.Publish(new SaveToServiceEvent(dataBytes, saveMetadata.playtime));
+            Debug.Log("Save data published to service.");
+        }
         #endregion
 
         #region Utils

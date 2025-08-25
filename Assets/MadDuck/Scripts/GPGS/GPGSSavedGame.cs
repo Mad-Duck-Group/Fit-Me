@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
@@ -77,8 +78,8 @@ namespace MadDuck.Scripts.GPGS
             LoadFromService().Forget();
         }
         #endregion
-
-        #region Save
+        
+        #region Helpers
         
         private async UniTask<Tuple<bool, ISavedGameMetadata>> ShowSaveSelectionUI(SaveUIConfig config) 
         {
@@ -203,7 +204,9 @@ namespace MadDuck.Scripts.GPGS
             }
             return new (true, unopenedSaveGame);
         }
-        
+        #endregion
+
+        #region Save
         public async UniTaskVoid ManualSaveToService()
         {
             if (!PlayGamesPlatform.Instance.IsAuthenticated()) return;
@@ -356,7 +359,7 @@ namespace MadDuck.Scripts.GPGS
         #endregion
     }
     
-    public static class ExtensionMethod
+    public static class Texture2DUtils
     {
         public static Texture2D Decompress(this Texture2D source)
         {

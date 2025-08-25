@@ -113,7 +113,7 @@ namespace MadDuck.Scripts.Challenges
         public virtual void SaveChallengeData()
         {
             var savable = saveChallengeData ? new SavableChallengeData<T>(Completed, ChallengeData) : new SavableChallengeData(Completed);
-            PlayerDataManager.Instance.SaveChallenges(ChallengeGuid, savable);
+            PlayerDataManager.Instance.SaveChallenges(ChallengeGuid, savable, true);
         }
         
         public virtual void Complete()

@@ -397,11 +397,13 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     private void ChangeScore(int value)
     {
         Score.Value += value;
+        PlayerDataManager.Instance.SaveScoreChange((uint)value);
     }
     
     private void ChangeFitMe(int value)
     {
         FitmeScore.Value += value;
+        PlayerDataManager.Instance.SaveFitMeChange((uint)value);
     }
 
     public void AddScore(ScoreTypes scoreType, int contactedAmount = 0, Vector3 worldPosition = default)
