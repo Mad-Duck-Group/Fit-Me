@@ -9,18 +9,18 @@
       "platform": "android"
     },
     "playerId": "",
-    "lastModified": "2025-08-25T11:57:14.6445399+07:00",
-    "playtime": "00:01:55.2260000"
+    "lastModified": "2025-08-25T14:57:04.753005+07:00",
+    "playtime": "00:08:11.3620000"
   },
   "GameData": {
     "cumulativePreInfectBlockDestroyed": 20,
-    "cumulativeBlockDestroyed": 249,
+    "cumulativeBlockDestroyed": 290,
     "cumulativeColorBlastDictionary": {
       "Green": 6,
       "Blue": 7,
-      "Red": 6,
+      "Red": 7,
       "Yellow": 2,
-      "Purple": 3
+      "Purple": 4
     }
   },
   "ChallengeData": {

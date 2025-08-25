@@ -198,7 +198,6 @@ namespace MadDuck.Scripts.GPGS
                 var allSaveGamesResult = await TryFetchSaveGames();
                 if (!allSaveGamesResult.Item1) return new(false, null);
                 var firstSave = allSaveGamesResult.Item2.Count > 0 ? allSaveGamesResult.Item2[0] : null;
-                // if (firstSave == null) return new(false, null);
                 unopenedSaveGame = firstSave;
             }
             return new (true, unopenedSaveGame);
