@@ -61,8 +61,15 @@ public class Ads : MonoSingleton<Ads>
         {
             _rewardedAd.Show(reward =>
             {
-                GameManager.Instance.Continue();
-                _gameOverPanel.OnAdsClosed();
+                if (GameManager.Instance != null)
+                    GameManager.Instance.Continue();
+                else
+                    Debug.LogWarning("GameManager.Instance is null");
+
+                if (_gameOverPanel != null)
+                    _gameOverPanel.OnAdsClosed();
+                else
+                    Debug.LogWarning("_gameOverPanel is null");
             });
         }
         else
@@ -71,15 +78,23 @@ public class Ads : MonoSingleton<Ads>
         }
     }
     
-    private void HandleAdClosed()
+    private async void HandleAdClosed()
     {
-        if (_rewardedAd != null) _rewardedAd.Destroy();
+        if (_rewardedAd != null)
+        {
+            _rewardedAd.OnAdFullScreenContentClosed -= HandleAdClosed;
+            _rewardedAd.Destroy();
+        }
+        await UniTask.Delay(TimeSpan.FromSeconds(1));
         LoadRewardedAd();
     }
 
+
     private async UniTask CountdownAdSession()
     {
-        await UniTask.Delay(TimeSpan.FromHours(1),true);
+        var token = this.GetCancellationTokenOnDestroy();
+        await UniTask.Delay(TimeSpan.FromHours(1), cancellationToken: token);
         LoadRewardedAd();
     }
+
 }
