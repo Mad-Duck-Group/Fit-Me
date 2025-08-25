@@ -32,6 +32,7 @@ namespace MadDuck.Scripts.GPGS
     [Serializable]
     public class GPGSSavedGame : IGPGSService
     {
+        [SerializeField] private Sprite defaultSavedImage;
         [SerializeField] private bool allowSaveSelection;
         [SerializeField, ShowIf(nameof(allowSaveSelection))] private SaveUIConfig saveUIConfig;
         [SerializeField] private bool allowLoadSelection;
@@ -245,8 +246,20 @@ namespace MadDuck.Scripts.GPGS
                 builder = builder.WithUpdatedPlayedTime(totalPlaytime.Value);
             if (savedImage) 
             {
-                byte[] pngData = savedImage.EncodeToPNG();
+                var pngData = savedImage.EncodeToPNG();
                 builder = builder.WithUpdatedPngCoverImage(pngData);
+            }
+            else
+            {
+                try
+                {
+                    var defaultPngData = defaultSavedImage.texture.Decompress().EncodeToPNG();
+                    builder = builder.WithUpdatedPngCoverImage(defaultPngData);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"Failed to encode default saved image to PNG: {e.Message}");
+                }
             }
             SavedGameMetadataUpdate updatedMetadata = builder.Build();
             var tcs = new UniTaskCompletionSource<bool>();
@@ -341,5 +354,28 @@ namespace MadDuck.Scripts.GPGS
             }
         }
         #endregion
+    }
+    
+    public static class ExtensionMethod
+    {
+        public static Texture2D Decompress(this Texture2D source)
+        {
+            RenderTexture renderTex = RenderTexture.GetTemporary(
+                source.width,
+                source.height,
+                0,
+                RenderTextureFormat.Default,
+                RenderTextureReadWrite.Linear);
+
+            Graphics.Blit(source, renderTex);
+            RenderTexture previous = RenderTexture.active;
+            RenderTexture.active = renderTex;
+            Texture2D readableText = new Texture2D(source.width, source.height);
+            readableText.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
+            readableText.Apply();
+            RenderTexture.active = previous;
+            RenderTexture.ReleaseTemporary(renderTex);
+            return readableText;
+        }
     }
 }

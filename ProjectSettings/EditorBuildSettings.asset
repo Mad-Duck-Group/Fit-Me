@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/MadDuck/Scenes/MainMenu.unity
     guid: ab736174ce282d44a9e719b6ac9d78fe
   - enabled: 1
-    path: Assets/MadDuck/Scenes/Tutorial_New.unity
-    guid: daf5fadd337587f4dbac606c25291c65
+    path: Assets/MadDuck/Scenes/Tutorial.unity
+    guid: 69b9233a4c84e3b4aabe05609459cd24
   - enabled: 1
     path: Assets/MadDuck/Scenes/Gameplay.unity
     guid: 0b3f69c2516f52342a2fc1a2e6be9f3a

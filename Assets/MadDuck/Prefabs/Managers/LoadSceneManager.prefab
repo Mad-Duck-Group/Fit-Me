@@ -4515,7 +4515,7 @@ MonoBehaviour:
       _path: Assets/MadDuck/Scenes/Gameplay.unity
     - _sceneObject: {fileID: 102900000, guid: ab736174ce282d44a9e719b6ac9d78fe, type: 3}
       _path: Assets/MadDuck/Scenes/MainMenu.unity
-    - _sceneObject: {fileID: 102900000, guid: daf5fadd337587f4dbac606c25291c65, type: 3}
+    - _sceneObject: {fileID: 102900000, guid: 69b9233a4c84e3b4aabe05609459cd24, type: 3}
       _path: Assets/MadDuck/Scenes/Tutorial.unity
   displayVersion: 0
   minimumLoadingScreenDuration: 1
