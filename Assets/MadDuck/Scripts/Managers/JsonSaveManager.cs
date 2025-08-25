@@ -2,21 +2,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using Cysharp.Threading.Tasks;
-using MadDuck.Scripts.Challenges;
-using MadDuck.Scripts.Units;
+#if UNITY_ANDROID
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
+#endif
+using MadDuck.Scripts.GPGS;
+using MessagePipe;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-using Redcode.Extensions;
 using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace MadDuck.Scripts.Managers
 {
@@ -25,12 +23,29 @@ namespace MadDuck.Scripts.Managers
         PersistentDataPath,
         DataPath
     }
+
+    public enum SaveConflictResolution
+    {
+        UseNewer,
+        UseOlder,
+        UseLocal,
+        UseRemote,
+        UseLongerPlaytime,
+        UseShorterPlaytime,
+        Merge
+    }
     
+    public enum ConflictPriority
+    {
+        Version,
+        PlayerId
+    }
+
     public interface IJTokenDeserializer
     {
         public void DeserializeJToken(JToken jToken);
     }
-    
+
     [Serializable]
     public record TestSaveData : IJTokenDeserializer
     {
@@ -39,25 +54,35 @@ namespace MadDuck.Scripts.Managers
         {
             public string message;
             public DateTime date;
-            [ShowInInspector, Sirenix.OdinInspector.ReadOnly, DisplayAsString] private string DebugDateTime => date.ToString("yyyy-MM-dd HH:mm:ss");
-            
-            public TestSaveDataChild() { } // Parameterless constructor for deserialization
+
+            [ShowInInspector, Sirenix.OdinInspector.ReadOnly, DisplayAsString]
+            private string DebugDateTime => date.ToString("yyyy-MM-dd HH:mm:ss");
+
+            public TestSaveDataChild()
+            {
+            } // Parameterless constructor for deserialization
+
             public TestSaveDataChild(string message)
             {
                 this.message = message;
                 this.date = DateTime.Now;
             }
+
             public void DeserializeJToken(JToken jToken)
             {
                 jToken.TryGetAndConvertTo(nameof(message), out message);
                 jToken.TryGetAndConvertTo(nameof(date), out date);
             }
         }
+
         public string message;
         public DateTime date;
         public List<TestSaveDataChild> children = new();
         [SerializeField] public SerializableDictionary<string, TestSaveDataChild> childrenDictionary = new();
-        [ShowInInspector, Sirenix.OdinInspector.ReadOnly, DisplayAsString] private string DebugDateTime => date.ToString("yyyy-MM-dd HH:mm:ss");
+
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly, DisplayAsString]
+        private string DebugDateTime => date.ToString("yyyy-MM-dd HH:mm:ss");
+
         public TestSaveData(string message)
         {
             this.message = message;
@@ -68,60 +93,166 @@ namespace MadDuck.Scripts.Managers
         {
             jToken.TryGetAndConvertTo(nameof(children), out children);
             jToken.TryGetAndConvertTo(nameof(childrenDictionary), out IDictionary<string, TestSaveDataChild> tempDict);
-            childrenDictionary = tempDict != null 
-                ? new SerializableDictionary<string, TestSaveDataChild>(tempDict) 
+            childrenDictionary = tempDict != null
+                ? new SerializableDictionary<string, TestSaveDataChild>(tempDict)
                 : new SerializableDictionary<string, TestSaveDataChild>();
             jToken.TryGetAndConvertTo(nameof(message), out message);
             jToken.TryGetAndConvertTo(nameof(date), out date);
         }
     }
-    
+
     [Serializable]
-    public record SaveVersionData : IJTokenDeserializer
+    public record VersionInfo : IJTokenDeserializer, IComparable<VersionInfo>
     {
-        public string version;
+        public uint major = 0u;
+        public uint minor = 0u;
+        public uint patch = 0u;
+        public string releaseEnvironment = "Unknown";
+        public uint adjustment = 1u;
+        public string platform = "Unknown";
 
         public void DeserializeJToken(JToken jToken)
         {
-            jToken.TryGetAndConvertTo(nameof(version), out version);
+            jToken.TryGetAndConvertTo(nameof(major), out major);
+            jToken.TryGetAndConvertTo(nameof(minor), out minor);
+            jToken.TryGetAndConvertTo(nameof(patch), out patch);
+            jToken.TryGetAndConvertTo(nameof(releaseEnvironment), out releaseEnvironment);
+            jToken.TryGetAndConvertTo(nameof(adjustment), out adjustment);
+            jToken.TryGetAndConvertTo(nameof(platform), out platform);
+        }
+
+        public static bool TryParse(string versionString, out VersionInfo versionInfo)
+        {
+            versionInfo = new VersionInfo();
+            if (string.IsNullOrEmpty(versionString)) return false;
+            // Example version string: "1.0.0-release.adjustment-platform"
+            var parts = versionString.Split('-');
+            if (parts.Length == 0) return false;
+            var versionParts = parts[0].Split('.');
+            var releaseParts = parts.Length > 1 ? parts[1].Split('.') : Array.Empty<string>();
+            var majorValue = 0u;
+            var minorValue = 0u;
+            var patchValue = 0u;
+            var releaseEnvironment = "Unknown";
+            var adjustmentValue = 1u;
+            var platform = "Unknown";
+            if (versionParts.Length >= 1) uint.TryParse(versionParts[0], out majorValue);
+            if (versionParts.Length >= 2) uint.TryParse(versionParts[1], out minorValue);
+            if (versionParts.Length >= 3) uint.TryParse(versionParts[2], out patchValue);
+            if (releaseParts.Length >= 1) releaseEnvironment = releaseParts[0];
+            if (releaseParts.Length >= 2)
+                uint.TryParse(releaseParts[1], out adjustmentValue);
+            if (parts.Length >= 3) platform = parts[2];
+            versionInfo = new VersionInfo
+            {
+                major = majorValue,
+                minor = minorValue,
+                patch = patchValue,
+                releaseEnvironment = releaseEnvironment,
+                adjustment = adjustmentValue,
+                platform = platform
+            };
+            return true;
+        }
+
+        public override string ToString()
+        {
+            return $"{major}.{minor}.{patch}-{releaseEnvironment}.{adjustment}-{platform}";
+        }
+
+        public int CompareTo(VersionInfo other)
+        {
+            if (other == null) return 1;
+            int result = major.CompareTo(other.major);
+            if (result != 0) return result;
+            result = minor.CompareTo(other.minor);
+            if (result != 0) return result;
+            result = patch.CompareTo(other.patch);
+            if (result != 0) return result;
+            result = adjustment.CompareTo(other.adjustment);
+            return result;
+        }
+
+        public static bool operator >(VersionInfo left, VersionInfo right) => left.CompareTo(right) > 0;
+        public static bool operator <(VersionInfo left, VersionInfo right) => left.CompareTo(right) < 0;
+        public static bool operator >=(VersionInfo left, VersionInfo right) => left.CompareTo(right) >= 0;
+        public static bool operator <=(VersionInfo left, VersionInfo right) => left.CompareTo(right) <= 0;
+    }
+
+    [Serializable]
+    public record SaveMetadata : IJTokenDeserializer
+    {
+        public VersionInfo versionInfo;
+        public string playerId;
+        public DateTime lastModified = DateTime.MinValue;
+        public TimeSpan playtime = TimeSpan.Zero;
+
+        public void DeserializeJToken(JToken jToken)
+        {
+            jToken.TryGetAndConvertTo(nameof(versionInfo), out versionInfo);
+            jToken.TryGetAndConvertTo(nameof(playerId), out playerId);
+            jToken.TryGetAndConvertTo(nameof(lastModified), out lastModified);
+            jToken.TryGetAndConvertTo(nameof(playtime), out playtime);
         }
     }
-    
+
     [Serializable]
     public record SaveSettings
     {
         public SaveLocation saveLocation = SaveLocation.DataPath;
-        public string saveDirectory = "/TestSave";
+        public string saveDirectory = "TestSave";
         public string saveFileName = "testSave";
     }
-    
-    
+
+    public struct SaveToServiceEvent
+    {
+        public readonly byte[] data;
+        public readonly TimeSpan? totalPlaytime;
+        public readonly Texture2D savedImage;
+
+        public SaveToServiceEvent(byte[] data, TimeSpan? totalPlaytime = null, Texture2D savedImage = null)
+        {
+            this.data = data;
+            this.totalPlaytime = totalPlaytime;
+            this.savedImage = savedImage;
+        }
+    }
+
+
     public class JsonSaveManager : PersistentMonoSingleton<JsonSaveManager>
     {
         [SerializeField] private SaveSettings debugSaveSettings = new();
         [SerializeField] private SaveSettings releaseSaveSettings = new();
         [SerializeField] private bool testReleaseMode = false;
-        [SerializeField] private SaveVersionData saveVersionData = new();
+        [SerializeField] private ConflictPriority conflictPriority = ConflictPriority.Version;
+        [SerializeField] private SaveConflictResolution versionConflictResolution = SaveConflictResolution.UseNewer;
+        [SerializeField] private SaveConflictResolution playerIdConflictResolution = SaveConflictResolution.UseRemote;
+        [SerializeField] private SaveMetadata saveMetadata = new();
         [SerializeField] private TestSaveData testSaveData;
-        
-        private Dictionary<string, JObject> _saveDataDictionary = new();
+
+        private Dictionary<string, JToken> _saveDataDictionary = new();
+        private IPublisher<SaveToServiceEvent> _saveToServicePublisher;
+        private IDisposable _loadFromServiceSubscription;
         public bool Saving { get; private set; }
+        private float _timeStampSinceLastSave;
+
         public SaveSettings CurrentSaveSettings
         {
             get
             {
-                #if UNITY_EDITOR
+#if UNITY_EDITOR
                 return testReleaseMode ? releaseSaveSettings : debugSaveSettings;
-                #else
+#else
                 return releaseSaveSettings;
-                #endif
+#endif
             }
         }
+
         public event Action OnSaveCompleted;
         public static event Action OnLoadCompleted;
         public static event Action OnSaveReady;
-        
-        private const string SaveVersionKey = "SaveVersion";
+
+        private const string SaveMetadataKey = "SaveMetadata";
 
         [Button("Test Save")]
         public async UniTaskVoid TestSave()
@@ -135,32 +266,86 @@ namespace MadDuck.Scripts.Managers
             await Load();
             TryGetData("testData", testSaveData);
         }
-        
+
         #region Initialization
 
         private void Start()
         {
+            _timeStampSinceLastSave = Time.time;
+#if !UNITY_ANDROID
             LoadOnStart().Forget();
+#endif
         }
 
         private async UniTaskVoid LoadOnStart()
         {
             await Load();
-            await AddOrUpdateData(SaveVersionKey, new SaveVersionData { version = Application.version });
-            TryGetData(SaveVersionKey, saveVersionData);
+            TryGetData(SaveMetadataKey, saveMetadata);
             OnSaveReady?.Invoke();
         }
+
         #endregion
-   
+
+        #region Events
+
+        private void OnEnable()
+        {
+            _saveToServicePublisher = GlobalMessagePipe.GetPublisher<SaveToServiceEvent>();
+            _loadFromServiceSubscription = GlobalMessagePipe.GetSubscriber<LoadFromServiceEvent>()
+                .Subscribe(x => LoadFromService(x).Forget());
+#if UNITY_ANDROID
+            GPGSManager.OnFinishedAuthentication += OnFinishAuthentication;
+#endif
+        }
+
+#if UNITY_ANDROID
+        private void OnFinishAuthentication(SignInStatus signInStatus)
+        {
+            if (signInStatus == SignInStatus.Success) return;
+            // If authentication failed or user signed out, we can still load local save
+            LoadOnStart().Forget();
+        }
+#endif
+
+        private void OnDisable()
+        {
+#if UNITY_ANDROID
+            GPGSManager.OnFinishedAuthentication -= OnFinishAuthentication;
+#endif
+            _loadFromServiceSubscription?.Dispose();
+        }
+
+        private async UniTaskVoid LoadFromService(LoadFromServiceEvent eventData)
+        {
+            Debug.Log("Received LoadFromServiceEvent");
+            var remoteSaveSettings = new SaveSettings
+            {
+                saveLocation = CurrentSaveSettings.saveLocation,
+                saveDirectory = CurrentSaveSettings.saveDirectory,
+                saveFileName = CurrentSaveSettings.saveFileName
+            };
+            if (remoteSaveSettings.saveFileName.EndsWith(".json"))
+            {
+                remoteSaveSettings.saveFileName = remoteSaveSettings.saveFileName[..^5];
+            }
+            remoteSaveSettings.saveFileName += "_remote.json";
+            var remoteFilePath = GetSaveFilePath(remoteSaveSettings);
+            await File.WriteAllBytesAsync(remoteFilePath, eventData.data);
+            await ResolveSave(CurrentSaveSettings, remoteSaveSettings);
+            Load().Forget();
+        }
+
+        #endregion
+
         #region Save/Load Validation
+
         private bool TryValidate()
         {
-            var directoryPath = CurrentSaveSettings.saveLocation == SaveLocation.PersistentDataPath 
-                ? Application.persistentDataPath 
+            var directoryPath = CurrentSaveSettings.saveLocation == SaveLocation.PersistentDataPath
+                ? Application.persistentDataPath
                 : Application.dataPath;
             try
             {
-                
                 string fullPath = Path.Combine(directoryPath, CurrentSaveSettings.saveDirectory);
                 if (!Directory.Exists(fullPath))
                 {
@@ -173,9 +358,11 @@ namespace MadDuck.Scripts.Managers
                 Debug.LogError($"Failed to validate save directory: {ex.Message}");
                 return false;
             }
+
             try
             {
-                var fileName = CurrentSaveSettings.saveFileName.EndsWith(".json") ? CurrentSaveSettings.saveFileName 
+                var fileName = CurrentSaveSettings.saveFileName.EndsWith(".json")
+                    ? CurrentSaveSettings.saveFileName
                     : CurrentSaveSettings.saveFileName + ".json";
                 string fullPath = Path.Combine(directoryPath, CurrentSaveSettings.saveDirectory, fileName);
                 if (!File.Exists(fullPath))
@@ -183,6 +370,7 @@ namespace MadDuck.Scripts.Managers
                     File.WriteAllText(fullPath, "{}"); // Create an empty JSON file
                     Debug.Log($"Created save file: {fullPath}");
                 }
+
                 return true;
             }
             catch (Exception ex)
@@ -191,24 +379,89 @@ namespace MadDuck.Scripts.Managers
                 return false;
             }
         }
+
+        private async UniTask ResolveSave(SaveSettings existing, SaveSettings incoming)
+        {
+            var result1 = await TryLoadFromFile(existing);
+            var result2 = await TryLoadFromFile(incoming);
+            if (!result1.Item1 || !result2.Item1)
+            {
+                Debug.LogError("Failed to load one of the save files for comparison. Retaining existing save.");
+                File.Delete(GetSaveFilePath(incoming));
+                return;
+            }
+            var dict1 = result1.Item2 ?? new Dictionary<string, JToken>();
+            var dict2 = result2.Item2 ?? new Dictionary<string, JToken>();
+            var metadata1 = new SaveMetadata();
+            var metadata2 = new SaveMetadata();
+            TryGetData(SaveMetadataKey, metadata1, dict1);
+            TryGetData(SaveMetadataKey, metadata2, dict2);
+            var versionInfo1 = metadata1.versionInfo ?? new VersionInfo();
+            var versionInfo2 = metadata2.versionInfo ?? new VersionInfo();
+            var playerId1 = metadata1.playerId ?? string.Empty;
+            var playerId2 = metadata2.playerId ?? string.Empty;
+            var shouldOverwrite = true;
+            var newer = metadata1.lastModified >= metadata2.lastModified ? existing : incoming;
+            var longerPlaytime = metadata1.playtime >= metadata2.playtime ? existing : incoming;
+            var conflictResolution = conflictPriority == ConflictPriority.Version
+                ? versionConflictResolution
+                : playerIdConflictResolution;
+            if (versionInfo1.CompareTo(versionInfo2) != 0 || !playerId1.Equals(playerId2))
+            {
+                switch (conflictResolution)
+                {
+                    case SaveConflictResolution.UseNewer:
+                        shouldOverwrite = newer == incoming;
+                        break;
+                    case SaveConflictResolution.UseOlder:
+                        shouldOverwrite = newer == existing;
+                        break;
+                    case SaveConflictResolution.UseLocal:
+                        shouldOverwrite = false;
+                        break;
+                    case SaveConflictResolution.UseRemote:
+                        shouldOverwrite = true;
+                        break;
+                    case SaveConflictResolution.UseLongerPlaytime:
+                        shouldOverwrite = longerPlaytime == incoming;
+                        break;
+                    case SaveConflictResolution.UseShorterPlaytime:
+                        shouldOverwrite = longerPlaytime == existing;
+                        break;
+                    case SaveConflictResolution.Merge:
+                        // Merging not implemented
+                        Debug.LogWarning("Merge conflict resolution is not implemented. No action taken.");
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            if (shouldOverwrite)
+            {
+                await File.WriteAllBytesAsync(GetSaveFilePath(existing), await ConvertToBytes(incoming));
+                Debug.Log("Overwrote existing save with incoming save.");
+            }
+            else
+            {
+                Debug.Log("Retained existing save.");
+            }
+            File.Delete(GetSaveFilePath(incoming));
+        }
+
         #endregion
 
         #region File Operations
+
         private async UniTask SaveToFile()
         {
-            var directoryPath = CurrentSaveSettings.saveLocation == SaveLocation.PersistentDataPath 
-                ? Application.persistentDataPath 
-                : Application.dataPath;
-            var fileName = CurrentSaveSettings.saveFileName.EndsWith(".json") ? CurrentSaveSettings.saveFileName 
-                : CurrentSaveSettings.saveFileName + ".json";
-            string fullPath = Path.Combine(directoryPath, CurrentSaveSettings.saveDirectory, fileName);
+            var fullPath = GetSaveFilePath(CurrentSaveSettings);
             var stream = File.Open(fullPath, FileMode.OpenOrCreate);
-            var jsonData = JsonConvert.SerializeObject(_saveDataDictionary, Formatting.Indented, new JsonSerializerSettings()
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind,
-            });
-            Debug.Log($"JSON Data: {jsonData}");
+            var jsonData = JsonConvert.SerializeObject(_saveDataDictionary, Formatting.Indented,
+                new JsonSerializerSettings()
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind,
+                });
             await using (var writer = new StreamWriter(stream))
             {
                 // clear the file before writing
@@ -217,25 +470,25 @@ namespace MadDuck.Scripts.Managers
                 await writer.FlushAsync();
                 writer.Close();
             }
+
             stream.Close();
             await stream.DisposeAsync();
             Debug.Log($"Saved data to: {fullPath}");
+            var dataBytes = await ConvertToBytes(CurrentSaveSettings);
+            _saveToServicePublisher.Publish(new SaveToServiceEvent(dataBytes, saveMetadata.playtime));
         }
 
-        private async UniTask LoadFromFile()
+        private async UniTask<Tuple<bool, Dictionary<string, JToken>>> TryLoadFromFile(SaveSettings saveSettings)
         {
-            var directoryPath = CurrentSaveSettings.saveLocation == SaveLocation.PersistentDataPath 
-                ? Application.persistentDataPath 
-                : Application.dataPath;
-            var fileName = CurrentSaveSettings.saveFileName.EndsWith(".json") ? CurrentSaveSettings.saveFileName 
-                : CurrentSaveSettings.saveFileName + ".json";
-            string fullPath = Path.Combine(directoryPath, CurrentSaveSettings.saveDirectory, fileName);
+            var fullPath = GetSaveFilePath(saveSettings);
             if (!File.Exists(fullPath))
             {
                 Debug.LogError($"Save file does not exist: {fullPath}");
-                return;
+                return new Tuple<bool, Dictionary<string, JToken>>(false, null);
             }
+
             var stream = File.Open(fullPath, FileMode.Open);
+            Dictionary<string, JToken> dictionary;
             using (var reader = new StreamReader(stream))
             {
                 string jsonData = await reader.ReadToEndAsync();
@@ -243,20 +496,26 @@ namespace MadDuck.Scripts.Managers
                 {
                     jsonData = "{}"; // Ensure we have a valid JSON object
                 }
-                _saveDataDictionary = JsonConvert.DeserializeObject<Dictionary<string, JObject>>(jsonData, new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind
-                });
+
+                dictionary = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(jsonData,
+                    new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore,
+                        DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind
+                    });
                 Debug.Log($"Loaded data from: {fullPath}");
                 reader.Close();
             }
+
             stream.Close();
             await stream.DisposeAsync();
+            return new Tuple<bool, Dictionary<string, JToken>>(true, dictionary);
         }
+
         #endregion
-        
+
         #region Save Data
+
         public async UniTask AddOrUpdateData(string key, object data, bool saveImmediately = true)
         {
             if (_saveDataDictionary.ContainsKey(key))
@@ -267,50 +526,58 @@ namespace MadDuck.Scripts.Managers
             {
                 _saveDataDictionary.Add(key, CreateSavableData(data));
             }
-            if (saveImmediately) 
+
+            if (saveImmediately)
                 await Save();
         }
-        
+
         public async UniTask RemoveData(string key, bool saveImmediately = true)
         {
             if (!_saveDataDictionary.Remove(key))
             {
                 Debug.LogWarning($"Key '{key}' not found in save data.");
             }
+
             if (saveImmediately)
                 await Save();
         }
-        
+
         public void ClearSaveData()
         {
             _saveDataDictionary.Clear();
             Debug.Log("All save data cleared.");
         }
-        
-        public bool TryGetData(string key, IJTokenDeserializer deserializer)
+
+        public bool TryGetData(string key, IJTokenDeserializer deserializer, Dictionary<string, JToken> sourceData = null)
         {
-            if (_saveDataDictionary.TryGetValue(key, out var jToken))
+            var source = sourceData ?? _saveDataDictionary;
+            if (source.TryGetValue(key, out var jToken))
             {
                 deserializer.DeserializeJToken(jToken);
                 return true;
             }
+
             Debug.LogWarning($"Key '{key}' not found in save data.");
             return false;
         }
-        
-        public bool TryGetData<T>(string key, out T data, T defaultValue = default)
+
+        public bool TryGetData<T>(string key, out T data, T defaultValue = default, Dictionary<string, JToken> sourceData = null)
         {
             data = defaultValue;
-            if (_saveDataDictionary.TryGetValue(key, out var jToken))
+            var source = sourceData ?? _saveDataDictionary;
+            if (source.TryGetValue(key, out var jToken))
             {
                 return jToken.TryConvertTo(out data);
             }
+
             Debug.LogWarning($"Key '{key}' not found in save data.");
             return false;
         }
+
         #endregion
-        
+
         #region Save
+
         public async UniTask Save()
         {
             if (!TryValidate())
@@ -318,29 +585,71 @@ namespace MadDuck.Scripts.Managers
                 Saving = false;
                 return;
             }
+
             Saving = true;
+            var playerId = string.Empty;
+#if UNITY_ANDROID
+            playerId = PlayGamesPlatform.Instance.IsAuthenticated()
+                ? PlayGamesPlatform.Instance.localUser.id
+                : string.Empty;
+#endif
+            var durationSinceLastSave = TimeSpan.FromSeconds(Time.time - _timeStampSinceLastSave);
+            saveMetadata.playtime += durationSinceLastSave;
+            saveMetadata.lastModified = DateTime.Now;
+            saveMetadata.playerId = playerId;
+            saveMetadata.versionInfo = VersionInfo.TryParse(Application.version, out var version) ? version : new VersionInfo();
+            _timeStampSinceLastSave = Time.time;
+            await AddOrUpdateData(SaveMetadataKey, saveMetadata, false);
             await SaveToFile();
             Saving = false;
             OnSaveCompleted?.Invoke();
             OnSaveReady?.Invoke();
         }
+
         #endregion
-        
+
         #region Load
+
         public async UniTask Load()
         {
             if (!TryValidate()) return;
-            await LoadFromFile();
+            var result =  await TryLoadFromFile(CurrentSaveSettings);
+            if (!result.Item1)
+            {
+                Debug.LogError("Failed to load save data.");
+                return;
+            }
+            _saveDataDictionary = result.Item2 ?? new Dictionary<string, JToken>();
             OnLoadCompleted?.Invoke();
         }
+
         #endregion
-        
-        
+
         #region Utils
-        private static JObject CreateSavableData(object data)
+
+        private static JToken CreateSavableData(object data)
         {
-            return (JObject)JToken.FromObject(data);
+            return JToken.FromObject(data);
         }
+
+        public async UniTask<byte[]> ConvertToBytes(SaveSettings saveSettings = null)
+        {
+            saveSettings ??= CurrentSaveSettings;
+            var filePath = GetSaveFilePath(saveSettings);
+            return File.Exists(filePath) ? await File.ReadAllBytesAsync(filePath) : null;
+        }
+
+        private string GetSaveFilePath(SaveSettings saveSettings)
+        {
+            var directoryPath = saveSettings.saveLocation == SaveLocation.PersistentDataPath
+                ? Application.persistentDataPath
+                : Application.dataPath;
+            var fileName = saveSettings.saveFileName.EndsWith(".json")
+                ? saveSettings.saveFileName
+                : saveSettings.saveFileName + ".json";
+            return Path.Combine(directoryPath, saveSettings.saveDirectory, fileName);
+        }
+
         #endregion
     }
 
@@ -362,6 +671,7 @@ namespace MadDuck.Scripts.Managers
             {
                 return jToken.TryGetAndConvertToValue(key, out result);
             }
+
             var isGenericType = type.IsGenericType;
             var genericTypeDefinition = isGenericType ? type.GetGenericTypeDefinition() : null;
             switch (isGenericType)
@@ -371,14 +681,15 @@ namespace MadDuck.Scripts.Managers
                     var elementType = type.GetGenericArguments()[0];
                     if (!jToken.TryGetAndConvertToList(key, elementType, out var list)) return false;
                     result = (T)list;
-                        return true;
+                    return true;
                 }
-                case true when genericTypeDefinition == typeof(IDictionary<,>) && type.GetGenericArguments()[0] == typeof(string):
+                case true when genericTypeDefinition == typeof(IDictionary<,>) &&
+                               type.GetGenericArguments()[0] == typeof(string):
                 {
                     var valueType = type.GetGenericArguments()[1];
                     if (!jToken.TryGetAndConvertToDictionary(key, valueType, out var dict)) return false;
                     result = (T)dict;
-                        return true;
+                    return true;
                 }
                 case true:
                     return jToken.TryGetAndConvertToValue(key, out result);
@@ -387,6 +698,7 @@ namespace MadDuck.Scripts.Managers
                     return false;
             }
         }
+
         public static bool TryGetAndConvertToValue<T>(this JToken jToken, string key, out T result)
         {
             result = default;
@@ -395,11 +707,13 @@ namespace MadDuck.Scripts.Managers
             {
                 return token.TryConvertTo(out result);
             }
+
             Debug.LogError($"Key '{key}' not found in JObject.");
             return false;
         }
-        
-        public static bool TryGetAndConvertToList<T>(this JToken jToken, string key, out IList<T> result) where T : new()
+
+        public static bool TryGetAndConvertToList<T>(this JToken jToken, string key, out IList<T> result)
+            where T : new()
         {
             result = null;
             if (jToken is not JObject jObject) return false;
@@ -407,6 +721,7 @@ namespace MadDuck.Scripts.Managers
             {
                 return false;
             }
+
             if (token.Type is not JTokenType.Array) return false;
             var temp = new List<T>();
             foreach (var item in (JArray)token)
@@ -418,9 +733,11 @@ namespace MadDuck.Scripts.Managers
                 {
                     item.TryConvertTo(out tempChild);
                 }
+
                 if (tempChild != null && tempChild.GetType().IsAssignableFrom(tempChild.GetType()))
                     temp.Add(tempChild);
             }
+
             result = temp;
             return true;
         }
@@ -433,6 +750,7 @@ namespace MadDuck.Scripts.Managers
             {
                 return false;
             }
+
             if (token.Type is not JTokenType.Array) return false;
             var temp = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(elementType));
             foreach (var item in (JArray)token)
@@ -444,14 +762,17 @@ namespace MadDuck.Scripts.Managers
                 {
                     item.TryConvertTo(elementType, out tempChild);
                 }
+
                 if (tempChild != null && elementType.IsAssignableFrom(tempChild.GetType()))
                     temp.Add(tempChild);
             }
+
             result = temp;
             return true;
         }
-        
-        public static bool TryGetAndConvertToDictionary<T>(this JToken jToken, string key, out IDictionary<string, T> result) where T : new()
+
+        public static bool TryGetAndConvertToDictionary<T>(this JToken jToken, string key,
+            out IDictionary<string, T> result) where T : new()
         {
             result = null;
             if (jToken is not JObject jObject) return false;
@@ -459,6 +780,7 @@ namespace MadDuck.Scripts.Managers
             {
                 return false;
             }
+
             if (token.Type is not JTokenType.Object) return false;
             var temp = new Dictionary<string, T>();
             foreach (var property in ((JObject)token).Properties())
@@ -470,14 +792,17 @@ namespace MadDuck.Scripts.Managers
                 {
                     property.TryConvertTo(out tempChild);
                 }
+
                 if (tempChild != null && tempChild.GetType().IsAssignableFrom(tempChild.GetType()))
                     temp.Add(property.Name, tempChild);
             }
+
             result = temp;
             return true;
         }
-        
-        private static bool TryGetAndConvertToDictionary(this JToken jToken, string key, Type valueType, out IDictionary result)
+
+        private static bool TryGetAndConvertToDictionary(this JToken jToken, string key, Type valueType,
+            out IDictionary result)
         {
             result = null;
             if (jToken is not JObject jObject) return false;
@@ -485,8 +810,10 @@ namespace MadDuck.Scripts.Managers
             {
                 return false;
             }
+
             if (token.Type is not JTokenType.Object) return false;
-            var temp = (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(typeof(string), valueType));
+            var temp = (IDictionary)Activator.CreateInstance(
+                typeof(Dictionary<,>).MakeGenericType(typeof(string), valueType));
             foreach (var property in ((JObject)token).Properties())
             {
                 var tempChild = Activator.CreateInstance(valueType);
@@ -496,13 +823,15 @@ namespace MadDuck.Scripts.Managers
                 {
                     property.TryConvertTo(valueType, out tempChild);
                 }
+
                 if (tempChild != null && valueType.IsAssignableFrom(tempChild.GetType()))
                     temp.Add(property.Name, tempChild);
             }
+
             result = temp;
             return true;
         }
-        
+
         public static bool TryConvertTo(this JToken jToken, Type targetType, out object result)
         {
             result = null;
@@ -515,9 +844,10 @@ namespace MadDuck.Scripts.Managers
                 Debug.LogError($"Failed to convert JToken to {targetType}: {ex.Message}");
                 return false;
             }
+
             return true;
         }
-        
+
         public static bool TryConvertTo<T>(this JToken jToken, out T result)
         {
             result = default;
@@ -530,6 +860,7 @@ namespace MadDuck.Scripts.Managers
                 Debug.LogError($"Failed to convert JToken to {typeof(T)}: {ex.Message}");
                 return false;
             }
+
             return true;
         }
     }

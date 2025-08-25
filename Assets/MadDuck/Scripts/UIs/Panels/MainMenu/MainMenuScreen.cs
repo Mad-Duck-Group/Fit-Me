@@ -46,23 +46,28 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         {
             _sceneActivatePublisher = GlobalMessagePipe.GetPublisher<SceneActivateEvent>();
             LoadSceneManager.OnStartFadeOut += OnSwitchScene;
-            JsonSaveManager.OnLoadCompleted += OnLoadCompleted;
         }
         
         private void OnDisable()
         {
             LoadSceneManager.OnStartFadeOut -= OnSwitchScene;
-            JsonSaveManager.OnLoadCompleted += OnLoadCompleted;
+        }
+        
+        private void OnDestroy()
+        {
+            JsonSaveManager.OnLoadCompleted -= OnLoadCompleted;
         }
 
         private void OnLoadCompleted()
         {
+            Debug.Log("Tutorial Completed: " + PlayerDataManager.Instance.TutorialData.completedTutorial);
             helpButton.gameObject.SetActive(PlayerDataManager.Instance.TutorialData.completedTutorial);
         }
 
         public override void Initialize()
         {
             base.Initialize();
+            JsonSaveManager.OnLoadCompleted += OnLoadCompleted;
             helpButton.onClick.AddListener(() => OnButtonClicked(helpCrossFadeRule));
             settingsButton.onClick.AddListener(() => OnButtonClicked(settingsCrossFadeRule));
             statsButton.onClick.AddListener(() => OnButtonClicked(statsCrossFadeRule));

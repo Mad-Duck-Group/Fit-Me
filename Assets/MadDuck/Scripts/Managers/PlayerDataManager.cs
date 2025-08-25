@@ -122,7 +122,7 @@ namespace MadDuck.Scripts.Managers
         [field: SerializeField, InlineEditor]
         public List<ChallengePreset> ChallengePresets { get; private set; } = new();
 
-        [field: Title("Debug")]
+        [field: Title("Debug")] 
         [field: SerializeField] public PlayerRecordData PlayerRecordData { get; private set; } = new();
         [field: SerializeField] public GameData GameData { get; private set; } = new();
         [field: OdinSerialize] public ChallengeData ChallengeData { get; private set; } = new();

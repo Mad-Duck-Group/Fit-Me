@@ -53,6 +53,18 @@ MonoBehaviour:
     saveDirectory: save
     saveFileName: playerData
   testReleaseMode: 0
+  conflictPriority: 1
+  versionConflictResolution: 0
+  playerIdConflictResolution: 3
+  saveMetadata:
+    versionInfo:
+      major: 0
+      minor: 0
+      patch: 0
+      releaseEnvironment: Unknown
+      adjustment: 1
+      platform: Unknown
+    playerId: 
   testSaveData:
     message: asfffff
     children:

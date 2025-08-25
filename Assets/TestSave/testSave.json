@@ -1,14 +1,24 @@
 {
-  "SaveVersion": {
-    "version": "1.1.1-devbuild.1-android"
+  "SaveMetadata": {
+    "versionInfo": {
+      "major": 1,
+      "minor": 2,
+      "patch": 0,
+      "releaseEnvironment": "devbuild",
+      "adjustment": 1,
+      "platform": "android"
+    },
+    "playerId": "",
+    "lastModified": "2025-08-25T11:57:14.6445399+07:00",
+    "playtime": "00:01:55.2260000"
   },
   "GameData": {
     "cumulativePreInfectBlockDestroyed": 20,
-    "cumulativeBlockDestroyed": 235,
+    "cumulativeBlockDestroyed": 249,
     "cumulativeColorBlastDictionary": {
       "Green": 6,
-      "Blue": 6,
-      "Red": 4,
+      "Blue": 7,
+      "Red": 6,
       "Yellow": 2,
       "Purple": 3
     }
@@ -48,22 +58,22 @@
     },
     "runData": [
       {
-        "dateTime": "2025-08-23T20:53:05.7827794+07:00",
-        "score": 18940,
-        "fitMe": 2
+        "dateTime": "2025-08-25T11:57:14.6445399+07:00",
+        "score": 7820,
+        "fitMe": 1
       },
       {
-        "dateTime": "2025-08-23T20:43:11.9695037+07:00",
-        "score": 300,
+        "dateTime": "2025-08-25T11:56:02.8351117+07:00",
+        "score": 320,
         "fitMe": 0
       },
       {
-        "dateTime": "2025-08-23T19:24:09.1330766+07:00",
-        "score": 7200,
-        "fitMe": 1
+        "dateTime": "2025-08-25T11:38:38.6787813+07:00",
+        "score": 120,
+        "fitMe": 0
       }
     ],
-    "cumulativeScore": 62950,
-    "cumulativeFitMe": 9
+    "cumulativeScore": 71370,
+    "cumulativeFitMe": 10
   }
 }

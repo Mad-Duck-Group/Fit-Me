@@ -2,9 +2,15 @@
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+#if UNITY_ANDROID
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
+#endif
+using MadDuck.Scripts.GPGS;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.UIs.Others;
 using MadDuck.Scripts.UIs.Transitions;
+using MessagePipe;
 using PrimeTween;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -21,50 +27,102 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         [SerializeField] private TMP_Text usernameText;
         [SerializeField] private TMP_Text highscoreText;
         [SerializeField] private TMP_Text mostFitText;
-        [SerializeField] private RectTransform recordParent;
+        [SerializeField] private LayoutGroup scrollContent;
+        [SerializeField] private LayoutGroup recordParent;
         [SerializeField] private RecordBlock recordBlockPrefab;
         [SerializeField] private RectTransform recordDivider;
-        [SerializeField] private RectTransform challengeParent;
+        [SerializeField] private LayoutGroup challengeParent;
         [SerializeField] private ChallengeBlock challengeBlockPrefab;
+        [SerializeField] private Button authenticateButton;
         [SerializeField] private Button backButton;
+        [SerializeField] private Button loadButton;
+        [SerializeField] private Button saveButton;
         
         [Title("Panel")]
         [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule mainMenuCrossFadeRule = new();
+        
+        [Button("Force Rebuild Layout")]
+        public void ForceRebuildLayout()
+        {
+            OnPlayerDataLoaded().Forget();
+            //LayoutRebuilder.ForceRebuildLayoutImmediate(scrollContent);
+        }
 
         private readonly List<ChallengeBlock> _challengeBlocks = new();
         private readonly List<RecordBlock> _recordBlocks = new();
+#if UNITY_ANDROID
+        private IRequestHandler<GPGSServiceRequest, GPGSServiceResponse<IGPGSService>> _gpgsServiceRequestHandler;
+#endif
         private bool _isDataLoaded;
 
         public override void Initialize()
         {
             base.Initialize();
             backButton.onClick.AddListener(OnBackButtonClicked);
-            JsonSaveManager.OnLoadCompleted += OnPlayerDataLoaded;
+            authenticateButton.onClick.AddListener(OnAuthenticateButtonClicked);
+            loadButton.onClick.AddListener(OnLoadButtonClicked);
+            saveButton.onClick.AddListener(OnSaveButtonClicked);
+            JsonSaveManager.OnLoadCompleted += OnLoaded;
+#if UNITY_ANDROID
+            GPGSManager.OnFinishedAuthentication += OnFinishedAuthentication;
+            _gpgsServiceRequestHandler = GlobalMessagePipe.GetRequestHandler<GPGSServiceRequest, GPGSServiceResponse<IGPGSService>>();
+#else
+            authenticateButton.gameObject.SetActive(false);
+#endif
         }
 
-        private void OnPlayerDataLoaded()
+        private void OnFinishedAuthentication(SignInStatus status)
         {
+#if UNITY_ANDROID
+            SetPlayerInfo();
+#endif
+        }
+
+        private void OnLoaded()
+        {
+            OnPlayerDataLoaded().Forget();
+        }
+
+        private async UniTaskVoid OnPlayerDataLoaded()
+        {
+            _recordBlocks.ForEach(recordBlock =>
+            {
+                if (recordBlock)
+                    Destroy(recordBlock.gameObject);
+            });
+            _recordBlocks.Clear();
             var records = PlayerDataManager.Instance.PlayerRecordData.runData;
             foreach (var record in records)
             {
-                var recordBlock = Instantiate(recordBlockPrefab, recordParent);
+                var recordBlock = Instantiate(recordBlockPrefab, recordParent.transform);
                 _recordBlocks.Add(recordBlock);
                 recordBlock.SetData(record);
             }
             recordDivider.SetAsLastSibling();
+            _challengeBlocks.ForEach(challengeBlock =>
+            {
+                if (challengeBlock)
+                    Destroy(challengeBlock.gameObject);
+            });
+            _challengeBlocks.Clear();
             var challenges = PlayerDataManager.Instance.ChallengeDictionary.Values.ToList();
             foreach (var challenge in challenges)
             {
-                var challengeBlock = Instantiate(challengeBlockPrefab, challengeParent);
+                var challengeBlock = Instantiate(challengeBlockPrefab, challengeParent.transform);
                 _challengeBlocks.Add(challengeBlock);
                 challengeBlock.SetData(challenge);
             }
             _isDataLoaded = true;
+            await UniTask.WaitForEndOfFrame();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(scrollContent.transform as RectTransform);
         }
         
         private void OnDestroy()
         {
-            JsonSaveManager.OnLoadCompleted -= OnPlayerDataLoaded;
+            JsonSaveManager.OnLoadCompleted -= OnLoaded;
+#if UNITY_ANDROID
+            GPGSManager.OnFinishedAuthentication -= OnFinishedAuthentication;
+#endif
         }
 
         public override void Show()
@@ -82,12 +140,45 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
             PanelController.ChangePanel(this, mainMenuCrossFadeRule.nextPanel, mainMenuCrossFadeRule.crossFadeSettings, 
                 transitionCts.Token).Forget();
         }
+        
+        private void OnAuthenticateButtonClicked()
+        {
+#if UNITY_ANDROID
+            GPGSManager.Instance.ManualAuthenticate();
+#endif
+        }
+        
+        private void OnLoadButtonClicked()
+        {
+#if UNITY_ANDROID
+            var service = (GPGSSavedGame)_gpgsServiceRequestHandler.Invoke(GPGSServiceRequest.Create<GPGSSavedGame>()).service;
+            service?.ManualLoadFromService();
+#endif
+        }
+
+        private void OnSaveButtonClicked()
+        {
+#if UNITY_ANDROID
+            var service = (GPGSSavedGame)_gpgsServiceRequestHandler.Invoke(GPGSServiceRequest.Create<GPGSSavedGame>()).service;
+            service?.ManualSaveToService().Forget();
+#endif
+        }
 
         private void SetPlayerInfo()
         {
-            var recordData = PlayerDataManager.Instance.PlayerRecordData;
-            highscoreText.text = recordData.highScore.score.ToString("N0");
-            mostFitText.text = recordData.mostFitMe.fitMe.ToString("N0");
+            usernameText.text = "Guest";
+            profileImage.sprite = null;
+#if UNITY_ANDROID
+            authenticateButton.gameObject.SetActive(!PlayGamesPlatform.Instance.IsAuthenticated());
+            if (!PlayGamesPlatform.Instance.IsAuthenticated()) return;
+            var localUser = PlayGamesPlatform.Instance.localUser;
+            usernameText.text = localUser.userName;
+            if (!localUser.image) return;
+            var profilePicture = localUser.image;
+            var sprite = Sprite.Create(profilePicture, new Rect(0, 0, profilePicture.width, profilePicture.height), 
+                new Vector2(0.5f, 0.5f));
+            profileImage.sprite = sprite;
+#endif
         }
 
         private void SetChallenges()
@@ -107,6 +198,9 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         
         private void SetRecords()
         {
+            var recordData = PlayerDataManager.Instance.PlayerRecordData;
+            highscoreText.text = recordData.highScore.score.ToString("N0");
+            mostFitText.text = recordData.mostFitMe.fitMe.ToString("N0");
             var records = PlayerDataManager.Instance.PlayerRecordData.runData;
             for (var i = 0; i < _recordBlocks.Count; i++)
             {
