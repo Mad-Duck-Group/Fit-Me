@@ -25,13 +25,13 @@ namespace MadDuck.Scripts.Challenges
         }
         public override void OnChallengeUpdate(ChallengeUpdateEvent<CumulativeBlastSickChallengeData> challengeUpdateEvent)
         {
+            if (Completed) return;
             ChallengeData = challengeUpdateEvent.challengeData;
-            if (Completed || challengeUpdateEvent.challengeData.cumulativeSickBlast < targetSickBlast)
+            if (challengeUpdateEvent.challengeData.cumulativeSickBlast < targetSickBlast)
             {
                 SaveChallengeData();
                 return;
             }
-            Completed = true;
             Complete();
         }
     }

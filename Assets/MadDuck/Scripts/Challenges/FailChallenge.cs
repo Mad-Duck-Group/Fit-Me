@@ -20,11 +20,9 @@ namespace MadDuck.Scripts.Challenges
         {
             if (Completed)
             {
-                SaveChallengeData();
                 return;
             }
             ChallengeData = challengeUpdateEvent.challengeData;
-            Completed = true;
             Complete();
         }
     }

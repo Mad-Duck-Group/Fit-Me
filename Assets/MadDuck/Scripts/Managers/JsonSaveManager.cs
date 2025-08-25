@@ -353,6 +353,7 @@ namespace MadDuck.Scripts.Managers
             remoteSaveSettings.saveFileName += "_remote.json";
             var remoteFilePath = GetSaveFilePath(remoteSaveSettings);
             TryValidate(remoteSaveSettings);
+            TryValidate(CurrentSaveSettings);
             await File.WriteAllBytesAsync(remoteFilePath, eventData.data);
             await ResolveSave(CurrentSaveSettings, remoteSaveSettings);
             Load().Forget();

@@ -34,14 +34,14 @@ namespace MadDuck.Scripts.Challenges
         
         public override void OnChallengeUpdate(ChallengeUpdateEvent<CumulativeBlastColorChallengeData> challengeUpdateEvent)
         {
+            if (Completed) return;
             ChallengeData = challengeUpdateEvent.challengeData;
-            if (Completed || ChallengeData.blockType != targetBlockType ||
+            if (ChallengeData.blockType != targetBlockType ||
                 ChallengeData.cumulativeBlastCount < targetBlastCount)
             {
                 SaveChallengeData();
                 return;
             }
-            Completed = true;
             Complete();
         }
     }

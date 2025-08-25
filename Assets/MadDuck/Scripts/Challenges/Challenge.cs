@@ -110,16 +110,17 @@ namespace MadDuck.Scripts.Challenges
 
         public abstract void OnChallengeUpdate(ChallengeUpdateEvent<T> challengeUpdateEvent);
 
-        public virtual void SaveChallengeData()
+        public virtual void SaveChallengeData(bool saveToService = false)
         {
             var savable = saveChallengeData ? new SavableChallengeData<T>(Completed, ChallengeData) : new SavableChallengeData(Completed);
-            PlayerDataManager.Instance.SaveChallenges(ChallengeGuid, savable, true);
+            PlayerDataManager.Instance.SaveChallenges(ChallengeGuid, savable, saveToService);
         }
         
         public virtual void Complete()
         {
+            Completed = true;
             notificationPublisher.Publish(new NotificationDisplayEvent(NotificationType.Challenge, ChallengeDescription, ChallengeIcon));
-            SaveChallengeData();
+            SaveChallengeData(true);
         }
 
         public void SetChallengeData(ISavable savable)
