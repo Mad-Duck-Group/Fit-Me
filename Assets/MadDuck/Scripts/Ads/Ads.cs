@@ -47,7 +47,7 @@ public class Ads : MonoSingleton<Ads>
 
     void RegisterAdEvents()
     {
-        _rewardedAd.OnAdFullScreenContentClosed += LoadRewardedAd;
+        _rewardedAd.OnAdFullScreenContentClosed += HandleAdClosed;
 
         _rewardedAd.OnAdPaid += (AdValue adValue) =>
         {
@@ -63,16 +63,18 @@ public class Ads : MonoSingleton<Ads>
             {
                 GameManager.Instance.Continue();
                 _gameOverPanel.OnAdsClosed();
-                if (_rewardedAd != null)
-                {
-                    _rewardedAd.Destroy();
-                }
             });
         }
         else
         {
             Debug.Log("โฆษณายังไม่พร้อมแสดง");
         }
+    }
+    
+    private void HandleAdClosed()
+    {
+        if (_rewardedAd != null) _rewardedAd.Destroy();
+        LoadRewardedAd();
     }
 
     private async UniTask CountdownAdSession()
