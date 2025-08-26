@@ -31,13 +31,16 @@ namespace MadDuck.Scripts.Managers
 
     public enum SaveConflictResolution
     {
-        UseNewer,
-        UseOlder,
+        UseNewerSave,
+        UseOlderSave,
+        UseNewerVersion,
+        UseOlderVersion,
         UseLocal,
         UseRemote,
         UseLongerPlaytime,
         UseShorterPlaytime,
-        Merge
+        Merge,
+        Custom
     }
     
     public enum ConflictType
@@ -48,10 +51,17 @@ namespace MadDuck.Scripts.Managers
     }
     #endregion
 
+    #region Interfaces
     public interface IJTokenDeserializer
     {
         public void DeserializeJToken(JToken jToken);
     }
+
+    public interface ISaveConflictResolver
+    {
+        public bool Resolve(SaveMetadata existing, SaveMetadata incoming);
+    }
+    #endregion
 
     #region Data Structures
     [Serializable]
@@ -232,6 +242,9 @@ namespace MadDuck.Scripts.Managers
     {
         public SaveConflictResolution resolution;
         public int priority;
+        [OdinSerialize]
+        [ShowIf(nameof(resolution), SaveConflictResolution.Custom)] 
+        public ISaveConflictResolver customResolver;
         
         public static ConflictSettings Default => new()
         {
@@ -240,14 +253,33 @@ namespace MadDuck.Scripts.Managers
         };
     }
 
+    [Serializable]
+    public class GPGSPlayerIdResolver : ISaveConflictResolver
+    {
+        public bool Resolve(SaveMetadata existing, SaveMetadata incoming)
+        {
+            var existingId = existing.playerId ?? string.Empty;
+            var incomingId = incoming.playerId ?? string.Empty;
+            //if existing is empty, prefer incoming
+            if (string.IsNullOrEmpty(existingId) && !string.IsNullOrEmpty(incomingId)) return true;
+            //if incoming is empty, prefer existing
+            if (!string.IsNullOrEmpty(existingId) && string.IsNullOrEmpty(incomingId)) return false;
+            //if both are empty, prefer existing
+            if (string.IsNullOrEmpty(existingId) && string.IsNullOrEmpty(incomingId)) return false;
+            //if both exist, prefer incoming
+            return true;
+        }
+    }
 
-    public class JsonSaveManager : PersistentMonoSingleton<JsonSaveManager>
+
+    [ShowOdinSerializedPropertiesInInspector]
+    public class JsonSaveManager : PersistentMonoSingleton<JsonSaveManager>, ISerializationCallbackReceiver, ISupportsPrefabSerialization
     {
         [SerializeField] private SaveSettings debugSaveSettings = new();
         [SerializeField] private SaveSettings releaseSaveSettings = new();
         [SerializeField] private bool testReleaseMode = false;
         [SerializeField] private float saveToServiceCooldown = 1f;
-        [SerializeField] private SerializableDictionary<ConflictType, ConflictSettings> conflictSettings = new();
+        [OdinSerialize] private SerializableDictionary<ConflictType, ConflictSettings> conflictSettings = new();
         [SerializeField] private SaveMetadata saveMetadata = new();
         [SerializeField] private TestSaveData testSaveData;
 
@@ -426,27 +458,24 @@ namespace MadDuck.Scripts.Managers
             var playerId2 = metadata2.playerId ?? string.Empty;
             var shouldOverwrite = true;
             var newer = metadata1.lastModified >= metadata2.lastModified ? existing : incoming;
+            var newerVersion = versionInfo1 >= versionInfo2 ? existing : incoming;
             var longerPlaytime = metadata1.playtime >= metadata2.playtime ? existing : incoming;
             var versionConflict = !versionInfo1.Equals(versionInfo2);
             var playerIdConflict = !playerId1.Equals(playerId2);
             var finalConflictSettings = ConflictSettings.Default;
-            if (versionConflict)
+            if (conflictSettings.TryGetValue(ConflictType.Version, out var versionConflictSettings))
             {
-                if (conflictSettings.TryGetValue(ConflictType.Version, out var versionConflictSettings))
-                {
+                if (versionConflictSettings.resolution is SaveConflictResolution.Custom || versionConflict)
                     finalConflictSettings = versionConflictSettings.priority > finalConflictSettings.priority
-                        ? versionConflictSettings
-                        : finalConflictSettings;
-                }
+                    ? versionConflictSettings
+                    : finalConflictSettings;
             }
-            if (playerIdConflict)
+            if (conflictSettings.TryGetValue(ConflictType.PlayerId, out var playerIdConflictSettings))
             {
-                if (conflictSettings.TryGetValue(ConflictType.PlayerId, out var playerIdConflictSettings))
-                {
+                if (playerIdConflictSettings.resolution is SaveConflictResolution.Custom || playerIdConflict)
                     finalConflictSettings = playerIdConflictSettings.priority > finalConflictSettings.priority
-                        ? playerIdConflictSettings
-                        : finalConflictSettings;
-                }
+                    ? playerIdConflictSettings
+                    : finalConflictSettings;
             }
             if (conflictSettings.TryGetValue(ConflictType.None, out var noConflictSettings))
             {
@@ -456,11 +485,17 @@ namespace MadDuck.Scripts.Managers
             }
             switch (finalConflictSettings.resolution)
             {
-                case SaveConflictResolution.UseNewer:
+                case SaveConflictResolution.UseNewerSave:
                     shouldOverwrite = newer == incoming;
                     break;
-                case SaveConflictResolution.UseOlder:
+                case SaveConflictResolution.UseOlderSave:
                     shouldOverwrite = newer == existing;
+                    break;
+                case SaveConflictResolution.UseNewerVersion:
+                    shouldOverwrite = newerVersion == incoming;
+                    break;
+                case SaveConflictResolution.UseOlderVersion:
+                    shouldOverwrite = newerVersion == existing;
                     break;
                 case SaveConflictResolution.UseLocal:
                     shouldOverwrite = false;
@@ -477,6 +512,14 @@ namespace MadDuck.Scripts.Managers
                 case SaveConflictResolution.Merge:
                     // Merging not implemented
                     Debug.LogWarning("Merge conflict resolution is not implemented. No action taken.");
+                    break;
+                case SaveConflictResolution.Custom:
+                    if (finalConflictSettings.customResolver == null)
+                    {
+                        Debug.LogWarning("Custom resolver is null. No action taken.");
+                        break;
+                    }
+                    shouldOverwrite = finalConflictSettings.customResolver.Resolve(metadata1, metadata2);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -707,6 +750,26 @@ namespace MadDuck.Scripts.Managers
             return Path.Combine(directoryPath, saveSettings.saveDirectory, fileName);
         }
 
+        #endregion
+        
+        #region Serialization
+        public void OnBeforeSerialize()
+        {
+            UnitySerializationUtility.SerializeUnityObject(this, ref serializationData);
+        }
+
+        public void OnAfterDeserialize()
+        {
+            UnitySerializationUtility.DeserializeUnityObject(this, ref serializationData);
+        }
+
+        [SerializeField, HideInInspector]
+        private SerializationData serializationData;
+        public SerializationData SerializationData 
+        { 
+            get => serializationData;
+            set => serializationData = value;
+        }
         #endregion
     }
 

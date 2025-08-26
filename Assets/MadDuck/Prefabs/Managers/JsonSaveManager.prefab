@@ -54,15 +54,6 @@ MonoBehaviour:
     saveFileName: playerData
   testReleaseMode: 0
   saveToServiceCooldown: 1
-  conflictSettings:
-    keys: 000000000100000002000000
-    values:
-    - resolution: 4
-      priority: 0
-    - resolution: 0
-      priority: 1
-    - resolution: 3
-      priority: 2
   saveMetadata:
     versionInfo:
       major: 0
@@ -82,3 +73,107 @@ MonoBehaviour:
       - fasfasf
       values:
       - message: fgfffff
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: conflictSettings
+      Entry: 7
+      Data: 0|Sherbert.Framework.Generic.SerializableDictionary`2[[MadDuck.Scripts.Managers.ConflictType,
+        Assembly-CSharp],[MadDuck.Scripts.Managers.ConflictSettings, Assembly-CSharp]],
+        Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 3
+    - Name: 
+      Entry: 7
+      Data: System.Collections.Generic.KeyValuePair`2[[MadDuck.Scripts.Managers.ConflictType,
+        Assembly-CSharp],[MadDuck.Scripts.Managers.ConflictSettings, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 3
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: MadDuck.Scripts.Managers.ConflictSettings, Assembly-CSharp
+    - Name: resolution
+      Entry: 3
+      Data: 9
+    - Name: priority
+      Entry: 3
+      Data: 2
+    - Name: customResolver
+      Entry: 7
+      Data: 1|MadDuck.Scripts.Managers.GPGSPlayerIdResolver, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: System.Collections.Generic.KeyValuePair`2[[MadDuck.Scripts.Managers.ConflictType,
+        Assembly-CSharp],[MadDuck.Scripts.Managers.ConflictSettings, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: MadDuck.Scripts.Managers.ConflictSettings, Assembly-CSharp
+    - Name: resolution
+      Entry: 3
+      Data: 2
+    - Name: priority
+      Entry: 3
+      Data: 1
+    - Name: customResolver
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: System.Collections.Generic.KeyValuePair`2[[MadDuck.Scripts.Managers.ConflictType,
+        Assembly-CSharp],[MadDuck.Scripts.Managers.ConflictSettings, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 7
+      Data: MadDuck.Scripts.Managers.ConflictSettings, Assembly-CSharp
+    - Name: resolution
+      Entry: 3
+      Data: 6
+    - Name: priority
+      Entry: 3
+      Data: 0
+    - Name: customResolver
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
