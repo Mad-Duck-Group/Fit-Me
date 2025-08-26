@@ -3,21 +3,21 @@
     "versionInfo": {
       "major": 1,
       "minor": 2,
-      "patch": 1,
+      "patch": 2,
       "releaseEnvironment": "devbuild",
       "adjustment": 1,
       "platform": "android"
     },
     "playerId": "",
-    "lastModified": "2025-08-26T19:44:12.0852368+07:00",
-    "playtime": "00:16:30.6310000"
+    "lastModified": "2025-08-26T21:32:43.3436581+07:00",
+    "playtime": "00:21:20.7040000"
   },
   "GameData": {
     "cumulativePreInfectBlockDestroyed": 100,
-    "cumulativeBlockDestroyed": 1035,
+    "cumulativeBlockDestroyed": 1066,
     "cumulativeColorBlastDictionary": {
       "Green": 12,
-      "Blue": 10,
+      "Blue": 13,
       "Red": 11,
       "Yellow": 11,
       "Purple": 11
@@ -148,7 +148,7 @@
         "fitMe": 0
       }
     ],
-    "cumulativeScore": 1014700,
-    "cumulativeFitMe": 102
+    "cumulativeScore": 1037860,
+    "cumulativeFitMe": 106
   }
 }

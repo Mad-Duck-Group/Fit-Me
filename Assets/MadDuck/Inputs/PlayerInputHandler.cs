@@ -41,6 +41,7 @@ namespace MadDuck.Scripts.Inputs
         #region Values
         [field: SerializeField, ReadOnly] public bool AnyButtonPressed { get; private set; }
         [field: SerializeField, ReadOnly] public Vector2 MouseDelta { get; private set; }
+        [field: SerializeField, ReadOnly] public Vector2 MousePosition { get; private set; }
 
         #endregion
         
@@ -138,6 +139,11 @@ namespace MadDuck.Scripts.Inputs
         {
             MouseDelta = context.ReadValue<Vector2>();
         }
+        
+        public void OnMousePosition(InputAction.CallbackContext context)
+        {
+            MousePosition = context.ReadValue<Vector2>();
+        }
 
         #endregion
 
@@ -200,5 +206,7 @@ namespace MadDuck.Scripts.Inputs
             }
         }
         #endregion
+
+        
     }
 }

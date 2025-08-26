@@ -1,9 +1,11 @@
 using System;
+using MadDuck.Scripts.Inputs;
 using MadDuck.Scripts.Units;
 using Redcode.Extensions;
 using Sirenix.OdinInspector;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace MadDuck.Scripts.Managers
 {
@@ -13,6 +15,7 @@ namespace MadDuck.Scripts.Managers
         [Title("Pointer Manager References")]
         [SerializeField] private Camera gameCamera;
         [SerializeField] private Canvas gameCanvas;
+        [SerializeField] private PlayerInputHandler inputHandler;
         #endregion
 
         #region Fields and Properties
@@ -20,7 +23,9 @@ namespace MadDuck.Scripts.Managers
         {
             get
             {
-                Vector3 mousePosition = gameCamera.ScreenToWorldPoint(Input.mousePosition).WithZ(0);
+                var rawPosition = inputHandler.MousePosition;
+                Vector3 mousePosition = gameCamera.ScreenToWorldPoint(rawPosition).WithZ(0);
+                Debug.Log($"Mouse pos: " + Mouse.current.position.ReadValue());
                 return mousePosition;
             }
         }
@@ -29,9 +34,10 @@ namespace MadDuck.Scripts.Managers
         {
             get
             {
+                var rawPosition = inputHandler.MousePosition;
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(
                     gameCanvas.transform as RectTransform, 
-                    Input.mousePosition, 
+                    rawPosition, 
                     gameCanvas.worldCamera, 
                     out Vector2 localPoint);
                 return gameCanvas.transform.TransformPoint(localPoint);
