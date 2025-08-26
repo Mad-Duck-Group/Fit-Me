@@ -25,7 +25,6 @@ namespace MadDuck.Scripts.Managers
             {
                 var rawPosition = inputHandler.MousePosition;
                 Vector3 mousePosition = gameCamera.ScreenToWorldPoint(rawPosition).WithZ(0);
-                Debug.Log($"Mouse pos: " + Mouse.current.position.ReadValue());
                 return mousePosition;
             }
         }

@@ -260,6 +260,7 @@ namespace MadDuck.Scripts.Managers
         {
             var existingId = existing.playerId ?? string.Empty;
             var incomingId = incoming.playerId ?? string.Empty;
+            //Debug.Log($"Resolving PlayerId conflict. Existing: '{existingId}', Incoming: '{incomingId}'");
             //if existing is empty, prefer incoming
             if (string.IsNullOrEmpty(existingId) && !string.IsNullOrEmpty(incomingId)) return true;
             //if incoming is empty, prefer existing
@@ -483,6 +484,7 @@ namespace MadDuck.Scripts.Managers
                     ? noConflictSettings
                     : finalConflictSettings;
             }
+            Debug.Log($"Final conflict resolution: {finalConflictSettings.resolution}");
             switch (finalConflictSettings.resolution)
             {
                 case SaveConflictResolution.UseNewerSave:
@@ -682,6 +684,7 @@ namespace MadDuck.Scripts.Managers
             var durationSinceLastSave = TimeSpan.FromSeconds(Time.time - _timeStampSinceLastSave);
             saveMetadata.playtime += durationSinceLastSave;
             saveMetadata.lastModified = DateTime.Now;
+            Debug.Log("Player ID: " + playerId);
             saveMetadata.playerId = playerId;
             saveMetadata.versionInfo = VersionInfo.TryParse(Application.version, out var version) ? version : new VersionInfo();
             _timeStampSinceLastSave = Time.time;

@@ -30,7 +30,6 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         [SerializeField] private LayoutGroup scrollContent;
         [SerializeField] private LayoutGroup recordParent;
         [SerializeField] private RecordBlock recordBlockPrefab;
-        [SerializeField] private RectTransform recordDivider;
         [SerializeField] private LayoutGroup challengeParent;
         [SerializeField] private ChallengeBlock challengeBlockPrefab;
         [SerializeField] private Button authenticateButton;
@@ -98,7 +97,6 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
                 _recordBlocks.Add(recordBlock);
                 recordBlock.SetData(record);
             }
-            recordDivider.SetAsLastSibling();
             _challengeBlocks.ForEach(challengeBlock =>
             {
                 if (challengeBlock)
@@ -123,6 +121,8 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
             JsonSaveManager.OnLoadCompleted -= OnLoaded;
 #if UNITY_ANDROID
             GPGSManager.OnFinishedAuthentication -= OnFinishedAuthentication;
+            GPGSManager.OnFinishedAuthentication -= AuthenticationDone;
+            JsonSaveManager.OnLoadCompleted -= OnLoadAfterAuthentication;
 #endif
         }
 
@@ -153,8 +153,34 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         {
 #if UNITY_ANDROID
             GPGSManager.Instance.ManualAuthenticate();
+            authenticateButton.interactable = false;
+            GPGSManager.OnFinishedAuthentication += AuthenticationDone;
 #endif
         }
+        
+#if UNITY_ANDROID
+        void AuthenticationDone(SignInStatus status)
+        {
+            Debug.Log("Authentication Done with status: " + status);
+            authenticateButton.interactable = true;
+            GPGSManager.OnFinishedAuthentication -= AuthenticationDone;
+            if (status != SignInStatus.Success) return;
+            JsonSaveManager.OnLoadCompleted += OnLoadAfterAuthentication;
+        }
+
+        void OnLoadAfterAuthentication()
+        {
+            Debug.Log("Load after authentication completed.");
+            JsonSaveManager.OnLoadCompleted -= OnLoadAfterAuthentication;
+            LoadAfterAuthentication().Forget();
+        }
+
+        private async UniTaskVoid LoadAfterAuthentication()
+        {
+            await JsonSaveManager.Instance.Save(true);
+            await JsonSaveManager.Instance.Load();
+        }
+#endif
         
         private void OnLoadButtonClicked()
         {

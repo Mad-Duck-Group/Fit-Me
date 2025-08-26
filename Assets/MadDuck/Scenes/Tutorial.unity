@@ -10759,6 +10759,7 @@ GameObject:
   - component: {fileID: 1802113702}
   - component: {fileID: 1802113701}
   - component: {fileID: 1802113700}
+  - component: {fileID: 1802113704}
   m_Layer: 5
   m_Name: NextButton
   m_TagString: Untagged
@@ -10883,6 +10884,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1802113698}
   m_CullTransparentMesh: 1
+--- !u!114 &1802113704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1802113698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073abbde76bf7dc4a98aa052ad160c4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickSfx:
+    Guid:
+      Data1: 1609711286
+      Data2: 1193813318
+      Data3: -748454981
+      Data4: 1977297278
+    Path: event:/SFX/Menu/M01_Any Button
 --- !u!1 &1824884508
 GameObject:
   m_ObjectHideFlags: 0

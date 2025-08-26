@@ -60,7 +60,6 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
 
         private void OnLoadCompleted()
         {
-            Debug.Log("Tutorial Completed: " + PlayerDataManager.Instance.TutorialData.completedTutorial);
             helpButton.gameObject.SetActive(PlayerDataManager.Instance.TutorialData.completedTutorial);
         }
 
@@ -81,6 +80,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
             base.Show();
             sceneObjectsParent.gameObject.SetActive(true);
             logo.transform.localScale = logoScaleTweenSettings.startValue;
+            helpButton.gameObject.SetActive(PlayerDataManager.Instance.TutorialData.completedTutorial);
             if (_blockSpawned) return;
             _sceneActivatePublisher.Publish(new SceneActivateEvent(SceneType.MainMenu));
             _blockSpawned = true;

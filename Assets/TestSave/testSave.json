@@ -9,18 +9,18 @@
       "platform": "android"
     },
     "playerId": "",
-    "lastModified": "2025-08-26T21:56:33.2531821+07:00",
-    "playtime": "00:23:53.2490000"
+    "lastModified": "2025-08-26T22:02:58.7967743+07:00",
+    "playtime": "00:28:49.9540000"
   },
   "GameData": {
     "cumulativePreInfectBlockDestroyed": 100,
-    "cumulativeBlockDestroyed": 1082,
+    "cumulativeBlockDestroyed": 1105,
     "cumulativeColorBlastDictionary": {
       "Green": 12,
       "Blue": 13,
       "Red": 11,
       "Yellow": 11,
-      "Purple": 11
+      "Purple": 12
     }
   },
   "ChallengeData": {
@@ -133,22 +133,22 @@
     },
     "runData": [
       {
-        "dateTime": "2025-08-26T19:37:39.7124712+07:00",
-        "score": 12370,
-        "fitMe": 2
-      },
-      {
-        "dateTime": "2025-08-25T11:57:14.6445399+07:00",
-        "score": 7820,
+        "dateTime": "2025-08-26T22:02:58.7967743+07:00",
+        "score": 5400,
         "fitMe": 1
       },
       {
-        "dateTime": "2025-08-25T11:56:02.8351117+07:00",
-        "score": 320,
+        "dateTime": "2025-08-26T22:01:20.6847144+07:00",
+        "score": 80,
+        "fitMe": 0
+      },
+      {
+        "dateTime": "2025-08-26T22:00:57.8233027+07:00",
+        "score": 1340,
         "fitMe": 0
       }
     ],
-    "cumulativeScore": 1053220,
-    "cumulativeFitMe": 109
+    "cumulativeScore": 1065160,
+    "cumulativeFitMe": 111
   }
 }
