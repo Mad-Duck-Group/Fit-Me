@@ -1,0 +1,253 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ca02cb4a2f4e03bc986cbe1da85f7e, type: 3}
+  m_Name: ScoreChallenge
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 7085680453519524019, guid: ed706abf120a1c242af517115ea2b41c, type: 3}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Challenges
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[MadDuck.Scripts.Challenges.IChallenge,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 6
+    - Name: 
+      Entry: 7
+      Data: 1|MadDuck.Scripts.Challenges.CumulativeScoreChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: bed4d3067e1f46c29e9ce13847ec8810
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: First Score
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Your game begins!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeScoreChallengeData, Assembly-CSharp
+    - Name: cumulativeScore
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetScore
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 2|MadDuck.Scripts.Challenges.CumulativeScoreChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: aef694f5091b43b99a8fe8948bb0935d
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: 50,000 points
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Getting the hang of it now?
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeScoreChallengeData, Assembly-CSharp
+    - Name: cumulativeScore
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetScore
+      Entry: 3
+      Data: 50000
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 3|MadDuck.Scripts.Challenges.CumulativeScoreChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: e92f26bf25474dafb030d5eeeea2bcdf
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: 100,000 points
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: You are getting better at this!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeScoreChallengeData, Assembly-CSharp
+    - Name: cumulativeScore
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetScore
+      Entry: 3
+      Data: 100000
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 4|MadDuck.Scripts.Challenges.CumulativeScoreChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: 2ef09dc0c16d48c9a85726ae5f4ca4f8
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: 200,000 points
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: You are now a veteran!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeScoreChallengeData, Assembly-CSharp
+    - Name: cumulativeScore
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetScore
+      Entry: 3
+      Data: 200000
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 5|MadDuck.Scripts.Challenges.CumulativeScoreChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: b1d9cdde38ef47cd8f28053f5125f31e
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: 500,000 points
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Half way to a million, keep going!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeScoreChallengeData, Assembly-CSharp
+    - Name: cumulativeScore
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetScore
+      Entry: 3
+      Data: 500000
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 6|MadDuck.Scripts.Challenges.CumulativeScoreChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: e73b306cbab04e78bf9cb8918c9f9c0c
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: 1,000,000 points
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Congrats, you can call yourself a master now!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeScoreChallengeData, Assembly-CSharp
+    - Name: cumulativeScore
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetScore
+      Entry: 3
+      Data: 1000000
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 

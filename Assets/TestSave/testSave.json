@@ -3,41 +3,116 @@
     "versionInfo": {
       "major": 1,
       "minor": 2,
-      "patch": 0,
+      "patch": 1,
       "releaseEnvironment": "devbuild",
       "adjustment": 1,
       "platform": "android"
     },
     "playerId": "",
-    "lastModified": "2025-08-25T18:12:19.2273701+07:00",
-    "playtime": "00:08:23.8060000"
+    "lastModified": "2025-08-26T19:44:12.0852368+07:00",
+    "playtime": "00:16:30.6310000"
   },
   "GameData": {
-    "cumulativePreInfectBlockDestroyed": 20,
-    "cumulativeBlockDestroyed": 293,
+    "cumulativePreInfectBlockDestroyed": 100,
+    "cumulativeBlockDestroyed": 1035,
     "cumulativeColorBlastDictionary": {
-      "Green": 6,
-      "Blue": 7,
-      "Red": 8,
-      "Yellow": 2,
-      "Purple": 4
+      "Green": 12,
+      "Blue": 10,
+      "Red": 11,
+      "Yellow": 11,
+      "Purple": 11
     }
   },
   "ChallengeData": {
     "challenges": {
-      "8e785e1c-6b0f-443b-817a-2e3d9d6150ab": {
+      "b1d9cdde-38ef-47cd-8f28-053f5125f31e": {
         "completed": true
       },
-      "b639b047-6696-4930-9676-6e911ed80251": {
+      "2ef09dc0-c16d-48c9-a857-26ae5f4ca4f8": {
         "completed": true
       },
-      "afce5401-6d6d-4328-ade8-655fa08c036d": {
+      "e92f26bf-2547-4daf-b030-d5eeeea2bcdf": {
         "completed": true
       },
-      "f9eb45a3-c844-42ef-858b-f1fb9de9cd15": {
+      "aef694f5-091b-43b9-9a8f-e8948bb0935d": {
         "completed": true
       },
-      "e3c6e96c-ae1e-49c0-9fc3-76a06bb649ff": {
+      "bed4d306-7e1f-46c2-9e9c-e13847ec8810": {
+        "completed": true
+      },
+      "e73b306c-bab0-4e78-bf9c-b8918c9f9c0c": {
+        "completed": true
+      },
+      "31071e7d-14f8-4ea2-a8c2-a69c0756898a": {
+        "completed": true
+      },
+      "5b878707-98bb-46c7-bd09-9544cfdd0255": {
+        "completed": true
+      },
+      "a6c85ed1-4a1c-4733-804d-3affa81c10d2": {
+        "completed": true
+      },
+      "c5ca3295-fa78-4b1e-b6db-23a3e7bff4c1": {
+        "completed": true
+      },
+      "8ddb501f-af26-4a97-9a18-db45f5321774": {
+        "completed": true
+      },
+      "5589b7a1-6e67-4cbc-8655-8c2ba5b99322": {
+        "completed": true
+      },
+      "3a776ade-e860-463f-9403-764459bdc16d": {
+        "completed": true
+      },
+      "20f2a248-fe07-4b5c-96f9-2602994f6b83": {
+        "completed": true
+      },
+      "2e9a7354-3cf8-4fb8-b43d-c330a52ab603": {
+        "completed": true
+      },
+      "7e318796-31aa-4e00-8cfb-4d269d9b9407": {
+        "completed": true
+      },
+      "0ae4365b-8874-4936-8b12-d17384c0644f": {
+        "completed": true
+      },
+      "584b9026-3e80-4714-9b23-817cf96cec2f": {
+        "completed": true
+      },
+      "a9c01579-852d-4523-bbcc-c12560568119": {
+        "completed": true
+      },
+      "62d48ad1-a5c0-4276-a35c-d7b6bd151038": {
+        "completed": true
+      },
+      "3f4adb21-9754-4f85-9edd-434bc70d55f0": {
+        "completed": true
+      },
+      "0fa977f9-65ce-4dd6-a2e6-67cc98a5699c": {
+        "completed": true
+      },
+      "b042f7b2-7ac6-4a72-9983-4af5cd261a92": {
+        "completed": true
+      },
+      "19b0c81d-5f38-4d22-b088-1aafea38a95b": {
+        "completed": true
+      },
+      "b77c1d2b-eb88-4cd8-b5be-35780758d153": {
+        "completed": true
+      },
+      "b4b66857-9e90-450b-b618-c28b9a17dd1e": {
+        "completed": true
+      },
+      "f9a56a2b-3e97-47f4-9c55-4f3a71f202eb": {
+        "completed": true
+      },
+      "99d1db82-95fa-40a5-873a-aa6c54ef9fbb": {
+        "completed": true
+      },
+      "277f7f72-0c9e-4130-a07b-659be7f6a586": {
+        "completed": true
+      },
+      "b59e13d8-b998-4a31-9552-cb1fff6f8de5": {
         "completed": true
       }
     }
@@ -58,6 +133,11 @@
     },
     "runData": [
       {
+        "dateTime": "2025-08-26T19:37:39.7124712+07:00",
+        "score": 12370,
+        "fitMe": 2
+      },
+      {
         "dateTime": "2025-08-25T11:57:14.6445399+07:00",
         "score": 7820,
         "fitMe": 1
@@ -66,14 +146,9 @@
         "dateTime": "2025-08-25T11:56:02.8351117+07:00",
         "score": 320,
         "fitMe": 0
-      },
-      {
-        "dateTime": "2025-08-25T11:38:38.6787813+07:00",
-        "score": 120,
-        "fitMe": 0
       }
     ],
-    "cumulativeScore": 71370,
-    "cumulativeFitMe": 10
+    "cumulativeScore": 1014700,
+    "cumulativeFitMe": 102
   }
 }

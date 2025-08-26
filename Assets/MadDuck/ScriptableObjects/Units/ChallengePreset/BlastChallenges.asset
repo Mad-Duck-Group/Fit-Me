@@ -1,0 +1,391 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ca02cb4a2f4e03bc986cbe1da85f7e, type: 3}
+  m_Name: BlastChallenges
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 969583110821240905, guid: 3209dfbbe19296143b46db1fbfb45874, type: 3}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Challenges
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[MadDuck.Scripts.Challenges.IChallenge,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 9
+    - Name: 
+      Entry: 7
+      Data: 1|MadDuck.Scripts.Challenges.CumulativeBlastChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: 3a776adee860463f9403764459bdc16d
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: First Blast
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: First blast, what a blast!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeBlastChallengeData, Assembly-CSharp
+    - Name: cumulativeBlast
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetBlast
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 2|MadDuck.Scripts.Challenges.CumulativeBlastChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: 20f2a248fe074b5c96f92602994f6b83
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: Blast 10 Times
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Quite satisfying!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeBlastChallengeData, Assembly-CSharp
+    - Name: cumulativeBlast
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetBlast
+      Entry: 3
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 3|MadDuck.Scripts.Challenges.CumulativeBlastChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: 2e9a73543cf84fb8b43dc330a52ab603
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: Blast 50 Times
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: You really like seeing us pop!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeBlastChallengeData, Assembly-CSharp
+    - Name: cumulativeBlast
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetBlast
+      Entry: 3
+      Data: 50
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 4|MadDuck.Scripts.Challenges.CumulativeBlastChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: 7e31879631aa4e008cfb4d269d9b9407
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: Blast 100 Times
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Please, have mercy!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeBlastChallengeData, Assembly-CSharp
+    - Name: cumulativeBlast
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetBlast
+      Entry: 3
+      Data: 100
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 5|MadDuck.Scripts.Challenges.CumulativeBlastColorChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: 0ae4365b887449368b12d17384c0644f
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: Blast 10 Red Blocks
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: They do look kind of like jelly, don't you think?
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeBlastColorChallengeData, Assembly-CSharp
+    - Name: blockType
+      Entry: 3
+      Data: 0
+    - Name: cumulativeBlastCount
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetBlockType
+      Entry: 3
+      Data: 0
+    - Name: targetBlastCount
+      Entry: 3
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 6|MadDuck.Scripts.Challenges.CumulativeBlastColorChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: 584b90263e8047149b23817cf96cec2f
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: Blast 10 Yellow Blocks
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Hello, the mellow yellow!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeBlastColorChallengeData, Assembly-CSharp
+    - Name: blockType
+      Entry: 3
+      Data: 0
+    - Name: cumulativeBlastCount
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetBlockType
+      Entry: 3
+      Data: 1
+    - Name: targetBlastCount
+      Entry: 3
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 7|MadDuck.Scripts.Challenges.CumulativeBlastColorChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: a9c01579852d4523bbccc12560568119
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: Blast 10 Green Blocks
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Let me guess, you don't like veggies.
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeBlastColorChallengeData, Assembly-CSharp
+    - Name: blockType
+      Entry: 3
+      Data: 0
+    - Name: cumulativeBlastCount
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetBlockType
+      Entry: 3
+      Data: 2
+    - Name: targetBlastCount
+      Entry: 3
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 8|MadDuck.Scripts.Challenges.CumulativeBlastColorChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: 62d48ad1a5c04276a35cd7b6bd151038
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: Blast 10 Purple Blocks
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Maybe purple is your favorite color?
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeBlastColorChallengeData, Assembly-CSharp
+    - Name: blockType
+      Entry: 3
+      Data: 0
+    - Name: cumulativeBlastCount
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetBlockType
+      Entry: 3
+      Data: 3
+    - Name: targetBlastCount
+      Entry: 3
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 9|MadDuck.Scripts.Challenges.CumulativeBlastColorChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: 3f4adb2197544f859edd434bc70d55f0
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: Blast 10 Blue Blocks
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Is it blue or is it teal, or maybe it's cyan?
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeBlastColorChallengeData, Assembly-CSharp
+    - Name: blockType
+      Entry: 3
+      Data: 0
+    - Name: cumulativeBlastCount
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetBlockType
+      Entry: 3
+      Data: 4
+    - Name: targetBlastCount
+      Entry: 3
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 

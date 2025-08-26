@@ -1,5 +1,6 @@
 ﻿using System;
 using MadDuck.Scripts.Managers;
+using MadDuck.Scripts.UIs.Notifications;
 using MadDuck.Scripts.Utils.Inspectors;
 using MessagePipe;
 using Newtonsoft.Json.Linq;
@@ -119,7 +120,8 @@ namespace MadDuck.Scripts.Challenges
         public virtual void Complete()
         {
             Completed = true;
-            notificationPublisher.Publish(new NotificationDisplayEvent(NotificationType.Challenge, ChallengeDescription, ChallengeIcon));
+            notificationPublisher.Publish(new NotificationDisplayEvent(NotificationType.Challenge,
+                new ChallengeNotificationData(this)));
             SaveChallengeData(true);
         }
 

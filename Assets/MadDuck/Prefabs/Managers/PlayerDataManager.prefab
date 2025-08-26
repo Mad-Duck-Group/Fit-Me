@@ -46,17 +46,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHighScoresEntries: 3
   maxFitMeEntries: 3
-  challengePresets:
-  - {fileID: 11400000, guid: bd12afcdd3eb58f4497b886843f8a771, type: 2}
-  <ScoreData>k__BackingField:
+  <ChallengePresets>k__BackingField:
+  - {fileID: 11400000, guid: 4e255f90313d8d1429b946c35d3935ef, type: 2}
+  - {fileID: 11400000, guid: dfd7355cd6d088346bfd3e97ba06a5aa, type: 2}
+  - {fileID: 11400000, guid: 02a94ccac1ab7574286f69490f202c0a, type: 2}
+  - {fileID: 11400000, guid: de97d38d6c3d3de468af88fe5db917a1, type: 2}
+  - {fileID: 11400000, guid: 3a16bfec8f3a77a44b5c6089ba49e17e, type: 2}
+  <PlayerRecordData>k__BackingField:
     highScore:
       score: 0
-    runData: []
-    cumulativeScore: 0
-  <FitMeData>k__BackingField:
+      fitMe: 0
     mostFitMe:
+      score: 0
       fitMe: 0
     runData: []
+    cumulativeScore: 0
     cumulativeFitMe: 0
   <GameData>k__BackingField:
     cumulativePreInfectBlockDestroyed: 0

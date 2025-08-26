@@ -115,6 +115,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
             _isDataLoaded = true;
             await UniTask.WaitForEndOfFrame();
             LayoutRebuilder.ForceRebuildLayoutImmediate(scrollContent.transform as RectTransform);
+            await ForceRebuild();
         }
         
         private void OnDestroy()
@@ -128,10 +129,17 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         public override void Show()
         {
             base.Show();
-            if (!_isDataLoaded) OnPlayerDataLoaded();
+            if (!_isDataLoaded) OnPlayerDataLoaded().Forget();
             SetPlayerInfo();
             SetRecords();
             SetChallenges();
+            ForceRebuild().Forget();
+        }
+
+        private async UniTask ForceRebuild()
+        {
+            await UniTask.WaitForEndOfFrame();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(scrollContent.transform as RectTransform);
         }
         
         private void OnBackButtonClicked()
@@ -167,7 +175,6 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         private void SetPlayerInfo()
         {
             usernameText.text = "Guest";
-            profileImage.sprite = null;
 #if UNITY_ANDROID
             authenticateButton.gameObject.SetActive(!PlayGamesPlatform.Instance.IsAuthenticated());
             if (!PlayGamesPlatform.Instance.IsAuthenticated()) return;

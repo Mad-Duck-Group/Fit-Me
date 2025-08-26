@@ -1,0 +1,127 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ca02cb4a2f4e03bc986cbe1da85f7e, type: 3}
+  m_Name: GeneralChallenges
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 4726877405658250286, guid: 43472e6d165c26442bce3e2274d9be71, type: 3}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Challenges
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[MadDuck.Scripts.Challenges.IChallenge,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 3
+    - Name: 
+      Entry: 7
+      Data: 1|MadDuck.Scripts.Challenges.TutorialChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: 99d1db8295fa40a5873aaa6c54ef9fbb
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: Complete Tutorial
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Tutorial complete, you are ready!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.TutorialChallengeData, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 2|MadDuck.Scripts.Challenges.FailChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: 277f7f720c9e4130a07b659be7f6a586
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: First Fail
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: First failure, but don't give up!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.FailChallengeData, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 3|MadDuck.Scripts.Challenges.FitMasterChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: b59e13d8b9984a319552cb1fff6f8de5
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: Fit Master
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: You have beaten all the challenges!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.FitMasterChallengeData, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 

@@ -10,14 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 34ca02cb4a2f4e03bc986cbe1da85f7e, type: 3}
-  m_Name: DefaultChallengePreset
+  m_Name: FitMeChallenge
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: -1142031703, guid: 419c5fb5fefe5734aaa6799edc82120c, type: 3}
-    - {fileID: -1297486343, guid: 419c5fb5fefe5734aaa6799edc82120c, type: 3}
+    - {fileID: 7758405152844686101, guid: e88a8a15d035e7b4c9b8f97b55cd8b88, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -29,22 +28,22 @@ MonoBehaviour:
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
-      Data: 5
+      Data: 6
     - Name: 
       Entry: 7
-      Data: 1|MadDuck.Scripts.Challenges.CumulativeScoreChallenge, Assembly-CSharp
+      Data: 1|MadDuck.Scripts.Challenges.CumulativeFitMeChallenge, Assembly-CSharp
     - Name: ChallengeGuid
       Entry: 2
-      Data: 8e785e1c6b0f443b817a2e3d9d6150ab
+      Data: 31071e7d14f84ea2a8c2a69c0756898a
     - Name: <Completed>k__BackingField
       Entry: 5
       Data: false
     - Name: <ChallengeName>k__BackingField
       Entry: 1
-      Data: First Score
+      Data: First Fit
     - Name: <ChallengeDescription>k__BackingField
       Entry: 1
-      Data: First score, your game begins!
+      Data: First fit, perfect!
     - Name: <ChallengeIcon>k__BackingField
       Entry: 10
       Data: 0
@@ -53,14 +52,14 @@ MonoBehaviour:
       Data: false
     - Name: <ChallengeData>k__BackingField
       Entry: 7
-      Data: MadDuck.Scripts.Challenges.CumulativeScoreChallengeData, Assembly-CSharp
-    - Name: cumulativeScore
+      Data: MadDuck.Scripts.Challenges.CumulativeFitMeChallengeData, Assembly-CSharp
+    - Name: cumulativeFitMe
       Entry: 3
       Data: 0
     - Name: 
       Entry: 8
       Data: 
-    - Name: targetScore
+    - Name: targetFitMe
       Entry: 3
       Data: 1
     - Name: 
@@ -68,19 +67,19 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 2|MadDuck.Scripts.Challenges.CumulativeScoreChallenge, Assembly-CSharp
+      Data: 2|MadDuck.Scripts.Challenges.CumulativeFitMeChallenge, Assembly-CSharp
     - Name: ChallengeGuid
       Entry: 2
-      Data: b639b0476696493096766e911ed80251
+      Data: 5b87870798bb46c7bd099544cfdd0255
     - Name: <Completed>k__BackingField
       Entry: 5
       Data: false
     - Name: <ChallengeName>k__BackingField
       Entry: 1
-      Data: 100 Score
+      Data: 10 Fits
     - Name: <ChallengeDescription>k__BackingField
       Entry: 1
-      Data: 100 Score!
+      Data: First step into mastery!
     - Name: <ChallengeIcon>k__BackingField
       Entry: 10
       Data: 0
@@ -89,112 +88,160 @@ MonoBehaviour:
       Data: false
     - Name: <ChallengeData>k__BackingField
       Entry: 7
-      Data: MadDuck.Scripts.Challenges.CumulativeScoreChallengeData, Assembly-CSharp
-    - Name: cumulativeScore
+      Data: MadDuck.Scripts.Challenges.CumulativeFitMeChallengeData, Assembly-CSharp
+    - Name: cumulativeFitMe
       Entry: 3
       Data: 0
     - Name: 
       Entry: 8
       Data: 
-    - Name: targetScore
+    - Name: targetFitMe
+      Entry: 3
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 3|MadDuck.Scripts.Challenges.CumulativeFitMeChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: a6c85ed14a1c4733804d3affa81c10d2
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: 20 Fits
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Keep fitting!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeFitMeChallengeData, Assembly-CSharp
+    - Name: cumulativeFitMe
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetFitMe
+      Entry: 3
+      Data: 20
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 4|MadDuck.Scripts.Challenges.CumulativeFitMeChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: c5ca3295fa784b1eb6db23a3e7bff4c1
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: 50 Fits
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Double this and you will become master!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeFitMeChallengeData, Assembly-CSharp
+    - Name: cumulativeFitMe
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetFitMe
+      Entry: 3
+      Data: 50
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 5|MadDuck.Scripts.Challenges.CumulativeFitMeChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: 8ddb501faf264a979a18db45f5321774
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: 80 Fits
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Getting closer to the 100!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeFitMeChallengeData, Assembly-CSharp
+    - Name: cumulativeFitMe
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetFitMe
+      Entry: 3
+      Data: 80
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 6|MadDuck.Scripts.Challenges.CumulativeFitMeChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: 5589b7a16e674cbc86558c2ba5b99322
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: 100 Fits
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: You left no space behind!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeFitMeChallengeData, Assembly-CSharp
+    - Name: cumulativeFitMe
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetFitMe
       Entry: 3
       Data: 100
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 3|MadDuck.Scripts.Challenges.CumulativeScoreChallenge, Assembly-CSharp
-    - Name: ChallengeGuid
-      Entry: 2
-      Data: afce54016d6d4328ade8655fa08c036d
-    - Name: <Completed>k__BackingField
-      Entry: 5
-      Data: false
-    - Name: <ChallengeName>k__BackingField
-      Entry: 1
-      Data: 1000 Score
-    - Name: <ChallengeDescription>k__BackingField
-      Entry: 1
-      Data: 1000 Score
-    - Name: <ChallengeIcon>k__BackingField
-      Entry: 10
-      Data: 0
-    - Name: saveChallengeData
-      Entry: 5
-      Data: false
-    - Name: <ChallengeData>k__BackingField
-      Entry: 7
-      Data: MadDuck.Scripts.Challenges.CumulativeScoreChallengeData, Assembly-CSharp
-    - Name: cumulativeScore
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: targetScore
-      Entry: 3
-      Data: 1000
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 4|MadDuck.Scripts.Challenges.TutorialChallenge, Assembly-CSharp
-    - Name: ChallengeGuid
-      Entry: 2
-      Data: f9eb45a3c84442ef858bf1fb9de9cd15
-    - Name: <Completed>k__BackingField
-      Entry: 5
-      Data: false
-    - Name: <ChallengeName>k__BackingField
-      Entry: 1
-      Data: Tutorial Complete
-    - Name: <ChallengeDescription>k__BackingField
-      Entry: 1
-      Data: "Tutorial Complete, You\u2019re Ready!"
-    - Name: <ChallengeIcon>k__BackingField
-      Entry: 10
-      Data: 1
-    - Name: saveChallengeData
-      Entry: 5
-      Data: false
-    - Name: <ChallengeData>k__BackingField
-      Entry: 7
-      Data: MadDuck.Scripts.Challenges.TutorialChallengeData, Assembly-CSharp
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 5|MadDuck.Scripts.Challenges.FailChallenge, Assembly-CSharp
-    - Name: ChallengeGuid
-      Entry: 2
-      Data: e3c6e96cae1e49c09fc376a06bb649ff
-    - Name: <Completed>k__BackingField
-      Entry: 5
-      Data: false
-    - Name: <ChallengeName>k__BackingField
-      Entry: 1
-      Data: Fail
-    - Name: <ChallengeDescription>k__BackingField
-      Entry: 1
-      Data: First Fail, Don't Give Up
-    - Name: <ChallengeIcon>k__BackingField
-      Entry: 6
-      Data: 
-    - Name: saveChallengeData
-      Entry: 5
-      Data: false
-    - Name: <ChallengeData>k__BackingField
-      Entry: 7
-      Data: MadDuck.Scripts.Challenges.FailChallengeData, Assembly-CSharp
-    - Name: 
-      Entry: 8
-      Data: 
     - Name: 
       Entry: 8
       Data: 

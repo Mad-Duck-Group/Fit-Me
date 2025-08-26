@@ -1,0 +1,253 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ca02cb4a2f4e03bc986cbe1da85f7e, type: 3}
+  m_Name: SickChallenges
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: -8833310957921475069, guid: d8bc95322ff50af4d81e8b8dc5f377b0, type: 3}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Challenges
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[MadDuck.Scripts.Challenges.IChallenge,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 6
+    - Name: 
+      Entry: 7
+      Data: 1|MadDuck.Scripts.Challenges.CumulativeBlastSickChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: 0fa977f965ce4dd6a2e667cc98a5699c
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: First Sick Block Blast
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: First sick block blast, thanks for the cure!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeBlastSickChallengeData, Assembly-CSharp
+    - Name: cumulativeSickBlast
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetSickBlast
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 2|MadDuck.Scripts.Challenges.CumulativeBlastSickChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: b042f7b27ac64a7299834af5cd261a92
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: Blast 5 Sick Blocks
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Just in time before we turn into stones!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeBlastSickChallengeData, Assembly-CSharp
+    - Name: cumulativeSickBlast
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetSickBlast
+      Entry: 3
+      Data: 5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 3|MadDuck.Scripts.Challenges.CumulativeBlastSickChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: 19b0c81d5f384d22b0881aafea38a95b
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: Blast 10 Sick Blocks
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Now, that's sick!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeBlastSickChallengeData, Assembly-CSharp
+    - Name: cumulativeSickBlast
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetSickBlast
+      Entry: 3
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 4|MadDuck.Scripts.Challenges.CumulativeBlastSickChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: b77c1d2beb884cd8b5be35780758d153
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: Blast 20 Sick Blocks
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Have you considered becoming a doctor?
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeBlastSickChallengeData, Assembly-CSharp
+    - Name: cumulativeSickBlast
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetSickBlast
+      Entry: 3
+      Data: 20
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 5|MadDuck.Scripts.Challenges.CumulativeBlastSickChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: b4b668579e90450bb618c28b9a17dd1e
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: Blast 50 Sick Blocks
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: Half way to your doctor certificate!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeBlastSickChallengeData, Assembly-CSharp
+    - Name: cumulativeSickBlast
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetSickBlast
+      Entry: 3
+      Data: 50
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 6|MadDuck.Scripts.Challenges.CumulativeBlastSickChallenge, Assembly-CSharp
+    - Name: ChallengeGuid
+      Entry: 2
+      Data: f9a56a2b3e9747f49c554f3a71f202eb
+    - Name: <Completed>k__BackingField
+      Entry: 5
+      Data: false
+    - Name: <ChallengeName>k__BackingField
+      Entry: 1
+      Data: Blast 100 Sick Blocks
+    - Name: <ChallengeDescription>k__BackingField
+      Entry: 1
+      Data: I hereby announce you, Dr. Fit Me!
+    - Name: <ChallengeIcon>k__BackingField
+      Entry: 10
+      Data: 0
+    - Name: saveChallengeData
+      Entry: 5
+      Data: false
+    - Name: <ChallengeData>k__BackingField
+      Entry: 7
+      Data: MadDuck.Scripts.Challenges.CumulativeBlastSickChallengeData, Assembly-CSharp
+    - Name: cumulativeSickBlast
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: targetSickBlast
+      Entry: 3
+      Data: 100
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 

@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Utils;
 using PrimeTween;
 using Sirenix.OdinInspector;
@@ -8,7 +9,33 @@ using UnityEngine.UI;
 
 namespace MadDuck.Scripts.UIs.Notifications
 {
-    public class NotificationView : MonoBehaviour
+    public interface INotificationView
+    {
+        INotificationView Instantiate(Transform parent, Vector2 position);
+        void Initialize();
+        UniTask Show();
+        UniTask PlayAnimation();
+        UniTask Hide();
+        void Cancel();
+        void Destroy();
+        void SetData<T>(T data) where T : INotificationData;
+    }
+
+    public interface INotificationData { }
+    
+    [Serializable]
+    public struct GeneralNotificationData : INotificationData
+    {
+        public readonly string message;
+        public readonly Sprite icon;
+
+        public GeneralNotificationData(string message, Sprite icon)
+        {
+            this.message = message;
+            this.icon = icon;
+        }
+    }
+    public class GeneralNotificationView : MonoBehaviour, INotificationView
     {
         [Title("Inspectors")]
         [SerializeField] private Image icon;
@@ -25,6 +52,27 @@ namespace MadDuck.Scripts.UIs.Notifications
         private Sequence _visibilitySequence;
         private Sequence _animationSequence;
         
+        public void SetData<T>(T data) where T : INotificationData
+        {
+            if (data is GeneralNotificationData generalData)
+            {
+                messageText.text = generalData.message;
+                icon.sprite = generalData.icon ? generalData.icon : defaultIcon;
+            }
+            else
+            {
+                Debug.LogWarning($"[GeneralNotificationView] Invalid data type: {typeof(T)}");
+            }
+        }
+
+        public INotificationView Instantiate(Transform parent, Vector2 position)
+        {
+            var instance = Instantiate(this);
+            instance.transform.SetParent(parent, false);
+            ((RectTransform)instance.transform).anchoredPosition = position;
+            return instance;
+        }
+
         public void Initialize()
         {
             messageText.text = string.Empty;
@@ -59,18 +107,9 @@ namespace MadDuck.Scripts.UIs.Notifications
             _animationSequence.Complete();
         }
 
-        public void SetMessage(string message)
+        public void Destroy()
         {
-            messageText.text = message;
-        }
-
-        public void SetIcon(Sprite sprite)
-        {
-            if (!sprite)
-            {
-                sprite = defaultIcon;
-            }
-            icon.sprite = sprite;
+            Destroy(gameObject);
         }
     }
 }

@@ -13,17 +13,17 @@ using UnityEngine;
 
 namespace MadDuck.Scripts.Managers
 {
+    
+    [Serializable]
     public struct NotificationDisplayEvent
     {
-        public readonly NotificationType notificationType;
-        public readonly string message;
-        public readonly Sprite icon;
+        public NotificationType notificationType;
+        [OdinSerialize] public INotificationData data;
 
-        public NotificationDisplayEvent(NotificationType notificationType, string message, Sprite icon)
+        public NotificationDisplayEvent(NotificationType notificationType, INotificationData data)
         {
             this.notificationType = notificationType;
-            this.message = message;
-            this.icon = icon;
+            this.data = data;
         }
     }
 
@@ -36,7 +36,7 @@ namespace MadDuck.Scripts.Managers
     [Serializable]
     public struct NotificationPrefabData
     {
-        public NotificationView notificationViewPrefab;
+        [OdinSerialize] public INotificationView notificationViewPrefab;
         public Vector2 initialPosition;
         [SerializeField] public EventReference soundEffect;
     }
@@ -97,17 +97,15 @@ namespace MadDuck.Scripts.Managers
                 _showingNotification = false;
                 return;
             }
-            var view = Instantiate(prefabData.notificationViewPrefab, transform);
-            ((RectTransform)view.transform).anchoredPosition = prefabData.initialPosition;
+            var view = prefabData.notificationViewPrefab.Instantiate(transform, prefabData.initialPosition);
             view.Initialize();
-            view.SetMessage(notificationEvent.message);
-            view.SetIcon(notificationEvent.icon);
-            AudioManager.Instance.PlayAudioOneShot(prefabData.soundEffect, view.transform.position);
+            view.SetData(notificationEvent.data);
+            AudioManager.Instance.PlayAudioOneShot(prefabData.soundEffect, transform.position);
             await view.Show();
             await UniTask.WhenAll(UniTask.WaitForSeconds(notificationStayDuration),
                 view.PlayAnimation());
             await view.Hide();
-            Destroy(view.gameObject);
+            view.Destroy();
             _showingNotification = false;
             if (_notificationQueue.Count > 0)
             {

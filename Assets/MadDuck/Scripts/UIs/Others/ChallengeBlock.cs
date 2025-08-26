@@ -15,6 +15,8 @@ namespace MadDuck.Scripts.UIs.Others
         [SerializeField] private TMP_Text progressText;
         [SerializeField] private Slider progressSlider;
         [SerializeField] private Image challengeIcon;
+        [SerializeField] private Image completedIconOverlay;
+        [SerializeField] private Image completedOverlay;
 
         public void SetData(IChallenge challenge)
         {
@@ -28,6 +30,8 @@ namespace MadDuck.Scripts.UIs.Others
             progressSlider.maxValue = progress.y;
             progressSlider.value = progress.x;
             challengeIcon.sprite = challenge.ChallengeIcon;
+            completedIconOverlay.gameObject.SetActive(challenge.Completed);
+            completedOverlay.gameObject.SetActive(challenge.Completed);
         }
     }
 }

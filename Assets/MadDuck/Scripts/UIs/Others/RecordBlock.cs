@@ -17,7 +17,7 @@ namespace MadDuck.Scripts.UIs.Others
         public void SetData(PlayerRecordData.RunData runData)
         {
             //var currentUICulture = CultureInfo.CurrentUICulture;
-            dateText.text = runData.dateTime.ToString("G", CultureInfo.InvariantCulture);
+            dateText.text = runData.dateTime.ToString("dd/MM/yy - HH:mm", CultureInfo.InvariantCulture);
             scoreText.text = runData.score.ToString("N0");
             fitMeText.text = runData.fitMe.ToString("N0");
         }
