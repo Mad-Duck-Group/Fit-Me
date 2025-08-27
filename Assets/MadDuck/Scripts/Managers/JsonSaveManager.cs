@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 #if UNITY_ANDROID
@@ -13,6 +14,9 @@ using MadDuck.Scripts.GPGS;
 using MessagePipe;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Crypto.Engines;
+using Org.BouncyCastle.Crypto.Modes;
+using Org.BouncyCastle.Crypto.Parameters;
 using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -219,8 +223,22 @@ namespace MadDuck.Scripts.Managers
     public record SaveSettings
     {
         public SaveLocation saveLocation = SaveLocation.DataPath;
+        public bool encryptSave;
+        [ShowIf(nameof(encryptSave))] public string encryptionKey;
         public string saveDirectory = "TestSave";
         public string saveFileName = "testSave";
+        
+        public SaveSettings Copy()
+        {
+            return new SaveSettings
+            {
+                saveLocation = this.saveLocation,
+                encryptSave = this.encryptSave,
+                encryptionKey = this.encryptionKey,
+                saveDirectory = this.saveDirectory,
+                saveFileName = this.saveFileName
+            };
+        }
     }
 
     public struct SaveToServiceEvent
@@ -284,6 +302,7 @@ namespace MadDuck.Scripts.Managers
         [SerializeField] private SaveMetadata saveMetadata = new();
         [SerializeField] private TestSaveData testSaveData;
 
+        private Dictionary<string, JToken> _saveMetadataDictionary = new();
         private Dictionary<string, JToken> _saveDataDictionary = new();
         private IPublisher<SaveToServiceEvent> _saveToServicePublisher;
         private IDisposable _loadFromServiceSubscription;
@@ -335,7 +354,7 @@ namespace MadDuck.Scripts.Managers
         private async UniTaskVoid LoadOnStart()
         {
             await Load();
-            TryGetData(SaveMetadataKey, saveMetadata);
+            TryGetData(SaveMetadataKey, saveMetadata, _saveMetadataDictionary);
             OnSaveReady?.Invoke();
         }
 
@@ -373,12 +392,7 @@ namespace MadDuck.Scripts.Managers
         private async UniTaskVoid LoadFromService(LoadFromServiceEvent eventData)
         {
             Debug.Log("Received LoadFromServiceEvent");
-            var remoteSaveSettings = new SaveSettings
-            {
-                saveLocation = CurrentSaveSettings.saveLocation,
-                saveDirectory = CurrentSaveSettings.saveDirectory,
-                saveFileName = CurrentSaveSettings.saveFileName
-            };
+            var remoteSaveSettings = CurrentSaveSettings.Copy();
             if (remoteSaveSettings.saveFileName.EndsWith(".json"))
             {
                 remoteSaveSettings.saveFileName = remoteSaveSettings.saveFileName[..^5];
@@ -439,16 +453,16 @@ namespace MadDuck.Scripts.Managers
 
         private async UniTask ResolveSave(SaveSettings existing, SaveSettings incoming)
         {
-            var result1 = await TryLoadFromFile(existing);
-            var result2 = await TryLoadFromFile(incoming);
+            var result1 = await TryLoadFromFile(existing, true);
+            var result2 = await TryLoadFromFile(incoming, true);
             if (!result1.Item1 || !result2.Item1)
             {
                 Debug.LogError("Failed to load one of the save files for comparison. Retaining existing save.");
                 File.Delete(GetSaveFilePath(incoming));
                 return;
             }
-            var dict1 = result1.Item2 ?? new Dictionary<string, JToken>();
-            var dict2 = result2.Item2 ?? new Dictionary<string, JToken>();
+            var dict1 = result1.Item2[0];
+            var dict2 = result2.Item2[0];
             var metadata1 = new SaveMetadata();
             var metadata2 = new SaveMetadata();
             TryGetData(SaveMetadataKey, metadata1, dict1);
@@ -545,74 +559,130 @@ namespace MadDuck.Scripts.Managers
         private async UniTask SaveToFile()
         {
             var fullPath = GetSaveFilePath(CurrentSaveSettings);
-            var stream = File.Open(fullPath, FileMode.OpenOrCreate);
-            var jsonData = JsonConvert.SerializeObject(_saveDataDictionary, Formatting.Indented,
+            await using var stream = File.Open(fullPath, FileMode.OpenOrCreate);
+            var jsonSaveMetadata = JsonConvert.SerializeObject(_saveMetadataDictionary, Formatting.Indented,
                 new JsonSerializerSettings()
                 {
                     NullValueHandling = NullValueHandling.Ignore,
                     DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind,
                 });
-            await using (var writer = new StreamWriter(stream))
+            var saveMetadataBytes = System.Text.Encoding.UTF8.GetBytes(jsonSaveMetadata);
+            var headerLength = BitConverter.GetBytes(saveMetadataBytes.Length);
+            var jsonSaveData = JsonConvert.SerializeObject(_saveDataDictionary, Formatting.Indented,
+                new JsonSerializerSettings()
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind,
+                });
+            var saveDataBytes = System.Text.Encoding.UTF8.GetBytes(jsonSaveData);
+            if (CurrentSaveSettings.encryptSave)
+            {
+                var key = Convert.FromBase64String(CurrentSaveSettings.encryptionKey);
+                saveDataBytes = await JsonSaveManagerEncryption.Encrypt(saveDataBytes, key);
+            }
+            await using (var writer = new BinaryWriter(stream))
             {
                 // clear the file before writing
                 stream.SetLength(0);
-                await writer.WriteAsync(jsonData);
-                await writer.FlushAsync();
-                writer.Close();
+                writer.Write(headerLength);
+                writer.Write(saveMetadataBytes);
+                writer.Write(saveDataBytes);
             }
-
-            stream.Close();
-            await stream.DisposeAsync();
             Debug.Log($"Saved data to: {fullPath}");
         }
-
-        private async UniTask<Tuple<bool, Dictionary<string, JToken>>> TryLoadFromFile(SaveSettings saveSettings)
+        
+        private async UniTask<Tuple<bool, Dictionary<string, JToken>[]>> TryLoadFromFile(SaveSettings saveSettings, bool readOnlyMetadata = false)
         {
             var fullPath = GetSaveFilePath(saveSettings);
             if (!File.Exists(fullPath))
             {
                 Debug.LogError($"Save file does not exist: {fullPath}");
-                return new Tuple<bool, Dictionary<string, JToken>>(false, null);
+                return new Tuple<bool, Dictionary<string, JToken>[]>(false, null);
             }
 
-            var stream = File.Open(fullPath, FileMode.Open);
-            Dictionary<string, JToken> dictionary;
-            using (var reader = new StreamReader(stream))
+            await using var stream = File.Open(fullPath, FileMode.Open);
+            Dictionary<string, JToken> metadataDict;
+            Dictionary<string, JToken> dataDict;
+            using (var reader = new BinaryReader(stream))
             {
-                string jsonData = await reader.ReadToEndAsync();
+                try
+                {
+                    var headerLength = BitConverter.ToInt32(reader.ReadBytes(4), 0);
+                    var metadataBytes = reader.ReadBytes(headerLength);
+                    var metaDataJson = System.Text.Encoding.UTF8.GetString(metadataBytes);
+                    metadataDict = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(metaDataJson,
+                        new JsonSerializerSettings
+                        {
+                            NullValueHandling = NullValueHandling.Ignore,
+                            DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind
+                        });
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Failed to parse metadata JSON: {ex.Message}");
+                    reader.Close();
+                    stream.Close();
+                    dataDict = new Dictionary<string, JToken>();
+                    metadataDict = new Dictionary<string, JToken>();
+                    return new Tuple<bool, Dictionary<string, JToken>[]>(true, new[] { metadataDict, dataDict });
+                }
+                if (readOnlyMetadata)
+                {
+                    dataDict = new Dictionary<string, JToken>();
+                    reader.Close();
+                    stream.Close();
+                    return new Tuple<bool, Dictionary<string, JToken>[]>(true, new[] { metadataDict, dataDict });
+                }
+                var dataBytes = reader.ReadBytes((int)(stream.Length - stream.Position));
+                if (saveSettings.encryptSave)
+                {
+                    var key = Convert.FromBase64String(saveSettings.encryptionKey);
+                    dataBytes = await JsonSaveManagerEncryption.Decrypt(dataBytes, key);
+                }
+                var jsonData = System.Text.Encoding.UTF8.GetString(dataBytes);
                 if (string.IsNullOrEmpty(jsonData))
                 {
                     jsonData = "{}"; // Ensure we have a valid JSON object
                 }
-
-                dictionary = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(jsonData,
-                    new JsonSerializerSettings
-                    {
-                        NullValueHandling = NullValueHandling.Ignore,
-                        DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind
-                    });
+                try
+                {
+                    dataDict = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(jsonData,
+                        new JsonSerializerSettings
+                        {
+                            NullValueHandling = NullValueHandling.Ignore,
+                            DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind
+                        });
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Failed to parse data JSON: {ex.Message}");
+                    dataDict = new Dictionary<string, JToken>();
+                    reader.Close();
+                    stream.Close();
+                    return new Tuple<bool, Dictionary<string, JToken>[]>(true, new[] { metadataDict, dataDict });
+                }
                 Debug.Log($"Loaded data from: {fullPath}");
                 reader.Close();
             }
 
             stream.Close();
-            await stream.DisposeAsync();
-            return new Tuple<bool, Dictionary<string, JToken>>(true, dictionary);
+            return new Tuple<bool, Dictionary<string, JToken>[]>(true, new[] { metadataDict, dataDict });
         }
 
         #endregion
 
         #region Save Data
 
-        public async UniTask AddOrUpdateData(string key, object data, bool saveImmediately = true)
+        public async UniTask AddOrUpdateData(string key, object data, bool saveImmediately = true, Dictionary<string, JToken> dataSource = null)
         {
-            if (_saveDataDictionary.ContainsKey(key))
+            var source = dataSource ?? _saveDataDictionary;
+            if (source.ContainsKey(key))
             {
-                _saveDataDictionary[key] = CreateSavableData(data);
+                source[key] = CreateSavableData(data);
             }
             else
             {
-                _saveDataDictionary.Add(key, CreateSavableData(data));
+                source.Add(key, CreateSavableData(data));
             }
 
             if (saveImmediately)
@@ -688,7 +758,7 @@ namespace MadDuck.Scripts.Managers
             saveMetadata.playerId = playerId;
             saveMetadata.versionInfo = VersionInfo.TryParse(Application.version, out var version) ? version : new VersionInfo();
             _timeStampSinceLastSave = Time.time;
-            await AddOrUpdateData(SaveMetadataKey, saveMetadata, false);
+            await AddOrUpdateData(SaveMetadataKey, saveMetadata, false, _saveMetadataDictionary);
             await SaveToFile();
             Saving = false;
             OnSaveCompleted?.Invoke();
@@ -704,12 +774,13 @@ namespace MadDuck.Scripts.Managers
         {
             if (!TryValidate(CurrentSaveSettings)) return;
             var result =  await TryLoadFromFile(CurrentSaveSettings);
-            if (!result.Item1)
+            if (!result.Item1 || result.Item2.Length < 2)
             {
                 Debug.LogError("Failed to load save data.");
                 return;
             }
-            _saveDataDictionary = result.Item2 ?? new Dictionary<string, JToken>();
+            _saveMetadataDictionary = result.Item2[0];
+            _saveDataDictionary = result.Item2[1];
             OnLoadCompleted?.Invoke();
         }
 
@@ -985,6 +1056,48 @@ namespace MadDuck.Scripts.Managers
             }
 
             return true;
+        }
+    }
+
+    public static class JsonSaveManagerEncryption
+    {
+        public static async UniTask<byte[]> Encrypt(byte[] plain, byte[] key, byte[] associatedData = null)
+        {
+            const int nonceLen   = 12;  // 96-bit nonce
+            const int tagLenBits = 128; // 128-bit auth tag
+
+            var nonce = new byte[nonceLen];
+            new Org.BouncyCastle.Security.SecureRandom().NextBytes(nonce);
+
+            var cipher = new GcmBlockCipher(new AesEngine());
+            cipher.Init(true, new AeadParameters(new KeyParameter(key), tagLenBits, nonce, associatedData));
+
+            var output = new byte[cipher.GetOutputSize(plain.Length)];
+            int len = cipher.ProcessBytes(plain, 0, plain.Length, output, 0);
+            cipher.DoFinal(output, len);
+
+            // output now = ciphertext || tag
+            await using var ms = new MemoryStream();
+            ms.Write(nonce); // 12-byte IV
+            ms.Write(output);// ciphertext + 16-byte tag
+            return ms.ToArray(); 
+        }
+        
+        public static async UniTask<byte[]> Decrypt(byte[] blob, byte[] key, byte[] associatedData = null)
+        {
+            await using var ms = new MemoryStream(blob);
+            using var br = new BinaryReader(ms);
+            
+            byte[] nonce  = br.ReadBytes(12);        // 12-byte IV
+            byte[] cipherAndTag = br.ReadBytes((int)(ms.Length - ms.Position));
+
+            var cipher = new GcmBlockCipher(new AesEngine());
+            cipher.Init(false, new AeadParameters(new KeyParameter(key), 128, nonce, associatedData));
+
+            var plain = new byte[cipher.GetOutputSize(cipherAndTag.Length)];
+            int len = cipher.ProcessBytes(cipherAndTag, 0, cipherAndTag.Length, plain, 0);
+            cipher.DoFinal(plain, len);
+            return plain;
         }
     }
 }

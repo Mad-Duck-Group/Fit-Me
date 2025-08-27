@@ -46,10 +46,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugSaveSettings:
     saveLocation: 1
+    encryptSave: 1
+    encryptionKey: Ne8iS7Sv3XlfdtcYIpHNejXkTN7rneTu
     saveDirectory: TestSave
     saveFileName: testSave
   releaseSaveSettings:
     saveLocation: 0
+    encryptSave: 1
+    encryptionKey: Ne8iS7Sv3XlfdtcYIpHNejXkTN7rneTu
     saveDirectory: save
     saveFileName: playerData
   testReleaseMode: 0
