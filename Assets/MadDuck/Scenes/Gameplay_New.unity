@@ -322,6 +322,15 @@ MonoBehaviour:
     - Name: nextIn
       Entry: 7
       Data: 3|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 4|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -341,6 +350,15 @@ MonoBehaviour:
     - Name: previousOut
       Entry: 7
       Data: 5|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 6|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -568,6 +586,15 @@ MonoBehaviour:
     - Name: transitionIn
       Entry: 7
       Data: 14|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 15|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -587,6 +614,15 @@ MonoBehaviour:
     - Name: transitionOut
       Entry: 7
       Data: 16|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 17|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -3678,6 +3714,15 @@ MonoBehaviour:
     - Name: nextIn
       Entry: 7
       Data: 4|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 5|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -3697,6 +3742,15 @@ MonoBehaviour:
     - Name: previousOut
       Entry: 7
       Data: 6|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 7|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -3716,6 +3770,15 @@ MonoBehaviour:
     - Name: transitionIn
       Entry: 7
       Data: 8|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 9|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -3735,6 +3798,15 @@ MonoBehaviour:
     - Name: transitionOut
       Entry: 7
       Data: 10|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 11|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -3912,6 +3984,15 @@ MonoBehaviour:
     - Name: nextIn
       Entry: 7
       Data: 3|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 4|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -3931,6 +4012,15 @@ MonoBehaviour:
     - Name: previousOut
       Entry: 7
       Data: 5|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 6|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -3950,6 +4040,15 @@ MonoBehaviour:
     - Name: transitionIn
       Entry: 7
       Data: 7|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 8|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -3969,6 +4068,15 @@ MonoBehaviour:
     - Name: transitionOut
       Entry: 7
       Data: 9|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 10|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -4745,6 +4853,15 @@ MonoBehaviour:
     - Name: nextIn
       Entry: 7
       Data: 3|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 4|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -4972,6 +5089,15 @@ MonoBehaviour:
     - Name: previousOut
       Entry: 7
       Data: 12|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 13|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -4991,6 +5117,15 @@ MonoBehaviour:
     - Name: transitionIn
       Entry: 7
       Data: 14|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 15|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -5010,6 +5145,15 @@ MonoBehaviour:
     - Name: transitionOut
       Entry: 7
       Data: 16|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 17|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -5056,6 +5200,15 @@ MonoBehaviour:
     - Name: nextIn
       Entry: 7
       Data: 21|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 22|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -5274,6 +5427,15 @@ MonoBehaviour:
     - Name: previousOut
       Entry: 7
       Data: 29|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 30|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -5293,6 +5455,15 @@ MonoBehaviour:
     - Name: transitionIn
       Entry: 7
       Data: 31|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 32|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -5312,6 +5483,15 @@ MonoBehaviour:
     - Name: transitionOut
       Entry: 7
       Data: 33|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 34|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -5428,7 +5608,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0000067817, y: -52}
+  m_AnchoredPosition: {x: 0, y: -52}
   m_SizeDelta: {x: 258.71, y: 66.9199}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1479957357
@@ -5780,6 +5960,15 @@ MonoBehaviour:
     - Name: nextIn
       Entry: 7
       Data: 3|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 4|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -5895,6 +6084,15 @@ MonoBehaviour:
     - Name: previousOut
       Entry: 7
       Data: 9|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 10|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -6001,6 +6199,15 @@ MonoBehaviour:
     - Name: transitionIn
       Entry: 7
       Data: 14|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 15|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -6020,6 +6227,15 @@ MonoBehaviour:
     - Name: transitionOut
       Entry: 7
       Data: 16|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 17|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -6066,6 +6282,15 @@ MonoBehaviour:
     - Name: nextIn
       Entry: 7
       Data: 21|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 22|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -6085,6 +6310,15 @@ MonoBehaviour:
     - Name: previousOut
       Entry: 7
       Data: 23|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 24|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -6303,6 +6537,15 @@ MonoBehaviour:
     - Name: transitionIn
       Entry: 7
       Data: 31|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 32|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
@@ -6322,6 +6565,15 @@ MonoBehaviour:
     - Name: transitionOut
       Entry: 7
       Data: 33|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 0
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
     - Name: transition
       Entry: 7
       Data: 34|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
