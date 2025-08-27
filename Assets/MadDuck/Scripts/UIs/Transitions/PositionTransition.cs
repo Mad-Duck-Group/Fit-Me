@@ -25,7 +25,7 @@ namespace MadDuck.Scripts.UIs.Transitions
         private Sequence _transitionSequence;
         private RectTransform _transitionObject;
 
-        public void Initialize(IUIPanel panel)
+        public void Initialize(ISupportUITransition panel)
         {
             panel.TryGetTransitionObject(rectTransformKey, out _transitionObject);
         }

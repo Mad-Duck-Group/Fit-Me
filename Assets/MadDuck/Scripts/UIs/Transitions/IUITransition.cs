@@ -18,9 +18,14 @@ namespace MadDuck.Scripts.UIs.Transitions
 {
     public interface IUITransition
     {
-        void Initialize(IUIPanel panel);
+        void Initialize(ISupportUITransition panel);
         Sequence? Transition();
         void CancelTransition();
+    }
+    
+    public interface ISupportUITransition
+    {
+        bool TryGetTransitionObject<T>(string key, out T component) where T : Component;
     }
 
     public enum CrossFadeType
@@ -99,16 +104,22 @@ namespace MadDuck.Scripts.UIs.Transitions
     }
     
     [ShowOdinSerializedPropertiesInInspector]
+    [Serializable]
     public record TransitionGroup
     {
+        [SerializeField] private bool overrideDefaultCycles;
+        [SerializeField, ShowIf(nameof(overrideDefaultCycles))] private int cycles = 1;
+        [SerializeField, ShowIf("@this.cycles != 1 && this.cycles != 0")] private CycleMode cycleMode;
         [NonSerialized, OdinSerialize, HideReferenceObjectPicker]
         [TableList(DrawScrollView = false)]
         public List<TransitionData> transition = new();
         
         private Sequence _transitionSequence;
+        private bool _isInitialized;
         
-        public void Initialize(IUIPanel panel)
+        public void Initialize(ISupportUITransition panel)
         {
+            _isInitialized = true;
             if (transition == null || transition.Count == 0) return;
 
             foreach (var data in transition)
@@ -119,13 +130,16 @@ namespace MadDuck.Scripts.UIs.Transitions
 
         public async UniTask Transition(CancellationToken cancellationToken = default)
         {
+            if (!_isInitialized)
+            {
+                Debug.LogWarning("TransitionGroup: Transition called before Initialize. Make sure to call Initialize first.");
+                return;
+            }
             if (transition == null || transition.Count == 0)
             {
                 return;
             }
-
-            _transitionSequence = Sequence.Create();
-
+            _transitionSequence = !overrideDefaultCycles ? Sequence.Create() : Sequence.Create(cycles, cycleMode);
             foreach (var data in transition)
             {
                 var transitionSequence = data.transition?.Transition();

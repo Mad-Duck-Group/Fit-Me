@@ -11,13 +11,11 @@ namespace MadDuck.Scripts.UIs.Notifications
 {
     public interface INotificationView
     {
-        INotificationView Instantiate(Transform parent, Vector2 position);
         void Initialize();
         UniTask Show();
         UniTask PlayAnimation();
         UniTask Hide();
         void Cancel();
-        void Destroy();
         void SetData<T>(T data) where T : INotificationData;
     }
 
@@ -65,14 +63,6 @@ namespace MadDuck.Scripts.UIs.Notifications
             }
         }
 
-        public INotificationView Instantiate(Transform parent, Vector2 position)
-        {
-            var instance = Instantiate(this);
-            instance.transform.SetParent(parent, false);
-            ((RectTransform)instance.transform).anchoredPosition = position;
-            return instance;
-        }
-
         public void Initialize()
         {
             messageText.text = string.Empty;
@@ -105,11 +95,6 @@ namespace MadDuck.Scripts.UIs.Notifications
         {
             _visibilitySequence.Complete();
             _animationSequence.Complete();
-        }
-
-        public void Destroy()
-        {
-            Destroy(gameObject);
         }
     }
 }

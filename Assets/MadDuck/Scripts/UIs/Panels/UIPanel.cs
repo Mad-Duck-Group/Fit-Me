@@ -34,7 +34,7 @@ namespace MadDuck.Scripts.UIs.Panels
         Inactive
     }
     
-    public interface IUIPanel
+    public interface IUIPanel : ISupportUITransition
     {
         string PanelName { get; }
         VisibilityState VisibilityState { get; }
@@ -48,7 +48,6 @@ namespace MadDuck.Scripts.UIs.Panels
         void DeactivateInput();
         void CancelTransition();
         void OnPanelReady();
-        bool TryGetTransitionObject<T>(string key, out T transitionObject) where T : Component;
     }
 
     [RequireComponent(typeof(CanvasGroup))]
@@ -152,7 +151,7 @@ namespace MadDuck.Scripts.UIs.Panels
             
         }
 
-        public virtual bool TryGetTransitionObject<T>(string key, out T transitionObject) where T : Component
+        public bool TryGetTransitionObject<T>(string key, out T transitionObject) where T : Component
         {
             if (TransitionObjectProviders.TryGetValue(key, out var obj) && obj is T component)
             {

@@ -34,7 +34,7 @@ namespace MadDuck.Scripts.Utils
         {
             return new TweenSettings<Vector4>
             {
-                startValue = start,
+                startValue = start + settings.startValue,
                 endValue = settings.endValue + start,
                 settings = settings.settings,
                 startFromCurrent = settings.startFromCurrent,
@@ -45,7 +45,7 @@ namespace MadDuck.Scripts.Utils
         {
             return new TweenSettings<Vector3>
             {
-                startValue = start,
+                startValue = start + settings.startValue,
                 endValue = settings.endValue + start,
                 settings = settings.settings,
                 startFromCurrent = settings.startFromCurrent,
@@ -56,7 +56,7 @@ namespace MadDuck.Scripts.Utils
         {
             return new TweenSettings<Vector2>
             {
-                startValue = start,
+                startValue = start + settings.startValue,
                 endValue = settings.endValue + start,
                 settings = settings.settings,
                 startFromCurrent = settings.startFromCurrent,
@@ -67,7 +67,7 @@ namespace MadDuck.Scripts.Utils
         {
             return new TweenSettings<float>
             {
-                startValue = start,
+                startValue = start + settings.startValue,
                 endValue = settings.endValue + start,
                 settings = settings.settings,
                 startFromCurrent = settings.startFromCurrent,
@@ -78,7 +78,7 @@ namespace MadDuck.Scripts.Utils
         {
             return new TweenSettings<Quaternion>
             {
-                startValue = start,
+                startValue = start * settings.startValue,
                 endValue = settings.endValue * start,
                 settings = settings.settings,
                 startFromCurrent = settings.startFromCurrent,
@@ -89,7 +89,7 @@ namespace MadDuck.Scripts.Utils
         {
             return new TweenSettings<int>
             {
-                startValue = start,
+                startValue = start + settings.startValue,
                 endValue = settings.endValue + start,
                 settings = settings.settings,
                 startFromCurrent = settings.startFromCurrent,
@@ -100,7 +100,7 @@ namespace MadDuck.Scripts.Utils
         {
             return new TweenSettings<Color>
             {
-                startValue = start,
+                startValue = start + settings.startValue,
                 endValue = settings.endValue + start,
                 settings = settings.settings,
                 startFromCurrent = settings.startFromCurrent,

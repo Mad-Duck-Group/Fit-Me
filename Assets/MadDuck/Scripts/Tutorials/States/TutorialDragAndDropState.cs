@@ -2,24 +2,40 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using MadDuck.Scripts.Managers;
+using MadDuck.Scripts.UIs.Others;
 using MadDuck.Scripts.UIs.Panels.Tutorial;
 using MadDuck.Scripts.Units;
+using MadDuck.Scripts.Utils;
 using MessagePipe;
+using Sirenix.Serialization;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace MadDuck.Scripts.Tutorials.States
 {
     [Serializable]
     public class TutorialDragAndDropState : TutorialBaseState
     {
+        [OdinSerialize] private IFloatingUIElement floatingHandIconPrefab;
+        [SerializeField] private Transform handIconParent;
         private IPublisher<StartSpawnEvent> _startSpawnPublisher;
         private IPublisher<FadeTutorialBackgroundEvent> _fadeTutorialBackgroundPublisher;
         private List<Block> _spawnedBlocks = new();
+        private IFloatingUIElement _floatingHandIconInstance;
+        private GameObject _handIconGameObject;
         
         public override void Initialize(TutorialStateMachine stateMachine)
         {
             base.Initialize(stateMachine);
             _startSpawnPublisher = GlobalMessagePipe.GetPublisher<StartSpawnEvent>();
             _fadeTutorialBackgroundPublisher = GlobalMessagePipe.GetPublisher<FadeTutorialBackgroundEvent>();
+            _floatingHandIconInstance = floatingHandIconPrefab.InstantiateAsInterface(new InstantiateParameters()
+                        {
+                            parent = handIconParent,
+                            worldSpace = false
+                        }, out _handIconGameObject);
+            _floatingHandIconInstance.Initialize();
+            _handIconGameObject.SetActive(false);
         }
         
         public override void Shutdown()
@@ -34,6 +50,10 @@ namespace MadDuck.Scripts.Tutorials.States
                 b.OnBlockEndDrag -= OnBlockEndDrag;
             });
             _spawnedBlocks.Clear();
+            if (_handIconGameObject)
+            {
+                Object.Destroy(_handIconGameObject);
+            }
         }
         
         public override void Enter()
@@ -68,19 +88,37 @@ namespace MadDuck.Scripts.Tutorials.States
                 b.OnBlockBeingDrag += OnBlockBeingDrag;
                 b.OnBlockEndDrag += OnBlockEndDrag;
             });
+            var middleBlock = _spawnedBlocks[Mathf.FloorToInt(_spawnedBlocks.Count / 2f)];
+            var iconPosition = PointerManager.Instance.WorldToWorldCanvasPosition(middleBlock.transform.position);
+            _handIconGameObject.transform.position = iconPosition;
+            ShowHandIcon().Forget();
+        }
+        
+        private async UniTaskVoid ShowHandIcon()
+        {
+            await _floatingHandIconInstance.Show();
+            await _floatingHandIconInstance.PlayAnimation();
         }
 
         private void OnBlockBeingDrag()
         {
+            _floatingHandIconInstance.Hide().Forget();
             TutorialManager.Instance.HideTutorial().Forget();
         }
 
         private void OnBlockEndDrag(bool placed)
         {
             TutorialManager.Instance.ShowTutorial().Forget();
-            if (!placed) return;
-            Complete();
-            stateMachine.MoveNext();
+            if (!placed)
+            {
+                ShowHandIcon().Forget();
+            }
+            else
+            {
+                floatingHandIconPrefab.Hide().Forget();
+                Complete();
+                stateMachine.MoveNext();
+            }
         }
     }
 }

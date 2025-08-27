@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using FMODUnity;
 using MadDuck.Scripts.Frameworks.MessagePipe;
 using MadDuck.Scripts.UIs.Notifications;
+using MadDuck.Scripts.Utils;
 using MessagePipe;
 using Sherbert.Framework.Generic;
 using Sirenix.OdinInspector;
@@ -97,7 +98,13 @@ namespace MadDuck.Scripts.Managers
                 _showingNotification = false;
                 return;
             }
-            var view = prefabData.notificationViewPrefab.Instantiate(transform, prefabData.initialPosition);
+            var view = prefabData.notificationViewPrefab.InstantiateAsInterface(new InstantiateParameters
+            {
+                parent = transform,
+                worldSpace = false
+            }, out var viewObject);
+            var rectTransform = (RectTransform)viewObject.transform;
+            rectTransform.anchoredPosition = prefabData.initialPosition;
             view.Initialize();
             view.SetData(notificationEvent.data);
             AudioManager.Instance.PlayAudioOneShot(prefabData.soundEffect, transform.position);
@@ -105,7 +112,7 @@ namespace MadDuck.Scripts.Managers
             await UniTask.WhenAll(UniTask.WaitForSeconds(notificationStayDuration),
                 view.PlayAnimation());
             await view.Hide();
-            view.Destroy();
+            Destroy(viewObject);
             _showingNotification = false;
             if (_notificationQueue.Count > 0)
             {

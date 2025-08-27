@@ -63,13 +63,6 @@ namespace MadDuck.Scripts.UIs.Notifications
             }
         }
 
-        public INotificationView Instantiate(Transform parent, Vector2 position)
-        {
-            var instance = Instantiate(this, parent);
-            ((RectTransform)instance.transform).anchoredPosition = position;
-            return instance;
-        }
-
         public void Initialize()
         {
             challengeNameText.text = string.Empty;
@@ -106,11 +99,6 @@ namespace MadDuck.Scripts.UIs.Notifications
         {
             _visibilitySequence.Complete();
             _animationSequence.Complete();
-        }
-
-        public void Destroy()
-        {
-            Destroy(gameObject);
         }
     }
 }
