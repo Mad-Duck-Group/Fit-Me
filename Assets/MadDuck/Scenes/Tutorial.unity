@@ -12592,11 +12592,11 @@ MonoBehaviour:
   gridHorizontalOffsetType: 0
   customOffsetX: 0
   gridVerticalOffsetType: 0
-  customOffsetY: 2
+  customOffsetY: 3
   destroyThreshold: 3
   currentGridPreset: {fileID: 11400000, guid: 49ac1ac62efab9d44ba416909e663151, type: 2}
   currentGridSize: {x: 4, y: 8}
-  currentOffset: {x: -2, y: 6}
+  currentOffset: {x: -2, y: 7}
   drawAllCustomGridCells: 1
   <RandomInfectedTime>k__BackingField: 0
   preInfectBlocks: []
