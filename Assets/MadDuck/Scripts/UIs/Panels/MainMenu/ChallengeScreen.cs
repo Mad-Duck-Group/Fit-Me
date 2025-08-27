@@ -74,6 +74,7 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
         {
 #if UNITY_ANDROID
             SetPlayerInfo();
+            AuthenticationDone(status);
 #endif
         }
 
