@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using Cysharp.Threading.Tasks;
+#if UNITY_ANDROID
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 using GooglePlayGames.BasicApi.SavedGame;
+#endif
 using MadDuck.Scripts.Managers;
 using MessagePipe;
 using Sirenix.OdinInspector;

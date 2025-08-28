@@ -102,7 +102,9 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
             }
             else
             {
+                _adsTimerSubscription?.Dispose();
                 OnAdsClosed();
+                GameManager.Instance.Continue();
             }
         }
     }
