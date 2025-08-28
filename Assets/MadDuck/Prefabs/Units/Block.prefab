@@ -53,6 +53,7 @@ MonoBehaviour:
   originalSortingLayer: 1074494647
   pickUpSortingLayer: -1318158959
   originalAtomColor: {r: 1, g: 1, b: 1, a: 1}
+  flashDuration: 0.5
   <AllowPickUpAfterPlacement>k__BackingField: 0
   placeSucceedSfx:
     Guid:

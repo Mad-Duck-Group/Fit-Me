@@ -2950,12 +2950,12 @@ MonoBehaviour:
     <InfectionCountRange>k__BackingField: {x: 1, y: 3}
     <InfectionTimeRange>k__BackingField: {x: 6, y: 6}
     <FirstInfectTimeRange>k__BackingField: {x: 6, y: 6}
-    <PreInfectTime>k__BackingField: 7
+    <PreInfectTime>k__BackingField: 10
   - <MaxScorePerDifficulty>k__BackingField: 1000
     <InfectionCountRange>k__BackingField: {x: 1, y: 6}
     <InfectionTimeRange>k__BackingField: {x: 6, y: 6}
     <FirstInfectTimeRange>k__BackingField: {x: 6, y: 6}
-    <PreInfectTime>k__BackingField: 7
+    <PreInfectTime>k__BackingField: 10
   usePercentage: 0
   startInfectTimeRange: 10
   firstInfectTimePercentRange: {x: 0.1, y: 0.6}

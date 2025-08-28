@@ -1600,9 +1600,9 @@ MonoBehaviour:
   backgroundImage: {fileID: 698034729}
   tutorialImage: {fileID: 1187799990}
   textBoxSizeNoImage:
-    left: 500
+    left: 550
     top: 1200
-    right: 200
+    right: 150
     bottom: 1000
   textBoxSizeWithImage:
     left: 200
@@ -1625,8 +1625,8 @@ MonoBehaviour:
     useUnscaledTime: 0
     _useFixedUpdate: 0
     _updateType: 0
-  loopieWhoopiePositionNoImage: {x: -400, y: -110}
-  loopieWhoopiePositionWithImage: {x: -400, y: -780}
+  loopieWhoopiePositionNoImage: {x: -270, y: -110}
+  loopieWhoopiePositionWithImage: {x: 40, y: -770}
   loopieWhoopiePositionTweenSettings:
     duration: 0.5
     ease: 19
@@ -4636,8 +4636,8 @@ MonoBehaviour:
       Data: Greetings!
     - Name: tutorialText
       Entry: 1
-      Data: "I\u2019m the one of many <style=\"Emphasis\">Loopies Whoopies</style>
-        who are here to help you learn the ropes."
+      Data: "I\u2019m <style=\"Bolden\">Loopies Whoopies,</style> and I\u2019m here
+        to <style=\"Emphasis\">help you</style> today!"
     - Name: 
       Entry: 8
       Data: 
@@ -4678,8 +4678,8 @@ MonoBehaviour:
       Data: Let's start!
     - Name: tutorialText
       Entry: 1
-      Data: You see my friends right here? Go ahead and gently <style="Emphasis">drag</style>
-        them into the <style="Emphasis">box.</style> Be careful with them!
+      Data: <style="Emphasis">Drag</style> and <style="Emphasis">Drop</style> them
+        <style="Bolden">into the box</style> to start playing.
     - Name: 
       Entry: 8
       Data: 
@@ -4726,7 +4726,7 @@ MonoBehaviour:
       Data: Awesome!
     - Name: tutorialText
       Entry: 1
-      Data: There's just a <i>little bit</i> more you need to know.
+      Data: "There's just a little bit more you need to know.\r"
     - Name: 
       Entry: 8
       Data: 
@@ -4767,8 +4767,8 @@ MonoBehaviour:
       Data: Awesome!
     - Name: tutorialText
       Entry: 1
-      Data: Your <style="Bolden">goal</style> is to <style="Emphasis">fill the box</style>
-        with Loopies Whoopies to set them free from your world.
+      Data: To <style="Emphasis">win</style> this game, <style="Emphasis">fill</style>
+        <style="Bolden">everyone</style> into the <style="Emphasis">box.</style>
     - Name: 
       Entry: 8
       Data: 
@@ -4803,15 +4803,14 @@ MonoBehaviour:
       Data: 5
     - Name: hasHeader
       Entry: 5
-      Data: false
+      Data: true
     - Name: headerText
       Entry: 1
-      Data: Awesome!
+      Data: Be careful!
     - Name: tutorialText
       Entry: 1
-      Data: "But be careful! They're quite <style=\"Bolden\">sensitive</style> about
-        their <style=\"Emphasis\">colors.</style> If <style=\"Bolden\">three or more</style>
-        of them are touching, they'll go <style=\"Emphasis\">pop!</style>\r"
+      Data: If <style="Emphasis">3 or more</style> of them are <style="Emphasis">touching,</style> 
+        they'll go <style="Emphasis">pop!</style>
     - Name: 
       Entry: 8
       Data: 
@@ -4852,7 +4851,7 @@ MonoBehaviour:
       Data: Now!
     - Name: tutorialText
       Entry: 1
-      Data: Try to <style="Emphasis">fit</style> everyone into the box.
+      Data: Try to <style="Emphasis">Fit</style> everyone into the box.
     - Name: 
       Entry: 8
       Data: 
@@ -4934,7 +4933,7 @@ MonoBehaviour:
       Data: Nicely done!
     - Name: tutorialText
       Entry: 1
-      Data: You've fit them all in <style="Bolden">perfectly.</style>
+      Data: You've Fit them all in <style="Emphasis">perfectly.</style>
     - Name: 
       Entry: 8
       Data: 
@@ -4975,7 +4974,7 @@ MonoBehaviour:
       Data: 
     - Name: tutorialText
       Entry: 1
-      Data: Every time you <style="Bolden">fit</style>, the box will <style="Bolden">change.</style>
+      Data: Every time you <style="Emphasis">Fit</style>, the box will <style="Emphasis">change.</style>
     - Name: 
       Entry: 8
       Data: 
@@ -5010,17 +5009,14 @@ MonoBehaviour:
       Data: 7
     - Name: hasHeader
       Entry: 5
-      Data: false
+      Data: true
     - Name: headerText
-      Entry: 6
-      Data: 
+      Entry: 1
+      Data: Watch out!
     - Name: tutorialText
       Entry: 1
-      Data: "But <style=\"Bolden\">watch out!</style> if we're left in a tight space
-        for too long, we\u2019ll get <style=\"Emphasis\">sick</style> and turn into
-        <style=\"Emphasis\">stone.</style> And those stony guys <style=\"Bolden\">can't
-        be cleared</style> until you <style=\"Bolden\">fit</style> everyone else
-        in the box!"
+      Data: We can get <style="Emphasis">sick</style> and <style="Bolden">turn into
+        stone,</style> by then, we cannot be <style="Emphasis">popped!</style>
     - Name: 
       Entry: 8
       Data: 
@@ -5061,8 +5057,8 @@ MonoBehaviour:
       Data: That's all!
     - Name: tutorialText
       Entry: 1
-      Data: Now, it's time for you to <style="Bolden">fit them all into the box.</style>
-        But this time... make sure to <style="Emphasis">Fit Me</style> too!
+      Data: "Now, you\u2019re ready! But this time... try to <style=\"Emphasis\">FIT
+        ME</style> too!"
     - Name: 
       Entry: 8
       Data: 
@@ -5100,11 +5096,10 @@ MonoBehaviour:
       Data: true
     - Name: headerText
       Entry: 1
-      Data: Oh well...
+      Data: Well...
     - Name: tutorialText
       Entry: 1
-      Data: That's the <style="Emphasis">game over</style> for you. But no big deal,
-        let's give it <style="Bolden">another try!</style>
+      Data: That's not what I meant. But let's try again!
     - Name: 
       Entry: 8
       Data: 
@@ -7377,8 +7372,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 369.9995, y: -328.31616}
-  m_SizeDelta: {x: 679.999, y: 200.1495}
+  m_AnchoredPosition: {x: 370, y: -347.97067}
+  m_SizeDelta: {x: 680, y: 235.12439}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1187799990
 MonoBehaviour:
@@ -7486,8 +7481,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: -11.565}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -399, y: -110}
-  m_SizeDelta: {x: 470.3202, y: 689.7532}
+  m_AnchoredPosition: {x: -270, y: -110}
+  m_SizeDelta: {x: 470, y: 690}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1289463668
 MonoBehaviour:
@@ -11441,8 +11436,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 149.99951, y: -100}
-  m_SizeDelta: {x: -700.001, y: -2200}
+  m_AnchoredPosition: {x: 200, y: -100}
+  m_SizeDelta: {x: -700, y: -2200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1828281915
 MonoBehaviour:
@@ -11459,10 +11454,10 @@ MonoBehaviour:
   m_Padding:
     m_Left: 30
     m_Right: 30
-    m_Top: 60
+    m_Top: 90
     m_Bottom: 60
   m_ChildAlignment: 1
-  m_Spacing: 70
+  m_Spacing: 35
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -11629,8 +11624,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Your <style="Bolden">goal</style> is to <style="Emphasis">fill the box</style>
-    with Loopies Whoopies to set them free from your world.
+  m_text: But <style="Bolden">be careful!</style> If <style="Emphasis">3 or more</style>
+    of them are <style="Emphasis">touching,</style>  they'll go <style="Emphasis">pop!</style>
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5caf6b85c0086a145888f190950f0ddd, type: 2}
   m_sharedMaterial: {fileID: 3200311061391439610, guid: 5caf6b85c0086a145888f190950f0ddd, type: 2}
@@ -11660,7 +11655,7 @@ MonoBehaviour:
   m_fontSize: 60
   m_fontSizeBase: 60
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 20
   m_fontSizeMax: 60
   m_fontStyle: 0

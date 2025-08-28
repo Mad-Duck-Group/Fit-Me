@@ -10,8 +10,10 @@ using MessagePipe;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
+
 namespace MadDuck.Scripts.GPGS
 {
+
     public struct LoadFromServiceEvent
     {
         public readonly byte[] data;
@@ -21,7 +23,7 @@ namespace MadDuck.Scripts.GPGS
             this.data = data;
         }
     }
-
+#if UNITY_ANDROID
     [Serializable]
     public struct SaveUIConfig
     {
@@ -381,4 +383,5 @@ namespace MadDuck.Scripts.GPGS
             return readableText;
         }
     }
+#endif
 }

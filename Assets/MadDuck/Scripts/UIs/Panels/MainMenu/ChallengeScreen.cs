@@ -70,13 +70,15 @@ namespace MadDuck.Scripts.UIs.Panels.MainMenu
 #endif
         }
 
+#if UNITY_ANDROID
         private void OnFinishedAuthentication(SignInStatus status)
         {
-#if UNITY_ANDROID
+
             SetPlayerInfo();
             AuthenticationDone(status);
-#endif
+
         }
+#endif
 
         private void OnLoaded()
         {

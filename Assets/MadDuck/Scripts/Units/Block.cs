@@ -64,6 +64,7 @@ namespace MadDuck.Scripts.Units
         [SerializeField, SortingLayer] private int originalSortingLayer;
         [SerializeField, SortingLayer] private int pickUpSortingLayer;
         [SerializeField] private Color originalAtomColor = Color.white;
+        [SerializeField] private float flashDuration = 0.2f;
         [field: SerializeField] public bool AllowPickUpAfterPlacement { get; private set; }
         
         [Title("Audios")] 
@@ -383,7 +384,7 @@ namespace MadDuck.Scripts.Units
                     if (_preInfectTween.isAlive)
                     { _preInfectTween.Complete(); }
                     SetColor(originalAtomColor);
-                    _flashTween = Tween.Custom(originalAtomColor, Color.red, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo,
+                    _flashTween = Tween.Custom(originalAtomColor, Color.red, flashDuration, cycles: -1, cycleMode: CycleMode.Yoyo,
                         onValueChange: SetColor);
                     break;
                 
@@ -391,7 +392,7 @@ namespace MadDuck.Scripts.Units
                     if (BlockState != BlockState.PreInfected) return;
                     if(_preInfectTween.isAlive) return;
                     SetColor(originalAtomColor);
-                    _preInfectTween = Tween.Custom(originalAtomColor, _infectColor, 0.2f, cycles: -1, cycleMode: CycleMode.Yoyo,
+                    _preInfectTween = Tween.Custom(originalAtomColor, _infectColor, flashDuration, cycles: -1, cycleMode: CycleMode.Yoyo,
                         onValueChange: SetColor);
                     break;
                 
