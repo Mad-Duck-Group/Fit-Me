@@ -21,6 +21,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
         
         [Title("Settings")]
         [SerializeField] private float adsTimeout = 10f;
+        [SerializeField] private bool enableAds = true;
 
         [Title("Panels")] 
         [OdinSerialize, HideReferenceObjectPicker]
@@ -82,8 +83,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
 
         private void OnAdsButtonClicked()
         {
-            if (Ads.Instance.TryShowAd())
-                _adsTimerSubscription?.Dispose();
+            EnableAds(enableAds);
         }
 
         public void OnAdsClosed()
@@ -91,6 +91,19 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
             transitionCts = new CancellationTokenSource();
             PanelController.ChangePanel(this, gameplayUIPanelCrossFadeRule.nextPanel, gameplayUIPanelCrossFadeRule.crossFadeSettings,
                 transitionCts.Token).Forget();
+        }
+
+        private void EnableAds(bool enable)
+        {
+            if (enable)
+            {
+                if (Ads.Instance.TryShowAd())
+                    _adsTimerSubscription?.Dispose();
+            }
+            else
+            {
+                OnAdsClosed();
+            }
         }
     }
 }

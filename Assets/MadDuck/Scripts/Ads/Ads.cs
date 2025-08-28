@@ -59,7 +59,11 @@ public class Ads : MonoSingleton<Ads>
 
         _rewardedAd.OnAdPaid += adValue =>
         {
-            Debug.Log($"ได้รับรายได้จากโฆษณา: {adValue.Value} {adValue.CurrencyCode}");
+            var micros = adValue.Value;
+            var currency = adValue.CurrencyCode;
+            var precision = adValue.Precision;
+            
+            Debug.Log($"ได้รับรายได้จากโฆษณา: {micros} {currency}");
         };
     }
     
