@@ -84,7 +84,6 @@ public class Ads : MonoSingleton<Ads>
     
     private void HandleAdClosed()
     {
-        DisposeAds();
         LoadRewardedAd();
     }
 
