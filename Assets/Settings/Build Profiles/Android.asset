@@ -870,8 +870,8 @@ MonoBehaviour:
         m_ExportAsGoogleAndroidProject: 0
         m_DebugSymbolLevel: 1
         m_DebugSymbolFormat: 6
-        m_CurrentDeploymentTargetId: 10.20.59.26:39869
+        m_CurrentDeploymentTargetId: 10.20.59.26:44871
         m_BuildType: 2
         m_BuildAppBundle: 0
-        m_IPAddressToConnect: 10.20.59.26:39869
+        m_IPAddressToConnect: 10.20.59.26:44871
         m_SymlinkSources: 0
