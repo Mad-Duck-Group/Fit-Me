@@ -254,3 +254,9 @@ MonoBehaviour:
       Data: 
   <PresetGridType>k__BackingField: 2
   <GridSize>k__BackingField: {x: 9, y: 8}
+  <AllowInfection>k__BackingField: 1
+  <InfectionSettings>k__BackingField:
+    <InfectionCountRange>k__BackingField: {x: 1, y: 5}
+    <InfectionTimeRange>k__BackingField: {x: 6, y: 6}
+    <FirstInfectTimeRange>k__BackingField: {x: 6, y: 6}
+    <PreInfectTime>k__BackingField: 10

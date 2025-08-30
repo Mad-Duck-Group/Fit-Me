@@ -6550,33 +6550,12 @@ MonoBehaviour:
   scorePerCombo: 100
   scorePerBomb: 200
   scorePerFitMe: 5000
-  infectionThreshold: 1
-  gameDifficultySettings:
-  - <MaxScorePerDifficulty>k__BackingField: 1
-    <InfectionCountRange>k__BackingField: {x: 0, y: 0}
-    <InfectionTimeRange>k__BackingField: {x: 0, y: 0}
-    <FirstInfectTimeRange>k__BackingField: {x: 0, y: 0}
-    <PreInfectTime>k__BackingField: 0
-  - <MaxScorePerDifficulty>k__BackingField: 500
-    <InfectionCountRange>k__BackingField: {x: 1, y: 3}
-    <InfectionTimeRange>k__BackingField: {x: 6, y: 6}
-    <FirstInfectTimeRange>k__BackingField: {x: 6, y: 6}
-    <PreInfectTime>k__BackingField: 7
-  - <MaxScorePerDifficulty>k__BackingField: 1000
-    <InfectionCountRange>k__BackingField: {x: 1, y: 6}
-    <InfectionTimeRange>k__BackingField: {x: 6, y: 6}
-    <FirstInfectTimeRange>k__BackingField: {x: 6, y: 6}
-    <PreInfectTime>k__BackingField: 7
-  usePercentage: 0
-  startInfectTimeRange: 10
-  firstInfectTimePercentRange: {x: 0.1, y: 0.6}
-  <PreInfectTime>k__BackingField: 4
-  <InfectionTimeRange>k__BackingField: {x: 3, y: 10}
-  startInfectionCount: 1
-  <MaxInfectionCount>k__BackingField: 10
-  infectColor:
-    serializedVersion: 2
-    rgba: 4281677109
+  difficultySettings:
+    keys: 000000000100000002000000
+    values:
+    - {x: 0, y: 50}
+    - {x: 51, y: 7000}
+    - {x: 7001, y: 10000}
   gameplayBgm:
     Guid:
       Data1: -427414803
@@ -6600,11 +6579,12 @@ MonoBehaviour:
     Path: event:/SFX/Game Play/GP03_Game Over
   <CurrentGameState>k__BackingField:
     value: 0
+  <CurrentGameDifficulty>k__BackingField:
+    value: 0
   <Score>k__BackingField:
     value: 0
   <FitmeScore>k__BackingField:
     value: 0
-  difficultyIndex: 0
   hostInfectionRunning: 0
   serializationData:
     SerializedFormat: 2
@@ -10593,6 +10573,7 @@ MonoBehaviour:
   continueButton: {fileID: 1752724440}
   adsButton: {fileID: 1826111097}
   adsTimeout: 10
+  enableAds: 1
 --- !u!225 &1635131238
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -12894,8 +12875,8 @@ MonoBehaviour:
   canBePlacedColor: {r: 0.07678461, g: 1, b: 0, a: 1}
   cannotBePlacedColor: {r: 1, g: 0, b: 0, a: 1}
   gridPresets:
-  - {fileID: 11400000, guid: 8a01e7478c673fa4e92ea27bac77ce03, type: 2}
-  - {fileID: 11400000, guid: 00c82d2d85419804bb39dfadb62b5920, type: 2}
+  - {fileID: 11400000, guid: 1befb782cc8aef74c94f0e9a9cab8f1a, type: 2}
+  - {fileID: 11400000, guid: e8f6b2b73fa922043b42d2f9e1bd7742, type: 2}
   stackExplodeSfx:
     Guid:
       Data1: 685384001
@@ -12913,6 +12894,7 @@ MonoBehaviour:
   endlessType: 1
   generatedGridType: 1
   presetRandomType: 1
+  useDifficultyPreset: 0
   randomGridXRange: {x: 6, y: 9}
   randomGridYRange: {x: 10, y: 10}
   bridgeWidthRange: {x: 2, y: 3}
@@ -12921,9 +12903,9 @@ MonoBehaviour:
   gridVerticalOffsetType: 0
   customOffsetY: 3
   destroyThreshold: 3
-  currentGridPreset: {fileID: 11400000, guid: 49ac1ac62efab9d44ba416909e663151, type: 2}
-  currentGridSize: {x: 4, y: 8}
-  currentOffset: {x: -2, y: 7}
+  <CurrentGridPreset>k__BackingField: {fileID: 11400000, guid: 1befb782cc8aef74c94f0e9a9cab8f1a, type: 2}
+  currentGridSize: {x: 4, y: 4}
+  currentOffset: {x: -2, y: 5}
   drawAllCustomGridCells: 1
   <RandomInfectedTime>k__BackingField: 0
   preInfectBlocks: []

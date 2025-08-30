@@ -92,6 +92,9 @@ namespace MadDuck.Scripts.Managers
         [SerializeField]
         [ShowIf(nameof(endlessType), EndlessType.Preset)]
         private PresetRandomType presetRandomType = PresetRandomType.Random;
+        [TitleGroup("Grid Settings")] 
+        [SerializeField] 
+        private bool useDifficultyPreset = true;
         [TitleGroup("Grid Settings")]
         [SerializeField] [MinMaxSlider(1, 20, ShowFields = true)]
         private Vector2Int randomGridXRange = new(1, 10);
@@ -120,14 +123,15 @@ namespace MadDuck.Scripts.Managers
         [SerializeField]
         private int destroyThreshold = 3;
         
-        [Title("Grid Debug")] 
-        [SerializeField, DisableInPlayMode] [OnValueChanged(nameof(OnPresetChanged))]
-        [InlineEditor]
-        private GridPreset currentGridPreset;
+        [field: Title("Grid Debug")] 
+        [field: SerializeField, DisableInPlayMode] [OnValueChanged(nameof(OnPresetChanged))]
+        [field: InlineEditor]
+        public GridPreset CurrentGridPreset { get; private set; }
         [Button("Refresh Grid Size")]
         private void OnPresetChanged()
         {
-            currentGridSize = currentGridPreset ? currentGridPreset.GridSize : new Vector2Int(6, 8);
+            currentGridSize = CurrentGridPreset ? CurrentGridPreset.GridSize : new Vector2Int(6, 8);
+            UpdateGridOffset();
         }
         [SerializeField, Sirenix.OdinInspector.ReadOnly] [OnValueChanged(nameof(UpdateGridOffset))]
         [MinValue(1)]
@@ -148,7 +152,7 @@ namespace MadDuck.Scripts.Managers
         [ShowInInspector, Sirenix.OdinInspector.ReadOnly]
         private List<Block> DebugBlockOnGrid => new(BlocksOnGrid);
         public ObservableList<Block> BlocksOnGrid { get; private set; } = new();
-        [SerializeField, ShowIf("@currentGridPreset && currentGridPreset.PresetGridType.HasFlag(GridType.Custom)")]
+        [SerializeField, ShowIf("@CurrentGridPreset && CurrentGridPreset.PresetGridType.HasFlag(GridType.Custom)")]
         private bool drawAllCustomGridCells = true;
 
         [Title("Infected Debug")]
@@ -168,6 +172,7 @@ namespace MadDuck.Scripts.Managers
         #region Fields and Properties
         private Grid _grid;
         private List<Cell> _previousValidationCells = new();
+        private Dictionary<GameDifficulty, List<GridPreset>> _difficultyGridPresets = new();
         public static event Action<Block> OnBlockStateChanged;
         public static event Action<Block> OnBlockPlaced;
         public static event Action<Block> OnBlockDestroyed;
@@ -178,7 +183,7 @@ namespace MadDuck.Scripts.Managers
         public Grid Grid => _grid;
         [Inject] private IObjectResolver _objectResolver;
         private IRequestHandler<GameStateRequest, GameState> _gameStateRequestHandler;
-        private IRequestHandler<InfectionConfigRequest, InfectionConfig> _infectionConfigRequestHandler;
+        private IRequestHandler<GameDifficultyRequest, GameDifficulty> _gameDifficultyRequestHandler;
         private IRequestHandler<BlockPresetRequest, List<BlockPreset>> _blockPresetRequestHandler;
         private IPublisher<StartSpawnEvent> _startSpawnPublisher;
         private IDisposable _sceneActiveSubscription;
@@ -189,12 +194,14 @@ namespace MadDuck.Scripts.Managers
         #region Events
         private void OnEnable()
         {
+            _difficultyGridPresets = gridPresets.GroupBy(preset => preset.GameDifficulty)
+                .ToDictionary(group => group.Key, group => group.ToList());
             _sceneActiveSubscription =
                 GlobalMessagePipe.GetSubscriber<SceneActivateEvent>().Subscribe(OnSceneActivated);
             _startSpawnPublisher = GlobalMessagePipe.GetPublisher<StartSpawnEvent>();
             _objectResolver.TryResolve(out _blockPresetRequestHandler);
             _objectResolver.TryResolve(out _gameStateRequestHandler);
-            _objectResolver.TryResolve(out _infectionConfigRequestHandler);
+            _objectResolver.TryResolve(out _gameDifficultyRequestHandler);
         }
 
         private void OnDisable()
@@ -244,9 +251,8 @@ namespace MadDuck.Scripts.Managers
             {
                 Debug.LogError("Grid cell size must be the same in both axes!");
             }
-            if (_infectionConfigRequestHandler == null) return;
-            var infectionConfig = _infectionConfigRequestHandler.Invoke(new InfectionConfigRequest());
-            RandomInfectedTime = Random.Range(infectionConfig.infectionTimeRange.x, infectionConfig.infectionTimeRange.y);
+            var infectionConfig = CurrentGridPreset.InfectionSettings;
+            RandomInfectedTime = Random.Range(infectionConfig.InfectionCountRange.x, infectionConfig.InfectionCountRange.y);
         }
         #endregion
         
@@ -260,17 +266,7 @@ namespace MadDuck.Scripts.Managers
             }
             if (currentEndlessType is EndlessType.Preset && gridPresets.Count > 0)
             {
-                if (presetRandomType is PresetRandomType.Random)
-                    currentGridPreset = gridPresets.GetRandomElement();
-                else
-                {
-                    currentGridPreset = gridPresets[_currentPresetIndex];
-                    _currentPresetIndex++;
-                    if (_currentPresetIndex >= gridPresets.Count)
-                    {
-                        _currentPresetIndex = 0;
-                    }
-                }
+                GetPreset();
                 return;
             }
 
@@ -302,7 +298,42 @@ namespace MadDuck.Scripts.Managers
                     }
                 }
             }
-            currentGridPreset = newGridPreset;
+            CurrentGridPreset = newGridPreset;
+        }
+
+        private void GetPreset()
+        {
+            if (presetRandomType is PresetRandomType.Random)
+            {
+                if (useDifficultyPreset)
+                {
+                    if (_gameDifficultyRequestHandler == null)
+                    {
+                        Debug.LogError("GameDifficultyRequestHandler is not resolved!");
+                        return;
+                    }
+                    var currentDifficulty = _gameDifficultyRequestHandler.Invoke(new GameDifficultyRequest());
+                    if (_difficultyGridPresets.TryGetValue(currentDifficulty, out var presets))
+                    {
+                        CurrentGridPreset = presets.GetRandomElement();
+                        return;
+                    }
+                    Debug.LogError($"Preset {currentDifficulty} not found!");
+                }
+                else
+                {
+                    CurrentGridPreset = gridPresets.GetRandomElement();
+                }
+            }
+            else
+            {
+                CurrentGridPreset = gridPresets[_currentPresetIndex];
+                _currentPresetIndex++;
+                if (_currentPresetIndex >= gridPresets.Count)
+                {
+                    _currentPresetIndex = 0;
+                }
+            }
         }
 
         private void SetUpMainMenuGridPreset(BlockPreset blockPreset)
@@ -315,7 +346,7 @@ namespace MadDuck.Scripts.Managers
             var row = newGridPreset.customGrid.GetLength(0);
             var column = newGridPreset.customGrid.GetLength(1);
             newGridPreset.GridSize = new Vector2Int(column, row);
-            currentGridPreset = newGridPreset;
+            CurrentGridPreset = newGridPreset;
         }
 
         private int[] GetBridgeIndex(int bridgeWidth, int columnCount)
@@ -413,7 +444,7 @@ namespace MadDuck.Scripts.Managers
         /// </summary>
         private void CreateCells()
         {
-            currentGridSize = currentGridPreset.GridSize;
+            currentGridSize = CurrentGridPreset.GridSize;
             UpdateGridOffset();
             var row = currentGridSize.y;
             var column = currentGridSize.x;
@@ -423,7 +454,7 @@ namespace MadDuck.Scripts.Managers
             {
                 for (int y = 0; y < column; y++)
                 {
-                    if (currentGridPreset.PresetGridType is GridType.Custom && currentGridPreset.customGrid[x, y] == 0) continue; 
+                    if (CurrentGridPreset.PresetGridType is GridType.Custom && CurrentGridPreset.customGrid[x, y] == 0) continue; 
                     var halfSize = cellSize / 2;
                     Vector3 spawnPosition =
                         (Vector3)(new Vector2(halfSize, halfSize) +
@@ -567,8 +598,8 @@ namespace MadDuck.Scripts.Managers
             await ClearGrid();
             PlayerDataManager.Instance.SaveBlockDestroyed(FitType.FitMe, blocksToSave);
             OnScoreAdded?.Invoke(ScoreTypes.FitMe, worldPosition:GetGridCenter());
-            RegenerateGrid();
             OnNextGameDifficulty?.Invoke();
+            RegenerateGrid();
         }
 
         private async UniTask Combo(List<Block> contacts)
@@ -780,9 +811,8 @@ namespace MadDuck.Scripts.Managers
         /// <returns>>true if more blocks can be infected, false otherwise</returns>
         private bool CanInfectMore()
         {
-            if (_infectionConfigRequestHandler == null) return false;
-            var infectionConfig = _infectionConfigRequestHandler.Invoke(new InfectionConfigRequest());
-            return TotalInfected < infectionConfig.maxInfectionCount;
+            var infectionConfig = CurrentGridPreset.InfectionSettings;
+            return TotalInfected < infectionConfig.InfectionCountRange.y;
         }
 
         public void InfectBlock(Block block)
@@ -794,8 +824,8 @@ namespace MadDuck.Scripts.Managers
             infectedBlocks.Add(block);
             block.Infect();
             OnBlockStateChanged?.Invoke(block);
-            var infectionConfig = _infectionConfigRequestHandler.Invoke(new InfectionConfigRequest());
-            RandomInfectedTime = Random.Range(infectionConfig.infectionTimeRange.x, infectionConfig.infectionTimeRange.y);
+            var infectionConfig = CurrentGridPreset.InfectionSettings;
+            RandomInfectedTime = Random.Range(infectionConfig.InfectionTimeRange.x, infectionConfig.InfectionTimeRange.y);
         }
 
         public void DisinfectBlock(Block block, bool updateGrid = false)
@@ -968,7 +998,7 @@ namespace MadDuck.Scripts.Managers
         }
         private void DrawGrid()
         {
-            if (!currentGridPreset) return;
+            if (!CurrentGridPreset) return;
             var row = currentGridSize.y;
             var column = currentGridSize.x;
             if (!_grid)
@@ -981,7 +1011,7 @@ namespace MadDuck.Scripts.Managers
                 {
                     var textColor = Color.green;
                     var handleColor = Color.green;
-                    if (currentGridPreset.PresetGridType is GridType.Custom && currentGridPreset.customGrid[x, y] == 0)
+                    if (CurrentGridPreset.PresetGridType is GridType.Custom && CurrentGridPreset.customGrid[x, y] == 0)
                     {
                         if (!drawAllCustomGridCells) continue;
                         handleColor = Color.red;

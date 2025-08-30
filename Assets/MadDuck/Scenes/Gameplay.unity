@@ -2976,33 +2976,12 @@ MonoBehaviour:
   scorePerCombo: 100
   scorePerBomb: 200
   scorePerFitMe: 5000
-  infectionThreshold: 1
-  gameDifficultySettings:
-  - <MaxScorePerDifficulty>k__BackingField: 1
-    <InfectionCountRange>k__BackingField: {x: 0, y: 0}
-    <InfectionTimeRange>k__BackingField: {x: 0, y: 0}
-    <FirstInfectTimeRange>k__BackingField: {x: 0, y: 0}
-    <PreInfectTime>k__BackingField: 0
-  - <MaxScorePerDifficulty>k__BackingField: 500
-    <InfectionCountRange>k__BackingField: {x: 1, y: 3}
-    <InfectionTimeRange>k__BackingField: {x: 6, y: 6}
-    <FirstInfectTimeRange>k__BackingField: {x: 6, y: 6}
-    <PreInfectTime>k__BackingField: 10
-  - <MaxScorePerDifficulty>k__BackingField: 1000
-    <InfectionCountRange>k__BackingField: {x: 1, y: 6}
-    <InfectionTimeRange>k__BackingField: {x: 6, y: 6}
-    <FirstInfectTimeRange>k__BackingField: {x: 6, y: 6}
-    <PreInfectTime>k__BackingField: 10
-  usePercentage: 0
-  startInfectTimeRange: 10
-  firstInfectTimePercentRange: {x: 0.1, y: 0.6}
-  <PreInfectTime>k__BackingField: 4
-  <InfectionTimeRange>k__BackingField: {x: 3, y: 10}
-  startInfectionCount: 1
-  <MaxInfectionCount>k__BackingField: 10
-  infectColor:
-    serializedVersion: 2
-    rgba: 4281677109
+  difficultySettings:
+    keys: 000000000100000002000000
+    values:
+    - {x: 0, y: 50}
+    - {x: 51, y: 7000}
+    - {x: 7001, y: 10000}
   gameplayBgm:
     Guid:
       Data1: -427414803
@@ -3026,11 +3005,12 @@ MonoBehaviour:
     Path: event:/SFX/Game Play/GP03_Game Over
   <CurrentGameState>k__BackingField:
     value: 0
+  <CurrentGameDifficulty>k__BackingField:
+    value: 0
   <Score>k__BackingField:
     value: 0
   <FitmeScore>k__BackingField:
     value: 0
-  difficultyIndex: 0
   hostInfectionRunning: 0
   serializationData:
     SerializedFormat: 2
@@ -7892,6 +7872,7 @@ MonoBehaviour:
   endlessType: 1
   generatedGridType: 1
   presetRandomType: 0
+  useDifficultyPreset: 1
   randomGridXRange: {x: 6, y: 9}
   randomGridYRange: {x: 10, y: 10}
   bridgeWidthRange: {x: 2, y: 3}
@@ -7900,8 +7881,8 @@ MonoBehaviour:
   gridVerticalOffsetType: 0
   customOffsetY: 3
   destroyThreshold: 3
-  currentGridPreset: {fileID: 11400000, guid: b1d9e9e358e2c98489599c2a003cbbed, type: 2}
-  currentGridSize: {x: 6, y: 9}
+  <CurrentGridPreset>k__BackingField: {fileID: 11400000, guid: 3c0de1220640875409d7ee56aa4db52d, type: 2}
+  currentGridSize: {x: 7, y: 8}
   currentOffset: {x: -3, y: 7}
   drawAllCustomGridCells: 1
   <RandomInfectedTime>k__BackingField: 0

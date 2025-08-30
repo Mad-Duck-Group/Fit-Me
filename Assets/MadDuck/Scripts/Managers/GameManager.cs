@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using FMODUnity;
 using MadDuck.Scripts.Challenges;
@@ -55,36 +56,24 @@ public enum GameplayUIPanelType
     GameOver,
     Result,
 }
+
+public enum GameDifficulty
+{
+    Easy,
+    Medium,
+    Hard,
+}
 #endregion
 
 #region Requests
 public struct GameStateRequest{}
-public struct InfectionConfigRequest{}
-
-public struct InfectionConfig
-{
-    public int maxInfectionCount;
-    public Vector2 infectionTimeRange;
-    public Color infectionColor;
-    public float preInfectTime;
-}
-
+public struct GameDifficultyRequest{}
 #endregion
 
-[Serializable]
-public struct GameDifficultySettings
-{
-    [field: SerializeField] public float MaxScorePerDifficulty{ get; private set; }
-    [field: SerializeField] public Vector2Int InfectionCountRange { get; private set; }
-    [field: SerializeField] public Vector2 InfectionTimeRange { get; private set; }
-    [field: SerializeField] public Vector2 FirstInfectTimeRange { get; private set; }
-    [field: SerializeField] public float PreInfectTime { get; private set; }
-    [ShowInInspector, ReadOnly] public bool CanInfect => InfectionCountRange.x >= 1;
-}
 [ShowOdinSerializedPropertiesInInspector]
 public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackReceiver, ISupportsPrefabSerialization,
     IRequestHandler<GameStateRequest, GameState>,
-    IRequestHandler<InfectionConfigRequest, InfectionConfig>
+    IRequestHandler<GameDifficultyRequest, GameDifficulty>
 {
     #region Inspectors
 
@@ -113,29 +102,8 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     [TabGroup("Settings", "Score")]
     [SerializeField] private int scorePerFitMe = 10000;
     
-    [TabGroup("Settings", "Infection")] 
-    [SerializeField] private bool infectionThreshold;
-    [TabGroup("Settings", "Infection")]
-    [SerializeField, ShowIf(nameof(infectionThreshold))] 
-    private List<GameDifficultySettings> gameDifficultySettings;
-    [TabGroup("Settings", "Infection"), HideIf(nameof(infectionThreshold))] 
-    [SerializeField] private bool usePercentage;
-    [TabGroup("Settings", "Infection")] [SerializeField, HideIf(nameof(usePercentage)), HideIf(nameof(infectionThreshold))] 
-    private float startInfectTimeRange = 10f;
-    [TabGroup("Settings", "Infection")] [SerializeField, ShowIf(nameof(usePercentage)), MinValue(0.1f), HideIf(nameof(infectionThreshold))] 
-    private Vector2 firstInfectTimePercentRange = new(0.1f, 0.5f);
-    [field: TabGroup("Settings", "Infection"), HideIf(nameof(infectionThreshold))] 
-    [field: SerializeField] public float PreInfectTime { get; private set; } = 1f;
-    [field: TabGroup("Settings", "Infection"), HideIf(nameof(infectionThreshold))] 
-    [field: SerializeField, MinValue(0.1f)] public Vector2 InfectionTimeRange { get; private set; } = new(0, 10);
-    [TabGroup("Settings", "Infection"),] 
-    [SerializeField, HideIf(nameof(infectionThreshold))] private int startInfectionCount = 1;
-    
-    [TabGroup("Settings", "Infection"),] 
-    [field: SerializeField, HideIf(nameof(infectionThreshold))] public int MaxInfectionCount { get; private set; }= 10;
-
-    [TabGroup("Settings", "Infection")]
-    public Color32 infectColor = new(255, 0, 0, 255);
+    [TabGroup("Settings", "Difficulty")]
+    [SerializeField] private SerializableDictionary<GameDifficulty, Vector2Int> difficultySettings = new();
     #endregion
     
     #region Panels
@@ -163,8 +131,10 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     #region Debug
     [field: TitleGroup("Game Manager Debug")]
     [field: SerializeField, DisplayAsString]
-    [field: TitleGroup("Game Manager Debug")]
     public SerializableReactiveProperty<GameState> CurrentGameState { get; private set; } = new(GameState.CountOff);
+    [field: TitleGroup("Game Manager Debug")]
+    [field: SerializeField, DisplayAsString]
+    public SerializableReactiveProperty<GameDifficulty> CurrentGameDifficulty { get; private set; } = new(GameDifficulty.Easy);
     [field: TitleGroup("Game Manager Debug")]
     [field: SerializeField, ReadOnly] public SerializableReactiveProperty<int> Score { get; private set; } = new(0);
     [field: TitleGroup("Game Manager Debug")]
@@ -174,9 +144,6 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     private void TestGameOver() => GameOver();
 
     [field: Title("Infection Debug")]
-    [SerializeField, DisplayAsString] private int difficultyIndex;
-    [ShowInInspector, ReadOnly] private GameDifficultySettings CurrentGameDifficultySettings => 
-        gameDifficultySettings.Count > 0 ? gameDifficultySettings[difficultyIndex] : default;
     [SerializeField, DisplayAsString] private bool hostInfectionRunning;
     #endregion
     #endregion
@@ -330,8 +297,11 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     #region Updates
     private void RandomSpawnInfection()
     {
-        if (!CurrentGameDifficultySettings.CanInfect) return;
-        if (GridManager.Instance.TotalInfected >= CurrentGameDifficultySettings.InfectionCountRange.x)
+        var currentInfectionSettings = GridManager.Instance.CurrentGridPreset.InfectionSettings;
+        var allowInfection = GridManager.Instance.CurrentGridPreset.AllowInfection;
+        if (!allowInfection) return;
+        if (!currentInfectionSettings.CanInfect) return;
+        if (GridManager.Instance.TotalInfected >= currentInfectionSettings.InfectionCountRange.x)
         {
             _infectionDisposable?.Dispose();
             hostInfectionRunning = false;
@@ -362,30 +332,30 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     /// <summary>
     /// Change the game the next difficulty
     /// </summary>
-    public void NextGameDifficulty()
+    private void NextGameDifficulty()
     {
         _aboutToInfectBlocks.Clear();
-        if (gameDifficultySettings.Count == 0) return;
-        if (Score.Value >= CurrentGameDifficultySettings.MaxScorePerDifficulty)
+        var maxDifficulty = (GameDifficulty)Enum.GetValues(typeof(GameDifficulty)).Length - 1;
+        if (CurrentGameDifficulty.Value == maxDifficulty) return;
+       
+        if (!difficultySettings.TryGetValue(maxDifficulty, out var maxDifficultyRange))
         {
-            difficultyIndex++;
-            if (difficultyIndex >= gameDifficultySettings.Count)
-                difficultyIndex = gameDifficultySettings.Count - 1;
+            Debug.LogError($"Difficulty settings for {maxDifficulty} not found.");
         }
-        
-        SetValueToDifficulty(CurrentGameDifficultySettings);
-    }
-
-    private void SetValueToDifficulty(GameDifficultySettings gameDifficulty)
-    {
-        var minCount = gameDifficulty.InfectionCountRange.x;
-        var maxCount = gameDifficulty.InfectionCountRange.y;
-        difficultyIndex = gameDifficultySettings.IndexOf(gameDifficulty);
-        startInfectionCount = minCount;
-        firstInfectTimePercentRange = gameDifficulty.FirstInfectTimeRange;
-        PreInfectTime = gameDifficulty.PreInfectTime;
-        InfectionTimeRange = gameDifficulty.InfectionTimeRange;
-        MaxInfectionCount = maxCount;
+        var score = Score.Value;
+        if (score >= maxDifficultyRange.y)
+        {
+            CurrentGameDifficulty.Value = maxDifficulty;
+            return;
+        }
+        var nextDifficulty = difficultySettings.Cast<KeyValuePair<GameDifficulty, Vector2Int>?>()
+            .FirstOrDefault(kvp => kvp != null && score >= kvp.Value.Value.x && score < kvp.Value.Value.y);
+        if (nextDifficulty == null)
+        {
+            Debug.LogError("No suitable difficulty found for the current score.");
+            return;
+        }
+        CurrentGameDifficulty.Value = nextDifficulty.Value.Key;
     }
     #endregion
 
@@ -441,24 +411,13 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
 
     private void CalculateInfectTime()
     {
+        var currentInfectionSettings = GridManager.Instance.CurrentGridPreset.InfectionSettings;
         _listInfectTime.Clear();
-        switch (infectionThreshold)
+        for (int i = GridManager.Instance.TotalInfected; i < currentInfectionSettings.InfectionCountRange.x; i++)
         {
-            case true:
-                for (int i = GridManager.Instance.TotalInfected; i < CurrentGameDifficultySettings.InfectionCountRange.x; i++)
-                {
-                    _listInfectTime.Add(Random.Range(
-                        CurrentGameDifficultySettings.FirstInfectTimeRange.x, 
-                        CurrentGameDifficultySettings.FirstInfectTimeRange.y));
-                }
-                break;
-            
-            case false:
-                for (int i = GridManager.Instance.TotalInfected; i < startInfectionCount; i++)
-                {
-                    _listInfectTime.Add(Random.Range(firstInfectTimePercentRange.x, firstInfectTimePercentRange.y));
-                }
-                break;
+            _listInfectTime.Add(Random.Range(
+                currentInfectionSettings.FirstInfectTimeRange.x, 
+                currentInfectionSettings.FirstInfectTimeRange.y));
         }
         _listInfectTime.Sort();
     }
@@ -520,16 +479,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     
     #region Requests
     public GameState Invoke(GameStateRequest request) => CurrentGameState.Value;
-    public InfectionConfig Invoke(InfectionConfigRequest request)
-    {
-        return new InfectionConfig()
-        {
-            maxInfectionCount = MaxInfectionCount,
-            infectionTimeRange = InfectionTimeRange,
-            infectionColor = infectColor,
-            preInfectTime = PreInfectTime
-        };
-    }
+    public GameDifficulty Invoke(GameDifficultyRequest request) => CurrentGameDifficulty.Value;
     #endregion
     
     #region Serialization
@@ -551,6 +501,4 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
             set => serializationData = value;
         }
     #endregion
-
-    
 }

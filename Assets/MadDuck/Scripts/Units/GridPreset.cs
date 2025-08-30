@@ -1,4 +1,5 @@
-﻿using MadDuck.Scripts.Managers;
+﻿using System;
+using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Utils;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -8,12 +9,24 @@ using UnityEngine;
 
 namespace MadDuck.Scripts.Units
 {
+    [Serializable]
+    public struct InfectionSettings
+    {
+        [field: SerializeField] public Vector2Int InfectionCountRange { get; private set; }
+        [field: SerializeField] public Vector2 InfectionTimeRange { get; private set; }
+        [field: SerializeField] public Vector2 FirstInfectTimeRange { get; private set; }
+        [field: SerializeField] public float PreInfectTime { get; private set; }
+        [ShowInInspector, ReadOnly] public bool CanInfect => InfectionCountRange.x >= 1;
+    }
+    
     [CreateAssetMenu(fileName = "Grid Preset", menuName = "MadDuck/Grid Preset", order = 1)]
     [ShowOdinSerializedPropertiesInInspector]
     public class GridPreset : SerializedScriptableObject
     {
         #region Inspectors
         [TitleGroup("Grid Settings")]
+        [field: SerializeField] 
+        public GameDifficulty GameDifficulty { get; set; } = GameDifficulty.Medium;
         [field: SerializeField]
         [field: ValidateInput("@PresetGridType != GridType.All && PresetGridType != GridType.None", 
             "Grid preset must have either Rectangle or Custom grid type.")]
@@ -42,6 +55,12 @@ namespace MadDuck.Scripts.Units
         [field: SerializeField, ShowIf("@PresetGridType.HasFlag(GridType.Custom)")]
         public int[,] customGrid = { };
         #endregion
+        
+        [field: TitleGroup("Infection Settings")]
+        [field: SerializeField] public bool AllowInfection { get; set; } = true;
+        [field: TitleGroup("Infection Settings")] 
+        [field: SerializeField, ShowIf(nameof(AllowInfection))]
+        public InfectionSettings InfectionSettings { get; set; }
 
         #if UNITY_EDITOR
         #region Table Matrix

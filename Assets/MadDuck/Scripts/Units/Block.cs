@@ -64,6 +64,7 @@ namespace MadDuck.Scripts.Units
         [SerializeField, SortingLayer] private int originalSortingLayer;
         [SerializeField, SortingLayer] private int pickUpSortingLayer;
         [SerializeField] private Color originalAtomColor = Color.white;
+        [SerializeField] private Color infectColor = Color.gray;
         [SerializeField] private float flashDuration = 0.2f;
         [field: SerializeField] public bool AllowPickUpAfterPlacement { get; private set; }
         
@@ -102,7 +103,6 @@ namespace MadDuck.Scripts.Units
         private float _protectedTime;
         [Inject] private IObjectResolver _objectResolver;
         private IRequestHandler<GameStateRequest, GameState> _gameStateRequest;
-        private IRequestHandler<InfectionConfigRequest, InfectionConfig> _infectionRequest;
         public event Action OnBlockBeingDrag;
         public event Action<bool> OnBlockEndDrag;
         #endregion
@@ -111,14 +111,11 @@ namespace MadDuck.Scripts.Units
         public void Initialize()
         {
             _objectResolver.TryResolve(out _gameStateRequest);
-            _objectResolver.TryResolve(out _infectionRequest);
             _originalPosition = transform.position;
             _originalRotation = transform.eulerAngles;
             _originalScale = transform.localScale;
             Atoms.ForEach(a => a.ParentBlock = this);
-            if (_infectionRequest == null) return;
-            var infectionConfig = _infectionRequest.Invoke(new InfectionConfigRequest());
-            _infectColor = infectionConfig.infectionColor;
+            _infectColor = infectColor;
         }
 
         private void StartInfectTimer()
@@ -209,14 +206,13 @@ namespace MadDuck.Scripts.Units
         
         public async UniTask PreInfect()
         {
-            if (_infectionRequest == null) return;
-            var infectionConfig = _infectionRequest.Invoke(new InfectionConfigRequest());
+            var infectionConfig = GridManager.Instance.CurrentGridPreset.InfectionSettings;
             BlockState = BlockState.PreInfected;
             if (BlockView) BlockView.PreInfect();
             StartFlashing(FlashState.PreInfectFlash);
             beforeExplodeState = BlockState.PreInfected;
             AudioManager.Instance.PlayAudioOneShot(preInfectSfx, transform.position);
-            await UniTask.WaitForSeconds(infectionConfig.preInfectTime,
+            await UniTask.WaitForSeconds(infectionConfig.PreInfectTime,
                 cancellationToken: destroyCancellationToken);
             if (BlockState is BlockState.Exploding) return;
             GridManager.Instance.InfectBlock(this);
