@@ -5947,7 +5947,7 @@ MonoBehaviour:
   continueButton: {fileID: 1752724440}
   adsButton: {fileID: 1826111097}
   adsTimeout: 10
-  enableAds: 0
+  enableAds: 1
 --- !u!225 &1635131238
 CanvasGroup:
   m_ObjectHideFlags: 0

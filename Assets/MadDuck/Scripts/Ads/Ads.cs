@@ -15,7 +15,7 @@ public class Ads : MonoSingleton<Ads>
     private IDisposable _adsRefreshTimer;
     private CancellationTokenSource _timerCts;
 
-    void Start()
+    void Awake()
     {
         MobileAds.Initialize(LoadRewardedAd);
     }
@@ -29,21 +29,21 @@ public class Ads : MonoSingleton<Ads>
     void LoadRewardedAd(InitializationStatus status = null)
     {
         _rewardedAd = null;
-        string adUnitId;
-#if UNITY_ANDROID
-            adUnitId = "ca-app-pub-3940256099942544/5224354917";
-#elif UNITY_IPHONE
-            adUnitId = "ca-app-pub-3940256099942544/2934735716";
-#else
-            adUnitId = "unexpected_platform";
-#endif
         AdRequest request = new AdRequest();
+        string adUnitId = null;
+
+#if UNITY_ANDROID
+        adUnitId = "ca-app-pub-3940256099942544/5224354917";
+#elif UNITY_IPHONE
+        adUnitId = "ca-app-pub-3940256099942544/2934735716", ;
+#else
+        adUnitId = "unexpected_platform";
+#endif
 
         RewardedAd.Load(adUnitId, request, (ad, error) =>
         {
             if (error != null)
             {
-                Debug.LogError("โฆษณาโหลดไม่สำเร็จ: " + error.GetMessage());
                 return;
             }
 
@@ -56,15 +56,6 @@ public class Ads : MonoSingleton<Ads>
     void RegisterAdEvents()
     {
         _rewardedAd.OnAdFullScreenContentClosed += HandleAdClosed;
-
-        _rewardedAd.OnAdPaid += adValue =>
-        {
-            var micros = adValue.Value;
-            var currency = adValue.CurrencyCode;
-            var precision = adValue.Precision;
-            
-            Debug.Log($"ได้รับรายได้จากโฆษณา: {micros} {currency}");
-        };
     }
     
     public bool TryShowAd()
@@ -78,17 +69,14 @@ public class Ads : MonoSingleton<Ads>
             });
             return true;
         }
-        Debug.Log("โฆษณายังไม่พร้อมแสดง");
         return false;
     }
-    
+
     private void HandleAdClosed()
     {
-        DisposeAds();
         LoadRewardedAd();
     }
-
-
+    
     private void CountdownAdSession()
     {
         CancelAdsSessionTimer();
@@ -113,5 +101,4 @@ public class Ads : MonoSingleton<Ads>
         _rewardedAd.OnAdFullScreenContentClosed -= HandleAdClosed;
         _rewardedAd.Destroy();
     }
-
 }
