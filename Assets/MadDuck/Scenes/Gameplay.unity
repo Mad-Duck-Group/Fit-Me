@@ -4444,6 +4444,7 @@ MonoBehaviour:
     ReferencedUnityObjects:
     - {fileID: 2114056575}
     - {fileID: 1635131237}
+    - {fileID: 3183312459891601349}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -5112,6 +5113,145 @@ MonoBehaviour:
     - Name: transition
       Entry: 7
       Data: 34|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: resultCrossFadeRule
+      Entry: 7
+      Data: 35|MadDuck.Scripts.UIs.Transitions.CrossFadeRule, Assembly-CSharp
+    - Name: nextPanel
+      Entry: 10
+      Data: 2
+    - Name: crossFadeSettings
+      Entry: 7
+      Data: 36|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
+    - Name: crossFadeType
+      Entry: 3
+      Data: 0
+    - Name: customOffset
+      Entry: 4
+      Data: 0
+    - Name: transitionGroupCollection
+      Entry: 7
+      Data: 37|MadDuck.Scripts.UIs.Transitions.TransitionGroupCollection, Assembly-CSharp
+    - Name: nextIn
+      Entry: 7
+      Data: 38|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 1
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
+    - Name: transition
+      Entry: 7
+      Data: 39|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: previousOut
+      Entry: 7
+      Data: 40|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 1
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
+    - Name: transition
+      Entry: 7
+      Data: 41|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: transitionIn
+      Entry: 7
+      Data: 42|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 1
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
+    - Name: transition
+      Entry: 7
+      Data: 43|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: transitionOut
+      Entry: 7
+      Data: 44|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+    - Name: overrideDefaultCycles
+      Entry: 5
+      Data: false
+    - Name: cycles
+      Entry: 3
+      Data: 1
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
+    - Name: transition
+      Entry: 7
+      Data: 45|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12

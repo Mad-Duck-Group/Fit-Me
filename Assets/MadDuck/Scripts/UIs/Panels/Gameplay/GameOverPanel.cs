@@ -30,6 +30,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
         private CrossFadeRule resultCrossFadeRule = new();
         [OdinSerialize, HideReferenceObjectPicker]
         private CrossFadeRule gameplayUIPanelCrossFadeRule = new();
+        public static int CurrentContinueCount { get; private set; }
         
         private float _adsTimerValue;
         private IDisposable _adsTimerSubscription;
@@ -40,6 +41,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
             base.Initialize();
             continueButton.onClick.AddListener(OnSkipButtonClicked);
             adsButton.onClick.AddListener(OnAdsButtonClicked);
+            CurrentContinueCount = maxContinueCount;
             ResetPanel();
         }
 
@@ -86,14 +88,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
 
         private void OnAdsButtonClicked()
         {
-            if (maxContinueCount <= 0)
-            {
-                EnableAds(false);
-            }
-            else
-            {
-                EnableAds(enableAds);
-            }
+            EnableAds(CurrentContinueCount > 0 && enableAds);
         }
 
         public void OnAdsClosed()
@@ -105,18 +100,10 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
 
         private void EnableAds(bool enable)
         {
-            if (enable)
-            {
-                if (Ads.Instance.TryShowAd())
-                    _adsTimerSubscription?.Dispose();
-                maxContinueCount--;
-            }
-            else
-            {
-                // Add fallback logic here if ads are not available
-               Debug.Log("Ads not available");
-               return;
-            }
+            if (!enable) return;
+            if (Ads.Instance.TryShowAd())
+                _adsTimerSubscription?.Dispose();
+            CurrentContinueCount--;
         }
     }
 }
