@@ -7,17 +7,21 @@ using MadDuck.Scripts.UIs.Panels.Gameplay;
 using R3;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Ads : MonoSingleton<Ads>
 {
+    [FormerlySerializedAs("_gameOverPanel")] [SerializeField] private GameOverPanel gameOverPanel;
+    
     private RewardedAd _rewardedAd;
-    public GameOverPanel _gameOverPanel;
     private IDisposable _adsRefreshTimer;
     private CancellationTokenSource _timerCts;
+    private bool _rewarded;
 
-    void Awake()
+    private void Start()
     {
         MobileAds.Initialize(LoadRewardedAd);
+        MobileAds.RaiseAdEventsOnUnityMainThread = true;
     }
 
     private void OnDestroy()
@@ -35,7 +39,7 @@ public class Ads : MonoSingleton<Ads>
 #if UNITY_ANDROID
         adUnitId = "ca-app-pub-3940256099942544/5224354917";
 #elif UNITY_IPHONE
-        adUnitId = "ca-app-pub-3940256099942544/2934735716", ;
+        adUnitId = "ca-app-pub-3940256099942544/2934735716";
 #else
         adUnitId = "unexpected_platform";
 #endif
@@ -60,21 +64,21 @@ public class Ads : MonoSingleton<Ads>
     
     public bool TryShowAd()
     {
-        if (_rewardedAd != null && _rewardedAd.CanShowAd())
+        if (_rewardedAd == null || !_rewardedAd.CanShowAd()) return false;
+        _rewardedAd.Show(_ =>
         {
-            _rewardedAd.Show(reward =>
-            {
-                GameManager.Instance.Continue();
-                _gameOverPanel.OnAdsClosed();
-            });
-            return true;
-        }
-        return false;
+            _rewarded = true;
+        });
+        return true;
     }
 
     private void HandleAdClosed()
     {
         LoadRewardedAd();
+        if (!_rewarded) return;
+        _rewarded = false;
+        GameManager.Instance.Continue();
+        gameOverPanel.OnAdsClosed();
     }
     
     private void CountdownAdSession()

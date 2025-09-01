@@ -22,5 +22,7 @@
             <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
             <meta-data android:name="android.app.lib_name" android:value="game" />
         </activity>
+        <meta-data android:name="unity.logcat.enable"
+                   android:value="false" />
     </application>
 </manifest>

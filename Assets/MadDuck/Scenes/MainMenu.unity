@@ -615,6 +615,7 @@ MonoBehaviour:
   endlessType: 1
   generatedGridType: 1
   presetRandomType: 0
+  useDifficultyPreset: 1
   randomGridXRange: {x: 6, y: 9}
   randomGridYRange: {x: 10, y: 10}
   bridgeWidthRange: {x: 2, y: 3}
@@ -623,7 +624,7 @@ MonoBehaviour:
   gridVerticalOffsetType: 0
   customOffsetY: 0
   destroyThreshold: 3
-  currentGridPreset: {fileID: 11400000, guid: 49ac1ac62efab9d44ba416909e663151, type: 2}
+  <CurrentGridPreset>k__BackingField: {fileID: 11400000, guid: 3c0de1220640875409d7ee56aa4db52d, type: 2}
   currentGridSize: {x: 4, y: 8}
   currentOffset: {x: -2, y: 4}
   drawAllCustomGridCells: 1
