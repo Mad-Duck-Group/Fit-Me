@@ -72,6 +72,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
             }
             else
             {
+                GameManager.Instance.ToResultScreen().Forget();
                 transitionCts = new CancellationTokenSource();
                 PanelController.ChangePanel(this, resultCrossFadeRule.nextPanel, resultCrossFadeRule.crossFadeSettings, transitionCts.Token).Forget();
             }

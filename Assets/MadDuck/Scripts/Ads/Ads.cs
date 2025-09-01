@@ -19,7 +19,6 @@ public class Ads : MonoSingleton<Ads>
 
     private void Start()
     {
-        base.Awake();
         MobileAds.Initialize(LoadRewardedAd);
         MobileAds.RaiseAdEventsOnUnityMainThread = true;
     }

@@ -163,7 +163,7 @@ MonoBehaviour:
     - line: '|   loadStoreDebugModeEnabled: 0'
     - line: '|   visionOSBundleVersion: 1.0'
     - line: '|   tvOSBundleVersion: 1.0'
-    - line: '|   bundleVersion: 1.2.4-devbuild.1-android'
+    - line: '|   bundleVersion: 1.2.5-devbuild.1-android'
     - line: '|   preloadedAssets:'
     - line: '|   - {fileID: 11400000, guid: 0d2fb6275d1aad846899821db71839c1, type:
         2}'
@@ -208,7 +208,7 @@ MonoBehaviour:
     - line: '|     iPhone: 0'
     - line: '|     tvOS: 0'
     - line: '|   overrideDefaultApplicationIdentifier: 1'
-    - line: '|   AndroidBundleVersionCode: 6'
+    - line: '|   AndroidBundleVersionCode: 7'
     - line: '|   AndroidMinSdkVersion: 26'
     - line: '|   AndroidTargetSdkVersion: 0'
     - line: '|   AndroidPreferredInstallLocation: 1'
@@ -291,7 +291,7 @@ MonoBehaviour:
     - line: '|   clonedFromGUID: c19f32bac17ee4170b3bf8a6a0333fb9'
     - line: '|   templatePackageId: com.unity.template.universal-2d@5.0.2'
     - line: '|   templateDefaultScene: Assets/Scenes/SampleScene.unity'
-    - line: '|   useCustomMainManifest: 1'
+    - line: '|   useCustomMainManifest: 0'
     - line: '|   useCustomLauncherManifest: 0'
     - line: '|   useCustomMainGradleTemplate: 1'
     - line: '|   useCustomLauncherGradleManifest: 0'
@@ -868,10 +868,10 @@ MonoBehaviour:
         m_BuildSubtarget: 0
         m_BuildSystem: 1
         m_ExportAsGoogleAndroidProject: 0
-        m_DebugSymbolLevel: 1
+        m_DebugSymbolLevel: 2
         m_DebugSymbolFormat: 6
         m_CurrentDeploymentTargetId: 192.168.1.49:40489
         m_BuildType: 2
-        m_BuildAppBundle: 0
+        m_BuildAppBundle: 1
         m_IPAddressToConnect: 192.168.1.49:40489
         m_SymlinkSources: 0

@@ -2980,9 +2980,9 @@ MonoBehaviour:
   difficultySettings:
     keys: 000000000100000002000000
     values:
-    - {x: 0, y: 50}
-    - {x: 51, y: 7000}
-    - {x: 7001, y: 10000}
+    - {x: 0, y: 5000}
+    - {x: 5001, y: 50000}
+    - {x: 50001, y: 100000}
   gameplayBgm:
     Guid:
       Data1: -427414803
@@ -4038,8 +4038,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 000
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ec4454f36b9142549863fb2f0f525bcf, type: 2}
+  m_sharedMaterial: {fileID: -2065754007991695277, guid: ec4454f36b9142549863fb2f0f525bcf, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5126,7 +5126,7 @@ MonoBehaviour:
       Data: 36|MadDuck.Scripts.UIs.Transitions.CrossFadeSettings, Assembly-CSharp
     - Name: crossFadeType
       Entry: 3
-      Data: 0
+      Data: 3
     - Name: customOffset
       Entry: 4
       Data: 0
@@ -5141,7 +5141,7 @@ MonoBehaviour:
       Data: false
     - Name: cycles
       Entry: 3
-      Data: 1
+      Data: 0
     - Name: cycleMode
       Entry: 3
       Data: 0
@@ -5151,7 +5151,94 @@ MonoBehaviour:
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 40|MadDuck.Scripts.UIs.Transitions.TransitionData, Assembly-CSharp
+    - Name: transition
+      Entry: 7
+      Data: 41|MadDuck.Scripts.UIs.Transitions.AlphaTransition, Assembly-CSharp
+    - Name: objectKey
+      Entry: 1
+      Data: PanelCanvasGroup
+    - Name: relative
+      Entry: 5
+      Data: false
+    - Name: transitionSettings
+      Entry: 7
+      Data: PrimeTween.TweenSettings`1[[System.Single, mscorlib]], PrimeTween.Runtime
+    - Name: startFromCurrent
+      Entry: 5
+      Data: false
+    - Name: startValue
+      Entry: 4
       Data: 0
+    - Name: endValue
+      Entry: 4
+      Data: 1
+    - Name: settings
+      Entry: 7
+      Data: PrimeTween.TweenSettings, PrimeTween.Runtime
+    - Name: duration
+      Entry: 4
+      Data: 0.35
+    - Name: ease
+      Entry: 3
+      Data: 13
+    - Name: customEase
+      Entry: 7
+      Data: 42|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+    - Name: 
+      Entry: 9
+      Data: 8
+    - Name: 
+      Entry: 3
+      Data: 8
+    - Name: 
+      Entry: 3
+      Data: 8
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: cycles
+      Entry: 3
+      Data: 1
+    - Name: cycleMode
+      Entry: 3
+      Data: 0
+    - Name: startDelay
+      Entry: 4
+      Data: 0
+    - Name: endDelay
+      Entry: 4
+      Data: 0
+    - Name: useUnscaledTime
+      Entry: 5
+      Data: false
+    - Name: _useFixedUpdate
+      Entry: 5
+      Data: false
+    - Name: _updateType
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: transitionGroupType
+      Entry: 3
+      Data: 0
+    - Name: delay
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -5163,19 +5250,19 @@ MonoBehaviour:
       Data: 
     - Name: previousOut
       Entry: 7
-      Data: 40|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+      Data: 43|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: overrideDefaultCycles
       Entry: 5
       Data: false
     - Name: cycles
       Entry: 3
-      Data: 1
+      Data: 0
     - Name: cycleMode
       Entry: 3
       Data: 0
     - Name: transition
       Entry: 7
-      Data: 41|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+      Data: 44|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -5191,19 +5278,19 @@ MonoBehaviour:
       Data: 
     - Name: transitionIn
       Entry: 7
-      Data: 42|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+      Data: 45|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: overrideDefaultCycles
       Entry: 5
       Data: false
     - Name: cycles
       Entry: 3
-      Data: 1
+      Data: 0
     - Name: cycleMode
       Entry: 3
       Data: 0
     - Name: transition
       Entry: 7
-      Data: 43|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+      Data: 46|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -5219,19 +5306,19 @@ MonoBehaviour:
       Data: 
     - Name: transitionOut
       Entry: 7
-      Data: 44|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
+      Data: 47|MadDuck.Scripts.UIs.Transitions.TransitionGroup, Assembly-CSharp
     - Name: overrideDefaultCycles
       Entry: 5
       Data: false
     - Name: cycles
       Entry: 3
-      Data: 1
+      Data: 0
     - Name: cycleMode
       Entry: 3
       Data: 0
     - Name: transition
       Entry: 7
-      Data: 45|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
+      Data: 48|System.Collections.Generic.List`1[[MadDuck.Scripts.UIs.Transitions.TransitionData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -5451,7 +5538,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1635131234
 RectTransform:
   m_ObjectHideFlags: 0
