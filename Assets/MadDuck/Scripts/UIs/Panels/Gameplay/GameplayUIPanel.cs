@@ -34,6 +34,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
         [Title("Panels")]
         [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule pauseCrossFadeRule = new();
         [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule gameOverCrossFadeRule = new();
+        [OdinSerialize, HideReferenceObjectPicker] private CrossFadeRule resultCrossFadeRule = new();
         
         private Sequence _scoreSequence;
         private Sequence _fitMeSequence;
@@ -63,8 +64,17 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
         private void OnGameOver(bool showGameOverPanel)
         {
             if (!showGameOverPanel) return;
-            transitionCts = new CancellationTokenSource();
-            PanelController.ChangePanel(this, gameOverCrossFadeRule.nextPanel, gameOverCrossFadeRule.crossFadeSettings, transitionCts.Token).Forget();
+
+            if (GameOverPanel.CurrentContinueCount > 0)
+            {
+                transitionCts = new CancellationTokenSource();
+                PanelController.ChangePanel(this, gameOverCrossFadeRule.nextPanel, gameOverCrossFadeRule.crossFadeSettings, transitionCts.Token).Forget();
+            }
+            else
+            {
+                transitionCts = new CancellationTokenSource();
+                PanelController.ChangePanel(this, resultCrossFadeRule.nextPanel, resultCrossFadeRule.crossFadeSettings, transitionCts.Token).Forget();
+            }
         }
         
         private void OnPauseButtonClicked()

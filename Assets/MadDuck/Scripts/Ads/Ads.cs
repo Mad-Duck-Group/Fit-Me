@@ -12,7 +12,6 @@ using UnityEngine.Serialization;
 public class Ads : MonoSingleton<Ads>
 {
     [FormerlySerializedAs("_gameOverPanel")] [SerializeField] private GameOverPanel gameOverPanel;
-    
     private RewardedAd _rewardedAd;
     private IDisposable _adsRefreshTimer;
     private CancellationTokenSource _timerCts;
@@ -20,6 +19,7 @@ public class Ads : MonoSingleton<Ads>
 
     private void Start()
     {
+        base.Awake();
         MobileAds.Initialize(LoadRewardedAd);
         MobileAds.RaiseAdEventsOnUnityMainThread = true;
     }

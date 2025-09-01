@@ -18,16 +18,19 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
         [SerializeField] private Image adsTimer;
         [SerializeField] private Button continueButton;
         [SerializeField] private Button adsButton;
+        [SerializeField] private TMP_Text continueCountText;
         
         [Title("Settings")]
         [SerializeField] private float adsTimeout = 10f;
         [SerializeField] private bool enableAds = true;
+        [SerializeField] private int maxContinueCount = 1;
 
         [Title("Panels")] 
         [OdinSerialize, HideReferenceObjectPicker]
         private CrossFadeRule resultCrossFadeRule = new();
         [OdinSerialize, HideReferenceObjectPicker]
         private CrossFadeRule gameplayUIPanelCrossFadeRule = new();
+        public static int CurrentContinueCount { get; private set; }
         
         private float _adsTimerValue;
         private IDisposable _adsTimerSubscription;
@@ -38,6 +41,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
             base.Initialize();
             continueButton.onClick.AddListener(OnSkipButtonClicked);
             adsButton.onClick.AddListener(OnAdsButtonClicked);
+            CurrentContinueCount = maxContinueCount;
             ResetPanel();
         }
 
@@ -50,6 +54,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
         private void ResetPanel()
         {
             adsTimer.fillAmount = 1;
+            continueCountText.text = maxContinueCount.ToString();
         }
 
         public override void OnPanelReady()
@@ -83,7 +88,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
 
         private void OnAdsButtonClicked()
         {
-            EnableAds(enableAds);
+            EnableAds(CurrentContinueCount > 0 && enableAds);
         }
 
         public void OnAdsClosed()
@@ -95,17 +100,10 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
 
         private void EnableAds(bool enable)
         {
-            if (enable)
-            {
-                if (Ads.Instance.TryShowAd())
-                    _adsTimerSubscription?.Dispose();
-            }
-            else
-            {
+            if (!enable) return;
+            if (Ads.Instance.TryShowAd())
                 _adsTimerSubscription?.Dispose();
-                OnAdsClosed();
-                GameManager.Instance.Continue();
-            }
+            CurrentContinueCount--;
         }
     }
 }
