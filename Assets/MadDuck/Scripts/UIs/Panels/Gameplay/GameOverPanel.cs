@@ -18,10 +18,12 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
         [SerializeField] private Image adsTimer;
         [SerializeField] private Button continueButton;
         [SerializeField] private Button adsButton;
+        [SerializeField] private TMP_Text continueCountText;
         
         [Title("Settings")]
         [SerializeField] private float adsTimeout = 10f;
         [SerializeField] private bool enableAds = true;
+        [SerializeField] private int maxContinueCount = 1;
 
         [Title("Panels")] 
         [OdinSerialize, HideReferenceObjectPicker]
@@ -50,6 +52,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
         private void ResetPanel()
         {
             adsTimer.fillAmount = 1;
+            continueCountText.text = maxContinueCount.ToString();
         }
 
         public override void OnPanelReady()
@@ -83,7 +86,14 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
 
         private void OnAdsButtonClicked()
         {
-            EnableAds(enableAds);
+            if (maxContinueCount <= 0)
+            {
+                EnableAds(false);
+            }
+            else
+            {
+                EnableAds(enableAds);
+            }
         }
 
         public void OnAdsClosed()
@@ -99,12 +109,13 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
             {
                 if (Ads.Instance.TryShowAd())
                     _adsTimerSubscription?.Dispose();
+                maxContinueCount--;
             }
             else
             {
-                _adsTimerSubscription?.Dispose();
-                OnAdsClosed();
-                GameManager.Instance.Continue();
+                // Add fallback logic here if ads are not available
+               Debug.Log("Ads not available");
+               return;
             }
         }
     }

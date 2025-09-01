@@ -10,13 +10,14 @@ using UnityEngine;
 
 public class Ads : MonoSingleton<Ads>
 {
+    [SerializeField] private GameOverPanel gameOverPanel;
     private RewardedAd _rewardedAd;
-    public GameOverPanel _gameOverPanel;
     private IDisposable _adsRefreshTimer;
     private CancellationTokenSource _timerCts;
 
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         MobileAds.Initialize(LoadRewardedAd);
     }
 
@@ -34,8 +35,8 @@ public class Ads : MonoSingleton<Ads>
 
 #if UNITY_ANDROID
         adUnitId = "ca-app-pub-3940256099942544/5224354917";
-#elif UNITY_IPHONE
-        adUnitId = "ca-app-pub-3940256099942544/2934735716", ;
+#elif UNITY_IOS
+        adUnitId = "ca-app-pub-3940256099942544/2934735716";
 #else
         adUnitId = "unexpected_platform";
 #endif
@@ -65,7 +66,7 @@ public class Ads : MonoSingleton<Ads>
             _rewardedAd.Show(reward =>
             {
                 GameManager.Instance.Continue();
-                _gameOverPanel.OnAdsClosed();
+                gameOverPanel.OnAdsClosed();
             });
             return true;
         }
