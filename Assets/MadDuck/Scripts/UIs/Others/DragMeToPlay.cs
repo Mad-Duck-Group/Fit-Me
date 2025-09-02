@@ -4,20 +4,28 @@ using Cysharp.Threading.Tasks;
 using FMODUnity;
 using MadDuck.Scripts.Managers;
 using MadDuck.Scripts.Units;
+using MadDuck.Scripts.Utils;
 using MadDuck.Scripts.Utils.Inspectors;
 using PrimeTween;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 namespace MadDuck.Scripts.UIs.Others
 {
-    public class DragMeToPlay : MonoBehaviour
+    [ShowOdinSerializedPropertiesInInspector]
+    public class DragMeToPlay : MonoBehaviour, ISerializationCallbackReceiver, ISupportsPrefabSerialization
     {
         [Title("References")]
         [SerializeField] private SpriteRenderer speechBubble;
         [SerializeField] private SpriteRenderer glow;
+        [SerializeField] private Transform floatingHandIconParent;
+        [OdinSerialize] private IFloatingUIElement floatingHandIconPrefab;
+        
+        private IFloatingUIElement _floatingHandIconInstance;
+        private GameObject _handIconGameObject;
         
         [Title("Tween")] 
         [SerializeField] private TweenSettings<float> speechBubbleAlphaTweenSettings;
@@ -46,6 +54,10 @@ namespace MadDuck.Scripts.UIs.Others
             if (!_block) return;
             _block.OnBlockBeingDrag -= FadeOutBubble;
             _block.OnBlockEndDrag -= FadeInBubble;
+            if (_handIconGameObject)
+            {
+                Destroy(_handIconGameObject);
+            }
         }
 
         private void OnBlockSpawned(List<Block> blocks)
@@ -53,6 +65,22 @@ namespace MadDuck.Scripts.UIs.Others
             _block = blocks[0];
             _block.OnBlockBeingDrag += FadeOutBubble;
             _block.OnBlockEndDrag += FadeInBubble;
+            _floatingHandIconInstance = floatingHandIconPrefab.InstantiateAsInterface(new InstantiateParameters()
+                {
+                    parent = floatingHandIconParent,
+                }, 
+                out _handIconGameObject);
+            _floatingHandIconInstance.Initialize();
+            _handIconGameObject.transform.SetAsFirstSibling();
+            var iconPosition = PointerManager.Instance.WorldToWorldCanvasPosition(_block.transform.position);
+            _handIconGameObject.transform.position = iconPosition;
+            ShowHandIcon().Forget();
+        }
+        
+        private async UniTaskVoid ShowHandIcon()
+        {
+            await _floatingHandIconInstance.Show();
+            await _floatingHandIconInstance.PlayAnimation();
         }
         
         private void OnFitCheck(FitType fitType)
@@ -72,6 +100,7 @@ namespace MadDuck.Scripts.UIs.Others
                     speechBubble.gameObject.SetActive(false);
                     glow.gameObject.SetActive(false);
                 });
+            _floatingHandIconInstance.Hide().Forget();
         }
         
         private void FadeInBubble(bool placed)
@@ -83,6 +112,27 @@ namespace MadDuck.Scripts.UIs.Others
             _speechBubbleSequence = Sequence.Create()
                 .Group(Tween.Alpha(speechBubble, speechBubbleAlphaTweenSettings.WithDirection(false)))
                 .Group(Tween.Alpha(glow, speechBubbleAlphaTweenSettings.WithDirection(false)));
+            ShowHandIcon().Forget();
         }
+        
+        #region Serialization
+        public void OnBeforeSerialize()
+        {
+            UnitySerializationUtility.SerializeUnityObject(this, ref serializationData);
+        }
+
+        public void OnAfterDeserialize()
+        {
+            UnitySerializationUtility.DeserializeUnityObject(this, ref serializationData);
+        }
+
+        [SerializeField, HideInInspector]
+        private SerializationData serializationData;
+        public SerializationData SerializationData 
+        { 
+            get => serializationData;
+            set => serializationData = value;
+        }
+        #endregion
     }
 }

@@ -6997,7 +6997,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameCamera: {fileID: 551201781}
-  gameCanvas: {fileID: 1936157196}
+  gameCanvas: {fileID: 955601931}
   inputHandler: {fileID: 955100800}
 --- !u!114 &955100800
 MonoBehaviour:
@@ -14688,6 +14688,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speechBubble: {fileID: 919157562}
   glow: {fileID: 746627577}
+  floatingHandIconParent: {fileID: 955601932}
   speechBubbleAlphaTweenSettings:
     startFromCurrent: 0
     startValue: 1
@@ -14708,6 +14709,19 @@ MonoBehaviour:
       useUnscaledTime: 0
       _useFixedUpdate: 0
       _updateType: 0
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 6201905966829271242, guid: 88519a7276409a241a3fb03f0b194f09, type: 3}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: floatingHandIconPrefab
+      Entry: 10
+      Data: 0
 --- !u!1 &2009745628
 GameObject:
   m_ObjectHideFlags: 0
