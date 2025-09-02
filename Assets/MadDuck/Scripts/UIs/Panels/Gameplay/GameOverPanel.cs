@@ -54,7 +54,7 @@ namespace MadDuck.Scripts.UIs.Panels.Gameplay
         private void ResetPanel()
         {
             adsTimer.fillAmount = 1;
-            continueCountText.text = maxContinueCount.ToString();
+            continueCountText.text = $"Remaining: {CurrentContinueCount}";
         }
 
         public override void OnPanelReady()

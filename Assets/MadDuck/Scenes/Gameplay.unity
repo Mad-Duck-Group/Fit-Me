@@ -874,7 +874,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0.000020981, y: -626.4}
+  m_AnchoredPosition: {x: 0.000020981, y: -602}
   m_SizeDelta: {x: 617.457, y: 87.2486}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &268810862
@@ -4036,7 +4036,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 000
+  m_text: 'Remaining: 0'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ec4454f36b9142549863fb2f0f525bcf, type: 2}
   m_sharedMaterial: {fileID: -2065754007991695277, guid: ec4454f36b9142549863fb2f0f525bcf, type: 2}
@@ -4131,8 +4131,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -857}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 0, y: -248.59991}
+  m_SizeDelta: {x: 936.8, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1314762207
 GameObject:
@@ -6293,7 +6293,7 @@ MonoBehaviour:
   continueCountText: {fileID: 1265387584}
   adsTimeout: 10
   enableAds: 1
-  maxContinueCount: 1
+  maxContinueCount: 2
 --- !u!225 &1635131238
 CanvasGroup:
   m_ObjectHideFlags: 0
