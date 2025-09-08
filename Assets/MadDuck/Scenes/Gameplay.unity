@@ -2978,11 +2978,12 @@ MonoBehaviour:
   scorePerBomb: 200
   scorePerFitMe: 5000
   difficultySettings:
-    keys: 000000000100000002000000
+    keys: 01000000020000000400000008000000
     values:
     - {x: 0, y: 5000}
     - {x: 5001, y: 50000}
     - {x: 50001, y: 100000}
+    - {x: 100001, y: 1000000}
   gameplayBgm:
     Guid:
       Data1: -427414803

@@ -225,7 +225,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  <GameDifficulty>k__BackingField: 2
+  <GameDifficulty>k__BackingField: 4
   <PresetGridType>k__BackingField: 2
   <GridSize>k__BackingField: {x: 7, y: 9}
   <AllowInfection>k__BackingField: 1

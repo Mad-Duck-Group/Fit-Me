@@ -57,11 +57,13 @@ public enum GameplayUIPanelType
     Result,
 }
 
+[Flags]
 public enum GameDifficulty
 {
-    Easy,
-    Medium,
-    Hard,
+    Easy = 1 << 0,
+    Medium = 1 << 1,
+    Hard = 1 << 2,
+    Endgame = 1 << 3,
 }
 #endregion
 
@@ -335,7 +337,7 @@ public class GameManager : MonoSingleton<GameManager>, ISerializationCallbackRec
     private void NextGameDifficulty()
     {
         _aboutToInfectBlocks.Clear();
-        var maxDifficulty = (GameDifficulty)Enum.GetValues(typeof(GameDifficulty)).Length - 1;
+        var maxDifficulty = Enum.GetValues(typeof(GameDifficulty)).Cast<GameDifficulty>().Max();
         if (CurrentGameDifficulty.Value == maxDifficulty) return;
        
         if (!difficultySettings.TryGetValue(maxDifficulty, out var maxDifficultyRange))

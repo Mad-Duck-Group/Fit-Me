@@ -167,12 +167,12 @@ namespace MadDuck.Scripts.Managers
         [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public float RandomInfectedTime { get; private set; }
         [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> preInfectBlocks = new();
         [SerializeField, Sirenix.OdinInspector.ReadOnly] private List<Block> infectedBlocks = new();
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly] private Dictionary<GameDifficulty, List<GridPreset>> _difficultyGridPresets = new();
         #endregion
 
         #region Fields and Properties
         private Grid _grid;
         private List<Cell> _previousValidationCells = new();
-        private Dictionary<GameDifficulty, List<GridPreset>> _difficultyGridPresets = new();
         public static event Action<Block> OnBlockStateChanged;
         public static event Action<Block> OnBlockPlaced;
         public static event Action<Block> OnBlockDestroyed;
@@ -194,8 +194,9 @@ namespace MadDuck.Scripts.Managers
         #region Events
         private void OnEnable()
         {
-            _difficultyGridPresets = gridPresets.GroupBy(preset => preset.GameDifficulty)
-                .ToDictionary(group => group.Key, group => group.ToList());
+            // _difficultyGridPresets = gridPresets.GroupBy(preset => preset.GameDifficulty)
+            //     .ToDictionary(group => group.Key, group => group.ToList());
+            _difficultyGridPresets = BucketByFlags(gridPresets);
             _sceneActiveSubscription =
                 GlobalMessagePipe.GetSubscriber<SceneActivateEvent>().Subscribe(OnSceneActivated);
             _startSpawnPublisher = GlobalMessagePipe.GetPublisher<StartSpawnEvent>();
@@ -253,6 +254,27 @@ namespace MadDuck.Scripts.Managers
             }
             var infectionConfig = CurrentGridPreset.InfectionSettings;
             RandomInfectedTime = Random.Range(infectionConfig.InfectionCountRange.x, infectionConfig.InfectionCountRange.y);
+        }
+        
+        private static Dictionary<GameDifficulty, List<GridPreset>> BucketByFlags(
+            IEnumerable<GridPreset> source)
+        {
+            // build the empty buckets first (one per defined flag)
+            var flags = Enum.GetValues(typeof(GameDifficulty))
+                .Cast<GameDifficulty>()
+                .Where(f => f != 0 && (f & (f - 1)) == 0)  // only single-bit values
+                .ToList();
+            var lookup = flags.ToDictionary(f => f, _ => new List<GridPreset>());
+            // fill the buckets
+            foreach (var item in source)
+            {
+                foreach (var flag in flags)
+                {
+                    if (item.GameDifficulty.HasFlag(flag))
+                        lookup[flag].Add(item);
+                }
+            }
+            return lookup;
         }
         #endregion
         
