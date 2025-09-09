@@ -19,7 +19,7 @@ MonoBehaviour:
       <IsMaster>k__BackingField: 1
       <LinearVolume>k__BackingField: 0.39810723
       <Linear01Volume>k__BackingField: 0.12589256
-      <DecibelVolume>k__BackingField: -7.999999
+      <DecibelVolume>k__BackingField: -7.999998
       <Decibel01Volume>k__BackingField: 0.8
       <IsMuted>k__BackingField: 0
     - <Path>k__BackingField: bus:/BGM
