@@ -112,7 +112,7 @@ namespace MadDuck.Scripts.Items
             _blocksToDestroy.ForEach(b =>
             {
                 b.StopFlashing();
-                GridManager.Instance.RemoveBlock(b, true);
+                GridManager.Instance.RemoveBlock(b, FitType.Combo, true);
             });
             _blocksToDestroy.Clear();
             NotifyUsed();

@@ -172,11 +172,12 @@ namespace MadDuck.Scripts.Units
             StartIdleTimer();
         }
         
-        public async UniTask Explode()
+        public async UniTask Explode(FitType fitType)
         {
             CancelIdleTimer();
+            var speedMultiplier = fitType == FitType.FitMe ? 2f : 6.67f;
             var explodeAnim = skeletonAnimation.AnimationState.SetAnimation(0, explodeAnimation, false);
-            explodeAnim.TimeScale *= 2f;
+            explodeAnim.TimeScale *= speedMultiplier;
             await explodeAnim.ToUniTask();
             //await UniTask.WaitUntil(() => skeletonAnimation.AnimationState.GetCurrent(0).IsComplete);
             if (explodeVfx.TryGetValue(_blockType, out var vfx))

@@ -631,7 +631,7 @@ namespace MadDuck.Scripts.Managers
             List<(BlockState beforeExplodeState, BlockTypes blockType)> blocksToSave = 
                 contacts.Select(block => (block.BlockState, block.BlockType)).ToList();
             AudioManager.Instance.PlayAudioOneShot(stackExplodeSfx, transform.position);
-            await UniTask.WhenAll(contacts.Select(block => RemoveBlock(block, true)));
+            await UniTask.WhenAll(contacts.Select(block => RemoveBlock(block, FitType.Combo, true)));
             PlayerDataManager.Instance.SaveBlockDestroyed(FitType.Combo, blocksToSave);
             OnScoreAdded?.Invoke(ScoreTypes.Combo, contacts.Count, middleOfBlocks);
             OnScoreAdded?.Invoke(ScoreTypes.Bomb, contacts.Count, middleOfBlocks);
@@ -643,7 +643,7 @@ namespace MadDuck.Scripts.Managers
         /// </summary>
         /// <param name="block">Block to remove</param>
         /// <param name="destroy">Destroy the block, false by default</param>
-        public async UniTask RemoveBlock(Block block, bool destroy = false)
+        public async UniTask RemoveBlock(Block block, FitType fitType, bool destroy = false)
         {
             DisinfectBlock(block);
             BlocksOnGrid.Remove(block);
@@ -652,7 +652,7 @@ namespace MadDuck.Scripts.Managers
             OnBlockDestroyed?.Invoke(block);
             var atoms = new List<Atom>(block.Atoms);
             if (_currentSceneType is SceneType.Gameplay) 
-                await block.Explode(destroy);
+                await block.Explode(fitType, destroy);
             foreach (var atom in atoms)
             {
                 var cell = GetCellByPosition(atom.transform.position);
@@ -677,7 +677,7 @@ namespace MadDuck.Scripts.Managers
         public async UniTask RemoveAllBlocks(bool destroy = false)
         {
             List<Block> blocksToRemove = new List<Block>(BlocksOnGrid);
-            await UniTask.WhenAll(blocksToRemove.Select(block => RemoveBlock(block, destroy)));
+            await UniTask.WhenAll(blocksToRemove.Select(block => RemoveBlock(block, FitType.FitMe, destroy)));
         }
         
         /// <summary>

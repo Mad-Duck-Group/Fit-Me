@@ -537,14 +537,14 @@ namespace MadDuck.Scripts.Units
             BlockView.SetColor(color);
         }
 
-        public async UniTask Explode(bool destroy = false)
+        public async UniTask Explode(FitType fitType, bool destroy = false)
         {
             BlockState = BlockState.Exploding;
             StopPreInfectFlash();
             SetColor(originalAtomColor);
             if (BlockView)
             {
-                await BlockView.Explode();
+                await BlockView.Explode(fitType);
             }
             Debug.Log($"Block {BlockType} exploded at position {transform.position}");
             if (destroy) Destroy(gameObject);
